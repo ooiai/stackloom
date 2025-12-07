@@ -1,5 +1,11 @@
 "use client";
 
+import DesignBuilder from "@workspace/builder-ui/builder/index";
+
 export default function DesignPage() {
-  return <div>Form Builder Page</div>;
+  return (
+    <>
+      <DesignBuilder />
+    </>
+  );
 }
