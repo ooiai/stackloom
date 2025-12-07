@@ -1,12 +1,15 @@
 {
   "name": "builder",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 8126",
+    "dev": "next dev --turbopack --port 8126",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@workspace/ui": "workspace:*",
@@ -21,6 +24,8 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@workspace/eslint-config": "workspace:^",
+    "@workspace/typescript-config": "workspace:*",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
