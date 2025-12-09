@@ -1,5 +1,6 @@
 *target/
 *node_modules/
-frontend-b/
+#frontend-b/
 frontend-c/
+frontend-d/
 USAGE.md

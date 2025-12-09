@@ -1,8 +1,11 @@
 {
-  "extends": "@repo/typescript-config/react-library.json",
+  "extends": "@stackloom/typescript-config/react-library",
   "compilerOptions": {
-    "outDir": "dist"
+    "baseUrl": ".",
+    "paths": {
+      "@stackloom/ui/*": ["./src/*"]
+    }
   },
-  "include": ["src"],
+  "include": ["."],
   "exclude": ["node_modules", "dist"]
 }

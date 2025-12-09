@@ -1,3 +1,3 @@
-# `@turbo/eslint-config`
+# `@stackloom/eslint-config`
 
-Collection of internal eslint configurations.
+Shared eslint configuration for the workspace.

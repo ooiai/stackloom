@@ -1,5 +1,5 @@
 {
-  "name": "@repo/eslint-config",
+  "name": "@stackloom/eslint-config",
   "version": "0.0.0",
   "type": "module",
   "private": true,
@@ -10,15 +10,17 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@next/eslint-plugin-next": "^15.5.0",
-    "eslint": "^9.39.1",
-    "eslint-config-prettier": "^10.1.1",
+    "@next/eslint-plugin-next": "^15.4.5",
+    "@typescript-eslint/eslint-plugin": "^8.39.0",
+    "@typescript-eslint/parser": "^8.39.0",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^9.1.2",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-turbo": "^2.6.0",
-    "globals": "^16.5.0",
+    "eslint-plugin-turbo": "^2.5.5",
+    "globals": "^15.15.0",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.48.1"
+    "typescript-eslint": "^8.39.0"
   }
 }

@@ -1,0 +1,3 @@
+{
+  "extends": "@stackloom/typescript-config/base"
+}
