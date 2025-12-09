@@ -1,8 +1,34 @@
 {
   "name": "@stackloom/eslint-config",
-  "version": "0.0.0",
+  "version": "0.1.4",
   "type": "module",
-  "private": true,
+  "private": false,
+  "description": "Shared ESLint config for Stackloom projects",
+  "license": "MIT",
+  "keywords": [
+    "eslint",
+    "config",
+    "stackloom"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ooiai/stackloom/tree/main/frontend/packages/eslint-config"
+  },
+  "bugs": {
+    "url": "https://github.com/ooiai/stackloom/issues"
+  },
+  "homepage": "https://github.com/ooiai/stackloom#readme",
+  "author": "Wittonchanglife <wittonchanglife@gmail.com>",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "base.js",
+    "next.js",
+    "react-internal.js",
+    "README.md"
+  ],
+  "sideEffects": false,
   "exports": {
     "./base": "./base.js",
     "./next-js": "./next.js",

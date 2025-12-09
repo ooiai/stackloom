@@ -1,9 +1,24 @@
 {
   "name": "@stackloom/typescript-config",
-  "version": "0.0.0",
-  "private": true,
-  "license": "PROPRIETARY",
+  "version": "0.1.5",
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "private": false,
+  "description": "Shared TypeScript configs for Stackloom projects",
+  "license": "MIT",
+  "keywords": [
+    "typescript",
+    "tsconfig",
+    "stackloom"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ooiai/stackloom/tree/main/frontend/packages/typescript-config"
+  },
+  "bugs": {
+    "url": "https://github.com/ooiai/stackloom/issues"
+  },
+  "homepage": "https://github.com/ooiai/stackloom#readme",
+  "author": "Wittonchanglife <wittonchanglife@gmail.com>"
 }

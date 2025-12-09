@@ -34,9 +34,8 @@ import { Button } from "@stackloom/ui/components/button";
 
 ```tsx
 https://turborepo.com/docs/guides/frameworks/nextjs
-```
-
 pnpm dlx create-next-app@latest apps/my-app
+```
 
 ## Creating an Internal Package
 
