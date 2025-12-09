@@ -1,0 +1,2 @@
+overrides:
+  '@stackloom/builder-ui': link:../../../../../../Library/pnpm/global/5/node_modules/@stackloom/builder-ui
