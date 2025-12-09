@@ -8,7 +8,7 @@ import "@stackloom/ui/globals.css";
 import { cn } from "@stackloom/ui/lib/utils";
 import { EditorSidebar } from "./components/sidebar/editor-sidebar";
 import { WorkSidebar } from "./components/sidebar/work-sidebar";
-// import "./index.css";
+import "./index.css";
 
 const DesignBuilder = () => {
   return (
@@ -21,7 +21,7 @@ const DesignBuilder = () => {
               "flex-1 transition-all duration-300 overflow-auto relative bg-dotted pt-14 scrollbar-hide",
             )}
           >
-            <div className="bg-green-500">测试dd</div>
+            <div className="bg-red-500">测试dds</div>
             Design Builder Component rs
           </main>
         </SidebarInset>
