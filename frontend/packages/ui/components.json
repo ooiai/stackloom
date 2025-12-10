@@ -15,6 +15,7 @@
     "utils": "@stackloom/ui/lib/utils",
     "hooks": "@stackloom/ui/hooks",
     "lib": "@stackloom/ui/lib",
-    "ui": "@stackloom/ui/components"
+    "ui": "@stackloom/ui/components",
+    "loomui": "@stackloom/ui/loomui"
   }
 }

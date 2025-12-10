@@ -6,26 +6,34 @@ import {
 } from "@stackloom/ui/components/sidebar";
 import "@stackloom/ui/globals.css";
 import { cn } from "@stackloom/ui/lib/utils";
+import { BuilderHeader } from "./components/layout/builder-header";
 import { EditorSidebar } from "./components/sidebar/editor-sidebar";
-import { WorkSidebar } from "./components/sidebar/work-sidebar";
 import "./index.css";
 
-const DesignBuilder = () => {
+type Props = {
+  logo: string;
+};
+
+const DesignBuilder = ({ logo }: Props) => {
   return (
     <SidebarProvider>
       <div className="flex w-full h-screen justify-between">
-        <WorkSidebar />
+        {/*<WorkSidebar />*/}
         <SidebarInset>
           <main
             className={cn(
-              "flex-1 transition-all duration-300 overflow-auto relative bg-dotted pt-14 scrollbar-hide",
+              "flex-1 transition-all duration-300 overflow-auto relative bg-dotted scrollbar-hide",
             )}
           >
-            <div className="bg-red-500">测试dds</div>
+            <BuilderHeader />
             Design Builder Component rs
           </main>
         </SidebarInset>
-        <EditorSidebar />
+        <EditorSidebar
+          className="bg-accent"
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          style={{ ["--sidebar" as any]: "#fff" }}
+        />
       </div>
     </SidebarProvider>
   );

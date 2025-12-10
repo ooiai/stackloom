@@ -34,6 +34,12 @@ export function Demo() {
 }
 ```
 
+```
+@source "../../../apps/**/*.{ts,tsx}";
+@source "../../../packages/**/*.{ts,tsx}";
+@source "../../../components/**/*.{ts,tsx}";
+```
+
 ## Exports
 
 - Styles: "@stackloom/ui/globals.css"

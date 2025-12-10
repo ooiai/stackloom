@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@stackloom/ui/components/button";
 import {
   Sidebar,
   SidebarContent,
@@ -15,12 +14,10 @@ export function WorkSidebar({
 }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props} side="left">
-      <SidebarHeader>
+      <SidebarHeader className="border-sidebar-border h-16 border-b">
         <SidebarProjects />
       </SidebarHeader>
-      <SidebarContent>
-        <Button>登录</Button>
-      </SidebarContent>
+      <SidebarContent></SidebarContent>
       <SidebarRail />
     </Sidebar>
   );

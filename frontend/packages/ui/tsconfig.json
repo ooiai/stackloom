@@ -2,6 +2,8 @@
   "extends": "@stackloom/typescript-config/react-library",
   "compilerOptions": {
     "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "paths": {
       "@stackloom/ui/*": ["./src/*"]
     }
