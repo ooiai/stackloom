@@ -1,5 +1,7 @@
 import { fontVariables } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
+import { AlertDialogProvider } from "@/providers/dialog-providers";
+import { Toaster } from "@stackloom/ui/components/sonner";
 import "@stackloom/ui/globals.css";
 import type { Metadata } from "next";
 
@@ -21,7 +23,8 @@ export default function RootLayout({
         // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         className={cn(fontVariables, "font-sans")}
       >
-        {children}
+        <AlertDialogProvider>{children}</AlertDialogProvider>
+        <Toaster richColors />
       </body>
     </html>
   );

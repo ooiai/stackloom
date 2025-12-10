@@ -13,9 +13,12 @@
   "aliases": {
     "components": "@stackloom/ui/components",
     "utils": "@stackloom/ui/lib/utils",
-    "hooks": "@stackloom/ui/hooks",
-    "lib": "@stackloom/ui/lib",
     "ui": "@stackloom/ui/components",
-    "loomui": "@stackloom/ui/loomui"
+    "lib": "@stackloom/ui/lib",
+    "hooks": "@stackloom/ui/hooks"
+  },
+  "registries": {
+    "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
+    "@reui": "https://reui.io/r/{name}.json"
   }
 }
