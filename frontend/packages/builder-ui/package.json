@@ -55,6 +55,6 @@
     "typescript": "^5.9.2"
   },
   "exports": {
-    "./builder/*": "./src/*.tsx"
+    "./*": "./src/*.tsx"
   }
 }

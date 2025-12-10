@@ -1,11 +1,11 @@
 "use client";
 
-import DesignBuilder from "@stackloom/builder-ui/builder/index";
+import DesignBuilder, { BuilderProvider } from "@stackloom/builder-ui/index";
 
 export default function DesignPage() {
   return (
-    <>
-      <DesignBuilder logo="" />
-    </>
+    <BuilderProvider logo="/svg/logo.svg">
+      <DesignBuilder />
+    </BuilderProvider>
   );
 }

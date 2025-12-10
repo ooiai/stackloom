@@ -8,13 +8,12 @@ import "@stackloom/ui/globals.css";
 import { cn } from "@stackloom/ui/lib/utils";
 import { BuilderHeader } from "./components/layout/builder-header";
 import { EditorSidebar } from "./components/sidebar/editor-sidebar";
+import { BuilderProvider, useBuilder } from "./contexts/builder-context";
 import "./index.css";
 
-type Props = {
-  logo: string;
-};
+export { BuilderProvider, useBuilder };
 
-const DesignBuilder = ({ logo }: Props) => {
+const DesignBuilder = () => {
   return (
     <SidebarProvider>
       <div className="flex w-full h-screen justify-between">

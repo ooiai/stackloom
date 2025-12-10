@@ -6,6 +6,7 @@ DOCKER := docker
 CD := cd
 
 FRONTEND_PATH := ./frontend
+BUILDER_PATH := ./frontend/apps/builder
 BACKEND_PATH := ./backend
 
 
@@ -63,7 +64,7 @@ frontend-dev:
 	@echo "===> Frontend start dev server."
 	$(CD) $(FRONTEND_PATH) && $(PNPM) dev
 
-# Frontend start dev builder server.
+# Usage: make builder-dev
 builder-dev:
-	@echo "===> Frontend start dev builder server."
-	$(CD) $(FRONTEND_PATH)/apps/builder && $(PNPM) dev
+	@echo "===> Frontend builder start dev server."
+	$(CD) $(BUILDER_PATH) && $(PNPM) dev

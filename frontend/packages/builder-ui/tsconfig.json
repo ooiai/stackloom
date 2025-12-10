@@ -8,7 +8,7 @@
     "jsx": "preserve",
     "noEmit": true,
     "paths": {
-      "@stackloom/buikder-ui/*": ["./src/*"]
+      "@stackloom/buikder-ui/*": ["./src/index.tsx"]
     }
   },
   "include": ["."],

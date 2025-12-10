@@ -2,18 +2,18 @@
 
 import React from "react";
 
-type BuilderCtx = { ctx: string };
-const BuilderContext = React.createContext<BuilderCtx | null>(null);
+export type BuilderCtxValue = { logo: string };
+const BuilderContext = React.createContext<BuilderCtxValue | null>(null);
 
 export function BuilderProvider({
-  ctx,
+  logo,
   children,
 }: {
-  ctx: string;
+  logo: string;
   children: React.ReactNode;
 }) {
   return (
-    <BuilderContext.Provider value={{ ctx }}>
+    <BuilderContext.Provider value={{ logo }}>
       {children}
     </BuilderContext.Provider>
   );

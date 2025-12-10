@@ -114,6 +114,7 @@
     "./postcss.config": "./postcss.config.mjs",
     "./lib/*": "./src/lib/*.ts",
     "./components/*": "./src/components/*.tsx",
+    "./loomui/*": "./src/loomui/*.tsx",
     "./hooks/*": "./src/hooks/*.ts"
   }
 }

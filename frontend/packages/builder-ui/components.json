@@ -14,6 +14,8 @@
     "components": "@/components",
     "hooks": "@/hooks",
     "lib": "@/lib",
-    "utils": "@/lib/utils"
+    "utils": "@/lib/utils",
+    "contexts": "@/contexts",
+    "loomui": "@stackloom/ui/loomui"
   }
 }
