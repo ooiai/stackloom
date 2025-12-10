@@ -17,8 +17,5 @@
     "lib": "@stackloom/ui/lib",
     "hooks": "@stackloom/ui/hooks"
   },
-  "registries": {
-    "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
-    "@reui": "https://reui.io/r/{name}.json"
-  }
+  "registries": {}
 }
