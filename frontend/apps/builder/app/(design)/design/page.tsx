@@ -50,7 +50,7 @@ export default function DesignPage() {
         isActive: false,
       },
       {
-        type: "palette",
+        type: "theme",
         title: "Theme",
         icon: Palette,
         isActive: false,

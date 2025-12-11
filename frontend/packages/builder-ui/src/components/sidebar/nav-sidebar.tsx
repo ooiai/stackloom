@@ -19,6 +19,7 @@ import { useBuilder } from "../../contexts/builder-context";
 import { AiPanel } from "../panels/ai-panel";
 import { ComponentPanel } from "../panels/component-panel";
 import { PagePanel } from "../panels/page-panel";
+import { PalettePanel } from "../panels/palette-panel";
 import { TemplatePanel } from "../panels/template-panel";
 import { NavUser } from "./nav-user";
 
@@ -240,6 +241,7 @@ export function NavSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {activeItem?.type === "ai" && <AiPanel />}
       {activeItem?.type === "component" && <ComponentPanel />}
       {activeItem?.type === "template" && <TemplatePanel />}
+      {activeItem?.type === "theme" && <PalettePanel />}
     </Sidebar>
   );
 }

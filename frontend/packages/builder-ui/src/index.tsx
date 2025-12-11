@@ -8,6 +8,7 @@ import {
   SidebarProvider,
 } from "@stackloom/ui/components/sidebar";
 import "@stackloom/ui/globals.css";
+import { BuilderEditor } from "./components/editor";
 import { EditorHeader } from "./components/layout/editor-header";
 import "./index.css";
 export type { BuilderCtxData } from "./types/builder.types";
@@ -26,14 +27,7 @@ const DesignBuilder = () => {
       <NavSidebar />
       <SidebarInset>
         <EditorHeader />
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          {Array.from({ length: 24 }).map((_, index) => (
-            <div
-              key={index}
-              className="bg-muted/50 aspect-video h-12 w-full rounded-lg"
-            />
-          ))}
-        </div>
+        <BuilderEditor />
       </SidebarInset>
     </SidebarProvider>
   );

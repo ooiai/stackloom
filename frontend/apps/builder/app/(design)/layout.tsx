@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        className={cn(fontVariables, "font-sans bg-accent")}
+        className={cn(fontVariables, "antialiased font-sans")}
       >
         <AlertDialogProvider>{children}</AlertDialogProvider>
         <Toaster richColors />

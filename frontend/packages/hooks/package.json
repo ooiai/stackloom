@@ -1,0 +1,35 @@
+{
+  "name": "@stackloom/hooks",
+  "version": "0.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": false,
+  "description": "Shared React hooks for Stackloom projects",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "shadcn/ui",
+    "editor",
+    "hooks",
+    "stackloom"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ooiai/stackloom/tree/main/frontend/packages/hooks"
+  },
+  "bugs": {
+    "url": "https://github.com/ooiai/stackloom/issues"
+  },
+  "homepage": "https://github.com/ooiai/stackloom#readme",
+  "author": "Wittonchanglife <wittonchanglife@gmail.com>",
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "exports": {
+    "./*": "./src/index.ts"
+  }
+}
