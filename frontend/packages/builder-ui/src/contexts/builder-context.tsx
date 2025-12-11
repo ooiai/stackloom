@@ -1,19 +1,20 @@
 "use client";
 
 import React from "react";
+import { BuilderCtxData } from "../types/builder.types";
 
-export type BuilderCtxValue = { logo: string };
+export type BuilderCtxValue = { data: BuilderCtxData };
 const BuilderContext = React.createContext<BuilderCtxValue | null>(null);
 
 export function BuilderProvider({
-  logo,
+  data,
   children,
 }: {
-  logo: string;
+  data: BuilderCtxData;
   children: React.ReactNode;
 }) {
   return (
-    <BuilderContext.Provider value={{ logo }}>
+    <BuilderContext.Provider value={{ data }}>
       {children}
     </BuilderContext.Provider>
   );
