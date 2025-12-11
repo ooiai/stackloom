@@ -4,7 +4,13 @@ import DesignBuilder, {
   BuilderCtxData,
   BuilderProvider,
 } from "@stackloom/builder-ui/index";
-import { Bot, Component, Layers, LayoutTemplate } from "lucide-react";
+import {
+  BotMessageSquare,
+  Component,
+  Layers,
+  LayoutTemplate,
+  Palette,
+} from "lucide-react";
 
 export default function DesignPage() {
   const builderData: BuilderCtxData = {
@@ -20,23 +26,33 @@ export default function DesignPage() {
     },
     navMain: [
       {
-        title: "AI",
-        icon: Bot,
-        isActive: true,
-      },
-      {
-        title: "Outline",
+        type: "page",
+        title: "Page",
         icon: Layers,
         isActive: false,
       },
       {
+        type: "ai",
+        title: "AI",
+        icon: BotMessageSquare,
+        isActive: true,
+      },
+      {
+        type: "component",
         title: "Component",
         icon: Component,
         isActive: false,
       },
       {
+        type: "template",
         title: "Template",
         icon: LayoutTemplate,
+        isActive: false,
+      },
+      {
+        type: "palette",
+        title: "Theme",
+        icon: Palette,
         isActive: false,
       },
     ],

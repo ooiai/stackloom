@@ -11,6 +11,7 @@ export type BuilderUser = {
 };
 
 export type BuilderNavMain = {
+  type: string;
   title: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: React.ComponentType<any>;
