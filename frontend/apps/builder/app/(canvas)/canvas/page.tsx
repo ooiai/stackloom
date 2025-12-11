@@ -11,6 +11,9 @@ export default function DesignPage() {
       logo: "/svg/logo.svg",
       href: "/",
       alt: "StackLoom",
+      favicon: "/svg/favicon.svg",
+      sn: "SL",
+      size: 10,
     },
     user: {
       name: "Jerry Chir",

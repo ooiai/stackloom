@@ -2,6 +2,9 @@ export type BuilderSpace = {
   logo: string;
   href: string;
   alt: string;
+  favicon: string;
+  sn: string;
+  size: number;
 };
 
 export type BuilderUser = {

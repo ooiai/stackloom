@@ -17,9 +17,7 @@ import {
 } from "@stackloom/ui/components/menubar";
 import { Component, LayoutTemplate } from "lucide-react";
 
-type Props = {};
-
-export function BuilderMenu({}: Props) {
+export function BuilderMenu() {
   return (
     <Menubar className="px-3 py-5 rounded-3xl">
       <MenubarMenu>
