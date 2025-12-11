@@ -29,6 +29,12 @@ importers:
       '@stackloom/builder-ui':
         specifier: workspace:*
         version: link:../../packages/builder-ui
+      '@stackloom/canvas-ui':
+        specifier: workspace:*
+        version: link:../../packages/canvas-ui
+      '@stackloom/presentation-ui':
+        specifier: workspace:*
+        version: link:../../packages/presentation-ui
       '@stackloom/ui':
         specifier: workspace:*
         version: link:../../packages/ui

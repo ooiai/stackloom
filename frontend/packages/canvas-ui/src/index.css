@@ -1,0 +1,14 @@
+.bg-dotted {
+  /*background-color: var(--color-slate-50);*/
+  background-color: var(--accent);
+  background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.dark .bg-dotted {
+  background-color: var(--background);
+  background-image: radial-gradient(
+    var(--color-stone-800) 1px,
+    transparent 1px
+  );
+}
