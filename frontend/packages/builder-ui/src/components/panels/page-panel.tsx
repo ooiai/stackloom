@@ -1,30 +1,47 @@
 "use client";
 
+import { Button } from "@stackloom/ui/components/button";
+import { Label } from "@stackloom/ui/components/label";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
-  SidebarInput,
 } from "@stackloom/ui/components/sidebar";
+import { Tooltips } from "@stackloom/ui/loomui/tooltip";
+import { Plus } from "lucide-react";
 
 type Props = {
   title?: string;
+  description?: string;
 };
 
-export function PagePanel({ title = "Page" }: Props) {
+export function PagePanel({ title = "Page", description }: Props) {
   return (
     <Sidebar collapsible="none" className="hidden flex-1 md:flex">
-      <SidebarHeader className="gap-3.5 border-b p-4">
+      <SidebarHeader className="gap-3.5 border-b px-4 py-3">
         <div className="flex w-full items-center justify-between">
-          <div className="text-foreground text-base font-medium">{title}</div>
-          {/*<Label className="flex items-center gap-2 text-sm">
-          <span>Unreads</span>
-          <Switch className="shadow-none" />
-        </Label>*/}
+          <div className="flex flex-col gap-1">
+            <div className="text-foreground text-sm font-medium">{title}</div>
+            <div
+              className="text-muted-foreground text-xs truncate"
+              hidden={!description}
+            >
+              {description}
+            </div>
+          </div>
+          <Label className="flex items-center gap-2 text-sm">
+            {/*<span>Unreads</span>*/}
+            {/*<Switch className="shadow-none" />*/}
+            <Tooltips delayDuration={700} content="Add Page">
+              <Button variant="outline" size="icon-sm" aria-label="Undo">
+                <Plus />
+              </Button>
+            </Tooltips>
+          </Label>
         </div>
-        <SidebarInput placeholder="Type to search..." />
+        {/*<SidebarInput placeholder="Type to search..." />*/}
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup className="px-0">

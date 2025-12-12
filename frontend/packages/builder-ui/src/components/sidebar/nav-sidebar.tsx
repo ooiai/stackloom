@@ -111,11 +111,36 @@ export function NavSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {renderSidebarContent}
         {renderSidebarFooter}
       </Sidebar>
-      {activeItem?.type === "page" && <PagePanel />}
-      {activeItem?.type === "ai" && <AiPanel />}
-      {activeItem?.type === "component" && <ComponentPanel />}
-      {activeItem?.type === "template" && <TemplatePanel />}
-      {activeItem?.type === "theme" && <PalettePanel />}
+      {activeItem?.type === "page" && (
+        <PagePanel
+          title={activeItem?.title}
+          description={activeItem.description}
+        />
+      )}
+      {activeItem?.type === "ai" && (
+        <AiPanel
+          title={activeItem?.title}
+          description={activeItem.description}
+        />
+      )}
+      {activeItem?.type === "component" && (
+        <ComponentPanel
+          title={activeItem?.title}
+          description={activeItem.description}
+        />
+      )}
+      {activeItem?.type === "template" && (
+        <TemplatePanel
+          title={activeItem?.title}
+          description={activeItem.description}
+        />
+      )}
+      {activeItem?.type === "theme" && (
+        <PalettePanel
+          title={activeItem?.title}
+          description={activeItem.description}
+        />
+      )}
     </Sidebar>
   );
 }

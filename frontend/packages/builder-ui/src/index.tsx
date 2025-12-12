@@ -10,25 +10,30 @@ import { EditorHeader } from "./components/layout/editor-header";
 import { NavSidebar } from "./components/sidebar/nav-sidebar";
 import "./index.css";
 import { BuilderProvider, useBuilder } from "./providers/builder-provider";
+import { BuilderCtxData } from "./types/builder.types";
 
 export type { BuilderCtxData } from "./types/builder.types";
 export { BuilderProvider, useBuilder };
 
-const DesignBuilder = () => {
+type Props = { data: BuilderCtxData };
+
+const DesignBuilder = ({ data }: Props) => {
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "350px",
-        } as React.CSSProperties
-      }
-    >
-      <NavSidebar />
-      <SidebarInset>
-        <EditorHeader />
-        <BuilderEditor />
-      </SidebarInset>
-    </SidebarProvider>
+    <BuilderProvider data={data}>
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "350px",
+          } as React.CSSProperties
+        }
+      >
+        <NavSidebar />
+        <SidebarInset>
+          <EditorHeader />
+          <BuilderEditor />
+        </SidebarInset>
+      </SidebarProvider>
+    </BuilderProvider>
   );
 };
 
