@@ -1,5 +1,6 @@
 "use client";
 
+import { ScrollArea } from "@stackloom/ui/components/scroll-area";
 import {
   SidebarInset,
   SidebarProvider,
@@ -11,15 +12,16 @@ import { NavSidebar } from "./components/sidebar/nav-sidebar";
 import "./index.css";
 import { BuilderProvider, useBuilder } from "./providers/builder-provider";
 import { BuilderCtxData } from "./types/builder.types";
+import { PageConfig } from "./types/page.types";
 
 export type { BuilderCtxData } from "./types/builder.types";
 export { BuilderProvider, useBuilder };
 
-type Props = { data: BuilderCtxData };
+type Props = { config: BuilderCtxData; data: PageConfig[] };
 
-const DesignBuilder = ({ data }: Props) => {
+const DesignBuilder = ({ config, data }: Props) => {
   return (
-    <BuilderProvider data={data}>
+    <BuilderProvider config={config}>
       <SidebarProvider
         style={
           {
@@ -30,7 +32,12 @@ const DesignBuilder = ({ data }: Props) => {
         <NavSidebar />
         <SidebarInset>
           <EditorHeader />
-          <BuilderEditor />
+          <ScrollArea className="h-[calc(100vh-78px)]">
+            <BuilderEditor />
+          </ScrollArea>
+          {/*<div>
+            <BuilderEditor />
+          </div>*/}
         </SidebarInset>
       </SidebarProvider>
     </BuilderProvider>

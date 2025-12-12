@@ -60,5 +60,5 @@ export default function DesignPage() {
     ],
   };
 
-  return <DesignBuilder data={builderData} />;
+  return <DesignBuilder config={builderData} data={[]} />;
 }

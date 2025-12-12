@@ -3,18 +3,18 @@
 import React from "react";
 import { BuilderCtxData } from "../types/builder.types";
 
-export type BuilderCtxValue = { data: BuilderCtxData };
+export type BuilderCtxValue = { config: BuilderCtxData };
 const BuilderContext = React.createContext<BuilderCtxValue | null>(null);
 
 export function BuilderProvider({
-  data,
+  config,
   children,
 }: {
-  data: BuilderCtxData;
+  config: BuilderCtxData;
   children: React.ReactNode;
 }) {
   return (
-    <BuilderContext.Provider value={{ data }}>
+    <BuilderContext.Provider value={{ config }}>
       {children}
     </BuilderContext.Provider>
   );

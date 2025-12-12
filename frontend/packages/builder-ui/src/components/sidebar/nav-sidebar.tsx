@@ -24,8 +24,8 @@ import { TemplatePanel } from "../panels/template-panel";
 import { NavUser } from "./nav-user";
 
 export function NavSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data } = useBuilder();
-  const [activeItem, setActiveItem] = React.useState(data.navMain[0]);
+  const { config } = useBuilder();
+  const [activeItem, setActiveItem] = React.useState(config.navMain[0]);
   // const [mails, setMails] = React.useState(data.mails);
   const { setOpen } = useSidebar();
 
@@ -36,10 +36,10 @@ export function NavSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild className="md:h-8 md:p-0">
-              <a href={data.space?.href || "/"}>
+              <a href={config.space?.href || "/"}>
                 <Logo
-                  src={data.space?.logo || ""}
-                  alt={data.space?.alt || ""}
+                  src={config.space?.logo || ""}
+                  alt={config.space?.alt || ""}
                 />
               </a>
             </SidebarMenuButton>
@@ -47,7 +47,7 @@ export function NavSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
     );
-  }, [data.space]);
+  }, [config.space]);
 
   // Sidebar Content
   const renderSidebarContent = React.useMemo(() => {
@@ -56,7 +56,7 @@ export function NavSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarGroupContent className="px-1.5 md:px-0">
             <SidebarMenu>
-              {data.navMain.map((item) => (
+              {config.navMain.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     tooltip={{
@@ -88,14 +88,16 @@ export function NavSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
     );
-  }, [activeItem, data.navMain, setOpen]);
+  }, [activeItem, config.navMain, setOpen]);
 
   // Sidebar Footer
   const renderSidebarFooter = React.useMemo(() => {
     return (
-      <SidebarFooter>{data.user && <NavUser user={data.user} />}</SidebarFooter>
+      <SidebarFooter>
+        {config.user && <NavUser user={config.user} />}
+      </SidebarFooter>
     );
-  }, [data.user]);
+  }, [config.user]);
 
   return (
     <Sidebar
