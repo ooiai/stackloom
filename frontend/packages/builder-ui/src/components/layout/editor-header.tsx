@@ -40,17 +40,29 @@ export function EditorHeader() {
         </ButtonGroup>
         <ButtonGroup>
           <Tooltips content="Large Viewport">
-            <Button variant="outline" size="icon-sm" aria-label="Undo">
+            <Button
+              variant="outline"
+              size="icon-sm"
+              aria-label="large viewport"
+            >
               <Monitor />
             </Button>
           </Tooltips>
           <Tooltips content="Medium Viewport">
-            <Button variant="outline" size="icon-sm" aria-label="Undo">
+            <Button
+              variant="outline"
+              size="icon-sm"
+              aria-label="medium viewport"
+            >
               <Tablet />
             </Button>
           </Tooltips>
           <Tooltips content="Small Viewport">
-            <Button variant="outline" size="icon-sm" aria-label="Undo">
+            <Button
+              variant="outline"
+              size="icon-sm"
+              aria-label="small viewport"
+            >
               <Smartphone />
             </Button>
           </Tooltips>
