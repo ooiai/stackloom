@@ -7,9 +7,9 @@ allowed-tools: Bash(pnpm dlx shadcn@latest *)
 
 # frontend
 
-Smartlaw Agents are AI agents designed to assist with legal tasks, such as document review, contract analysis, and legal research. They leverage natural language processing and machine learning to understand and process legal documents, providing insights and recommendations to legal professionals.
+Stackloom's frontend skill provides capabilities for frontend development, including React, Next.js, and Tailwind CSS. This skill can be used to create user interfaces, build web applications, and implement responsive designs.
 
-> **IMPORTANT:** This skill is intended for use by Smartlaw Agents and is not designed to be directly invoked by users. It provides capabilities for frontend development, which can be utilized by agents to create user interfaces and web applications as needed.
+> **IMPORTANT:** This skill is intended for use by Stackloom and is not designed to be directly invoked by users. It provides capabilities for frontend development, which can be utilized by agents to create user interfaces and web applications as needed.
 
 ## Frontend Structure
 
