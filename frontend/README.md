@@ -1,44 +1,21 @@
-# shadcn/ui monorepo template
+# Next.js template
 
-This template is for creating a monorepo with shadcn/ui.
-
-## Usage
-
-```bash
-pnpm dlx shadcn@latest init
-```
+This is a Next.js template with shadcn/ui.
 
 ## Adding components
 
-To add components to your app, run the following command at the root of your `web` app:
+To add components to your app, run the following command:
 
 ```bash
-pnpm dlx shadcn@latest add button -c apps/web
+npx shadcn@latest add button
 ```
 
-This will place the ui components in the `packages/ui/src/components` directory.
-
-## Tailwind
-
-Your `tailwind.config.ts` and `globals.css` are already set up to use the components from the `ui` package.
+This will place the ui components in the `components` directory.
 
 ## Using components
 
-To use the components in your app, import them from the `ui` package.
+To use the components in your app, import them as follows:
 
 ```tsx
-import { Button } from "@stackloom/ui/components/button";
-```
-
-## Create a Next.js App
-
-```tsx
-https://turborepo.com/docs/guides/frameworks/nextjs
-pnpm dlx create-next-app@latest apps/my-app
-```
-
-## Creating an Internal Package
-
-```tsx
-https://turborepo.com/docs/crafting-your-repository/creating-an-internal-package
+import { Button } from "@/components/ui/button";
 ```
