@@ -6,7 +6,6 @@ DOCKER := docker
 CD := cd
 
 FRONTEND_PATH := ./frontend
-BUILDER_PATH := ./frontend/apps/builder
 BACKEND_PATH := ./backend
 
 
@@ -38,33 +37,28 @@ git-run:
 git-commit:
 	$(call git_commit_if_needed)
 
-# Frontend add components.
+
+# Clean projects
+# Usage: make clean
+clean:
+	@echo "Cleaning projects..."
+	$(CD) $(FRONTEND_PATH) && rm -rf node_modules dist
+
+# Add dependencies
+# Usage: make add package=package-name
 add:
-	@echo "===> Frontend add components."
-	$(CD) $(FRONTEND_PATH) && $(PNPM) add $(c)
+	@echo "Adding package $(package)..."
+	$(PNPM) --dir $(FRONTEND_PATH) add $(package)
 
-# Frontend dlx add components.
-dlx-add:
-	@echo "===> Frontend dlx add components."
-	$(CD) $(FRONTEND_PATH) && $(PNPM) dlx shadcn@latest add $(c)
-
-# Frontend create next app.
-create-next-app:
-	@echo "===> Frontend create next app."
-	$(CD) $(FRONTEND_PATH) && $(PNPM) dlx create-next-app@latest apps/$(c)
-
-# Frontend create shadcn app.
-create-shadcn-app:
-	@echo "===> Frontend create shadcn app."
-	$(CD) $(FRONTEND_PATH)/apps && $(PNPM) dlx shadcn@latest init
+# Install dependencies
+# Usage: make install
+install:
+	@echo "Installing dependencies..."
+	$(CD) $(FRONTEND_PATH) && $(PNPM) install
 
 # Frontend start dev server.
-# Usage: make frontend-dev
-frontend-dev:
+# Usage: make web-dev
+web-dev:
 	@echo "===> Frontend start dev server."
+	$(CD) $(FRONTEND_PATH) && $(PNPM) install
 	$(CD) $(FRONTEND_PATH) && $(PNPM) dev
-
-# Usage: make builder-dev
-builder-dev:
-	@echo "===> Frontend builder start dev server."
-	$(CD) $(BUILDER_PATH) && $(PNPM) dev
