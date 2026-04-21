@@ -1,0 +1,24 @@
+[package]
+name = "infra-auth"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+# crate workspace members
+common.workspace = true
+domain-auth.workspace = true
+domain-base.workspace = true
+infra-base = { workspace = true, features = [] }
+
+
+# dependencies
+diesel = { workspace = true }
+neocrates = { workspace = true, features = [
+  "logger",
+  "crypto",
+  "auth",
+  "captcha",
+] }
+chrono = { workspace = true, features = ["serde"] }
+bon.workspace = true

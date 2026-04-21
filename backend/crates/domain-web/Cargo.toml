@@ -1,0 +1,14 @@
+[package]
+name = "domain-web"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+# crate workspace members
+
+# dependencies
+neocrates = { workspace = true, features = ["logger", "web", "crypto"] }
+chrono = { workspace = true, features = ["serde"] }
+bon.workspace = true
+serde = { workspace = true, features = ["derive"] }

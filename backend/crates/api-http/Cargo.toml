@@ -1,0 +1,33 @@
+[package]
+name = "api-http"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+# crates
+common.workspace = true
+domain-base.workspace = true
+infra-base.workspace = true
+domain-web.workspace = true
+infra-web.workspace = true
+domain-system.workspace = true
+infra-system.workspace = true
+domain-auth.workspace = true
+infra-auth.workspace = true
+
+
+# dependencies
+neocrates = { workspace = true, features = [
+  "web",
+  "logger",
+  "redis",
+  "crypto",
+  "sms",
+] }
+serde = { workspace = true, features = ["derive"] }
+validator = { workspace = true, features = ["derive"] }
+regex.workspace = true
+bon.workspace = true
+futures-util = "0.3"
+axum = { version = "0.8", features = ["ws"] }

@@ -1,0 +1,17 @@
+[package]
+name = "monolith"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "monolith"
+path = "src/main.rs"
+
+[dependencies]
+# crates
+common.workspace = true
+app.workspace = true
+
+# dependencies
+neocrates = { workspace = true, features = ["web", "logger"] }

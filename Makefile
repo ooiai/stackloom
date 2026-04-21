@@ -45,10 +45,13 @@ clean:
 	$(CD) $(FRONTEND_PATH) && rm -rf node_modules dist
 
 # Add dependencies
-# Usage: make add package=package-name
+# Usage: make add bcryptjs
 add:
-	@echo "Adding package $(package)..."
-	$(PNPM) --dir $(FRONTEND_PATH) add $(package)
+	@echo "Adding package $(filter-out $@,$(MAKECMDGOALS))..."
+	$(PNPM) --dir $(FRONTEND_PATH) add $(filter-out $@,$(MAKECMDGOALS))
+
+%:
+	@:
 
 # Install dependencies
 # Usage: make install

@@ -1,0 +1,24 @@
+[package]
+name = "common"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+neocrates = { workspace = true, features = [
+  "logger",
+  "aws",
+  "redis",
+  "diesel",
+  "web",
+  "crypto",
+] }
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+bon.workspace = true
+regex.workspace = true
+image.workspace = true
+lopdf.workspace = true
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }

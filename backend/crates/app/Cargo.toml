@@ -1,0 +1,27 @@
+[package]
+name = "app"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+# crates
+common.workspace = true
+api-http.workspace = true
+domain-edu.workspace = true
+infra-web.workspace = true
+infra-base.workspace = true
+infra-system.workspace = true
+infra-auth.workspace = true
+
+
+# dependencies
+neocrates = { workspace = true, features = [
+  "web",
+  "logger",
+  "redis",
+  "diesel",
+  "sms",
+] }
+diesel.workspace = true
+diesel_migrations.workspace = true

@@ -1,0 +1,21 @@
+[package]
+name = "infra-system"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+# crate workspace members
+common.workspace = true
+domain-system.workspace = true
+
+
+# dependencies
+neocrates = { workspace = true, features = ["logger"] }
+chrono = { workspace = true, features = ["serde"] }
+bon.workspace = true
+
+[features]
+default = ["full"]
+full = ["aws"]
+aws = []
