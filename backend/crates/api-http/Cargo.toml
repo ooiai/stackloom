@@ -29,5 +29,5 @@ serde = { workspace = true, features = ["derive"] }
 validator = { workspace = true, features = ["derive"] }
 regex.workspace = true
 bon.workspace = true
-futures-util = "0.3"
-axum = { version = "0.8", features = ["ws"] }
+futures-util.workspace = true
+axum = { workspace = true, features = ["ws"] }

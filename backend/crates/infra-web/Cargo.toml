@@ -1,0 +1,29 @@
+[package]
+name = "infra-web"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+# crate workspace members
+common.workspace = true
+domain-base.workspace = true
+domain-web.workspace = true
+domain-system.workspace = true
+
+# dependencies
+neocrates = { workspace = true, features = ["logger", "diesel", "redis"] }
+chrono = { workspace = true, features = ["serde"] }
+bon.workspace = true
+apalis.workspace = true
+apalis-redis.workspace = true
+reqwest.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+regex.workspace = true
+futures-util.workspace = true
+toml.workspace = true
+
+[features]
+default = ["full"]
+full = []

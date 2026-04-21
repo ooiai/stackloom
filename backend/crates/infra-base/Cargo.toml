@@ -7,7 +7,6 @@ edition.workspace = true
 [dependencies]
 # crate workspace members
 domain-base.workspace = true
-dieselschema.workspace = true
 
 # dependencies
 neocrates = { workspace = true, features = ["logger", "diesel", "crypto"] }

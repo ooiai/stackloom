@@ -39,6 +39,7 @@ infra-auth = { path = "crates/infra-auth" }
 infra-base = { path = "crates/infra-base" }
 infra-edu = { path = "crates/infra-web" }
 infra-system = { path = "crates/infra-system" }
+infra-web = { path = "crates/infra-web" }
 
 
 #
@@ -54,10 +55,10 @@ monolith = { path = "bin/monolith" }
 # dependencies
 #
 neocrates = "0.1.43"
+axum = "0.8"
 regex = "1"
 reqwest = { version = "0.13", default-features = false, features = [
   "json",
-  "rustls-tls",
   "stream",
 ] }
 
@@ -78,6 +79,8 @@ serde_json = "1"
 clap = "4"
 bon = "3.8"
 validator = "0.20"
+futures-util = "0.3"
+toml = "1.0"
 
 # mq queue
 apalis = "0.7"

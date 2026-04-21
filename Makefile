@@ -65,3 +65,16 @@ web-dev:
 	@echo "===> Frontend start dev server."
 	$(CD) $(FRONTEND_PATH) && $(PNPM) install
 	$(CD) $(FRONTEND_PATH) && $(PNPM) dev
+
+
+# Backend run server
+# Usage: make server
+server:
+	@echo "Starting backend run server in $(BACKEND_PATH)..."
+	cd $(BACKEND_PATH) && $(CARGO) run
+
+# Backend server check
+# Usage: make check
+check:
+	@echo "Checking backend run server in $(BACKEND_PATH)..."
+	cd $(BACKEND_PATH) && $(CARGO) check

@@ -8,7 +8,7 @@ edition.workspace = true
 # crates
 common.workspace = true
 api-http.workspace = true
-domain-edu.workspace = true
+domain-web.workspace = true
 infra-web.workspace = true
 infra-base.workspace = true
 infra-system.workspace = true
