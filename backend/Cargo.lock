@@ -1721,19 +1721,8 @@ version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0be2b1d1d6ec8d846f05e137292d0b89133caf95ef33695424c09568bdd39b1b"
 dependencies = [
- "deadpool-runtime 0.1.4",
+ "deadpool-runtime",
  "lazy_static 1.5.0",
- "num_cpus",
- "tokio",
-]
-
-[[package]]
-name = "deadpool"
-version = "0.13.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "883466cb8db62725aee5f4a6011e8a5d42912b42632df32aad57fc91127c6e04"
-dependencies = [
- "deadpool-runtime 0.3.1",
  "num_cpus",
  "tokio",
 ]
@@ -1744,7 +1733,7 @@ version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "590573e9e29c5190a5ff782136f871e6e652e35d598a349888e028693601adf1"
 dependencies = [
- "deadpool 0.12.3",
+ "deadpool",
  "deadpool-sync",
  "diesel",
 ]
@@ -1759,18 +1748,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "deadpool-runtime"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2657f61fb1dd8bf37a8d51093cc7cee4e77125b22f7753f49b289f831bec2bae"
-
-[[package]]
 name = "deadpool-sync"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "524bc3df0d57e98ecd022e21ba31166c2625e7d3e5bcc4510efaeeab4abcab04"
 dependencies = [
- "deadpool-runtime 0.1.4",
+ "deadpool-runtime",
 ]
 
 [[package]]
@@ -3623,9 +3606,9 @@ dependencies = [
 
 [[package]]
 name = "neocrates"
-version = "0.1.45"
+version = "0.1.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da082a65978afd2927ffb6df8ae26bf9ebd1346fa611f142e4a922e31149724c"
+checksum = "805894596529f9410ad2b5228435b5b001adc193c5aa1918ad5c59b50d19c507"
 dependencies = [
  "anyhow",
  "argon2",
@@ -3643,7 +3626,7 @@ dependencies = [
  "chrono",
  "crockford",
  "dashmap",
- "deadpool 0.13.0",
+ "deadpool",
  "deadpool-diesel",
  "diesel",
  "diesel_migrations",

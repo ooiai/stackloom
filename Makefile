@@ -43,6 +43,7 @@ git-commit:
 clean:
 	@echo "Cleaning projects..."
 	$(CD) $(FRONTEND_PATH) && rm -rf node_modules dist
+	$(CD) $(BACKEND_PATH) && $(CARGO) clean
 
 # Add dependencies
 # Usage: make add bcryptjs

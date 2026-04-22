@@ -1,14 +1,83 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+use common::config::env_config::EnvConfig;
+
+use neocrates::{
+    axum::{self, Router, http::HeaderValue, routing::get},
+    hyper::{
+        Method, StatusCode,
+        header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE},
+    },
+    middlewares::{models::MiddlewareConfig, token_store},
+    rediscache::RedisPool,
+    tokio::net::TcpListener,
+    tower::ServiceBuilder,
+    tower_http::{cors::CorsLayer, trace::TraceLayer},
+    tracing,
+};
+use std::sync::Arc;
+
+use crate::{redis_init::RedisInit, sms_init::SmsInit};
+
+mod diesel_init;
+mod diesel_migrations;
+mod redis_init;
+mod sms_init;
+
+/// Start the HTTP server
+///
+/// # Arguments
+///
+/// * `cfg` - An Arc pointer to the environment configuration
+///
+pub async fn start_server(cfg: Arc<EnvConfig>) {
+    tracing::info!("Monolith load redis...");
+    // initialize redis pool
+    let redis_pool: Arc<RedisPool> = RedisInit::init(cfg.redis.clone()).await;
+
+    // build app state
+    tracing::info!("Monolith build app state...");
+    // the cors layer
+    let cors = CorsLayer::new()
+        .allow_origin(
+            format!("http://{}:{}", cfg.server.host, cfg.server.port)
+                .parse::<HeaderValue>()
+                .expect("Failed to parse origin..."),
+        )
+        .allow_credentials(true)
+        .allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::PUT,
+            Method::PATCH,
+            Method::DELETE,
+        ])
+        .allow_headers([AUTHORIZATION, ACCEPT, CONTENT_TYPE]);
+    // the trace layer
+    let trace_layer = ServiceBuilder::new().layer(TraceLayer::new_for_http());
+    // SMS Config initialization
+    let sms_config = SmsInit::init(cfg.clone());
+
+    let router = Router::new()
+        .route("/ping", get(ping))
+        .fallback(handler_404)
+        .layer(trace_layer)
+        .layer(cors);
+    let listener = TcpListener::bind(format!("{}:{}", cfg.server.host, cfg.server.port))
+        .await
+        .expect("TcpListener unable to bind port");
+    tracing::info!(
+        "Monolith start server success at host:{} port:{}...",
+        cfg.server.host,
+        cfg.server.port
+    );
+    axum::serve(listener, router)
+        .await
+        .expect("Axum server error");
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub async fn ping() -> Result<String, StatusCode> {
+    Ok("The ping work well...".to_owned())
+}
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+async fn handler_404() -> (StatusCode, &'static str) {
+    (StatusCode::NOT_FOUND, "URL Not Found...")
 }
