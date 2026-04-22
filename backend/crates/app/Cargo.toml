@@ -22,6 +22,8 @@ neocrates = { workspace = true, features = [
   "redis",
   "diesel",
   "sms",
+  "sqlx",
 ] }
+sqlx = { version = "0.8", features = ["postgres", "runtime-tokio", "migrate"] }
 diesel.workspace = true
 diesel_migrations.workspace = true

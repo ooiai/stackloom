@@ -21,6 +21,8 @@ mod diesel_init;
 mod diesel_migrations;
 mod redis_init;
 mod sms_init;
+mod sqlx_init;
+mod sqlx_migrations;
 
 /// Start the HTTP server
 ///
