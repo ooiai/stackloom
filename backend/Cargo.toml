@@ -72,6 +72,7 @@ headless_chrome = "1"
 diesel = "2"
 diesel_migrations = "2"
 chrono = "0.4"
+sqlx = "0.8"
 
 # core
 serde = "1"

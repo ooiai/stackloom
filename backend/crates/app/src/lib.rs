@@ -1,3 +1,4 @@
+use api_http::{BaseHttpState, user_routes};
 use common::config::env_config::EnvConfig;
 
 use neocrates::{
@@ -6,7 +7,6 @@ use neocrates::{
         Method, StatusCode,
         header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE},
     },
-    middlewares::{models::MiddlewareConfig, token_store},
     rediscache::RedisPool,
     tokio::net::TcpListener,
     tower::ServiceBuilder,
@@ -18,6 +18,7 @@ use std::sync::Arc;
 use crate::{
     redis_init::RedisInit, sms_init::SmsInit, sqlx_init::SqlxInit, sqlx_migrations::SqlxMigrations,
 };
+use infra_base::UserUseCase;
 
 mod diesel_init;
 mod diesel_migrations;
@@ -41,7 +42,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
 
     tracing::info!("Monolith load redis...");
     // initialize redis pool
-    let redis_pool: Arc<RedisPool> = RedisInit::init(cfg.redis.clone()).await;
+    let _redis_pool: Arc<RedisPool> = RedisInit::init(cfg.redis.clone()).await;
 
     // build app state
     tracing::info!("Monolith build app state...");
@@ -64,10 +65,15 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     // the trace layer
     let trace_layer = ServiceBuilder::new().layer(TraceLayer::new_for_http());
     // SMS Config initialization
-    let sms_config = SmsInit::init(cfg.clone());
+    let _sms_config = SmsInit::init(cfg.clone());
+
+    let base_http_state = BaseHttpState {
+        user_service: Arc::new(UserUseCase::new(base_sqlx_pool.clone())),
+    };
 
     let router = Router::new()
         .route("/ping", get(ping))
+        .merge(user_routes(base_http_state))
         .fallback(handler_404)
         .layer(trace_layer)
         .layer(cors);

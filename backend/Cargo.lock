@@ -239,6 +239,7 @@ dependencies = [
  "neocrates",
  "regex 1.12.3",
  "serde",
+ "sqlx",
  "validator",
 ]
 
@@ -3157,6 +3158,9 @@ dependencies = [
  "chrono",
  "domain-base",
  "neocrates",
+ "serde",
+ "serde_json",
+ "sqlx",
 ]
 
 [[package]]
