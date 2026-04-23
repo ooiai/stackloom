@@ -2,7 +2,7 @@ pub mod repo;
 pub mod service;
 
 pub use repo::SqlxUserRepository;
-pub use service::{SqlxUserService, UserUseCase};
+pub use service::UserServiceImpl;
 
 use chrono::{DateTime, Utc};
 use domain_base::User;

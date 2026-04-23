@@ -1,4 +1,7 @@
-use super::{CreateUserReq, PageUserReq, PaginateUserResp, UpdateUserReq, UserResp};
+use super::{
+    req::{CreateUserReq, DeleteUserReq, GetUserReq, PageUserReq, UpdateUserReq},
+    resp::{PaginateUserResp, UserResp},
+};
 use crate::base::BaseHttpState;
 use domain_base::{CreateUserCmd, PageUserCmd, UpdateUserCmd};
 use neocrates::{
@@ -46,20 +49,23 @@ pub async fn create(
 /// Get a user by id.
 ///
 /// # Arguments
-/// * `state` - Shared users HTTP state.
+/// * `state` - The base HTTP state.
 /// * `_auth_user` - The authenticated user.
-/// * `id` - User id path parameter.
+/// * `req` - The request body.
 ///
 /// # Returns
 /// * `AppResult<Json<UserResp>>` - The user response.
 pub async fn get(
     State(state): State<UsersState>,
     Extension(_auth_user): Extension<AuthModel>,
-    neocrates::axum::extract::Path(id): neocrates::axum::extract::Path<i64>,
+    DetailedJson(req): DetailedJson<GetUserReq>,
 ) -> AppResult<Json<UserResp>> {
-    tracing::info!("...Get User Id: {}...", id);
+    tracing::info!("...Get User Req: {:?}...", req);
 
-    let user = state.user_service.get(id).await?;
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let user = state.user_service.get(req.id).await?;
     let resp: UserResp = user.into();
 
     Ok(Json(resp))
@@ -117,14 +123,14 @@ pub async fn page(
 pub async fn update(
     State(state): State<UsersState>,
     Extension(_auth_user): Extension<AuthModel>,
-    neocrates::axum::extract::Path(id): neocrates::axum::extract::Path<i64>,
     DetailedJson(req): DetailedJson<UpdateUserReq>,
 ) -> AppResult<Json<()>> {
-    tracing::info!("...Update User Id: {}, Req: {:?}...", id, req);
+    tracing::info!("...Update User Req: {:?}...", req);
 
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
+    let id = req.id;
     let cmd: UpdateUserCmd = req.into();
     state.user_service.update(id, cmd).await?;
 
@@ -136,7 +142,7 @@ pub async fn update(
 /// # Arguments
 /// * `state` - The base HTTP state.
 /// * `_auth_user` - The authenticated user.
-/// * `id` - User id path parameter.
+/// * `req` - The request body.
 ///
 /// # Returns
 /// * `AppResult<Json<()>>` - The result of the operation.
@@ -149,11 +155,16 @@ pub async fn update(
 pub async fn delete(
     State(state): State<UsersState>,
     Extension(_auth_user): Extension<AuthModel>,
-    neocrates::axum::extract::Path(id): neocrates::axum::extract::Path<i64>,
+    DetailedJson(req): DetailedJson<DeleteUserReq>,
 ) -> AppResult<Json<()>> {
-    tracing::info!("...Delete User Id: {}...", id);
+    tracing::info!("...Delete User Req: {:?}...", req);
 
-    state.user_service.delete(id).await?;
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    if let Some(id) = req.ids.first().copied() {
+        state.user_service.delete(id).await?;
+    }
 
     Ok(Json(()))
 }

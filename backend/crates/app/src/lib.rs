@@ -18,7 +18,7 @@ use std::sync::Arc;
 use crate::{
     redis_init::RedisInit, sms_init::SmsInit, sqlx_init::SqlxInit, sqlx_migrations::SqlxMigrations,
 };
-use infra_base::UserUseCase;
+use infra_base::UserServiceImpl;
 
 mod diesel_init;
 mod diesel_migrations;
@@ -35,10 +35,10 @@ mod sqlx_migrations;
 ///
 pub async fn start_server(cfg: Arc<EnvConfig>) {
     tracing::info!("Monolith initialize base sqlx pool...");
-    let base_sqlx_pool = SqlxInit::init(cfg.base_database.clone()).await;
+    let base_pool = SqlxInit::init(cfg.base_database.clone()).await;
 
     tracing::info!("Monolith run base sqlx migrations...");
-    SqlxMigrations::init(cfg.clone(), &base_sqlx_pool).await;
+    SqlxMigrations::init(cfg.clone(), &base_pool).await;
 
     tracing::info!("Monolith load redis...");
     // initialize redis pool
@@ -67,8 +67,9 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     // SMS Config initialization
     let _sms_config = SmsInit::init(cfg.clone());
 
+    // build base http state
     let base_http_state = BaseHttpState {
-        user_service: Arc::new(UserUseCase::new(base_sqlx_pool.clone())),
+        user_service: Arc::new(UserServiceImpl::new(base_pool.clone())),
     };
 
     let router = Router::new()

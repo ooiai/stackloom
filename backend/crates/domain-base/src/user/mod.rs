@@ -6,34 +6,7 @@ pub use service::UserService;
 
 use chrono::{DateTime, Utc};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum UserDomainError {
-    UsernameEmpty,
-    PasswordHashEmpty,
-    InvalidGender(i16),
-    InvalidStatus(i16),
-    UserNotFound(i64),
-    Conflict(String),
-    Persistence(String),
-}
-
-impl std::fmt::Display for UserDomainError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::UsernameEmpty => write!(f, "username cannot be empty"),
-            Self::PasswordHashEmpty => write!(f, "password_hash cannot be empty"),
-            Self::InvalidGender(value) => write!(f, "invalid gender value: {value}"),
-            Self::InvalidStatus(value) => write!(f, "invalid status value: {value}"),
-            Self::UserNotFound(id) => write!(f, "user not found: {id}"),
-            Self::Conflict(message) => write!(f, "conflict: {message}"),
-            Self::Persistence(message) => write!(f, "persistence error: {message}"),
-        }
-    }
-}
-
-impl std::error::Error for UserDomainError {}
-
-pub type UserDomainResult<T> = Result<T, UserDomainError>;
+use neocrates::response::error::AppResult;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct User {
@@ -55,10 +28,12 @@ pub struct User {
 }
 
 impl User {
-    pub fn new(cmd: CreateUserCmd) -> Self {
+    pub fn new(cmd: CreateUserCmd) -> AppResult<Self> {
+        cmd.validate()?;
+
         let now = Utc::now();
 
-        Self {
+        Ok(Self {
             id: cmd.id,
             username: cmd.username,
             email: cmd.email,
@@ -74,10 +49,12 @@ impl User {
             created_at: now,
             updated_at: now,
             deleted_at: None,
-        }
+        })
     }
 
-    pub fn apply_update(&mut self, cmd: UpdateUserCmd) {
+    pub fn apply_update(&mut self, cmd: UpdateUserCmd) -> AppResult<()> {
+        cmd.validate()?;
+
         if let Some(email) = cmd.email {
             self.email = Some(email);
         }
@@ -107,12 +84,31 @@ impl User {
         }
 
         self.updated_at = Utc::now();
+        Ok(())
     }
 
     pub fn mark_deleted(&mut self) {
         let now = Utc::now();
         self.deleted_at = Some(now);
         self.updated_at = now;
+    }
+
+    pub fn validate_gender(value: i16) -> AppResult<()> {
+        match value {
+            0 | 1 | 2 => Ok(()),
+            _ => Err(neocrates::response::error::AppError::ValidationError(
+                format!("invalid gender value: {value}"),
+            )),
+        }
+    }
+
+    pub fn validate_status(value: i16) -> AppResult<()> {
+        match value {
+            0 | 1 | 2 => Ok(()),
+            _ => Err(neocrates::response::error::AppError::ValidationError(
+                format!("invalid status value: {value}"),
+            )),
+        }
     }
 }
 
@@ -130,6 +126,26 @@ pub struct CreateUserCmd {
     pub bio: Option<String>,
 }
 
+impl CreateUserCmd {
+    pub fn validate(&self) -> AppResult<()> {
+        if self.username.trim().is_empty() {
+            return Err(neocrates::response::error::AppError::ValidationError(
+                "username cannot be empty".to_string(),
+            ));
+        }
+
+        if self.password_hash.trim().is_empty() {
+            return Err(neocrates::response::error::AppError::ValidationError(
+                "password_hash cannot be empty".to_string(),
+            ));
+        }
+
+        User::validate_gender(self.gender)?;
+        User::validate_status(self.status)?;
+        Ok(())
+    }
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct UpdateUserCmd {
     pub email: Option<String>,
@@ -139,6 +155,20 @@ pub struct UpdateUserCmd {
     pub gender: Option<i16>,
     pub status: Option<i16>,
     pub bio: Option<String>,
+}
+
+impl UpdateUserCmd {
+    pub fn validate(&self) -> AppResult<()> {
+        if let Some(gender) = self.gender {
+            User::validate_gender(gender)?;
+        }
+
+        if let Some(status) = self.status {
+            User::validate_status(status)?;
+        }
+
+        Ok(())
+    }
 }
 
 #[derive(Debug, Clone, Default)]
