@@ -162,9 +162,7 @@ pub async fn delete(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
-    if let Some(id) = req.ids.first().copied() {
-        state.user_service.delete(id).await?;
-    }
+    state.user_service.delete(req.ids).await?;
 
     Ok(Json(()))
 }

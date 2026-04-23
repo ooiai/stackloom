@@ -49,14 +49,14 @@ pub trait UserService: Send + Sync {
     ///
     async fn update(&self, id: i64, cmd: UpdateUserCmd) -> AppResult<User>;
 
-    /// Delete a user by their ID.
+    /// Delete users by their IDs.
     ///
     /// # Arguments
     ///
-    /// * `id` - The ID of the user to delete.
+    /// * `ids` - The IDs of the users to delete.
     ///
     /// # Returns
     /// * `AppResult<()>` - The result of the delete operation.
     ///
-    async fn delete(&self, id: i64) -> AppResult<()>;
+    async fn delete(&self, ids: Vec<i64>) -> AppResult<()>;
 }

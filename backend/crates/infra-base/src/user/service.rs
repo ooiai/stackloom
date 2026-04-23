@@ -98,17 +98,20 @@ where
         self.repository.update(&user).await
     }
 
-    async fn delete(&self, id: i64) -> AppResult<()> {
-        let existing = self
-            .repository
-            .find_by_id(id)
-            .await?
-            .ok_or_else(|| AppError::not_found_here(format!("user not found: {id}")))?;
+    async fn delete(&self, ids: Vec<i64>) -> AppResult<()> {
+        for id in &ids {
+            let existing = self
+                .repository
+                .find_by_id(*id)
+                .await?
+                .ok_or_else(|| AppError::not_found_here(format!("user not found: {id}")))?;
 
-        if existing.deleted_at.is_some() {
-            return Ok(());
+            if existing.deleted_at.is_some() {
+                continue;
+            }
         }
 
-        self.repository.soft_delete(id).await
+        // self.repository.soft_delete_batch(&ids).await
+        self.repository.hard_delete_batch(&ids).await
     }
 }

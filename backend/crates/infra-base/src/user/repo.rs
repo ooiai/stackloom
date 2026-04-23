@@ -330,14 +330,42 @@ impl UserRepository for SqlxUserRepository {
         Ok(())
     }
 
+    async fn soft_delete_batch(&self, ids: &[i64]) -> AppResult<()> {
+        if ids.is_empty() {
+            return Ok(());
+        }
+
+        let now = Utc::now();
+
+        sqlx::query(
+            r#"
+            UPDATE users
+            SET
+                deleted_at = $2,
+                updated_at = $2
+            WHERE id = ANY($1)
+              AND deleted_at IS NULL
+            "#,
+        )
+        .bind(ids)
+        .bind(now)
+        .execute(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(())
+    }
+
     async fn hard_delete(&self, id: i64) -> AppResult<()> {
+        let ids = [id];
+
         let result = sqlx::query(
             r#"
             DELETE FROM users
-            WHERE id = $1
+            WHERE id = ANY($1)
             "#,
         )
-        .bind(id)
+        .bind(&ids[..])
         .execute(self.pool.pool())
         .await
         .map_err(Self::map_sqlx_error)?;
@@ -345,6 +373,25 @@ impl UserRepository for SqlxUserRepository {
         if result.rows_affected() == 0 {
             return Err(AppError::not_found_here(format!("user not found: {}", id)));
         }
+
+        Ok(())
+    }
+
+    async fn hard_delete_batch(&self, ids: &[i64]) -> AppResult<()> {
+        if ids.is_empty() {
+            return Ok(());
+        }
+
+        sqlx::query(
+            r#"
+            DELETE FROM users
+            WHERE id = ANY($1)
+            "#,
+        )
+        .bind(ids)
+        .execute(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
 
         Ok(())
     }
