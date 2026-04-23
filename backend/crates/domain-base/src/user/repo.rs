@@ -54,16 +54,6 @@ pub trait UserRepository: Send + Sync {
     ///
     async fn update(&self, user: &User) -> AppResult<User>;
 
-    /// Soft delete a User by ID.
-    ///
-    /// # Arguments
-    /// * `id` - ID of the User to soft delete
-    ///
-    /// # Returns
-    /// * `AppResult<()>` - Result of the soft delete operation
-    ///
-    async fn soft_delete(&self, id: i64) -> AppResult<()>;
-
     /// Batch soft delete Users by IDs.
     ///
     /// # Arguments
@@ -73,16 +63,6 @@ pub trait UserRepository: Send + Sync {
     /// * `AppResult<()>` - Result of the batch soft delete operation
     ///
     async fn soft_delete_batch(&self, ids: &[i64]) -> AppResult<()>;
-
-    /// Hard delete a User by ID.
-    ///
-    /// # Arguments
-    /// * `id` - ID of the User to hard delete
-    ///
-    /// # Returns
-    /// * `AppResult<()>` - Result of the hard delete operation
-    ///
-    async fn hard_delete(&self, id: i64) -> AppResult<()>;
 
     /// Batch hard delete Users by IDs.
     ///

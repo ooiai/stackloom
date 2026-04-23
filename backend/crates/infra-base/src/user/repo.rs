@@ -304,32 +304,6 @@ impl UserRepository for SqlxUserRepository {
         Ok(row.into())
     }
 
-    async fn soft_delete(&self, id: i64) -> AppResult<()> {
-        let now = Utc::now();
-
-        let result = sqlx::query(
-            r#"
-            UPDATE users
-            SET
-                deleted_at = $2,
-                updated_at = $2
-            WHERE id = $1
-              AND deleted_at IS NULL
-            "#,
-        )
-        .bind(id)
-        .bind(now)
-        .execute(self.pool.pool())
-        .await
-        .map_err(Self::map_sqlx_error)?;
-
-        if result.rows_affected() == 0 {
-            return Err(AppError::not_found_here(format!("user not found: {}", id)));
-        }
-
-        Ok(())
-    }
-
     async fn soft_delete_batch(&self, ids: &[i64]) -> AppResult<()> {
         if ids.is_empty() {
             return Ok(());
@@ -352,27 +326,6 @@ impl UserRepository for SqlxUserRepository {
         .execute(self.pool.pool())
         .await
         .map_err(Self::map_sqlx_error)?;
-
-        Ok(())
-    }
-
-    async fn hard_delete(&self, id: i64) -> AppResult<()> {
-        let ids = [id];
-
-        let result = sqlx::query(
-            r#"
-            DELETE FROM users
-            WHERE id = ANY($1)
-            "#,
-        )
-        .bind(&ids[..])
-        .execute(self.pool.pool())
-        .await
-        .map_err(Self::map_sqlx_error)?;
-
-        if result.rows_affected() == 0 {
-            return Err(AppError::not_found_here(format!("user not found: {}", id)));
-        }
 
         Ok(())
     }
