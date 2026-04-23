@@ -1,3 +1,5 @@
+sqlx migrate add create_users --source ./backend/migrations/basemigrate
+
 ## User
 
 ⨯ Failed to start server

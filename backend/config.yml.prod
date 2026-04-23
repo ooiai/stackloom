@@ -1,0 +1,103 @@
+rust-log:
+  level: debug,error,warn,info,tower_http=debug,error,warn,info,wxkefu_rs=debug,error,warn,info,diesel=debug,SQL_LOG=1
+  sql-log: true
+
+server:
+  # The project prefix
+  prefix: sl
+  # The project debug mode
+  debug: true
+  # The project host
+  host: 0.0.0.0
+  # The project port
+  port: 6620
+
+pg-database:
+  url: postgres://postgres:postgres@localhost:5432/postgres
+  max_size: 20
+
+base-database:
+  url: postgres://postgres:postgres@localhost:5432/stackloom
+  max_size: 20
+
+redis:
+  url: redis://:smartredis@127.0.0.1:6379/0
+
+apalis:
+  url: redis://:smartredis@127.0.0.1:6379/1
+  concurrency: 10
+
+aws-cos:
+  # rustfs aliyun minio
+  cos_type: aliyun
+  # Aliyun
+  aliyun_accesskey_id: your_access_key_id
+  aliyun_accesskey_secret: your_access_key_secret
+  aliyun_role_arn: your_role_arn
+  aliyun_expiration: 3600
+  aliyun_role_session_name: your_session_name
+  aliyun_endpoint: oss-cn-hangzhou.aliyuncs.com
+  aliyun_region_id: cn-hangzhou
+  aliyun_bucket: your_bucket
+  aliyun_base_url: https://your_bucket.oss-cn-hangzhou.aliyuncs.com
+  # RustFS
+  rustfs_accesskey_id: Co5uIm6v2NFV7ha4fqWy
+  # rustfs_accesskey_id: esNzh261XTMSQrJa9lBf
+  rustfs_accesskey_secret: 9zlavMPNcIBTXxV08hwHYdKrtsZ2gUmuWQAJbSO5
+  # rustfs_accesskey_secret: 3TNhx1c5brVpvlSKOk0P4H7L92GAsiaZtwdqmoRF
+  rustfs_endpoint: http://fs.dev.topedu.school
+  rustfs_region_id: us-east-1
+  rustfs_bucket: topedu
+  rustfs_expiration: 3600
+  rustfs_base_url: http://rustfs.dev.topedu.school
+  # MinIO
+  minio_accesskey_id: your_access_key_id
+  minio_accesskey_secret: your_access_key_secret
+  minio_endpoint: http://dev.topedu.school/rustfs/upload
+  minio_region_id: us-east-1
+  minio_bucket: your_bucket
+  minio_expiration: 3600
+  minio_base_url: http://dev.topedu.school/rustfs/upload/your_bucket
+
+sms:
+  debug: true
+  provider: aliyun
+  # Aliyun
+  aliyun_access_key_id: your_access_key_id
+  aliyun_access_key_secret: your_access_key_secret
+  aliyun_sign_name: your_sign_name
+  aliyun_template_code: your_template_code
+  # Tencent
+  tencent_secret_id: your_secret_id
+  tencent_secret_key: your_secret_key
+  tencent_app_id: your_app_id
+  tencent_region: ap-beijing
+  tencent_sign_name: your_sign_name
+  tencent_template_id: your_template_id
+
+auth:
+  # 60 * 15
+  expires_at: 800
+  # 60 * 60 * 24 * 15
+  refresh_expires_at: 1296000
+
+auth-basics:
+  # topedu::basic
+  - ZEc5d1pXUjFPanBoZFhSbw==
+  # topedu::basic
+  - ZEc5d1pXUjFPanBpWVhOcFl3PT0=
+  # topedu::refresh_token
+  - ZEc5d1pXUjFPanB5WldaeVpYTm9YM1J2YTJWdQ==
+
+# Ignore urls no Basic token and Bearer token
+ignore-urls:
+  - /health
+  - /metrics
+
+# Permission Ignore Urls with Basic token no Bearer token
+pms-ignore-urls:
+  - /signin/refresh_token
+  - /signin/account
+  - /signin/org_units
+  - /sms/signin
+  - /captcha/slider

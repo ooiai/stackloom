@@ -10,7 +10,8 @@ use std::sync::Arc;
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // load config.yml
-    let config = loader::load_config::<EnvConfig>().expect("Failed to load configuration");
+    let config = loader::load_config::<EnvConfig>()
+        .unwrap_or_else(|| panic!("Failed to load configuration: config.yml not found or invalid"));
     let config = Arc::new(config);
     // initialize logger
     logger::init(config.log.clone());

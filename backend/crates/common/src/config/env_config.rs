@@ -7,30 +7,17 @@ use neocrates::{
 #[derive(Debug, Clone)]
 pub struct EnvConfig {
     pub log: LogConfig,
-
     pub server: ServerConfig,
-
     pub pg_database: DatabaseConfig,
-
     pub base_database: DatabaseConfig,
-
-    pub edu_database: DatabaseConfig,
-
     pub redis: RedisConfig,
-
     pub apalis: ApalisConfig,
-
     pub aws_cos: AwsCosConfig,
-
     pub sms: SmsConfig,
-
-    pub ignore_urls: Vec<String>,
-
-    pub pms_ignore_urls: Vec<String>,
-
-    pub auth_basics: Vec<String>,
-
     pub auth: AuthConfig,
+    pub auth_basics: Vec<String>,
+    pub ignore_urls: Vec<String>,
+    pub pms_ignore_urls: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -46,9 +33,6 @@ struct EnvConfigRaw {
     #[serde(rename = "base-database")]
     base_database: DatabaseConfig,
 
-    #[serde(rename = "edu-database")]
-    edu_database: DatabaseConfig,
-
     redis: RedisConfig,
 
     apalis: ApalisConfig,
@@ -58,16 +42,16 @@ struct EnvConfigRaw {
 
     sms: SmsConfig,
 
+    auth: AuthConfig,
+
+    #[serde(rename = "auth-basics")]
+    auth_basics: Vec<String>,
+
     #[serde(rename = "ignore-urls")]
     ignore_urls: Vec<String>,
 
     #[serde(rename = "pms-ignore-urls")]
     pms_ignore_urls: Vec<String>,
-
-    #[serde(rename = "auth-basics")]
-    auth_basics: Vec<String>,
-
-    auth: AuthConfig,
 }
 
 impl<'de> Deserialize<'de> for EnvConfig {
@@ -81,20 +65,18 @@ impl<'de> Deserialize<'de> for EnvConfig {
             server: raw.server,
             pg_database: raw.pg_database,
             base_database: raw.base_database,
-            edu_database: raw.edu_database,
             redis: raw.redis,
             apalis: raw.apalis,
             aws_cos: raw.aws_cos,
             sms: raw.sms,
+            auth: raw.auth,
+            auth_basics: raw.auth_basics,
             ignore_urls: raw.ignore_urls,
             pms_ignore_urls: raw.pms_ignore_urls,
-            auth_basics: raw.auth_basics,
-            auth: raw.auth,
         })
     }
 }
 
-// AwsConfig
 impl From<AwsCosConfig> for AwsConfig {
     fn from(cfg: AwsCosConfig) -> Self {
         AwsConfig {
@@ -149,24 +131,6 @@ pub struct RedisConfig {
 pub struct ApalisConfig {
     pub url: String,
     pub concurrency: usize,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct CampusParseConfig {
-    #[serde(default = "default_campus_parse_queue_concurrency")]
-    pub queue_concurrency: usize,
-}
-
-impl Default for CampusParseConfig {
-    fn default() -> Self {
-        Self {
-            queue_concurrency: default_campus_parse_queue_concurrency(),
-        }
-    }
-}
-
-fn default_campus_parse_queue_concurrency() -> usize {
-    1
 }
 
 #[derive(Debug, Clone, Deserialize)]

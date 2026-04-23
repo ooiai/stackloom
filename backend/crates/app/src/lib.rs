@@ -15,7 +15,9 @@ use neocrates::{
 };
 use std::sync::Arc;
 
-use crate::{redis_init::RedisInit, sms_init::SmsInit};
+use crate::{
+    redis_init::RedisInit, sms_init::SmsInit, sqlx_init::SqlxInit, sqlx_migrations::SqlxMigrations,
+};
 
 mod diesel_init;
 mod diesel_migrations;
@@ -31,6 +33,12 @@ mod sqlx_migrations;
 /// * `cfg` - An Arc pointer to the environment configuration
 ///
 pub async fn start_server(cfg: Arc<EnvConfig>) {
+    tracing::info!("Monolith initialize base sqlx pool...");
+    let base_sqlx_pool = SqlxInit::init(cfg.base_database.clone()).await;
+
+    tracing::info!("Monolith run base sqlx migrations...");
+    SqlxMigrations::init(cfg.clone(), &base_sqlx_pool).await;
+
     tracing::info!("Monolith load redis...");
     // initialize redis pool
     let redis_pool: Arc<RedisPool> = RedisInit::init(cfg.redis.clone()).await;

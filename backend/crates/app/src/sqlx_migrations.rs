@@ -16,10 +16,14 @@ impl SqlxMigrations {
     }
 
     pub async fn init(config: Arc<EnvConfig>, pool: &SqlxPool) {
-        // Initialize base database migrations
-        // let base_migrator = sqlx::migrate!("../../schemas/base/migrations");
-        // SqlxMigrations::migrate(pool, &base_migrator).await;
-        let _ = (config, pool);
-        tracing::info!("Sqlx migrations init skipped (no migrators configured)");
+        let _ = config;
+
+        // `SqlxPool::new(...)` in neocrates already ensures the target database
+        // exists before connecting, so migration init only needs to run the
+        // configured migrator against the provided pool.
+        let base_migrator = sqlx::migrate!("../../migrations/basemigrate");
+        Self::migrate(pool, &base_migrator).await;
+
+        tracing::info!("Sqlx base migrations initialized successfully");
     }
 }
