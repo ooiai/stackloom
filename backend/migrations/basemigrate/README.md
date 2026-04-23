@@ -13,6 +13,7 @@ The design goal is to keep the model practical and easy to evolve:
 - `user_tenant_roles` binds tenant members to roles
 - `role_menus` binds roles to menus
 - `role_perms` binds roles to permissions
+- `dicts` stores system-level or tenant-level dictionary items
 
 ## Design Principles
 
@@ -209,6 +210,26 @@ Typical responsibilities:
 
 - decide what actions a role can execute
 
+## 10. `dicts`
+
+Dictionary table for configurable option sets.
+
+Typical responsibilities:
+
+- store dictionary items by `dict_type`
+- support both flat and tree structures through `parent_id`
+- support both system-level and tenant-level dictionaries
+- store human-readable labels and machine-usable values
+- allow lightweight extension fields with `ext`
+
+Suggested meaning:
+
+- `tenant_id IS NULL` means a system-level dictionary item
+- `tenant_id IS NOT NULL` means a tenant-specific dictionary item
+- `dict_type` groups items such as `gender`, `status`, or `tenant_plan`
+- `dict_key` is the stable internal key
+- `dict_value` is the stored value exposed to business logic or UI
+
 ---
 
 # Relationship Diagram
@@ -226,6 +247,8 @@ Typical responsibilities:
 - `user_tenants` n -> n `roles` through `user_tenant_roles`
 - `roles` n -> n `menus` through `role_menus`
 - `roles` n -> n `perms` through `role_perms`
+- `tenants` 1 -> n `dicts`
+- `dicts` 1 -> n `dicts` through `parent_id`
 
 ## Optional system-scope behavior
 
@@ -384,6 +407,7 @@ without breaking the current tenant/RBAC design.
 - `20260423030400_create_user_tenant_roles.sql`
 - `20260423030500_create_role_menus.sql`
 - `20260423030600_create_role_perms.sql`
+- `20260423030700_create_dicts.sql`
 
 Each migration now creates one table group only, in dependency order:
 
@@ -396,6 +420,7 @@ Each migration now creates one table group only, in dependency order:
 7. `user_tenant_roles`
 8. `role_menus`
 9. `role_perms`
+10. `dicts`
 
 This structure is easier to maintain, review, and roll back than a single large schema migration.
 
@@ -414,6 +439,10 @@ This structure is easier to maintain, review, and roll back than a single large 
 - `roles`
 - `menus`
 - `perms`
+
+## Dictionary
+
+- `dicts`
 
 ## Relations
 
