@@ -2,6 +2,7 @@
 "use client"
 
 import { IS_DEV } from "@/lib/config/constants"
+import { PUBLIC_BASE_URL } from "@/lib/config/constants"
 import {
   API_ENUM,
   HTTP_REQUEST_ENUM,
@@ -133,7 +134,7 @@ export const ContentType = {
 } as const
 
 export const DEFAULT_CONFIG = {
-  baseURL: "",
+  baseURL: PUBLIC_BASE_URL,
   timeout: 180000,
   headers: {
     "Content-Type": ContentType.json,

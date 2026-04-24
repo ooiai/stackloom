@@ -2,6 +2,10 @@
 
 import { useMemo } from "react"
 
+import {
+  LayoutWidthToggle,
+  type LayoutWidthMode,
+} from "@/components/base/shared/layout-width-toggle"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
@@ -202,7 +206,13 @@ function AdminNavBar({
   )
 }
 
-export default function BaseHeader() {
+export default function BaseHeader({
+  layoutMode = "contained",
+  onLayoutModeChange,
+}: {
+  layoutMode?: LayoutWidthMode
+  onLayoutModeChange?: (mode: LayoutWidthMode) => void
+}) {
   const pathname = usePathname()
   const { data: currentMenus = [] } = useQuery({
     queryKey: ["listCurrentMenusQuery"],
@@ -213,7 +223,12 @@ export default function BaseHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/88 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div
+        className={cn(
+          "flex h-16 items-center justify-between gap-4 px-4 sm:px-6",
+          layoutMode === "full" ? "w-full" : "mx-auto max-w-7xl"
+        )}
+      >
         <div className="flex min-w-0 items-center gap-2 sm:gap-4">
           <div className="md:hidden">
             <Popover>
@@ -257,6 +272,12 @@ export default function BaseHeader() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
+          {onLayoutModeChange ? (
+            <LayoutWidthToggle
+              mode={layoutMode}
+              onModeChange={onLayoutModeChange}
+            />
+          ) : null}
           <Button variant="outline" size="icon-sm" aria-label="通知">
             <BellIcon />
           </Button>
