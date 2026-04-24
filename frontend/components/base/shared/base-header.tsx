@@ -24,9 +24,7 @@ import { userSharedApi } from "@/stores/base-api"
 import {
   BellIcon,
   ChevronDownIcon,
-  ChevronRightIcon,
   LayoutGridIcon,
-  MenuIcon,
   Settings2Icon,
   ShieldCheckIcon,
   UsersIcon,
@@ -69,10 +67,13 @@ function ListItem({
       <Link
         href={href}
         aria-label={typeof title === "string" ? title : undefined}
-        className="group block rounded-2xl border border-transparent px-3 py-3 transition hover:border-border/70 hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
+        className="group -mx-2 block rounded-md px-2 py-2 transition hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <div className="flex items-start gap-3">
-          <div className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl border border-border/70 bg-muted/60 text-muted-foreground transition duration-200 group-hover:scale-105 group-hover:text-foreground">
+          <div
+            hidden={!icon}
+            className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground ring-1 ring-border/50 transition-transform duration-200 group-hover:scale-105"
+          >
             <MenuGlyph icon={icon} className="size-4" />
           </div>
 
@@ -143,7 +144,8 @@ function AdminNavBar({
   }
 
   return (
-    <nav className="hidden items-center gap-1 md:flex">
+    <nav className="hidden md:block">
+      <div className="flex items-center">
       {items.map((item: MenuTreeNode) => {
         const active = isItemActive(item, pathname)
 
@@ -153,13 +155,12 @@ function AdminNavBar({
               key={item.id}
               href={item.path}
               className={cn(
-                "inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition",
+                "inline-flex h-9 items-center rounded-md px-3 text-sm font-medium transition",
                 active
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                  ? "bg-accent text-foreground"
+                  : "text-foreground/80 hover:bg-accent hover:text-foreground"
               )}
             >
-              <MenuGlyph icon={item.icon} className="size-4" />
               {item.name}
             </Link>
           )
@@ -173,20 +174,22 @@ function AdminNavBar({
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "rounded-xl px-3",
+                    "h-9 rounded-md px-3 text-sm font-medium",
                     active
-                      ? "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-accent text-foreground hover:bg-accent"
+                      : "text-foreground/80 hover:bg-accent hover:text-foreground"
                   )}
                 />
               }
             >
-              <MenuGlyph icon={item.icon} className="size-4" />
               {item.name}
               <ChevronDownIcon className="size-3.5" />
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-[420px] gap-0 p-1.5">
-              <ul className="grid gap-1.5 sm:grid-cols-2">
+            <PopoverContent
+              align="start"
+              className="w-[400px] gap-0 p-2 md:w-[500px] lg:w-[600px]"
+            >
+              <ul className="grid gap-2 md:grid-cols-2">
                 {item.children.map((child: MenuTreeNode) => (
                   <ListItem
                     key={child.id}
@@ -202,6 +205,7 @@ function AdminNavBar({
           </Popover>
         )
       })}
+      </div>
     </nav>
   )
 }
@@ -222,15 +226,15 @@ export default function BaseHeader({
   const trees = useMemo(() => buildMenuTree(currentMenus), [currentMenus])
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/88 backdrop-blur-xl">
+    <header className="border-b px-4 md:px-6">
       <div
         className={cn(
-          "flex h-16 items-center justify-between gap-4 px-4 sm:px-6",
+          "flex h-16 justify-between gap-4",
           layoutMode === "full" ? "w-full" : "mx-auto max-w-7xl"
         )}
       >
-        <div className="flex min-w-0 items-center gap-2 sm:gap-4">
-          <div className="md:hidden">
+        <div className="flex gap-2">
+          <div className="flex items-center md:hidden">
             <Popover>
               <PopoverTrigger
                 render={
@@ -238,37 +242,61 @@ export default function BaseHeader({
                     variant="ghost"
                     size="icon-sm"
                     aria-label="打开导航菜单"
+                    className="group size-8"
                   />
                 }
               >
-                <MenuIcon className="size-4" />
+                <svg
+                  className="pointer-events-none"
+                  fill="none"
+                  height={16}
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  width={16}
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    className="-translate-y-[7px] origin-center transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-315"
+                    d="M4 12L20 12"
+                  />
+                  <path
+                    className="origin-center transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.8)] group-aria-expanded:rotate-45"
+                    d="M4 12H20"
+                  />
+                  <path
+                    className="origin-center translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-135"
+                    d="M4 12H20"
+                  />
+                </svg>
               </PopoverTrigger>
-              <PopoverContent align="start" className="w-[min(88vw,24rem)]">
+              <PopoverContent align="start" className="w-72 p-1 md:hidden">
                 <AdminNavBar data={trees} pathname={pathname} mobile />
               </PopoverContent>
             </Popover>
           </div>
 
-          <Link
-            href="/upms/users"
-            className="flex min-w-0 items-center gap-3 text-primary hover:text-primary/90"
-          >
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-primary/15 bg-primary/10 text-primary">
-              <LayoutGridIcon className="size-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold tracking-tight text-foreground">
-                Stackloom Admin
-              </p>
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <span>Base</span>
-                <ChevronRightIcon className="size-3" />
-                <span>UPMS</span>
+          <div className="flex items-center gap-6">
+            <Link
+              href="/"
+              className="text-primary hover:text-primary/90"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary ring-1 ring-primary/15">
+                  <LayoutGridIcon className="size-4" />
+                </div>
+                <div className="hidden min-w-0 sm:block">
+                  <p className="truncate text-sm font-semibold text-foreground">
+                    Stackloom Admin
+                  </p>
+                </div>
               </div>
-            </div>
-          </Link>
+            </Link>
 
-          <AdminNavBar data={trees} pathname={pathname} />
+            <AdminNavBar data={trees} pathname={pathname} />
+          </div>
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
@@ -278,13 +306,13 @@ export default function BaseHeader({
               onModeChange={onLayoutModeChange}
             />
           ) : null}
-          <Button variant="outline" size="icon-sm" aria-label="通知">
+          <Button variant="ghost" size="icon-sm" aria-label="通知">
             <BellIcon />
           </Button>
-          <Button variant="outline" size="icon-sm" aria-label="设置">
+          <Button variant="ghost" size="icon-sm" aria-label="设置">
             <Settings2Icon />
           </Button>
-          <div className="hidden items-center gap-3 rounded-2xl border border-border/70 bg-background/90 px-2.5 py-1.5 sm:flex">
+          <div className="hidden items-center gap-3 ps-2 lg:flex">
             <Avatar size="sm">
               <AvatarFallback>AD</AvatarFallback>
             </Avatar>
