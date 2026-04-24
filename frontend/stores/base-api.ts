@@ -1,4 +1,5 @@
 import { post } from "@/lib/http/axios"
+import { BASE_CURRENT_MENU_ITEMS } from "@/lib/base-navigation"
 import type {
   CreateUserParam,
   DeleteUserParam,
@@ -8,6 +9,12 @@ import type {
   UpdateUserParam,
   UserData,
 } from "@/types/base.types"
+
+export const userSharedApi = {
+  listCurrentMenus: async () => {
+    return BASE_CURRENT_MENU_ITEMS
+  },
+}
 
 export const userApi = {
   create: async (params: CreateUserParam): Promise<void> => {
