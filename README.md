@@ -24,19 +24,19 @@ The goal is **not** to hide your code behind a black box. The generated output l
 
 - **UI‑first, AI‑assisted**
 
-  You think in terms of _screens_ and _blocks_ (hero, sidebar, dashboard, form section, CRUD table, etc.). StackLoom uses AI to scaffold the UI and related logic.
+    You think in terms of _screens_ and _blocks_ (hero, sidebar, dashboard, form section, CRUD table, etc.). StackLoom uses AI to scaffold the UI and related logic.
 
 - **Full‑stack by design**
 
-  It aims to connect frontend and backend: components, routes, handlers, and data model stubs. Not just mock UIs.
+    It aims to connect frontend and backend: components, routes, handlers, and data model stubs. Not just mock UIs.
 
 - **Incremental changes**
 
-  You can run StackLoom multiple times as requirements evolve. It should try to keep changes localized and diff‑friendly instead of rewriting everything every time.
+    You can run StackLoom multiple times as requirements evolve. It should try to keep changes localized and diff‑friendly instead of rewriting everything every time.
 
 - **Code you control**
 
-  All code is meant to be human‑readable and checked into version control. You are encouraged to review, refactor, and extend it.
+    All code is meant to be human‑readable and checked into version control. You are encouraged to review, refactor, and extend it.
 
 ---
 
@@ -69,37 +69,37 @@ From the repo root:
 
 1. Install frontend dependencies:
 
-   ```bash
-   cd frontend
-   # Use your preferred package manager
-   npm install
-   # or: pnpm install
-   # or: yarn
-   ```
+    ```bash
+    cd frontend
+    # Use your preferred package manager
+    npm install
+    # or: pnpm install
+    # or: yarn
+    ```
 
 2. Install backend dependencies:
 
-   ```bash
-   cd backend
-   # Example for Node / TypeScript backend
-   npm install
-   # or your backend stack's equivalent:
-   #   pip install -r requirements.txt
-   #   bun install
-   #   etc.
-   ```
+    ```bash
+    cd backend
+    # Example for Node / TypeScript backend
+    npm install
+    # or your backend stack's equivalent:
+    #   pip install -r requirements.txt
+    #   bun install
+    #   etc.
+    ```
 
 3. Set up environment variables:
 
-   Create an `.env` (or multiple env files per app) and add variables such as:
+    Create an `.env` (or multiple env files per app) and add variables such as:
 
-   ```bash
-   STACKLOOM_ENV=development
-   # Example if you use an external LLM:
-   STACKLOOM_OPENAI_API_KEY=your_api_key_here
-   ```
+    ```bash
+    STACKLOOM_ENV=development
+    # Example if you use an external LLM:
+    STACKLOOM_OPENAI_API_KEY=your_api_key_here
+    ```
 
-   Check your project’s docs or code for the exact set of required variables.
+    Check your project’s docs or code for the exact set of required variables.
 
 ### Run the apps
 
@@ -187,26 +187,200 @@ Once the generated structure is in a good place, treat it like any other codebas
 
 ---
 
+## Module scaffold specs and scripts
+
+This repository now includes a standardized module scaffold flow based on the completed `users` module.
+
+### Separated spec documents
+
+Use:
+
+- `spec/backend_new_template.md`
+- `spec/frontend_new_template.md`
+
+And keep:
+
+- `spec/new_template.md`
+
+as the overview entry for the two sides.
+
+#### `spec/backend_new_template.md`
+
+This document should describe the backend module scaffold conventions for modules such as:
+
+- `tenants`
+- `roles`
+- `menus`
+- `perms`
+- `dicts`
+
+It should cover the expected layout across:
+
+- `backend/crates/domain-base`
+- `backend/crates/infra-base`
+- `backend/crates/api-http`
+
+and document conventions such as:
+
+- unified `POST + body` handlers
+- `req.rs` / `resp.rs` / `handlers.rs` / `mod.rs`
+- bigint `id` serde helpers
+- `AppError / AppResult`
+- `XxxService` + `XxxServiceImpl`
+- `SqlxXxxRepository`
+
+#### `spec/frontend_new_template.md`
+
+This document should describe the frontend module scaffold conventions aligned with the actual current frontend structure of this repository, including areas such as:
+
+- `frontend/app/(base)/`
+- `frontend/components/`
+- `frontend/hooks/`
+- `frontend/lib/`
+- `frontend/types/`
+
+It should document conventions such as:
+
+- page entry placement
+- component folder naming
+- hook naming
+- API wrapper placement
+- type file naming
+- frontend and backend CRUD action alignment
+
+### Separated scaffold scripts
+
+Use:
+
+- `backend/scripts/new_backend_module.sh`
+- `frontend/scripts/new_frontend_module.sh`
+
+And keep:
+
+- `backend/scripts/new_module.sh`
+
+only as a temporary compatibility entry if needed.
+
+#### Backend scaffold script
+
+Example usage:
+
+```bash
+sh backend/scripts/new_backend_module.sh p=base table=users
+```
+
+or:
+
+```bash
+sh backend/scripts/new_backend_module.sh p=base table=tenants
+```
+
+It should scaffold backend files for:
+
+- `backend/crates/domain-base/src/<entity>/`
+- `backend/crates/infra-base/src/<entity>/`
+- `backend/crates/api-http/src/<p>/<table>/`
+
+Including standard files such as:
+
+- `mod.rs`
+- `req.rs`
+- `resp.rs`
+- `handlers.rs`
+- `repo.rs`
+- `service.rs`
+
+#### Frontend scaffold script
+
+Example usage:
+
+```bash
+sh frontend/scripts/new_frontend_module.sh p=base table=users
+```
+
+or:
+
+```bash
+sh frontend/scripts/new_frontend_module.sh p=base table=tenants
+```
+
+It should scaffold frontend files according to the current repository layout, such as:
+
+- `frontend/app/(base)/<table>/page.tsx`
+- `frontend/components/<Entity>/<Entity>Form.tsx`
+- `frontend/components/<Entity>/<Entity>Table.tsx`
+- `frontend/components/<Entity>/<Entity>Dialog.tsx`
+- `frontend/hooks/use-<entity>.ts`
+- `frontend/lib/<entity>.ts`
+- `frontend/types/<entity>.types.ts`
+
+### Supported parameters
+
+Both scripts should support:
+
+- `p`
+    - API or route group name, for example `base`
+- `table`
+    - plural module/table name, for example `users`
+- `entity`
+    - singular snake_case name, optional
+- `Entity`
+    - singular PascalCase name, optional
+
+If `entity` and `Entity` are omitted, the script should derive them from `table`.
+
+### Important note
+
+The backend and frontend scaffolds should evolve independently, because their responsibilities, file layout, and iteration speed are different.
+
+After generation, you should still manually review and update registration points such as:
+
+#### Backend registration points
+
+- `backend/crates/domain-base/src/lib.rs`
+- `backend/crates/infra-base/src/lib.rs`
+- `backend/crates/api-http/src/base/mod.rs`
+- `backend/crates/app/src/lib.rs`
+
+#### Frontend registration points
+
+- `frontend/app/(base)/`
+- `frontend/components/`
+- `frontend/hooks/`
+- `frontend/lib/`
+- `frontend/types/`
+- any frontend routing, navigation, menu, or page registry you are using
+
+### Recommended workflow
+
+1. Read `spec/backend_new_template.md`
+2. Read `spec/frontend_new_template.md`
+3. Run the backend scaffold script
+4. Run the frontend scaffold script
+5. Fill in real fields, SQL, frontend UI, and business logic
+6. Register the module in parent exports, app wiring, and frontend routes/pages
+7. Run your checks and tests
+
 ## Configuration
 
 Because StackLoom is experimental and flexible, configuration details are project‑specific. Common configuration areas include:
 
 - **Model & provider settings**
-  - Which model/provider to use (e.g., `gpt‑4.1`, local LLM, etc.)
-  - Parameters such as temperature, max tokens, and timeouts
-  - Retries and rate‑limit behavior
+    - Which model/provider to use (e.g., `gpt‑4.1`, local LLM, etc.)
+    - Parameters such as temperature, max tokens, and timeouts
+    - Retries and rate‑limit behavior
 
 - **Project structure**
-  - Where to place:
-    - UI blocks (components, pages)
-    - Backend routes / handlers
-    - Shared types, DTOs, utilities
-  - Naming conventions and folder layout
+    - Where to place:
+        - UI blocks (components, pages)
+        - Backend routes / handlers
+        - Shared types, DTOs, utilities
+    - Naming conventions and folder layout
 
 - **Scaffolding rules**
-  - File naming patterns (e.g., `*.page.tsx`, `*.route.ts`)
-  - Whether to generate tests alongside features
-  - Preferred libraries or frameworks
+    - File naming patterns (e.g., `*.page.tsx`, `*.route.ts`)
+    - Whether to generate tests alongside features
+    - Preferred libraries or frameworks
 
 Check your config files (e.g., `stackloom.config.*`, `.env`, `package.json` scripts, etc.) or additional docs under `docs/` for the concrete configuration used in this repository.
 
@@ -217,19 +391,19 @@ Check your config files (e.g., `stackloom.config.*`, `.env`, `package.json` scri
 To keep the project healthy and AI‑friendly:
 
 - **Prefer explicit structure**
-  - Clear folder boundaries (`frontend`, `backend`, `shared`, etc.)
-  - Obvious entrypoints (e.g., `main.ts`, `app.tsx`)
+    - Clear folder boundaries (`frontend`, `backend`, `shared`, etc.)
+    - Obvious entrypoints (e.g., `main.ts`, `app.tsx`)
 
 - **Keep generated code reviewable**
-  - Avoid massive one‑shot generations that produce thousands of lines without structure.
-  - If StackLoom is used via CLI/automation, try to scope each run to a specific area (e.g., “dashboard page”, “user profile form”).
+    - Avoid massive one‑shot generations that produce thousands of lines without structure.
+    - If StackLoom is used via CLI/automation, try to scope each run to a specific area (e.g., “dashboard page”, “user profile form”).
 
 - **Log decisions**
-  - Add comments or docs for non‑obvious architecture decisions.
-  - When overriding generated behavior, leave a short note explaining why.
+    - Add comments or docs for non‑obvious architecture decisions.
+    - When overriding generated behavior, leave a short note explaining why.
 
 - **Tests are welcome**
-  - Even basic smoke tests help catch regressions when regenerating or refactoring.
+    - Even basic smoke tests help catch regressions when regenerating or refactoring.
 
 ---
 
@@ -259,18 +433,18 @@ This is an example roadmap for StackLoom‑style tooling:
 Contributions are welcome while the project is still in early stages.
 
 - Use issues for:
-  - bug reports,
-  - feature requests,
-  - design questions.
+    - bug reports,
+    - feature requests,
+    - design questions.
 
 - For pull requests:
-  - Keep changes focused and scoped (one main concern per PR).
-  - Add or update tests when behavior changes.
-  - Update docs or comments where applicable.
+    - Keep changes focused and scoped (one main concern per PR).
+    - Add or update tests when behavior changes.
+    - Update docs or comments where applicable.
 
 - Code style:
-  - Prefer clarity over cleverness.
-  - Small, composable modules are easier for both humans and AI tools to work with.
+    - Prefer clarity over cleverness.
+    - Small, composable modules are easier for both humans and AI tools to work with.
 
 ---
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CryptoJS from "crypto-js"
@@ -97,8 +96,7 @@ class CryptUtil {
     const key = CryptoJS.enc.Hex.parse(keyHex)
     const iv = CryptoJS.enc.Hex.parse(ivHex)
     const decrypted = CryptoJS.AES.decrypt(
-      // @ts-expect-error
-      { ciphertext: encryptedBytes },
+      { ciphertext: encryptedBytes } as any,
       key,
       {
         iv: iv,

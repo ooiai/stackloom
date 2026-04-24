@@ -1,5 +1,9 @@
 sqlx migrate add create_users --source ./backend/migrations/basemigrate
 
+chmod +x backend/scripts/new_module.sh p=base table=tenants
+
+sh backend/scripts/new_module.sh p=base table=tenants
+
 ## User
 
 ⨯ Failed to start server
