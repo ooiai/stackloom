@@ -10,6 +10,8 @@ import type {
   UserData,
 } from "@/types/base.types"
 
+const BASE_USER_API_PREFIX = "/apiv1/base/users"
+
 export const userSharedApi = {
   listCurrentMenus: async () => {
     return BASE_CURRENT_MENU_ITEMS
@@ -18,19 +20,19 @@ export const userSharedApi = {
 
 export const userApi = {
   create: async (params: CreateUserParam): Promise<void> => {
-    return post("/base/user/create", params)
+    return post(`${BASE_USER_API_PREFIX}/create`, params)
   },
   get: async (params: GetUserParam): Promise<UserData> => {
-    return post("/base/user/get", params)
+    return post(`${BASE_USER_API_PREFIX}/get`, params)
   },
   page: async (params: PageUserParam): Promise<PaginateUser> => {
-    return post("/base/user/page", params)
+    return post(`${BASE_USER_API_PREFIX}/page`, params)
   },
   update: async (params: UpdateUserParam): Promise<void> => {
-    return post("/base/user/update", params)
+    return post(`${BASE_USER_API_PREFIX}/update`, params)
   },
   remove: async (ids: string[]): Promise<void> => {
     const params: DeleteUserParam = { ids }
-    return post("/base/user/remove", params)
+    return post(`${BASE_USER_API_PREFIX}/remove`, params)
   },
 }

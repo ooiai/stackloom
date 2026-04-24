@@ -2,11 +2,10 @@
 
 import { useMemo, useState } from "react"
 
+import { EntityEmptyState } from "@/components/base/shared/entity-empty-state"
+import { EntityNameCell } from "@/components/base/shared/entity-name-cell"
 import { UserStatusBadge } from "@/components/base/users/user-status-badge"
-import {
-  DataGrid,
-  DataGridContainer,
-} from "@/components/reui/data-grid"
+import { DataGrid, DataGridContainer } from "@/components/reui/data-grid"
 import { DataGridColumnHeader } from "@/components/reui/data-grid-column-header"
 import { DataGridPagination } from "@/components/reui/data-grid-pagination"
 import { DataGridTable } from "@/components/reui/data-grid-table"
@@ -17,7 +16,6 @@ import {
   type FilterI18nConfig,
 } from "@/components/reui/filters"
 import { ScrollArea, ScrollBar } from "@/components/reui/scroll-area"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -29,9 +27,9 @@ import {
 import type { UsersFilterValue } from "@/hooks/use-users-controller"
 import { formatDateTimeAt } from "@/lib/time"
 import {
-  USER_STATUS_OPTIONS,
   getUserAvatarFallback,
   getUserDisplayName,
+  USER_STATUS_OPTIONS,
 } from "@/lib/users"
 import type { UserData } from "@/types/base.types"
 import {
@@ -45,7 +43,6 @@ import {
   FunnelXIcon,
   ListFilterIcon,
   RefreshCwIcon,
-  SearchXIcon,
   ShieldCheckIcon,
   Trash2Icon,
   UserIcon,
@@ -68,43 +65,6 @@ interface UsersPageViewProps {
   onOpenCreate: () => void
   onOpenEdit: (user: UserData) => void
   onDelete: (user: UserData) => void
-}
-
-function EmptyState() {
-  return (
-    <div className="flex flex-col items-center gap-3 py-14 text-center">
-      <div className="flex size-14 items-center justify-center rounded-3xl border border-border/70 bg-muted/40">
-        <SearchXIcon className="size-6 text-muted-foreground" />
-      </div>
-      <div className="space-y-1">
-        <p className="font-medium text-foreground">暂无相关用户</p>
-        <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-          尝试调整筛选条件，或者先创建一位新的系统用户。
-        </p>
-      </div>
-    </div>
-  )
-}
-
-function NameCell({ user }: { user: UserData }) {
-  const display = getUserDisplayName(user)
-
-  return (
-    <div className="flex items-center gap-3">
-      <Avatar className="size-8">
-        <AvatarImage src={user.avatar_url ?? undefined} alt={display} />
-        <AvatarFallback className="font-medium">
-          {getUserAvatarFallback(user)}
-        </AvatarFallback>
-      </Avatar>
-      <div className="min-w-0 space-y-px">
-        <div className="truncate font-medium text-foreground">{display}</div>
-        <div className="max-w-44 truncate text-xs text-muted-foreground">
-          {user.email || user.username}
-        </div>
-      </div>
-    </div>
-  )
 }
 
 export function UsersPageView({
@@ -170,7 +130,15 @@ export function UsersPageView({
             column={column}
           />
         ),
-        cell: ({ row }) => <NameCell user={row.original} />,
+        cell: ({ row }) => (
+          <EntityNameCell
+            avatarAlt={getUserDisplayName(row.original)}
+            avatarFallback={getUserAvatarFallback(row.original)}
+            avatarSrc={row.original.avatar_url ?? undefined}
+            title={getUserDisplayName(row.original)}
+            description={row.original.email || row.original.username}
+          />
+        ),
         size: 240,
         enableSorting: false,
         enableHiding: false,
@@ -312,7 +280,7 @@ export function UsersPageView({
   })
 
   return (
-    <div className="w-full self-start space-y-5">
+    <div className="w-full space-y-5 self-start">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="space-y-1.5">
           <h2 className="text-xl font-bold tracking-tight">用户管理</h2>
@@ -322,12 +290,15 @@ export function UsersPageView({
         </div>
         <div className="flex items-center gap-2">
           <Button
+            hidden
             variant="outline"
             size="sm"
             onClick={onRefresh}
             disabled={isFetching}
           >
-            <RefreshCwIcon className={isFetching ? "animate-spin" : undefined} />
+            <RefreshCwIcon
+              className={isFetching ? "animate-spin" : undefined}
+            />
             刷新
           </Button>
           <Button onClick={onOpenCreate}>
@@ -344,7 +315,9 @@ export function UsersPageView({
             fields={fields}
             showSearchInput={false}
             allowMultiple
-            onChange={(nextFilters) => onFiltersChange(nextFilters as Filter<UsersFilterValue>[])}
+            onChange={(nextFilters) =>
+              onFiltersChange(nextFilters as Filter<UsersFilterValue>[])
+            }
             variant="default"
             size="sm"
             trigger={
@@ -370,7 +343,12 @@ export function UsersPageView({
         isLoading={isFetching}
         loadingMode="spinner"
         loadingMessage="加载中..."
-        emptyMessage={<EmptyState />}
+        emptyMessage={
+          <EntityEmptyState
+            title="暂无相关用户"
+            description="尝试调整筛选条件，或者先创建一位新的系统用户。"
+          />
+        }
         tableLayout={{
           columnsMovable: false,
         }}

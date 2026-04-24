@@ -1,4 +1,4 @@
-use api_http::{BaseHttpState, user_routes};
+use api_http::{BaseHttpState, base_router};
 use common::config::env_config::EnvConfig;
 
 use neocrates::{
@@ -7,6 +7,7 @@ use neocrates::{
         Method, StatusCode,
         header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE},
     },
+    middlewares::{models::MiddlewareConfig, token_store},
     rediscache::RedisPool,
     tokio::net::TcpListener,
     tower::ServiceBuilder,
@@ -42,8 +43,16 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
 
     tracing::info!("Monolith load redis...");
     // initialize redis pool
-    let _redis_pool: Arc<RedisPool> = RedisInit::init(cfg.redis.clone()).await;
+    let redis_pool: Arc<RedisPool> = RedisInit::init(cfg.redis.clone()).await;
 
+    // module middleware config
+    let middleware_config = Arc::new(MiddlewareConfig {
+        token_store: token_store::redis_store(redis_pool.clone(), &cfg.server.prefix),
+        ignore_urls: cfg.ignore_urls.clone(),
+        pms_ignore_urls: cfg.pms_ignore_urls.clone(),
+        auth_basics: cfg.auth_basics.clone(),
+        prefix: cfg.server.prefix.to_string(),
+    });
     // build app state
     tracing::info!("Monolith build app state...");
     // the cors layer
@@ -69,12 +78,16 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
 
     // build base http state
     let base_http_state = BaseHttpState {
+        redis_pool: redis_pool.clone(),
         user_service: Arc::new(UserServiceImpl::new(base_pool.clone())),
     };
 
     let router = Router::new()
         .route("/ping", get(ping))
-        .merge(user_routes(base_http_state))
+        .nest(
+            "/base",
+            base_router(base_http_state, middleware_config.clone()),
+        )
         .fallback(handler_404)
         .layer(trace_layer)
         .layer(cors);
