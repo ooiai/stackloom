@@ -25,3 +25,9 @@ import { Button } from "@/components/ui/button"
 ```sh
 pnpm add @tanstack/react-form @tanstack/react-query @tanstack/react-table @tanstack/react-virtual axios crypto-js dayjs es-toolkit ethers hashids lodash-es pako pinyin-pro rc-slider-captcha recharts sonner zod zustand @fingerprintjs/fingerprintjs @tabler/icons-react
 ```
+
+## Primary color
+
+```
+#432dd7
+```

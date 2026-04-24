@@ -31,6 +31,28 @@ export type AwsS3Token = {
   forcePathStyle: boolean
 }
 
+/**
+ * Create an S3 uploader utility.
+ *
+ * Usage:
+ * const { uploadFile, upload, exists } = createAwsS3Uploader()
+ *
+ * const token: AwsS3Token = {
+ *   region: "ap-southeast-1",
+ *   endpoint: "https://s3.amazonaws.com",
+ *   accessKeyId: "your-access-key-id",
+ *   accessKeySecret: "your-secret-access-key",
+ *   bucket: "your-bucket-name",
+ *   sessionToken: "your-session-token",
+ *   forcePathStyle: false,
+ * }
+ *
+ * const file = new File(["hello"], "demo.txt", { type: "text/plain" })
+ *
+ * const singleResult = await uploadFile(file, "uploads/demo", token)
+ * const multiResult = await upload([file], "uploads/demo", token)
+ * const fileExists = await exists(singleResult.path, token)
+ */
 export const createAwsS3Uploader = () => {
   const Client = (stsToken: AwsS3Token) => {
     return new S3Client({
@@ -156,6 +178,15 @@ export const createAwsS3Uploader = () => {
   return { upload, exists, uploadFile }
 }
 
+/**
+ * React hook wrapper for the S3 uploader utility.
+ *
+ * Usage:
+ * const { uploadFile, upload, exists } = useAwsS3()
+ *
+ * const result = await uploadFile(file, "uploads/images", token)
+ * const hasUploaded = await exists(result.path, token)
+ */
 export const useAwsS3 = () => {
   return createAwsS3Uploader()
 }

@@ -28,8 +28,6 @@ pub struct BaseHttpState {
 pub fn router(state: BaseHttpState, mw: Arc<MiddlewareConfig>) -> Router {
     let user_router = users::router(state.clone());
 
-    Router::new()
-        .with_state(state)
-        .nest("/users", user_router)
-        .layer(middleware::from_fn_with_state(mw, interceptor))
+    Router::new().with_state(state).nest("/users", user_router)
+    // .layer(middleware::from_fn_with_state(mw, interceptor))
 }
