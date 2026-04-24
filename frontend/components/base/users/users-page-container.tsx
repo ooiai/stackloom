@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react"
 
-import { UserMutateSheet } from "@/components/base/users/user-mutate-sheet"
 import { UserStatusBadge } from "@/components/base/users/user-status-badge"
 import {
   DataGrid,
@@ -27,7 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useUsersPage } from "@/hooks/use-users-page"
+import type { UsersFilterValue } from "@/hooks/use-users-controller"
 import { formatDateTimeAt } from "@/lib/time"
 import {
   USER_STATUS_OPTIONS,
@@ -53,7 +52,23 @@ import {
   UserPlusIcon,
 } from "lucide-react"
 
-type UsersFilterValue = string | number
+interface UsersPageViewProps {
+  filters: Filter<UsersFilterValue>[]
+  users: UserData[]
+  total: number
+  isFetching: boolean
+  pagination: { pageIndex: number; pageSize: number }
+  onPaginationChange: (pagination: {
+    pageIndex: number
+    pageSize: number
+  }) => void
+  onFiltersChange: (filters: Filter<UsersFilterValue>[]) => void
+  onClearFilters: () => void
+  onRefresh: () => void
+  onOpenCreate: () => void
+  onOpenEdit: (user: UserData) => void
+  onDelete: (user: UserData) => void
+}
 
 function EmptyState() {
   return (
@@ -92,26 +107,20 @@ function NameCell({ user }: { user: UserData }) {
   )
 }
 
-export function UsersPage() {
-  const {
-    filters,
-    users,
-    total,
-    isFetching,
-    isSubmitting,
-    pagination,
-    sheet,
-    setPagination,
-    openCreate,
-    openEdit,
-    closeSheet,
-    submitSheet,
-    clearFilters,
-    confirmRemoveUser,
-    handleFiltersChange,
-    refetchUsers,
-  } = useUsersPage()
-
+export function UsersPageView({
+  filters,
+  users,
+  total,
+  isFetching,
+  pagination,
+  onPaginationChange,
+  onFiltersChange,
+  onClearFilters,
+  onRefresh,
+  onOpenCreate,
+  onOpenEdit,
+  onDelete,
+}: UsersPageViewProps) {
   const fields = useMemo<FilterFieldConfig<UsersFilterValue>[]>(
     () => [
       {
@@ -253,14 +262,14 @@ export function UsersPage() {
               <EllipsisIcon />
             </DropdownMenuTrigger>
             <DropdownMenuContent side="bottom" align="end">
-              <DropdownMenuItem onClick={() => openEdit(row.original)}>
+              <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
                 <Edit3Icon />
                 编辑
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"
-                onClick={() => confirmRemoveUser(row.original)}
+                onClick={() => onDelete(row.original)}
               >
                 <Trash2Icon />
                 删除
@@ -274,7 +283,7 @@ export function UsersPage() {
         enableResizing: false,
       },
     ],
-    [confirmRemoveUser, openEdit]
+    [onDelete, onOpenEdit]
   )
 
   const [columnOrder, setColumnOrder] = useState<string[]>(
@@ -297,7 +306,7 @@ export function UsersPage() {
       const nextPagination =
         typeof updater === "function" ? updater(pagination) : updater
 
-      setPagination(nextPagination)
+      onPaginationChange(nextPagination)
     },
     getCoreRowModel: getCoreRowModel(),
   })
@@ -315,15 +324,13 @@ export function UsersPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => {
-              void refetchUsers()
-            }}
+            onClick={onRefresh}
             disabled={isFetching}
           >
             <RefreshCwIcon className={isFetching ? "animate-spin" : undefined} />
             刷新
           </Button>
-          <Button onClick={openCreate}>
+          <Button onClick={onOpenCreate}>
             <UserPlusIcon />
             添加用户
           </Button>
@@ -337,9 +344,7 @@ export function UsersPage() {
             fields={fields}
             showSearchInput={false}
             allowMultiple
-            onChange={(nextFilters) =>
-              handleFiltersChange(nextFilters as Filter<UsersFilterValue>[])
-            }
+            onChange={(nextFilters) => onFiltersChange(nextFilters as Filter<UsersFilterValue>[])}
             variant="default"
             size="sm"
             trigger={
@@ -352,7 +357,7 @@ export function UsersPage() {
           />
         </div>
         {filters.length > 0 ? (
-          <Button variant="outline" size="sm" onClick={clearFilters}>
+          <Button variant="outline" size="sm" onClick={onClearFilters}>
             <FunnelXIcon />
             清空
           </Button>
@@ -387,20 +392,6 @@ export function UsersPage() {
           ) : null}
         </div>
       </DataGrid>
-
-      <UserMutateSheet
-        key={`${sheet.mode}-${sheet.user?.id ?? "new"}-${sheet.open ? "open" : "closed"}`}
-        open={sheet.open}
-        mode={sheet.mode}
-        user={sheet.user}
-        isPending={isSubmitting}
-        onOpenChange={(open) => {
-          if (!open) {
-            closeSheet()
-          }
-        }}
-        onSubmit={submitSheet}
-      />
     </div>
   )
 }

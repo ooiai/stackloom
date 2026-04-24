@@ -30,7 +30,7 @@ interface UsersSheetState {
   user: UserData | null
 }
 
-type UsersFilterValue = string | number
+export type UsersFilterValue = string | number
 
 const DEFAULT_PAGE_SIZE = 10
 const DEFAULT_SHEET_STATE: UsersSheetState = {
@@ -112,7 +112,7 @@ function getStatusFilterValue(filters: Filter<UsersFilterValue>[]) {
   return undefined
 }
 
-export function useUsersPage() {
+export function useUsersController() {
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -278,21 +278,27 @@ export function useUsersPage() {
   )
 
   return {
-    filters,
-    users: usersQuery.data?.items ?? [],
-    total: usersQuery.data?.total ?? 0,
-    isFetching: usersQuery.isFetching,
-    isSubmitting: createMutation.isPending || updateMutation.isPending,
-    pagination,
-    sheet,
-    setPagination,
-    openCreate,
-    openEdit,
-    closeSheet,
-    submitSheet,
-    clearFilters,
-    confirmRemoveUser,
-    handleFiltersChange,
-    refetchUsers: usersQuery.refetch,
+    view: {
+      filters,
+      users: usersQuery.data?.items ?? [],
+      total: usersQuery.data?.total ?? 0,
+      isFetching: usersQuery.isFetching,
+      pagination,
+      onPaginationChange: setPagination,
+      onFiltersChange: handleFiltersChange,
+      onClearFilters: clearFilters,
+      onRefresh: () => {
+        void usersQuery.refetch()
+      },
+      onOpenCreate: openCreate,
+      onOpenEdit: openEdit,
+      onDelete: confirmRemoveUser,
+    },
+    sheet: {
+      ...sheet,
+      isSubmitting: createMutation.isPending || updateMutation.isPending,
+      onClose: closeSheet,
+      onSubmit: submitSheet,
+    },
   }
 }
