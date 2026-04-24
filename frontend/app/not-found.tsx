@@ -1,6 +1,6 @@
 "use client"
 
-import "@workspace/ui/globals.css"
+import "./globals.css"
 import Error from "@/components/topui/error"
 
 export default function NotFound() {
