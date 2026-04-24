@@ -2,6 +2,7 @@ import { fontVariables } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { AlertDialogProvider } from "@/providers/dialog-providers"
 import { QueryProviders } from "@/providers/query-providers"
+import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import "../globals.css"
 import { AxiosErrorHandler } from "@/hooks/setup-axios"
@@ -32,11 +33,13 @@ export default function AuthLayout({
         />
       </head>
       <body className={cn(fontVariables, "font-sans antialiased")}>
-        <AlertDialogProvider>
-          <QueryProviders>{children}</QueryProviders>
-        </AlertDialogProvider>
-        <AxiosErrorHandler />
-        <Toaster richColors />
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <AlertDialogProvider>
+            <QueryProviders>{children}</QueryProviders>
+          </AlertDialogProvider>
+          <AxiosErrorHandler />
+          <Toaster richColors />
+        </ThemeProvider>
       </body>
     </html>
   )
