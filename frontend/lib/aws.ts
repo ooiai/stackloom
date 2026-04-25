@@ -1,0 +1,32 @@
+import type { AwsS3Token } from "@/hooks/use-aws-s3"
+import type { AwsStsResp } from "@/types/system.types"
+
+const pick = (...values: Array<string | undefined>) =>
+  values.find((value) => typeof value === "string" && value.length > 0) ?? ""
+
+export function mapStsToAwsS3Token(sts: AwsStsResp): AwsS3Token {
+  return {
+    region: pick(sts.region),
+    endpoint: pick(sts.endpoint),
+    accessKeyId: pick(sts.access_key_id, sts.accessKeyId),
+    accessKeySecret: pick(sts.access_key_secret, sts.accessKeySecret),
+    bucket: pick(sts.bucket),
+    sessionToken: pick(sts.security_token, sts.securityToken),
+    credentialScope: sts.credential_scope ?? sts.credentialScope,
+    accountId: sts.account_id ?? sts.accountId,
+    forcePathStyle: sts.force_path_style ?? sts.forcePathStyle ?? true,
+  }
+}
+
+export function buildAwsObjectUrl(token: AwsS3Token, path: string) {
+  const normalizedEndpoint = token.endpoint.replace(/\/$/, "")
+  const normalizedBucket = token.bucket.trim()
+  const normalizedPath = path.replace(/^\//, "")
+
+  if (token.forcePathStyle) {
+    return `${normalizedEndpoint}/${normalizedBucket}/${normalizedPath}`
+  }
+
+  const endpointUrl = new URL(normalizedEndpoint)
+  return `${endpointUrl.protocol}//${normalizedBucket}.${endpointUrl.host}/${normalizedPath}`
+}

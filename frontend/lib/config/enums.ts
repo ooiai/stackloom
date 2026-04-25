@@ -28,3 +28,7 @@ export enum ROUTER_ENUM {
   HOME = "/",
   SIGNIN = "/signin",
 }
+
+export enum OSS_ENUM {
+  IMAGES = "images",
+}

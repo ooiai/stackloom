@@ -91,12 +91,11 @@ export const createAwsS3Uploader = () => {
     const uploadKey = folder + "/" + checksum + "." + ext
     // await exists(uploadKey, token);
     const arrayBuffer = await file.arrayBuffer()
-    const fileBuffer = Buffer.from(arrayBuffer)
     const result: PutObjectCommandOutput = await client.send(
       new PutObjectCommand({
         Bucket: bucketName,
         Key: uploadKey,
-        Body: fileBuffer,
+        Body: new Uint8Array(arrayBuffer),
         ContentType: file.type,
       })
     )
@@ -132,12 +131,11 @@ export const createAwsS3Uploader = () => {
         const uploadKey = folder + "/" + checksum + "." + ext
         // await exists(uploadKey, token);
         const arrayBuffer = await file.arrayBuffer()
-        const fileBuffer = Buffer.from(arrayBuffer)
         const result: PutObjectCommandOutput = await client.send(
           new PutObjectCommand({
             Bucket: bucketName,
             Key: uploadKey,
-            Body: fileBuffer,
+            Body: new Uint8Array(arrayBuffer),
             ContentType: file.type,
           })
         )

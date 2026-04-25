@@ -38,6 +38,8 @@ import {
   getUserAvatarFallback,
   validateUserForm,
 } from "@/lib/users"
+import { awsApi } from "@/stores/system-api"
+import { buildAwsObjectUrl, mapStsToAwsS3Token } from "@/lib/aws"
 import type {
   UserData,
   UserFormValues,
@@ -50,6 +52,7 @@ import {
   UserRoundIcon,
 } from "lucide-react"
 import { toast } from "sonner"
+import { OSS_ENUM } from "@/lib/config/enums"
 
 interface UserMutateSheetProps {
   open: boolean
@@ -123,48 +126,6 @@ export function UserMutateSheet({
     await onSubmit(values)
   }
 
-  const resolveAwsS3Token = (): AwsS3Token | null => {
-    const region = process.env.NEXT_PUBLIC_AWS_S3_REGION
-    const endpoint = process.env.NEXT_PUBLIC_AWS_S3_ENDPOINT
-    const accessKeyId = process.env.NEXT_PUBLIC_AWS_S3_ACCESS_KEY_ID
-    const accessKeySecret = process.env.NEXT_PUBLIC_AWS_S3_ACCESS_KEY_SECRET
-    const bucket = process.env.NEXT_PUBLIC_AWS_S3_BUCKET
-    const sessionToken = process.env.NEXT_PUBLIC_AWS_S3_SESSION_TOKEN ?? ""
-    const forcePathStyle =
-      process.env.NEXT_PUBLIC_AWS_S3_FORCE_PATH_STYLE === "true"
-
-    if (!region || !endpoint || !accessKeyId || !accessKeySecret || !bucket) {
-      return null
-    }
-
-    return {
-      region,
-      endpoint,
-      accessKeyId,
-      accessKeySecret,
-      bucket,
-      sessionToken,
-      credentialScope: process.env.NEXT_PUBLIC_AWS_S3_CREDENTIAL_SCOPE,
-      accountId: process.env.NEXT_PUBLIC_AWS_S3_ACCOUNT_ID,
-      forcePathStyle,
-    }
-  }
-
-  const buildAvatarUrl = (token: AwsS3Token, path: string) => {
-    const normalizedEndpoint = token.endpoint.replace(/\/$/, "")
-    const normalizedBucket = token.bucket.trim()
-    const normalizedPath = path.replace(/^\//, "")
-
-    if (forcePathStyleUrl(token)) {
-      return `${normalizedEndpoint}/${normalizedBucket}/${normalizedPath}`
-    }
-
-    const endpointUrl = new URL(normalizedEndpoint)
-    return `${endpointUrl.protocol}//${normalizedBucket}.${endpointUrl.host}/${normalizedPath}`
-  }
-
-  const forcePathStyleUrl = (token: AwsS3Token) => token.forcePathStyle
-
   const handleAvatarFileChange = async (
     event: ChangeEvent<HTMLInputElement>
   ) => {
@@ -180,17 +141,13 @@ export function UserMutateSheet({
       return
     }
 
-    const token = resolveAwsS3Token()
-    if (!token) {
-      toast.error("缺少 S3 上传配置，暂时无法上传头像")
-      return
-    }
-
     try {
       setIsUploadingAvatar(true)
-      const folder = `avatars/users/${mode}/${values.username.trim() || "temporary"}`
+      const sts = await awsApi.getSts({})
+      const token: AwsS3Token = mapStsToAwsS3Token(sts)
+      const folder = OSS_ENUM.IMAGES
       const result = await uploadFile(file, folder, token)
-      const avatarUrl = buildAvatarUrl(token, result.path)
+      const avatarUrl = buildAwsObjectUrl(token, result.path)
       handleFieldChange("avatar_url", avatarUrl)
       toast.success("头像上传成功")
     } catch (error) {
