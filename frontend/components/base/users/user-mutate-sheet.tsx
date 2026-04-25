@@ -1,7 +1,8 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { ChangeEvent, useMemo, useRef, useState } from "react"
 
+import { useAwsS3, type AwsS3Token } from "@/hooks/use-aws-s3"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -42,7 +43,13 @@ import type {
   UserFormValues,
   UserMutateMode,
 } from "@/types/base.types"
-import { Loader2Icon, ShieldCheckIcon, UserRoundIcon } from "lucide-react"
+import {
+  Loader2Icon,
+  ShieldCheckIcon,
+  UploadIcon,
+  UserRoundIcon,
+} from "lucide-react"
+import { toast } from "sonner"
 
 interface UserMutateSheetProps {
   open: boolean
@@ -61,10 +68,15 @@ export function UserMutateSheet({
   onOpenChange,
   onSubmit,
 }: UserMutateSheetProps) {
+  const { uploadFile } = useAwsS3()
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [values, setValues] = useState<UserFormValues>(
     getDefaultUserFormValues(user)
   )
-  const [errors, setErrors] = useState<Partial<Record<keyof UserFormValues, string>>>({})
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof UserFormValues, string>>
+  >({})
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
 
   const header = useMemo(
     () =>
@@ -90,6 +102,16 @@ export function UserMutateSheet({
     setErrors((prev) => ({ ...prev, [key]: undefined }))
   }
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
+      setValues(getDefaultUserFormValues(user))
+      setErrors({})
+      setIsUploadingAvatar(false)
+    }
+
+    onOpenChange(nextOpen)
+  }
+
   const handleSubmit = async () => {
     const nextErrors = validateUserForm(mode, values)
     setErrors(nextErrors)
@@ -101,11 +123,90 @@ export function UserMutateSheet({
     await onSubmit(values)
   }
 
+  const resolveAwsS3Token = (): AwsS3Token | null => {
+    const region = process.env.NEXT_PUBLIC_AWS_S3_REGION
+    const endpoint = process.env.NEXT_PUBLIC_AWS_S3_ENDPOINT
+    const accessKeyId = process.env.NEXT_PUBLIC_AWS_S3_ACCESS_KEY_ID
+    const accessKeySecret = process.env.NEXT_PUBLIC_AWS_S3_ACCESS_KEY_SECRET
+    const bucket = process.env.NEXT_PUBLIC_AWS_S3_BUCKET
+    const sessionToken = process.env.NEXT_PUBLIC_AWS_S3_SESSION_TOKEN ?? ""
+    const forcePathStyle =
+      process.env.NEXT_PUBLIC_AWS_S3_FORCE_PATH_STYLE === "true"
+
+    if (!region || !endpoint || !accessKeyId || !accessKeySecret || !bucket) {
+      return null
+    }
+
+    return {
+      region,
+      endpoint,
+      accessKeyId,
+      accessKeySecret,
+      bucket,
+      sessionToken,
+      credentialScope: process.env.NEXT_PUBLIC_AWS_S3_CREDENTIAL_SCOPE,
+      accountId: process.env.NEXT_PUBLIC_AWS_S3_ACCOUNT_ID,
+      forcePathStyle,
+    }
+  }
+
+  const buildAvatarUrl = (token: AwsS3Token, path: string) => {
+    const normalizedEndpoint = token.endpoint.replace(/\/$/, "")
+    const normalizedBucket = token.bucket.trim()
+    const normalizedPath = path.replace(/^\//, "")
+
+    if (forcePathStyleUrl(token)) {
+      return `${normalizedEndpoint}/${normalizedBucket}/${normalizedPath}`
+    }
+
+    const endpointUrl = new URL(normalizedEndpoint)
+    return `${endpointUrl.protocol}//${normalizedBucket}.${endpointUrl.host}/${normalizedPath}`
+  }
+
+  const forcePathStyleUrl = (token: AwsS3Token) => token.forcePathStyle
+
+  const handleAvatarFileChange = async (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0]
+    event.target.value = ""
+
+    if (!file) {
+      return
+    }
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("请选择图片文件作为头像")
+      return
+    }
+
+    const token = resolveAwsS3Token()
+    if (!token) {
+      toast.error("缺少 S3 上传配置，暂时无法上传头像")
+      return
+    }
+
+    try {
+      setIsUploadingAvatar(true)
+      const folder = `avatars/users/${mode}/${values.username.trim() || "temporary"}`
+      const result = await uploadFile(file, folder, token)
+      const avatarUrl = buildAvatarUrl(token, result.path)
+      handleFieldChange("avatar_url", avatarUrl)
+      toast.success("头像上传成功")
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "头像上传失败，请稍后重试"
+      )
+    } finally {
+      setIsUploadingAvatar(false)
+    }
+  }
+
   const avatarLabel =
     values.nickname.trim() || values.username.trim() || "用户头像预览"
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent className="w-full sm:max-w-2xl">
         <SheetHeader className="border-b border-border/70 pb-4">
           <SheetTitle>{header.title}</SheetTitle>
@@ -115,18 +216,45 @@ export function UserMutateSheet({
         <div className="flex flex-1 flex-col overflow-hidden">
           <div className="flex-1 space-y-6 overflow-y-auto px-4 pb-4">
             <section className="rounded-2xl border border-border/70 bg-muted/20 p-4">
-              <div className="flex items-center gap-4">
-                <Avatar className="size-14">
-                  <AvatarImage src={values.avatar_url} alt={avatarLabel} />
-                  <AvatarFallback>{getUserAvatarFallback(values)}</AvatarFallback>
-                </Avatar>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">
-                    {avatarLabel}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    头像、昵称和状态会直接影响列表中的识别效率。
-                  </p>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-4">
+                  <Avatar className="size-14">
+                    <AvatarImage src={values.avatar_url} alt={avatarLabel} />
+                    <AvatarFallback>
+                      {getUserAvatarFallback(values)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-foreground">
+                      {avatarLabel}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      头像、昵称和状态会直接影响列表中的识别效率。
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(event) => void handleAvatarFileChange(event)}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={isPending || isUploadingAvatar}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {isUploadingAvatar ? (
+                      <Loader2Icon className="animate-spin" />
+                    ) : (
+                      <UploadIcon />
+                    )}
+                    上传头像
+                  </Button>
                 </div>
               </div>
             </section>
@@ -146,7 +274,9 @@ export function UserMutateSheet({
                       placeholder="请输入用户名"
                     />
                     {mode === "update" ? (
-                      <FieldDescription>用户名创建后不可修改。</FieldDescription>
+                      <FieldDescription>
+                        用户名创建后不可修改。
+                      </FieldDescription>
                     ) : null}
                     <FieldError>{errors.username}</FieldError>
                   </FieldContent>
@@ -234,7 +364,11 @@ export function UserMutateSheet({
                         handleFieldChange("avatar_url", event.target.value)
                       }
                       placeholder="https://example.com/avatar.png"
+                      disabled={isUploadingAvatar}
                     />
+                    <FieldDescription>
+                      可直接粘贴图片地址，或使用上方“上传头像”将图片上传到 S3。
+                    </FieldDescription>
                     <FieldError>{errors.avatar_url}</FieldError>
                   </FieldContent>
                 </Field>
@@ -246,7 +380,10 @@ export function UserMutateSheet({
                       <Select
                         value={String(values.gender)}
                         onValueChange={(value) =>
-                          handleFieldChange("gender", Number(value) as 0 | 1 | 2)
+                          handleFieldChange(
+                            "gender",
+                            Number(value) as 0 | 1 | 2
+                          )
                         }
                       >
                         <SelectTrigger>
@@ -272,7 +409,10 @@ export function UserMutateSheet({
                       <Select
                         value={String(values.status)}
                         onValueChange={(value) =>
-                          handleFieldChange("status", Number(value) as 0 | 1 | 2)
+                          handleFieldChange(
+                            "status",
+                            Number(value) as 0 | 1 | 2
+                          )
                         }
                       >
                         <SelectTrigger>
@@ -316,7 +456,7 @@ export function UserMutateSheet({
           </div>
 
           <SheetFooter className="border-t border-border/70 pt-4 sm:flex-row sm:justify-between">
-            <div className="text-muted-foreground flex items-center gap-2 text-xs">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               {mode === "create" ? (
                 <>
                   <UserRoundIcon className="size-3.5" />
@@ -334,11 +474,14 @@ export function UserMutateSheet({
               <Button
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                disabled={isPending}
+                disabled={isPending || isUploadingAvatar}
               >
                 取消
               </Button>
-              <Button onClick={() => void handleSubmit()} disabled={isPending}>
+              <Button
+                onClick={() => void handleSubmit()}
+                disabled={isPending || isUploadingAvatar}
+              >
                 {isPending ? <Loader2Icon className="animate-spin" /> : null}
                 {header.submitLabel}
               </Button>

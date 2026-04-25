@@ -5,9 +5,8 @@ use super::{
 use crate::base::BaseHttpState;
 use domain_base::{CreateUserCmd, PageUserCmd, UpdateUserCmd};
 use neocrates::{
-    axum::{Extension, Json, extract::State},
+    axum::{Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
-    middlewares::models::AuthModel,
     response::error::{AppError, AppResult},
     tracing,
 };

@@ -2,8 +2,8 @@ use std::sync::Arc;
 
 use domain_base::UserService;
 use neocrates::{
-    axum::{Router, middleware},
-    middlewares::{interceptor::interceptor, models::MiddlewareConfig},
+    axum::Router,
+    middlewares::models::MiddlewareConfig,
     rediscache::RedisPool,
 };
 
@@ -25,7 +25,7 @@ pub struct BaseHttpState {
 /// # Returns
 /// A `Router` instance that includes the user routes.
 ///
-pub fn router(state: BaseHttpState, mw: Arc<MiddlewareConfig>) -> Router {
+pub fn router(state: BaseHttpState, _mw: Arc<MiddlewareConfig>) -> Router {
     let user_router = users::router(state.clone());
 
     Router::new().with_state(state).nest("/users", user_router)

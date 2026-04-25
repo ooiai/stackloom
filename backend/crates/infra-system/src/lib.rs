@@ -1,14 +1,38 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+use common::config::env_config::EnvConfig;
+use neocrates::rediscache::RedisPool;
+use std::sync::Arc;
+
+#[cfg(any(feature = "aws", feature = "full"))]
+use domain_system::aws::{AwsStsService, ObjectStorageService};
+
+#[cfg(any(feature = "aws", feature = "full"))]
+use crate::aws::service::AwsCosServiceImpl;
+
+#[cfg(any(feature = "aws", feature = "full"))]
+pub mod aws;
+
+#[derive(Clone)]
+pub struct SysModule {
+    #[cfg(any(feature = "aws", feature = "full"))]
+    pub aws_sts_service: Arc<dyn AwsStsService>,
+    #[cfg(any(feature = "aws", feature = "full"))]
+    pub object_storage_service: Arc<dyn ObjectStorageService>,
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+impl SysModule {
+    pub fn new(cfg: EnvConfig, redis_pool: RedisPool) -> Self {
+        #[cfg(any(feature = "aws", feature = "full"))]
+        let aws_service = Arc::new(AwsCosServiceImpl::new(cfg, redis_pool.clone()));
+        #[cfg(any(feature = "aws", feature = "full"))]
+        let aws_sts_service: Arc<dyn AwsStsService> = aws_service.clone();
+        #[cfg(any(feature = "aws", feature = "full"))]
+        let object_storage_service: Arc<dyn ObjectStorageService> = aws_service;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+        Self {
+            #[cfg(any(feature = "aws", feature = "full"))]
+            aws_sts_service,
+            #[cfg(any(feature = "aws", feature = "full"))]
+            object_storage_service,
+        }
     }
 }

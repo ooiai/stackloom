@@ -1,4 +1,4 @@
-use api_http::{BaseHttpState, base_router};
+use api_http::{BaseHttpState, SysHttpState, base_router, system_router, user_routes};
 use common::config::env_config::EnvConfig;
 
 use neocrates::{
@@ -20,6 +20,7 @@ use crate::{
     redis_init::RedisInit, sms_init::SmsInit, sqlx_init::SqlxInit, sqlx_migrations::SqlxMigrations,
 };
 use infra_base::UserServiceImpl;
+use infra_system::SysModule;
 
 mod diesel_init;
 mod diesel_migrations;
@@ -74,7 +75,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     // the trace layer
     let trace_layer = ServiceBuilder::new().layer(TraceLayer::new_for_http());
     // SMS Config initialization
-    let _sms_config = SmsInit::init(cfg.clone());
+    let sms_config = SmsInit::init(cfg.clone());
 
     // build base http state
     let base_http_state = BaseHttpState {
@@ -82,8 +83,22 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         user_service: Arc::new(UserServiceImpl::new(base_pool.clone())),
     };
 
+    let sys = SysModule::new(cfg.as_ref().clone(), redis_pool.as_ref().clone());
+    let sys_http_state = SysHttpState {
+        cfg: cfg.clone(),
+        redis_pool: redis_pool.clone(),
+        aws_sts_service: sys.aws_sts_service.clone(),
+        object_storage_service: sys.object_storage_service.clone(),
+        sms_config,
+    };
+
     let router = Router::new()
         .route("/ping", get(ping))
+        .nest("/apiv1/users", user_routes(base_http_state.clone()))
+        .nest(
+            "/apiv1/sys",
+            system_router(sys_http_state, middleware_config.clone()),
+        )
         .nest(
             "/base",
             base_router(base_http_state, middleware_config.clone()),
