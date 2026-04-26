@@ -2,13 +2,17 @@
 
 import {
   type ChangeEvent,
+  type KeyboardEvent,
   type ReactNode,
   useMemo,
   useRef,
   useState,
 } from "react"
+import { useForm } from "@tanstack/react-form"
+import { z } from "zod"
 import { CameraIcon, EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react"
 import { toast } from "sonner"
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -28,7 +32,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { useAwsS3, type AwsS3Token } from "@/hooks/use-aws-s3"
+import { useAwsS3 } from "@/hooks/use-aws-s3"
 import {
   Select,
   SelectContent,
@@ -37,7 +41,7 @@ import {
   SelectValue,
 } from "@/components/reui/select"
 import { Textarea } from "@/components/reui/textarea"
-import { buildAwsObjectUrl, mapStsToAwsS3Token } from "@/lib/aws"
+import { uploadAwsObject } from "@/lib/aws"
 import { OSS_ENUM } from "@/lib/config/enums"
 import {
   USER_GENDER_OPTIONS,
@@ -45,7 +49,6 @@ import {
   getDefaultUserFormValues,
   getUserAvatarFallback,
   getUserDisplayName,
-  validateUserForm,
 } from "@/lib/users"
 import { awsApi } from "@/stores/system-api"
 import type {
@@ -70,85 +73,141 @@ interface UserMutateSheetHeader {
   submitLabel: string
 }
 
-interface UserMutateSheetShellProps {
-  open: boolean
-  header: UserMutateSheetHeader
-  onOpenChange: (open: boolean) => void
-  children: ReactNode
+interface SectionHeaderProps {
+  title: string
+  description: string
+  className?: string
 }
 
-interface AvatarUploadSectionProps {
+interface AvatarSectionProps {
   avatarLabel: string
-  avatarUrl: string
   values: UserFormValues
-  status: UserFormValues["status"]
-  isPending: boolean
   isUploadingAvatar: boolean
   fileInputRef: React.RefObject<HTMLInputElement | null>
   onAvatarFileChange: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
 }
 
-interface AccountFieldsSectionProps {
-  mode: UserMutateMode
-  values: UserFormValues
-  errors: Partial<Record<keyof UserFormValues, string>>
-  showPassword: boolean
-  onTogglePassword: () => void
-  onFieldChange: <T extends keyof UserFormValues>(
-    key: T,
-    value: UserFormValues[T]
-  ) => void
+interface AccountSectionProps {
+  children: ReactNode
 }
 
-interface ProfileFieldsSectionProps {
-  values: UserFormValues
-  errors: Partial<Record<keyof UserFormValues, string>>
-  isUploadingAvatar: boolean
-  onFieldChange: <T extends keyof UserFormValues>(
-    key: T,
-    value: UserFormValues[T]
-  ) => void
-}
-
-interface BioSectionProps {
-  values: UserFormValues
-  errors: Partial<Record<keyof UserFormValues, string>>
-  onFieldChange: <T extends keyof UserFormValues>(
-    key: T,
-    value: UserFormValues[T]
-  ) => void
-}
-
-interface SheetFooterActionsProps {
-  mode: UserMutateMode
-  isPending: boolean
-  isUploadingAvatar: boolean
-  submitLabel: string
-  onCancel: () => void
-  onSubmit: () => void
+interface ProfileSectionProps {
+  children: ReactNode
 }
 
 const fieldLabelClassName =
   "text-[13px] font-semibold leading-5 text-foreground/80"
 const fieldContentClassName = "gap-2"
 
-function SectionHeader({
-  title,
-  description,
-  className,
-}: {
-  title: string
-  description: string
-  className?: string
+const optionalEmailSchema = z
+  .string()
+  .trim()
+  .max(255, "邮箱长度不能超过 255 个字符")
+  .refine((value) => value === "" || z.email().safeParse(value).success, {
+    message: "请输入有效的邮箱地址",
+  })
+
+const optionalUrlSchema = z
+  .string()
+  .trim()
+  .refine(
+    (value) =>
+      value === "" ||
+      z
+        .url({
+          protocol: /^https?$/,
+          hostname: z.regexes.domain,
+        })
+        .safeParse(value).success,
+    {
+      message: "请输入有效的头像地址",
+    }
+  )
+
+const commonUserFormSchema = z.object({
+  username: z
+    .string()
+    .trim()
+    .min(1, "请输入用户名")
+    .max(50, "用户名长度不能超过 50 个字符"),
+  email: optionalEmailSchema,
+  phone: z.string().trim().max(20, "手机号长度不能超过 20 个字符"),
+  nickname: z.string().trim().max(100, "昵称长度不能超过 100 个字符"),
+  avatar_url: optionalUrlSchema,
+  gender: z.union([z.literal(0), z.literal(1), z.literal(2)]),
+  status: z.union([z.literal(0), z.literal(1), z.literal(2)]),
+  bio: z.string().trim().max(2000, "简介长度不能超过 2000 个字符"),
+})
+
+const createUserFormSchema = commonUserFormSchema.extend({
+  password: z
+    .string()
+    .min(8, "密码至少需要 8 位")
+    .max(72, "密码长度不能超过 72 位"),
+})
+
+const updateUserFormSchema = commonUserFormSchema.extend({
+  password: z.string(),
+})
+
+const SHEET_HEADER_MAP: Record<UserMutateMode, UserMutateSheetHeader> = {
+  create: {
+    title: "新增用户",
+    description: "录入基础信息并创建用户。",
+    submitLabel: "创建用户",
+  },
+  update: {
+    title: "编辑用户",
+    description: "维护当前用户资料。",
+    submitLabel: "保存变更",
+  },
+}
+
+function getUserMutateSchema(mode: UserMutateMode) {
+  return mode === "create" ? createUserFormSchema : updateUserFormSchema
+}
+
+function getFieldError(field: {
+  state: {
+    meta: {
+      errors?: unknown[]
+      isTouched?: boolean
+      isBlurred?: boolean
+      isDirty?: boolean
+      isSubmitted?: boolean
+    }
+  }
 }) {
+  const { meta } = field.state
+  const shouldShowError =
+    meta.isTouched || meta.isBlurred || meta.isDirty || meta.isSubmitted
+
+  if (!shouldShowError) {
+    return undefined
+  }
+
+  const firstError = meta.errors?.[0]
+
+  if (typeof firstError === "string") {
+    return firstError
+  }
+
+  if (Array.isArray(firstError)) {
+    const nestedError = firstError.find((item) => typeof item === "string")
+    return typeof nestedError === "string" ? nestedError : undefined
+  }
+
+  return undefined
+}
+
+function SectionHeader({ title, description, className }: SectionHeaderProps) {
   return (
-    <div className={cn("flex items-start gap-3", className)}>
-      <div className="mt-1.5 h-5 w-1 shrink-0 rounded-full bg-primary/80" />
-      <div className="min-w-0 space-y-1">
+    <div className={cn("space-y-1.5", className)}>
+      <div className="space-y-1">
         <h3 className="text-sm leading-none font-semibold tracking-tight text-foreground">
           {title}
         </h3>
-        <p className="text-[13px] leading-5 text-muted-foreground">
+        <p className="text-[12px] leading-5 text-muted-foreground">
           {description}
         </p>
       </div>
@@ -156,72 +215,60 @@ function SectionHeader({
   )
 }
 
-function getUserMutateSheetHeader(mode: UserMutateMode): UserMutateSheetHeader {
-  if (mode === "create") {
-    return {
-      title: "新增用户",
-      description: "录入基础信息并创建用户。",
-      submitLabel: "创建用户",
-    }
-  }
-
-  return {
-    title: "编辑用户",
-    description: "维护当前用户资料。",
-    submitLabel: "保存变更",
-  }
-}
-
-async function uploadUserAvatar({
-  file,
-  uploadFile,
-}: {
-  file: File
-  uploadFile: ReturnType<typeof useAwsS3>["uploadFile"]
-}) {
-  const sts = await awsApi.getSts({})
-  const token: AwsS3Token = mapStsToAwsS3Token(sts)
-  const result = await uploadFile(file, OSS_ENUM.IMAGES, token)
-
-  return buildAwsObjectUrl(token, result.path)
-}
-
-function UserMutateSheetShell({
-  open,
-  header,
-  onOpenChange,
+function TextField({
+  label,
+  htmlFor,
+  error,
   children,
-}: UserMutateSheetShellProps) {
+}: {
+  label: string
+  htmlFor?: string
+  error?: string
+  children: ReactNode
+}) {
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-184">
-        <SheetHeader className="border-b border-border/60 pb-5">
-          <SheetTitle className="text-lg font-bold tracking-tight text-foreground">
-            {header.title}
-          </SheetTitle>
-          <SheetDescription className="max-w-xl text-sm leading-6 text-muted-foreground/70">
-            {header.description}
-          </SheetDescription>
-        </SheetHeader>
+    <Field>
+      <FieldLabel className={fieldLabelClassName} htmlFor={htmlFor}>
+        {label}
+      </FieldLabel>
+      <FieldContent className={fieldContentClassName}>
         {children}
-      </SheetContent>
-    </Sheet>
+        <FieldError>{error}</FieldError>
+      </FieldContent>
+    </Field>
   )
 }
 
-function AvatarUploadSection({
+function SelectField({
+  label,
+  error,
+  children,
+}: {
+  label: string
+  error?: string
+  children: ReactNode
+}) {
+  return (
+    <Field>
+      <FieldLabel className={fieldLabelClassName}>{label}</FieldLabel>
+      <FieldContent className={fieldContentClassName}>
+        {children}
+        <FieldError>{error}</FieldError>
+      </FieldContent>
+    </Field>
+  )
+}
+
+function AvatarSection({
   avatarLabel,
-  avatarUrl,
   values,
-  status,
-  isPending,
   isUploadingAvatar,
   fileInputRef,
   onAvatarFileChange,
-}: AvatarUploadSectionProps) {
+}: AvatarSectionProps) {
   const triggerFileInput = () => fileInputRef.current?.click()
 
-  const handleAvatarKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleAvatarKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault()
       triggerFileInput()
@@ -230,7 +277,7 @@ function AvatarUploadSection({
 
   return (
     <section className="overflow-hidden rounded-2xl border border-border/60 bg-muted/30 p-5 transition-colors hover:border-border/80">
-      <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col items-start gap-5">
         <div className="flex items-center gap-4">
           <div
             className="group relative cursor-pointer rounded-full ring-offset-2 ring-offset-background transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -241,7 +288,7 @@ function AvatarUploadSection({
             onKeyDown={handleAvatarKeyDown}
           >
             <Avatar className="size-14 ring-2 ring-border/70 ring-offset-2 ring-offset-background transition-all duration-300 group-hover:ring-primary/60 sm:size-16">
-              <AvatarImage src={avatarUrl} alt={avatarLabel} />
+              <AvatarImage src={values.avatar_url} alt={avatarLabel} />
               <AvatarFallback className="bg-primary/5 text-base font-semibold text-primary/80">
                 {getUserAvatarFallback(values)}
               </AvatarFallback>
@@ -251,290 +298,50 @@ function AvatarUploadSection({
               <CameraIcon className="size-5 translate-y-1 text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" />
             </div>
 
-            {isUploadingAvatar && (
+            {isUploadingAvatar ? (
               <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 backdrop-blur-[1px]">
                 <Loader2Icon className="size-6 animate-spin text-white" />
               </div>
-            )}
+            ) : null}
           </div>
 
           <div className="min-w-0 space-y-1.5">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <h2 className="text-base leading-tight font-semibold text-foreground">
-                {avatarLabel}
-              </h2>
-            </div>
-            <p className="max-w-xs text-[13px] leading-5 text-muted-foreground">
-              支持上传图片或填写链接
+            <h2 className="text-base leading-tight font-semibold text-foreground">
+              {avatarLabel}
+            </h2>
+            <p className="max-w-xs text-[12px] leading-5 text-muted-foreground">
+              支持上传图片或填写链接。
             </p>
           </div>
         </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(event) => void onAvatarFileChange(event)}
+        />
       </div>
     </section>
   )
 }
 
-function AccountFieldsSection({
-  mode,
-  values,
-  errors,
-  showPassword,
-  onTogglePassword,
-  onFieldChange,
-}: AccountFieldsSectionProps) {
+function AccountSection({ children }: AccountSectionProps) {
   return (
-    <div className="w-full space-y-5">
-      <SectionHeader title="账户信息" description="维护账号标识与联系方式。" />
-
-      <div className="grid gap-x-5 gap-y-5 md:grid-cols-2">
-        <Field>
-          <FieldLabel className={fieldLabelClassName} htmlFor="username">
-            用户名
-          </FieldLabel>
-          <FieldContent className={fieldContentClassName}>
-            <Input
-              id="username"
-              value={values.username}
-              disabled={mode === "update"}
-              onChange={(event) =>
-                onFieldChange("username", event.target.value)
-              }
-              placeholder="请输入用户名"
-              className={cn(
-                "transition-colors",
-                mode === "update" &&
-                  "cursor-not-allowed bg-muted/50 text-muted-foreground"
-              )}
-            />
-            <FieldError>{errors.username}</FieldError>
-          </FieldContent>
-        </Field>
-
-        <Field>
-          <FieldLabel className={fieldLabelClassName} htmlFor="nickname">
-            昵称
-          </FieldLabel>
-          <FieldContent className={fieldContentClassName}>
-            <Input
-              id="nickname"
-              value={values.nickname}
-              onChange={(event) =>
-                onFieldChange("nickname", event.target.value)
-              }
-              placeholder="展示名称"
-            />
-            <FieldError>{errors.nickname}</FieldError>
-          </FieldContent>
-        </Field>
-
-        <Field>
-          <FieldLabel className={fieldLabelClassName} htmlFor="email">
-            邮箱
-          </FieldLabel>
-          <FieldContent className={fieldContentClassName}>
-            <Input
-              id="email"
-              type="email"
-              value={values.email}
-              onChange={(event) => onFieldChange("email", event.target.value)}
-              placeholder="name@example.com"
-            />
-            <FieldError>{errors.email}</FieldError>
-          </FieldContent>
-        </Field>
-
-        <Field>
-          <FieldLabel className={fieldLabelClassName} htmlFor="phone">
-            手机号
-          </FieldLabel>
-          <FieldContent className={fieldContentClassName}>
-            <Input
-              id="phone"
-              type="tel"
-              value={values.phone}
-              onChange={(event) => onFieldChange("phone", event.target.value)}
-              placeholder="请输入手机号"
-            />
-            <FieldError>{errors.phone}</FieldError>
-          </FieldContent>
-        </Field>
-
-        {mode === "create" && (
-          <Field className="md:col-span-2">
-            <FieldLabel className={fieldLabelClassName} htmlFor="password">
-              登录密码
-            </FieldLabel>
-            <FieldContent className={fieldContentClassName}>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={values.password}
-                  onChange={(event) =>
-                    onFieldChange("password", event.target.value)
-                  }
-                  placeholder="建议设置不少于 8 位字符"
-                  className="pr-10"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute top-0 right-0 h-full px-3 py-2 text-muted-foreground hover:bg-transparent hover:text-foreground"
-                  onClick={onTogglePassword}
-                >
-                  {showPassword ? (
-                    <EyeOffIcon className="size-4" />
-                  ) : (
-                    <EyeIcon className="size-4" />
-                  )}
-                  <span className="sr-only">
-                    {showPassword ? "隐藏密码" : "显示密码"}
-                  </span>
-                </Button>
-              </div>
-              <FieldError>{errors.password}</FieldError>
-            </FieldContent>
-          </Field>
-        )}
-      </div>
-    </div>
+    <section className="w-full space-y-5">
+      <SectionHeader title="账户信息" description="维护用户账号信息" />
+      <div className="grid gap-x-5 gap-y-5 md:grid-cols-2">{children}</div>
+    </section>
   )
 }
 
-function ProfileFieldsSection({
-  values,
-  errors,
-  isUploadingAvatar,
-  onFieldChange,
-}: ProfileFieldsSectionProps) {
+function ProfileSection({ children }: ProfileSectionProps) {
   return (
-    <>
-      <SectionHeader title="展示信息" description="维护展示信息与账号状态。" />
-
-      <div className="space-y-5">
-        <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2">
-          <Field>
-            <FieldLabel className={fieldLabelClassName}>性别</FieldLabel>
-            <FieldContent className={fieldContentClassName}>
-              <Select
-                value={String(values.gender)}
-                onValueChange={(value) =>
-                  onFieldChange("gender", Number(value) as 0 | 1 | 2)
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {USER_GENDER_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={String(option.value)}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FieldContent>
-          </Field>
-
-          <Field>
-            <FieldLabel className={fieldLabelClassName}>状态</FieldLabel>
-            <FieldContent className={fieldContentClassName}>
-              <Select
-                value={String(values.status)}
-                onValueChange={(value) =>
-                  onFieldChange("status", Number(value) as 0 | 1 | 2)
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {USER_STATUS_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={String(option.value)}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FieldContent>
-          </Field>
-        </div>
-      </div>
-    </>
-  )
-}
-
-function BioSection({ values, errors, onFieldChange }: BioSectionProps) {
-  const bioLength = values.bio.trim().length
-
-  return (
-    <>
-      <SectionHeader title="补充说明" description="补充业务属性与备注信息。" />
-
-      <Field>
-        <FieldLabel className={fieldLabelClassName} htmlFor="bio">
-          个人简介
-        </FieldLabel>
-        <FieldContent className={fieldContentClassName}>
-          <Textarea
-            id="bio"
-            value={values.bio}
-            onChange={(event) => onFieldChange("bio", event.target.value)}
-            placeholder="补充用户的角色背景、团队归属或备注信息"
-            className="min-h-28 resize-y"
-          />
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-            <span />
-            <span
-              className={cn(
-                "text-xs tabular-nums transition-colors",
-                bioLength > 1800 ? "text-amber-500" : "text-muted-foreground"
-              )}
-            >
-              {bioLength}/2000
-            </span>
-          </div>
-          <FieldError>{errors.bio}</FieldError>
-        </FieldContent>
-      </Field>
-    </>
-  )
-}
-
-function SheetFooterActions({
-  mode,
-  isPending,
-  isUploadingAvatar,
-  submitLabel,
-  onCancel,
-  onSubmit,
-}: SheetFooterActionsProps) {
-  return (
-    <SheetFooter className="border-t border-border/60 bg-muted/20 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex max-w-full items-center gap-2 rounded-full px-3 py-1.5 text-xs text-muted-foreground sm:max-w-[60%]"></div>
-
-      <div className="flex w-full flex-col-reverse gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          className="h-9 w-full rounded-lg text-[13px] sm:w-auto"
-          onClick={onCancel}
-          disabled={isPending || isUploadingAvatar}
-        >
-          取消
-        </Button>
-        <Button
-          type="button"
-          className="h-9 w-full gap-2 rounded-lg bg-primary text-[13px] shadow-sm transition-all hover:bg-primary/90 hover:shadow-md sm:w-auto"
-          onClick={onSubmit}
-          disabled={isPending || isUploadingAvatar}
-        >
-          {isPending && <Loader2Icon className="size-3.5 animate-spin" />}
-          {submitLabel}
-        </Button>
-      </div>
-    </SheetFooter>
+    <section className="space-y-5">
+      <SectionHeader title="展示信息" description="展示用户额外信息" />
+      <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2">{children}</div>
+    </section>
   )
 }
 
@@ -548,35 +355,35 @@ export function UserMutateSheet({
 }: UserMutateSheetProps) {
   const { uploadFile } = useAwsS3()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const [values, setValues] = useState<UserFormValues>(
-    getDefaultUserFormValues(user)
-  )
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof UserFormValues, string>>
-  >({})
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
-  const header = useMemo(() => getUserMutateSheetHeader(mode), [mode])
+  const header = SHEET_HEADER_MAP[mode]
+  const defaultValues = useMemo(() => getDefaultUserFormValues(user), [user])
+  const schema = useMemo(() => getUserMutateSchema(mode), [mode])
 
-  const handleFieldChange = <T extends keyof UserFormValues>(
-    key: T,
-    value: UserFormValues[T]
-  ) => {
-    setValues((prev) => ({ ...prev, [key]: value }))
-    setErrors((prev) => ({ ...prev, [key]: undefined }))
-  }
+  const form = useForm({
+    defaultValues,
+    validators: {
+      onSubmit: schema,
+    },
+    onSubmit: async ({ value }) => {
+      await onSubmit(value)
+    },
+  })
 
   const resetFormState = () => {
-    setValues(getDefaultUserFormValues(user))
-    setErrors({})
-    setIsUploadingAvatar(false)
+    form.reset(defaultValues)
     setShowPassword(false)
+    setIsUploadingAvatar(false)
   }
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (nextOpen) {
       resetFormState()
+    } else {
+      setShowPassword(false)
+      setIsUploadingAvatar(false)
     }
 
     onOpenChange(nextOpen)
@@ -585,17 +392,6 @@ export function UserMutateSheet({
   const handleCancel = () => {
     resetFormState()
     onOpenChange(false)
-  }
-
-  const handleSubmit = async () => {
-    const nextErrors = validateUserForm(mode, values)
-    setErrors(nextErrors)
-
-    if (Object.keys(nextErrors).length > 0) {
-      return
-    }
-
-    await onSubmit(values)
   }
 
   const handleAvatarFileChange = async (
@@ -615,11 +411,18 @@ export function UserMutateSheet({
 
     try {
       setIsUploadingAvatar(true)
-      const avatarUrl = await uploadUserAvatar({
+      const avatarUrl = await uploadAwsObject({
         file,
+        folder: OSS_ENUM.IMAGES,
         uploadFile,
+        getSts: () => awsApi.getSts({}),
       })
-      handleFieldChange("avatar_url", avatarUrl)
+      form.setFieldValue("avatar_url", avatarUrl)
+      form.setFieldMeta("avatar_url", (prev) => ({
+        ...prev,
+        errors: [],
+        isTouched: true,
+      }))
       toast.success("头像上传成功")
     } catch (error) {
       toast.error(
@@ -630,6 +433,7 @@ export function UserMutateSheet({
     }
   }
 
+  const values = form.state.values
   const avatarLabel = useMemo(
     () =>
       getUserDisplayName({
@@ -639,63 +443,302 @@ export function UserMutateSheet({
     [values.nickname, values.username]
   )
 
+  const isBusy = isPending || isUploadingAvatar || form.state.isSubmitting
+
   return (
-    <UserMutateSheetShell
-      open={open}
-      header={header}
-      onOpenChange={handleOpenChange}
-    >
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <div className="flex-1 space-y-6 overflow-y-auto px-5 pt-2 pb-6">
-          <AvatarUploadSection
-            avatarLabel={avatarLabel}
-            avatarUrl={values.avatar_url}
-            values={values}
-            status={values.status}
-            isPending={isPending}
-            isUploadingAvatar={isUploadingAvatar}
-            fileInputRef={fileInputRef}
-            onAvatarFileChange={handleAvatarFileChange}
-          />
+    <Sheet open={open} onOpenChange={handleOpenChange}>
+      <SheetContent className="w-full sm:max-w-184">
+        <SheetHeader className="border-b border-border/60 pb-5">
+          <SheetTitle className="text-lg font-bold tracking-tight text-foreground">
+            {header.title}
+          </SheetTitle>
+          <SheetDescription className="max-w-xl text-sm leading-6 text-muted-foreground/70">
+            {header.description}
+          </SheetDescription>
+        </SheetHeader>
 
-          <FieldGroup>
-            <AccountFieldsSection
-              mode={mode}
+        <form
+          className="flex flex-1 flex-col overflow-hidden"
+          onSubmit={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            void form.handleSubmit()
+          }}
+        >
+          <div className="flex-1 space-y-6 overflow-y-auto px-5 pt-2 pb-6">
+            <AvatarSection
+              avatarLabel={avatarLabel}
               values={values}
-              errors={errors}
-              showPassword={showPassword}
-              onTogglePassword={() => setShowPassword((prev) => !prev)}
-              onFieldChange={handleFieldChange}
-            />
-
-            <FieldSeparator className="-my-1.5" />
-
-            <ProfileFieldsSection
-              values={values}
-              errors={errors}
               isUploadingAvatar={isUploadingAvatar}
-              onFieldChange={handleFieldChange}
+              fileInputRef={fileInputRef}
+              onAvatarFileChange={handleAvatarFileChange}
             />
 
-            <FieldSeparator className="-my-1.5" />
+            <FieldGroup>
+              <AccountSection>
+                <form.Field name="username">
+                  {(field) => (
+                    <TextField
+                      label="用户名"
+                      htmlFor={field.name}
+                      error={getFieldError(field)}
+                    >
+                      <Input
+                        id={field.name}
+                        value={field.state.value}
+                        disabled={mode === "update"}
+                        onBlur={field.handleBlur}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value)
+                        }
+                        placeholder="请输入用户名"
+                        className={cn(
+                          "transition-colors",
+                          mode === "update" &&
+                            "cursor-not-allowed bg-muted/50 text-muted-foreground"
+                        )}
+                      />
+                    </TextField>
+                  )}
+                </form.Field>
 
-            <BioSection
-              values={values}
-              errors={errors}
-              onFieldChange={handleFieldChange}
-            />
-          </FieldGroup>
-        </div>
+                <form.Field name="nickname">
+                  {(field) => (
+                    <TextField
+                      label="昵称"
+                      htmlFor={field.name}
+                      error={getFieldError(field)}
+                    >
+                      <Input
+                        id={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value)
+                        }
+                        placeholder="展示名称"
+                      />
+                    </TextField>
+                  )}
+                </form.Field>
 
-        <SheetFooterActions
-          mode={mode}
-          isPending={isPending}
-          isUploadingAvatar={isUploadingAvatar}
-          submitLabel={header.submitLabel}
-          onCancel={handleCancel}
-          onSubmit={() => void handleSubmit()}
-        />
-      </div>
-    </UserMutateSheetShell>
+                <form.Field name="email">
+                  {(field) => (
+                    <TextField
+                      label="邮箱"
+                      htmlFor={field.name}
+                      error={getFieldError(field)}
+                    >
+                      <Input
+                        id={field.name}
+                        type="email"
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value)
+                        }
+                        placeholder="name@example.com"
+                      />
+                    </TextField>
+                  )}
+                </form.Field>
+
+                <form.Field name="phone">
+                  {(field) => (
+                    <TextField
+                      label="手机号"
+                      htmlFor={field.name}
+                      error={getFieldError(field)}
+                    >
+                      <Input
+                        id={field.name}
+                        type="tel"
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value)
+                        }
+                        placeholder="请输入手机号"
+                      />
+                    </TextField>
+                  )}
+                </form.Field>
+
+                {mode === "create" ? (
+                  <form.Field name="password">
+                    {(field) => (
+                      <Field className="md:col-span-2">
+                        <FieldLabel
+                          className={fieldLabelClassName}
+                          htmlFor={field.name}
+                        >
+                          登录密码
+                        </FieldLabel>
+                        <FieldContent className={fieldContentClassName}>
+                          <div className="relative">
+                            <Input
+                              id={field.name}
+                              type={showPassword ? "text" : "password"}
+                              value={field.state.value}
+                              onBlur={field.handleBlur}
+                              onChange={(event) =>
+                                field.handleChange(event.target.value)
+                              }
+                              placeholder="设置登录密码"
+                              className="pr-10"
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="absolute top-0 right-0 h-full px-3 py-2 text-muted-foreground hover:bg-transparent hover:text-foreground"
+                              onClick={() => setShowPassword((prev) => !prev)}
+                            >
+                              {showPassword ? (
+                                <EyeOffIcon className="size-4" />
+                              ) : (
+                                <EyeIcon className="size-4" />
+                              )}
+                              <span className="sr-only">
+                                {showPassword ? "隐藏密码" : "显示密码"}
+                              </span>
+                            </Button>
+                          </div>
+                          <FieldError>{getFieldError(field)}</FieldError>
+                        </FieldContent>
+                      </Field>
+                    )}
+                  </form.Field>
+                ) : null}
+              </AccountSection>
+
+              <FieldSeparator className="-my-1.5" />
+
+              <ProfileSection>
+                <form.Field name="gender">
+                  {(field) => (
+                    <SelectField label="性别" error={getFieldError(field)}>
+                      <Select
+                        value={String(field.state.value)}
+                        onValueChange={(value) =>
+                          field.handleChange(Number(value) as 0 | 1 | 2)
+                        }
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {USER_GENDER_OPTIONS.map((option) => (
+                            <SelectItem
+                              key={option.value}
+                              value={String(option.value)}
+                            >
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </SelectField>
+                  )}
+                </form.Field>
+
+                <form.Field name="status">
+                  {(field) => (
+                    <SelectField label="状态" error={getFieldError(field)}>
+                      <Select
+                        value={String(field.state.value)}
+                        onValueChange={(value) =>
+                          field.handleChange(Number(value) as 0 | 1 | 2)
+                        }
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {USER_STATUS_OPTIONS.map((option) => (
+                            <SelectItem
+                              key={option.value}
+                              value={String(option.value)}
+                            >
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </SelectField>
+                  )}
+                </form.Field>
+              </ProfileSection>
+
+              <form.Field name="bio">
+                {(field) => {
+                  const bioLength = field.state.value.trim().length
+
+                  return (
+                    <Field>
+                      <FieldLabel
+                        className={fieldLabelClassName}
+                        htmlFor={field.name}
+                      >
+                        个人简介
+                      </FieldLabel>
+                      <FieldContent className={fieldContentClassName}>
+                        <Textarea
+                          id={field.name}
+                          value={field.state.value}
+                          onBlur={field.handleBlur}
+                          onChange={(event) =>
+                            field.handleChange(event.target.value)
+                          }
+                          placeholder="填写用户简介..."
+                          className="min-h-28 resize-y text-[12px] leading-6"
+                        />
+                        <div className="flex justify-end">
+                          <span
+                            className={cn(
+                              "text-xs tabular-nums transition-colors",
+                              bioLength > 1800
+                                ? "text-amber-500"
+                                : "text-muted-foreground"
+                            )}
+                          >
+                            {bioLength}/2000
+                          </span>
+                        </div>
+                        <FieldError>{getFieldError(field)}</FieldError>
+                      </FieldContent>
+                    </Field>
+                  )
+                }}
+              </form.Field>
+            </FieldGroup>
+          </div>
+
+          <SheetFooter className="border-t border-border/60 bg-muted/20 px-5 py-4">
+            <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-9 w-full rounded-lg text-[13px] sm:w-auto"
+                onClick={handleCancel}
+                disabled={isBusy}
+              >
+                取消
+              </Button>
+              <Button
+                type="submit"
+                className="h-9 w-full gap-2 rounded-lg bg-primary text-[13px] shadow-sm transition-all hover:bg-primary/90 hover:shadow-md sm:w-auto"
+                disabled={isBusy}
+              >
+                {isBusy ? (
+                  <Loader2Icon className="size-3.5 animate-spin" />
+                ) : null}
+                {header.submitLabel}
+              </Button>
+            </div>
+          </SheetFooter>
+        </form>
+      </SheetContent>
+    </Sheet>
   )
 }

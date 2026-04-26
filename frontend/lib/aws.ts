@@ -1,6 +1,17 @@
 import type { AwsS3Token } from "@/hooks/use-aws-s3"
 import type { AwsStsResp } from "@/types/system.types"
 
+type UploadAwsObjectParams = {
+  file: File
+  folder: string
+  uploadFile: (
+    file: File,
+    pathPrefix: string,
+    token: AwsS3Token
+  ) => Promise<{ path: string }>
+  getSts: () => Promise<AwsStsResp>
+}
+
 const pick = (...values: Array<string | undefined>) =>
   values.find((value) => typeof value === "string" && value.length > 0) ?? ""
 
@@ -29,4 +40,17 @@ export function buildAwsObjectUrl(token: AwsS3Token, path: string) {
 
   const endpointUrl = new URL(normalizedEndpoint)
   return `${endpointUrl.protocol}//${normalizedBucket}.${endpointUrl.host}/${normalizedPath}`
+}
+
+export async function uploadAwsObject({
+  file,
+  folder,
+  uploadFile,
+  getSts,
+}: UploadAwsObjectParams) {
+  const sts = await getSts()
+  const token = mapStsToAwsS3Token(sts)
+  const result = await uploadFile(file, folder, token)
+
+  return buildAwsObjectUrl(token, result.path)
 }
