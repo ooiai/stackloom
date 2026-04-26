@@ -1,8 +1,8 @@
 "use client"
 
 import { DictMutateSheet } from "@/components/base/dicts/dict-mutate-sheet"
+import { useDictsController } from "@/components/base/dicts/hooks/use-dicts-controller"
 import { DictsPageView } from "@/components/base/dicts/dicts-page-container"
-import { useDictsController } from "@/hooks/use-dicts-controller"
 
 export default function DictsPage() {
   const { view, sheet } = useDictsController()

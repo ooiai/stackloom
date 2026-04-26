@@ -1,8 +1,8 @@
 "use client"
 
 import { UserMutateSheet } from "@/components/base/users/user-mutate-sheet"
+import { useUsersController } from "@/components/base/users/hooks/use-users-controller"
 import { UsersPageView } from "@/components/base/users/users-page-container"
-import { useUsersController } from "@/hooks/use-users-controller"
 
 export default function UserPage() {
   const { view, sheet } = useUsersController()

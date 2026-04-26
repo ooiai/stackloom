@@ -8,11 +8,13 @@ import { Sheet, SheetContent, SheetFooter } from "@/components/ui/sheet"
 import { UserMutateFormFields } from "@/components/base/users/user-mutate-form-fields"
 import { UserMutateSheetHeader } from "@/components/base/users/user-mutate-sheet-header"
 import {
+  useUserMutateForm,
+} from "@/components/base/users/hooks/use-user-mutate-form"
+import {
   UserMutateAvatarSection,
   UserMutateSheetFooter,
 } from "@/components/base/users/user-mutate-sheet-sections"
 import { useAwsS3 } from "@/hooks/use-aws-s3"
-import { useUserMutateForm } from "@/hooks/use-user-mutate-form"
 import { uploadAwsObject } from "@/lib/aws"
 import { OSS_ENUM } from "@/lib/config/enums"
 import { getUserDisplayName } from "@/lib/users"

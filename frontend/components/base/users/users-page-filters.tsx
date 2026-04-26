@@ -8,8 +8,8 @@ import {
   type FilterFieldConfig,
   type FilterI18nConfig,
 } from "@/components/reui/filters"
+import type { UsersFilterValue } from "@/components/base/users/hooks/use-users-controller"
 import { Button } from "@/components/ui/button"
-import type { UsersFilterValue } from "@/hooks/use-users-controller"
 import { USER_STATUS_OPTIONS } from "@/lib/users"
 import {
   FunnelXIcon,

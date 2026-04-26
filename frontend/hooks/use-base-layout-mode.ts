@@ -5,13 +5,13 @@ import { useState } from "react"
 import { getStorageItem, setStorageItem } from "@/hooks/use-persisted-state"
 import type { LayoutWidthMode } from "@/components/base/shared/layout-width-toggle"
 
-const STORAGE_KEY = "upms-layout-width-mode"
+const STORAGE_KEY = "base-layout-width-mode"
 
 function isLayoutWidthMode(value: unknown): value is LayoutWidthMode {
   return value === "contained" || value === "full"
 }
 
-export function useUpmsLayoutMode() {
+export function useBaseLayoutMode() {
   const [mode, setMode] = useState<LayoutWidthMode>(() => {
     const storedMode = getStorageItem(STORAGE_KEY)
     if (isLayoutWidthMode(storedMode)) {

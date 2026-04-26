@@ -1,0 +1,209 @@
+"use client"
+
+import { DictStatusBadge } from "@/components/base/dicts/dict-status-badge"
+import { DataGridColumnHeader } from "@/components/reui/data-grid-column-header"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { findDictNode } from "@/lib/dicts"
+import { formatDateTimeAt } from "@/lib/time"
+import type { DictTreeNode } from "@/lib/dicts"
+import type { DictData } from "@/types/base.types"
+import type { ColumnDef } from "@tanstack/react-table"
+import {
+  ArrowRightIcon,
+  Edit3Icon,
+  EllipsisIcon,
+  FolderOpenIcon,
+  PlusIcon,
+  TagIcon,
+  Trash2Icon,
+} from "lucide-react"
+
+interface CreateDictColumnsOptions {
+  tree: DictTreeNode[]
+  onSelectNode: (id: string | null) => void
+  onOpenAddChild: (parentId: string) => void
+  onOpenEdit: (dict: DictData) => void
+  onDelete: (dict: DictData) => void
+}
+
+export function createDictColumns({
+  tree,
+  onSelectNode,
+  onOpenAddChild,
+  onOpenEdit,
+  onDelete,
+}: CreateDictColumnsOptions): ColumnDef<DictData>[] {
+  return [
+    {
+      accessorKey: "label",
+      id: "label",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          title="名称"
+          column={column}
+          className="font-medium"
+        />
+      ),
+      cell: ({ row }) => {
+        const node = findDictNode(tree, row.original.id)
+        const childCount = node?.children.length ?? 0
+
+        return (
+          <div className="flex items-center gap-2">
+            {childCount > 0 ? (
+              <FolderOpenIcon className="size-3.5 text-muted-foreground" />
+            ) : (
+              <TagIcon className="size-3.5 text-muted-foreground" />
+            )}
+            <div className="min-w-0">
+              <div className="truncate font-medium text-foreground">
+                {row.original.label}
+              </div>
+              <div className="truncate text-xs text-muted-foreground">
+                {row.original.dict_key}
+              </div>
+            </div>
+            {childCount > 0 ? (
+              <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                {childCount} 子项
+              </span>
+            ) : null}
+          </div>
+        )
+      },
+      size: 220,
+      enableSorting: false,
+    },
+    {
+      accessorKey: "dict_value",
+      id: "dict_value",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          title="字典值"
+          column={column}
+          className="font-medium"
+        />
+      ),
+      cell: ({ row }) => (
+        <code className="rounded-md bg-muted px-1.5 py-1 text-xs text-foreground/80">
+          {row.original.dict_value}
+        </code>
+      ),
+      size: 150,
+      enableSorting: false,
+    },
+    {
+      accessorKey: "value_type",
+      id: "value_type",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          title="值类型"
+          column={column}
+          className="font-medium"
+        />
+      ),
+      cell: ({ row }) => (
+        <span className="text-sm text-muted-foreground">
+          {row.original.value_type}
+        </span>
+      ),
+      size: 110,
+      enableSorting: false,
+    },
+    {
+      accessorKey: "status",
+      id: "status",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          title="状态"
+          column={column}
+          className="font-medium"
+        />
+      ),
+      cell: ({ row }) => <DictStatusBadge status={row.original.status} />,
+      size: 110,
+      enableSorting: false,
+    },
+    {
+      accessorKey: "description",
+      id: "description",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          title="说明"
+          column={column}
+          className="font-medium"
+        />
+      ),
+      cell: ({ row }) => (
+        <span className="line-clamp-2 text-sm text-muted-foreground">
+          {row.original.description || "—"}
+        </span>
+      ),
+      size: 260,
+      enableSorting: false,
+    },
+    {
+      accessorKey: "updated_at",
+      id: "updated_at",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          title="更新时间"
+          column={column}
+          className="font-medium"
+        />
+      ),
+      cell: ({ row }) => (
+        <span className="text-xs text-muted-foreground">
+          {formatDateTimeAt(row.original.updated_at)}
+        </span>
+      ),
+      size: 170,
+      enableSorting: false,
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<Button size="icon-sm" variant="ghost" />}>
+            <EllipsisIcon />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="bottom" align="end">
+            <DropdownMenuItem onClick={() => onSelectNode(row.original.id)}>
+              <ArrowRightIcon />
+              查看子级
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onOpenAddChild(row.original.id)}>
+              <PlusIcon />
+              添加子级
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
+              <Edit3Icon />
+              编辑
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={() => onDelete(row.original)}
+            >
+              <Trash2Icon />
+              删除
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+      size: 60,
+      enableSorting: false,
+      enableHiding: false,
+      enableResizing: false,
+    },
+  ]
+}

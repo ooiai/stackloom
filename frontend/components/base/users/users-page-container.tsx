@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react"
 
 import { EntityEmptyState } from "@/components/base/shared/entity-empty-state"
+import type { UsersFilterValue } from "@/components/base/users/hooks/use-users-controller"
 import { createUserColumns } from "@/components/base/users/users-page-columns"
 import { UsersPageFilters } from "@/components/base/users/users-page-filters"
 import { UsersPageHeader } from "@/components/base/users/users-page-header"
@@ -11,7 +12,6 @@ import { DataGridPagination } from "@/components/reui/data-grid-pagination"
 import { DataGridTable } from "@/components/reui/data-grid-table"
 import { type Filter } from "@/components/reui/filters"
 import { ScrollArea, ScrollBar } from "@/components/reui/scroll-area"
-import type { UsersFilterValue } from "@/hooks/use-users-controller"
 import type { UserData } from "@/types/base.types"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 

@@ -16,10 +16,10 @@ import {
   UserMutateAccountSection,
   UserMutateProfileSection,
 } from "@/components/base/users/user-mutate-sheet-sections"
+import type { UserMutateFormApi } from "@/components/base/users/hooks/use-user-mutate-form"
 import { cn } from "@/lib/utils"
 import { USER_GENDER_OPTIONS, USER_STATUS_OPTIONS } from "@/lib/users"
 import type { UserMutateMode } from "@/types/base.types"
-import type { UserMutateFormApi } from "@/hooks/use-user-mutate-form"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
 
 interface UserMutateFormFieldsProps {
