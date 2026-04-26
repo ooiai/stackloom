@@ -6,7 +6,7 @@ import { createDictColumns } from "@/components/base/dicts/dicts-page-columns"
 import { DictsDetailPanel } from "@/components/base/dicts/dicts-detail-panel"
 import { DictsPageHeader } from "@/components/base/dicts/dicts-page-header"
 import { DictsTreeSidebar } from "@/components/base/dicts/dicts-tree-sidebar"
-import type { DictTreeNode } from "@/lib/dicts"
+import type { DictTreeNode } from "@/components/base/dicts/helpers"
 import type { DictData } from "@/types/base.types"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 

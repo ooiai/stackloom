@@ -1,5 +1,6 @@
 "use client"
 
+import { getDictDisplayName } from "@/components/base/dicts/helpers"
 import { useEffect, useMemo } from "react"
 
 import { DictMutateFormFields } from "@/components/base/dicts/dict-mutate-form-fields"
@@ -7,7 +8,6 @@ import { useDictMutateForm } from "@/components/base/dicts/hooks/use-dict-mutate
 import { DictMutateSheetHeader } from "@/components/base/dicts/dict-mutate-sheet-header"
 import { DictMutateSheetFooter } from "@/components/base/dicts/dict-mutate-sheet-sections"
 import { FieldGroup } from "@/components/ui/field"
-import { getDictDisplayName } from "@/lib/dicts"
 import { Sheet, SheetContent, SheetFooter } from "@/components/ui/sheet"
 import type {
   DictData,
@@ -30,14 +30,14 @@ const SHEET_HEADER_MAP: Record<
   { title: string; description: string; submitLabel: string }
 > = {
   create: {
-    title: "新增字典项",
-    description: "维护字典树节点、值类型与业务展示文案。",
-    submitLabel: "创建字典项",
+    title: "新增字典",
+    description: "维护字典树节点、值类型与业务展示文案",
+    submitLabel: "创建字典",
   },
   update: {
-    title: "编辑字典项",
-    description: "更新当前字典项的键值、状态和说明信息。",
-    submitLabel: "保存变更",
+    title: "编辑字典",
+    description: "更新当前字典项的键值、状态和说明信息",
+    submitLabel: "保存更新",
   },
 }
 
@@ -54,7 +54,7 @@ export function DictMutateSheet({
 
   const parentLabel = useMemo(() => {
     if (!parent) {
-      return "根目录"
+      return "根字典"
     }
 
     return getDictDisplayName(parent)
@@ -104,7 +104,12 @@ export function DictMutateSheet({
         >
           <div className="flex-1 space-y-6 overflow-y-auto px-5 py-5">
             <FieldGroup>
-              <DictMutateFormFields form={form} parentLabel={parentLabel} />
+              <DictMutateFormFields
+                form={form}
+                mode={mode}
+                hasParent={Boolean(parent)}
+                parentLabel={parentLabel}
+              />
             </FieldGroup>
           </div>
 

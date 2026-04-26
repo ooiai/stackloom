@@ -18,13 +18,19 @@ import type { DictMutateFormApi } from "@/components/base/dicts/hooks/use-dict-m
 
 interface DictMutateFormFieldsProps {
   form: DictMutateFormApi
+  mode: "create" | "update"
+  hasParent: boolean
   parentLabel: string
 }
 
 export function DictMutateFormFields({
   form,
+  mode,
+  hasParent,
   parentLabel,
 }: DictMutateFormFieldsProps) {
+  const isDictTypeLocked = mode === "update" || hasParent
+
   return (
     <>
       <DictMutateBasicSection>
@@ -50,6 +56,15 @@ export function DictMutateFormFields({
                 label="字典类型"
                 htmlFor={field.name}
                 invalid={isInvalid}
+                description={
+                  isDictTypeLocked ? (
+                    <span className="text-[13px] leading-5 text-muted-foreground">
+                      {mode === "update"
+                        ? "编辑时不允许修改字典类型。"
+                        : "子级节点会继承父级字典类型。"}
+                    </span>
+                  ) : null
+                }
                 error={
                   isInvalid ? (
                     <FieldError errors={field.state.meta.errors} />
@@ -64,6 +79,7 @@ export function DictMutateFormFields({
                   onChange={(event) => field.handleChange(event.target.value)}
                   placeholder="例如：gender"
                   aria-invalid={isInvalid}
+                  disabled={isDictTypeLocked}
                 />
               </LabelField>
             )

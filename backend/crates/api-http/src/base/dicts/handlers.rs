@@ -32,7 +32,6 @@ pub async fn create(
     DetailedJson(req): DetailedJson<CreateDictReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Create Dict Req: {:?}...", req);
-
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 

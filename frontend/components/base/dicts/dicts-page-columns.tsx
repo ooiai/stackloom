@@ -1,6 +1,8 @@
 "use client"
 
 import { DictStatusBadge } from "@/components/base/dicts/dict-status-badge"
+import { findDictNode } from "@/components/base/dicts/helpers"
+import type { DictTreeNode } from "@/components/base/dicts/helpers"
 import { DataGridColumnHeader } from "@/components/reui/data-grid-column-header"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,9 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { findDictNode } from "@/lib/dicts"
 import { formatDateTimeAt } from "@/lib/time"
-import type { DictTreeNode } from "@/lib/dicts"
 import type { DictData } from "@/types/base.types"
 import type { ColumnDef } from "@tanstack/react-table"
 import {

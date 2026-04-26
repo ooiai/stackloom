@@ -46,6 +46,7 @@ const optionalExtSchema = z
   .transform((value) => (value === "" ? "{}" : value))
 
 export const dictFormSchema = z.object({
+  parent_id: z.string().nullable().optional(),
   dict_type: z
     .string()
     .trim()
@@ -120,19 +121,6 @@ function sortDictNodes(a: DictData, b: DictData) {
   }
 
   return a.label.localeCompare(b.label, "zh-CN")
-}
-
-function parseOptionalId(value: string | null | undefined) {
-  if (!value?.trim()) {
-    return undefined
-  }
-
-  const parsed = Number(value)
-  if (!Number.isFinite(parsed)) {
-    return undefined
-  }
-
-  return parsed
 }
 
 export function getDictStatusMeta(status: DictStatus): DictStatusMeta {
@@ -256,6 +244,7 @@ export function getDefaultDictFormValues(
   parent: DictData | null
 ): DictFormValues {
   return {
+    parent_id: dict?.parent_id ?? parent?.id ?? null,
     dict_type: dict?.dict_type ?? parent?.dict_type ?? "",
     dict_key: dict?.dict_key ?? "",
     dict_value: dict?.dict_value ?? "",
@@ -286,13 +275,12 @@ export function validateDictForm(values: DictFormValues) {
 }
 
 export function buildCreateDictParam(
-  values: DictFormValues,
-  parentId?: string | null
+  values: DictFormValues
 ): CreateDictParam {
   const parsed = dictFormSchema.parse(values)
 
   return {
-    parent_id: parseOptionalId(parentId),
+    parent_id: parsed.parent_id ?? null,
     dict_type: parsed.dict_type,
     dict_key: parsed.dict_key,
     dict_value: parsed.dict_value,
@@ -314,7 +302,6 @@ export function buildUpdateDictParam(
 
   return {
     id,
-    dict_type: parsed.dict_type,
     dict_key: parsed.dict_key,
     dict_value: parsed.dict_value,
     label: parsed.label,

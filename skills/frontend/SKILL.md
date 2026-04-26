@@ -161,13 +161,13 @@ When creating a new store in the `frontend/stores` directory, follow these guide
 import { AccountAuthParam, AuthTokenResult } from "@/types/auth.types";
 
 export const signinApi = {
-  accountAuth: async (parmas: AccountAuthParam): Promise<AuthTokenResult> => {
-    return post("/api/auth/signin/account", parmas, {
-      headers: {
-        Authorization: `Basic ${CryptUtil.encodeBase64Double(HTTP_REQUEST_ENUM.BASIC_AUTH)}`,
-      },
-    });
-  },
+    accountAuth: async (parmas: AccountAuthParam): Promise<AuthTokenResult> => {
+        return post("/api/auth/signin/account", parmas, {
+            headers: {
+                Authorization: `Basic ${CryptUtil.encodeBase64Double(HTTP_REQUEST_ENUM.BASIC_AUTH)}`,
+            },
+        });
+    },
 };
 ```
 
@@ -179,9 +179,9 @@ import { EduUserInfo } from "@/types/edu.types";
 import { create } from "zustand";
 
 export const useSharedStore = create<SharedStore>()((set, get) => ({
-  userInfo: null,
-  setUserInfo: (userInfo: EduUserInfo | null) => set({ userInfo }),
-  getUserInfo: () => get().userInfo,
+    userInfo: null,
+    setUserInfo: (userInfo: EduUserInfo | null) => set({ userInfo }),
+    getUserInfo: () => get().userInfo,
 }));
 ```
 
@@ -191,17 +191,28 @@ The `frontend/types` directory contains TypeScript type definitions for the fron
 
 When creating new types in the `frontend/types` directory, follow these guidelines:
 
+- **All id fields exposed to the frontend are hashid strings produced by the backend.** Treat ids in frontend request/response types, page params, search params, component props, table rows, form values, and store state as `string` unless there is a clearly documented non-id numeric field.
+- **Do not model backend entity ids as `number` in frontend code.** Even if the backend stores ids internally as integers, the HTTP boundary returns hashid values, so frontend types must use `string`.
+- **When naming typed fields such as `id`, `userId`, `courseId`, `chapterId`, `parentId`, or arrays such as `ids`, prefer `string` and `string[]` consistently.**
+
 **auth.types.ts**
 
 ```ts
 export interface MobileAuthParam {
-  phone: string;
-  code: string;
+    phone: string;
+    code: string;
 }
 
 export interface MobileAuth {
-  phone: string;
+    phone: string;
 }
+
+// Example id typing rule:
+// export interface UserProfile {
+//   id: string;
+//   orgId: string;
+//   roleIds: string[];
+// }
 ```
 
 **IMPORTANT:The Entity use `MobileAuth` and Parameter use `MobileAuthParam`**
@@ -239,7 +250,7 @@ When creating new utilities in the `frontend/lib` directory, follow these guidel
 
 ```ts
 export const HTTP_REQUEST_ENUM = {
-  BASIC_AUTH: "smartlaw:smartlaw",
+    BASIC_AUTH: "smartlaw:smartlaw",
 };
 ```
 
@@ -314,38 +325,41 @@ import { AxiosErrorHandler } from "@/hooks/setup-axios";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "",
-  description: "",
-  keywords: [],
+    title: "",
+    description: "",
+    keywords: [],
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="zh-CN" suppressHydrationWarning>
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="theme-color" content="#FFFFFF" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
-        />
-      </head>
-      <body className={cn(fontVariables, "antialiased font-sans")}>
-        <AlertDialogProvider>
-          <QueryProviders>{children}</QueryProviders>
-        </AlertDialogProvider>
-        <AxiosErrorHandler />
-        <Toaster richColors />
-      </body>
-    </html>
-  );
+    return (
+        <html lang="zh-CN" suppressHydrationWarning>
+            <head>
+                <meta charSet="utf-8" />
+                <meta name="theme-color" content="#FFFFFF" />
+                <meta name="mobile-web-app-capable" content="yes" />
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta
+                    name="apple-mobile-web-app-status-bar-style"
+                    content="default"
+                />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
+                />
+            </head>
+            <body className={cn(fontVariables, "antialiased font-sans")}>
+                <AlertDialogProvider>
+                    <QueryProviders>{children}</QueryProviders>
+                </AlertDialogProvider>
+                <AxiosErrorHandler />
+                <Toaster richColors />
+            </body>
+        </html>
+    );
 }
 ```
 
@@ -355,7 +369,7 @@ export default function RootLayout({
 "use client";
 
 export default function Home() {
-  return <div>Home</div>;
+    return <div>Home</div>;
 }
 ```
 
@@ -365,7 +379,7 @@ export default function Home() {
 import { Button } from "@/components/ui/button";
 
 const MyComponent = () => {
-  return <Button>Click me</Button>;
+    return <Button>Click me</Button>;
 };
 
 export default MyComponent;

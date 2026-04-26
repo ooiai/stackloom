@@ -1,5 +1,6 @@
 "use client"
 
+import type { DictTreeNode } from "@/components/base/dicts/helpers"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -11,7 +12,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/reui/scroll-area"
 import { cn } from "@/lib/utils"
-import type { DictTreeNode } from "@/lib/dicts"
 import type { DictData } from "@/types/base.types"
 import {
   BookMarkedIcon,
@@ -259,7 +259,7 @@ export function DictsTreeSidebar({
               {!treeSearch.trim() ? (
                 <Button size="sm" onClick={onOpenCreateRoot}>
                   <PlusIcon />
-                  创建首个节点
+                  创建字典
                 </Button>
               ) : null}
             </div>

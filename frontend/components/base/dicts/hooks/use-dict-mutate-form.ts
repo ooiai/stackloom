@@ -2,9 +2,11 @@
 
 import { useMemo } from "react"
 
+import {
+  dictFormSchema,
+  getDefaultDictFormValues,
+} from "@/components/base/dicts/helpers"
 import { useForm } from "@tanstack/react-form"
-
-import { dictFormSchema, getDefaultDictFormValues } from "@/lib/dicts"
 import type {
   DictData,
   DictFormValues,

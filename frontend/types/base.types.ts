@@ -110,8 +110,8 @@ export interface ChildrenDictParam {
 }
 
 export interface CreateDictParam {
-  tenant_id?: number
-  parent_id?: number
+  tenant_id?: string | null
+  parent_id?: string | null
   dict_type: string
   dict_key: string
   dict_value: string
@@ -126,7 +126,7 @@ export interface CreateDictParam {
 
 export interface UpdateDictParam {
   id: string
-  tenant_id?: number
+  tenant_id?: string | null
   dict_type?: string
   dict_key?: string
   dict_value?: string
@@ -171,4 +171,5 @@ export interface DictFormValues {
   status: DictStatus
   is_builtin: boolean
   ext: string
+  parent_id?: string | null
 }

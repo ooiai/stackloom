@@ -8,7 +8,7 @@ import {
   buildUpdateDictParam,
   findDictNode,
   getExpandedIdsForTree,
-} from "@/lib/dicts"
+} from "@/components/base/dicts/helpers"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAlertDialog } from "@/providers/dialog-providers"
 import { dictApi } from "@/stores/base-api"
@@ -127,7 +127,7 @@ export function useDictsController() {
 
   const createMutation = useMutation({
     mutationFn: async (values: DictFormValues) => {
-      await dictApi.create(buildCreateDictParam(values, sheet.parent?.id))
+      await dictApi.create(buildCreateDictParam(values))
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["base", "dicts"] })
@@ -287,8 +287,8 @@ export function useDictsController() {
       dialog.show({
         title: "删除字典项",
         description: dict.is_leaf
-          ? `确定删除“${dict.label}”吗？此操作无法撤销。`
-          : `确定删除“${dict.label}”以及其全部子级吗？此操作无法撤销。`,
+          ? `确定删除“${dict.label}”吗？此操作无法撤销`
+          : `确定删除“${dict.label}”以及其全部子级吗？此操作无法撤销`,
         confirmText: "删除",
         cancelText: "取消",
         autoCloseOnConfirm: true,

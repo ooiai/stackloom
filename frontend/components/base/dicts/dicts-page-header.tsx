@@ -17,9 +17,9 @@ export function DictsPageHeader({
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div className="space-y-1.5">
-        <h2 className="text-xl font-bold tracking-tight">字典管理</h2>
+        <h2 className="text-lg font-bold tracking-tight">字典管理</h2>
         <p className="text-sm text-muted-foreground">
-          维护树形数据字典，统一组织键值、显示文案和扩展配置
+          字典是一种键值对数据结构，常用于存储和管理配置信息、翻译文本等
         </p>
       </div>
       <div className="flex items-center gap-2">
@@ -32,9 +32,9 @@ export function DictsPageHeader({
           <RefreshCwIcon className={isFetching ? "animate-spin" : undefined} />
           刷新
         </Button>
-        <Button onClick={onOpenCreateRoot}>
+        <Button hidden onClick={onOpenCreateRoot}>
           <PlusIcon />
-          添加根节点
+          添加根字典
         </Button>
       </div>
     </div>

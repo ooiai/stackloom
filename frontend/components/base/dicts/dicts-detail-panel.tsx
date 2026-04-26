@@ -1,13 +1,13 @@
 "use client"
 
 import { EntityEmptyState } from "@/components/base/shared/entity-empty-state"
+import type { DictTreeNode } from "@/components/base/dicts/helpers"
 import { DictStatusBadge } from "@/components/base/dicts/dict-status-badge"
 import { DataGrid, DataGridContainer } from "@/components/reui/data-grid"
 import { DataGridTable } from "@/components/reui/data-grid-table"
 import { ScrollArea, ScrollBar } from "@/components/reui/scroll-area"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import type { DictTreeNode } from "@/lib/dicts"
 import type { DictData } from "@/types/base.types"
 import type { Table } from "@tanstack/react-table"
 import {
@@ -141,10 +141,6 @@ export function DictsDetailPanel({
                 可继续添加子级节点
               </p>
             </div>
-            <Button size="sm" onClick={() => onOpenAddChild(selectedNode.id)}>
-              <PlusIcon />
-              添加子级
-            </Button>
           </div>
         }
         tableLayout={{

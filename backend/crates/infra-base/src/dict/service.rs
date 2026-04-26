@@ -75,10 +75,13 @@ where
 
         let parent_id = cmd.parent_id;
         if let Some(id) = parent_id {
-            self.repository
+            let parent = self
+                .repository
                 .find_by_id(id)
                 .await?
                 .ok_or_else(|| AppError::not_found_here(format!("dict parent not found: {id}")))?;
+
+            cmd.dict_type = parent.dict_type;
         }
 
         cmd.id = generate_sonyflake_id() as i64;
@@ -181,6 +184,7 @@ where
 
         let sanitized_cmd = UpdateDictCmd {
             parent_id: None,
+            dict_type: None,
             is_leaf: None,
             ..cmd
         };
