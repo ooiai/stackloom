@@ -56,19 +56,19 @@ impl User {
         cmd.validate()?;
 
         if let Some(email) = cmd.email {
-            self.email = Some(email);
+            self.email = email;
         }
 
         if let Some(phone) = cmd.phone {
-            self.phone = Some(phone);
+            self.phone = phone;
         }
 
         if let Some(nickname) = cmd.nickname {
-            self.nickname = Some(nickname);
+            self.nickname = nickname;
         }
 
         if let Some(avatar_url) = cmd.avatar_url {
-            self.avatar_url = Some(avatar_url);
+            self.avatar_url = avatar_url;
         }
 
         if let Some(gender) = cmd.gender {
@@ -80,7 +80,7 @@ impl User {
         }
 
         if let Some(bio) = cmd.bio {
-            self.bio = Some(bio);
+            self.bio = bio;
         }
 
         self.updated_at = Utc::now();
@@ -148,13 +148,13 @@ impl CreateUserCmd {
 
 #[derive(Debug, Clone, Default)]
 pub struct UpdateUserCmd {
-    pub email: Option<String>,
-    pub phone: Option<String>,
-    pub nickname: Option<String>,
-    pub avatar_url: Option<String>,
+    pub email: Option<Option<String>>,
+    pub phone: Option<Option<String>>,
+    pub nickname: Option<Option<String>>,
+    pub avatar_url: Option<Option<String>>,
     pub gender: Option<i16>,
     pub status: Option<i16>,
-    pub bio: Option<String>,
+    pub bio: Option<Option<String>>,
 }
 
 impl UpdateUserCmd {

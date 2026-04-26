@@ -45,6 +45,10 @@ export interface DictData {
   updated_at: string
 }
 
+export interface DictTreeNodeData extends DictData {
+  children: DictTreeNodeData[]
+}
+
 export interface GetUserParam {
   id: string
 }
@@ -70,13 +74,13 @@ export interface CreateUserParam {
 
 export interface UpdateUserParam {
   id: string
-  email?: string
-  phone?: string
-  nickname?: string
-  avatar_url?: string
+  email?: string | null
+  phone?: string | null
+  nickname?: string | null
+  avatar_url?: string | null
   gender?: UserGender
   status?: UserStatus
-  bio?: string
+  bio?: string | null
 }
 
 export interface DeleteUserParam {
@@ -94,6 +98,17 @@ export interface PageDictParam {
   offset?: number
 }
 
+export interface TreeDictParam {
+  keyword?: string
+  status?: DictStatus
+}
+
+export interface ChildrenDictParam {
+  parent_id?: string | null
+  keyword?: string
+  status?: DictStatus
+}
+
 export interface CreateDictParam {
   tenant_id?: number
   parent_id?: number
@@ -106,14 +121,12 @@ export interface CreateDictParam {
   sort: number
   status: DictStatus
   is_builtin: boolean
-  is_leaf: boolean
   ext: string
 }
 
 export interface UpdateDictParam {
   id: string
   tenant_id?: number
-  parent_id?: number
   dict_type?: string
   dict_key?: string
   dict_value?: string
@@ -123,7 +136,6 @@ export interface UpdateDictParam {
   sort?: number
   status?: DictStatus
   is_builtin?: boolean
-  is_leaf?: boolean
   ext?: string
 }
 
@@ -145,9 +157,10 @@ export interface UserFormValues {
 
 export type PaginateUser = PaginateResp<UserData>
 export type PaginateDict = PaginateResp<DictData>
+export type DictTreeResp = { items: DictTreeNodeData[] }
+export type DictChildrenResp = { items: DictData[] }
 
 export interface DictFormValues {
-  parent_id: string
   dict_type: string
   dict_key: string
   dict_value: string

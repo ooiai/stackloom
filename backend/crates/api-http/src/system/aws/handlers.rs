@@ -1,3 +1,4 @@
+use infra_system::aws::remote_upload::{RemoteResourceType, upload_remote_url_to_storage};
 use neocrates::{
     aws::sts_service::AwsStsVo,
     axum::{Extension, Json, extract::State},
@@ -7,7 +8,6 @@ use neocrates::{
     tracing,
 };
 use validator::Validate;
-use infra_system::aws::remote_upload::{RemoteResourceType, upload_remote_url_to_storage};
 
 use crate::system::{
     SysHttpState,

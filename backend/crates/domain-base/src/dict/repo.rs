@@ -1,6 +1,9 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{Dict, dict::DictPageQuery};
+use crate::{
+    Dict,
+    dict::{DictChildrenQuery, DictPageQuery, DictTreeQuery},
+};
 
 #[async_trait]
 pub trait DictRepository: Send + Sync {
@@ -30,6 +33,42 @@ pub trait DictRepository: Send + Sync {
     /// # Returns
     /// * `AppResult<(Vec<Dict>, i64)>` - Paged dicts and total count
     async fn page(&self, query: &DictPageQuery) -> AppResult<(Vec<Dict>, i64)>;
+
+    /// Load dict items for tree building.
+    ///
+    /// # Arguments
+    /// * `query` - Tree filter query
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Dict>>` - Flat dict items for tree building
+    async fn list_for_tree(&self, query: &DictTreeQuery) -> AppResult<Vec<Dict>>;
+
+    /// Load direct dict children by parent id.
+    ///
+    /// # Arguments
+    /// * `query` - Child list query
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Dict>>` - Direct child dict items
+    async fn list_by_parent(&self, query: &DictChildrenQuery) -> AppResult<Vec<Dict>>;
+
+    /// Count direct dict children by parent id.
+    ///
+    /// # Arguments
+    /// * `parent_id` - Parent dict id
+    ///
+    /// # Returns
+    /// * `AppResult<i64>` - Direct child count
+    async fn count_by_parent_id(&self, parent_id: i64) -> AppResult<i64>;
+
+    /// Find a dict and all descendant ids.
+    ///
+    /// # Arguments
+    /// * `id` - Root dict id
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<i64>>` - Root and descendant ids
+    async fn find_descendant_ids(&self, id: i64) -> AppResult<Vec<i64>>;
 
     /// Update an existing Dict.
     ///

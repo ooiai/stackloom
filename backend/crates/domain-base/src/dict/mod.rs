@@ -154,6 +154,25 @@ impl Dict {
 
         Ok(())
     }
+
+    pub fn matches_keyword(&self, keyword: &str) -> bool {
+        let keyword = keyword.trim().to_lowercase();
+        if keyword.is_empty() {
+            return true;
+        }
+
+        self.dict_type.to_lowercase().contains(&keyword)
+            || self.dict_key.to_lowercase().contains(&keyword)
+            || self.dict_value.to_lowercase().contains(&keyword)
+            || self.label.to_lowercase().contains(&keyword)
+            || self.value_type.to_lowercase().contains(&keyword)
+            || self
+                .description
+                .as_deref()
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains(&keyword)
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -290,9 +309,39 @@ pub struct PageDictCmd {
 }
 
 #[derive(Debug, Clone, Default)]
+pub struct TreeDictCmd {
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ChildrenDictCmd {
+    pub parent_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone)]
+pub struct RemoveCascadeDictCmd {
+    pub id: i64,
+}
+
+#[derive(Debug, Clone, Default)]
 pub struct DictPageQuery {
     pub keyword: Option<String>,
     pub status: Option<i16>,
     pub limit: Option<i64>,
     pub offset: Option<i64>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct DictTreeQuery {
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct DictChildrenQuery {
+    pub parent_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
 }

@@ -5,11 +5,8 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   buildCreateDictParam,
   buildDictBreadcrumb,
-  buildDictTree,
   buildUpdateDictParam,
-  filterDictTree,
   findDictNode,
-  getDirectDictChildren,
   getExpandedIdsForTree,
 } from "@/lib/dicts"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
@@ -29,7 +26,6 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 
-const ALL_DICTS_LIMIT = 500
 const EMPTY_DICTS: DictData[] = []
 
 interface DictSheetState {
@@ -63,23 +59,18 @@ export function useDictsController() {
   const [sheet, setSheet] = useState<DictSheetState>(DEFAULT_SHEET_STATE)
   const debouncedTreeSearch = useDebouncedValue(treeSearch, 200)
 
-  const dictsQuery = useQuery({
-    queryKey: ["base", "dicts", "all"],
+  const treeQuery = useQuery({
+    queryKey: ["base", "dicts", "tree", debouncedTreeSearch.trim()],
     queryFn: () =>
-      dictApi.page({
-        limit: ALL_DICTS_LIMIT,
-        offset: 0,
+      dictApi.tree({
+        keyword: debouncedTreeSearch.trim() || undefined,
       }),
     placeholderData: keepPreviousData,
   })
 
-  const allDicts = dictsQuery.data?.items ?? EMPTY_DICTS
-  const total = dictsQuery.data?.total ?? 0
-
-  const tree = useMemo(() => buildDictTree(allDicts), [allDicts])
-  const filteredTree = useMemo(
-    () => filterDictTree(tree, debouncedTreeSearch),
-    [debouncedTreeSearch, tree]
+  const tree = useMemo(
+    () => treeQuery.data?.items ?? [],
+    [treeQuery.data?.items]
   )
   const selectedNode = useMemo(
     () => (rawSelectedNodeId ? findDictNode(tree, rawSelectedNodeId) : null),
@@ -91,20 +82,31 @@ export function useDictsController() {
       selectedNodeId ? (buildDictBreadcrumb(tree, selectedNodeId) ?? []) : [],
     [selectedNodeId, tree]
   )
+
+  const childrenQuery = useQuery({
+    queryKey: ["base", "dicts", "children", selectedNodeId],
+    queryFn: () =>
+      dictApi.children({
+        parent_id: selectedNodeId,
+      }),
+    enabled: selectedNodeId !== null,
+    placeholderData: keepPreviousData,
+  })
+
   const children = useMemo(
-    () => getDirectDictChildren(allDicts, selectedNodeId),
-    [allDicts, selectedNodeId]
+    () => childrenQuery.data?.items ?? EMPTY_DICTS,
+    [childrenQuery.data?.items]
   )
 
   const expandedIds = useMemo(() => {
     const selectedPathIds = new Set(breadcrumb.map((node) => node.id))
 
     if (debouncedTreeSearch.trim()) {
-      return getExpandedIdsForTree(filteredTree)
+      return getExpandedIdsForTree(tree)
     }
 
     return new Set([...manualExpandedIds, ...selectedPathIds])
-  }, [breadcrumb, debouncedTreeSearch, filteredTree, manualExpandedIds])
+  }, [breadcrumb, debouncedTreeSearch, manualExpandedIds, tree])
 
   useEffect(() => {
     const params = new URLSearchParams()
@@ -125,16 +127,7 @@ export function useDictsController() {
 
   const createMutation = useMutation({
     mutationFn: async (values: DictFormValues) => {
-      const parent = sheet.parent
-
-      await dictApi.create(buildCreateDictParam(values))
-
-      if (parent?.is_leaf) {
-        await dictApi.update({
-          id: parent.id,
-          is_leaf: false,
-        })
-      }
+      await dictApi.create(buildCreateDictParam(values, sheet.parent?.id))
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["base", "dicts"] })
@@ -154,11 +147,7 @@ export function useDictsController() {
       dict: DictData
       values: DictFormValues
     }) => {
-      const currentNode = findDictNode(tree, dict.id)
-      const params = buildUpdateDictParam(dict.id, values)
-      params.is_leaf = (currentNode?.children.length ?? 0) === 0
-
-      await dictApi.update(params)
+      await dictApi.update(buildUpdateDictParam(dict.id, values))
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["base", "dicts"] })
@@ -169,19 +158,10 @@ export function useDictsController() {
 
   const deleteMutation = useMutation({
     mutationFn: async (dict: DictData) => {
-      await dictApi.remove([dict.id])
-
-      const parentId = dict.parent_id
-      if (!parentId) {
-        return
-      }
-
-      const siblings = getDirectDictChildren(allDicts, parentId)
-      if (siblings.length === 1) {
-        await dictApi.update({
-          id: parentId,
-          is_leaf: true,
-        })
+      if (dict.is_leaf) {
+        await dictApi.remove([dict.id])
+      } else {
+        await dictApi.removeCascade(dict.id)
       }
     },
     onSuccess: async (_, dict) => {
@@ -206,7 +186,9 @@ export function useDictsController() {
 
   const openAddChild = useCallback(
     (parentId: string) => {
-      const parentNode = findDictNode(tree, parentId)
+      const parentNode =
+        findDictNode(tree, parentId) ??
+        (selectedNode?.id === parentId ? selectedNode : null)
       if (!parentNode) {
         return
       }
@@ -224,7 +206,7 @@ export function useDictsController() {
         parent: parentNode,
       })
     },
-    [tree]
+    [selectedNode, tree]
   )
 
   const openEdit = useCallback(
@@ -233,10 +215,12 @@ export function useDictsController() {
         mode: "update",
         open: true,
         dict,
-        parent: dict.parent_id ? findDictNode(tree, dict.parent_id) : null,
+        parent:
+          (dict.parent_id ? findDictNode(tree, dict.parent_id) : null) ??
+          (selectedNode?.id === dict.parent_id ? selectedNode : null),
       })
     },
-    [tree]
+    [selectedNode, tree]
   )
 
   const closeSheet = useCallback(() => {
@@ -300,19 +284,11 @@ export function useDictsController() {
 
   const removeDict = useCallback(
     (dict: DictData) => {
-      const currentNode = findDictNode(tree, dict.id)
-      const childCount = currentNode?.children.length ?? 0
-
-      if (childCount > 0) {
-        toast.error(
-          `“${dict.label}”下还有 ${childCount} 个子级，当前后端不支持级联删除，请先处理子级。`
-        )
-        return
-      }
-
       dialog.show({
         title: "删除字典项",
-        description: `确定删除“${dict.label}”吗？此操作无法撤销。`,
+        description: dict.is_leaf
+          ? `确定删除“${dict.label}”吗？此操作无法撤销。`
+          : `确定删除“${dict.label}”以及其全部子级吗？此操作无法撤销。`,
         confirmText: "删除",
         cancelText: "取消",
         autoCloseOnConfirm: true,
@@ -321,29 +297,28 @@ export function useDictsController() {
         },
       })
     },
-    [deleteMutation, dialog, tree]
+    [deleteMutation, dialog]
   )
 
   return {
     view: {
       treeSearch,
-      total,
-      loadedCount: allDicts.length,
       tree,
-      filteredTree,
       selectedNodeId,
       selectedNode,
       breadcrumb,
       children,
       expandedIds,
-      isFetching: dictsQuery.isFetching,
-      isInitialLoading: dictsQuery.isLoading,
-      isTreeTruncated: total > allDicts.length,
+      isFetching: treeQuery.isFetching || childrenQuery.isFetching,
+      isInitialLoading: treeQuery.isLoading,
       onTreeSearchChange: setTreeSearch,
       onToggleExpand: toggleExpand,
       onSelectNode: selectNode,
       onRefresh: () => {
-        void dictsQuery.refetch()
+        void treeQuery.refetch()
+        if (selectedNodeId) {
+          void childrenQuery.refetch()
+        }
       },
       onOpenCreateRoot: openCreateRoot,
       onOpenAddChild: openAddChild,

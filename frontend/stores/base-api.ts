@@ -1,17 +1,21 @@
 import { post } from "@/lib/http/axios"
 import { BASE_CURRENT_MENU_ITEMS } from "@/lib/base-navigation"
 import type {
+  ChildrenDictParam,
   CreateDictParam,
   CreateUserParam,
   DeleteDictParam,
   DeleteUserParam,
+  DictChildrenResp,
   DictData,
+  DictTreeResp,
   GetUserParam,
   GetDictParam,
   PageDictParam,
   PaginateDict,
   PageUserParam,
   PaginateUser,
+  TreeDictParam,
   UpdateDictParam,
   UpdateUserParam,
   UserData,
@@ -55,11 +59,20 @@ export const dictApi = {
   page: async (params: PageDictParam): Promise<PaginateDict> => {
     return post(`${BASE_DICT_API_PREFIX}/page`, params)
   },
+  tree: async (params: TreeDictParam): Promise<DictTreeResp> => {
+    return post(`${BASE_DICT_API_PREFIX}/tree`, params)
+  },
+  children: async (params: ChildrenDictParam): Promise<DictChildrenResp> => {
+    return post(`${BASE_DICT_API_PREFIX}/children`, params)
+  },
   update: async (params: UpdateDictParam): Promise<void> => {
     return post(`${BASE_DICT_API_PREFIX}/update`, params)
   },
   remove: async (ids: string[]): Promise<void> => {
     const params: DeleteDictParam = { ids }
     return post(`${BASE_DICT_API_PREFIX}/remove`, params)
+  },
+  removeCascade: async (id: string): Promise<void> => {
+    return post(`${BASE_DICT_API_PREFIX}/remove_cascade`, { id })
   },
 }

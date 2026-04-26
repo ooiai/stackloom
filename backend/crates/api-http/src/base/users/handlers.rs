@@ -26,7 +26,7 @@ pub type UsersState = BaseHttpState;
 ///
 /// OpenAPI
 /// - `operationId`: `ApiHttpBaseUsersCreate`
-/// - `path`: `POST /base/user/create`
+/// - `path`: `POST /base/users/create`
 /// - `summary`: `create` handler
 /// - `response 200`: `JSON`
 pub async fn create(
@@ -82,7 +82,7 @@ pub async fn get(
 ///
 /// OpenAPI
 /// - `operationId`: `ApiHttpBaseUsersPage`
-/// - `path`: `POST /base/user/page`
+/// - `path`: `POST /base/users/page`
 /// - `summary`: `page` handler
 /// - `response 200`: `JSON`
 pub async fn page(
@@ -116,7 +116,7 @@ pub async fn page(
 ///
 /// OpenAPI
 /// - `operationId`: `ApiHttpBaseUsersUpdate`
-/// - `path`: `POST /base/user/update`
+/// - `path`: `POST /base/users/update`
 /// - `summary`: `update` handler
 /// - `response 200`: `JSON`
 pub async fn update(
@@ -148,7 +148,7 @@ pub async fn update(
 ///
 /// OpenAPI
 /// - `operationId`: `ApiHttpBaseUsersDelete`
-/// - `path`: `POST /base/user/remove`
+/// - `path`: `POST /base/users/remove`
 /// - `summary`: `delete` handler
 /// - `response 200`: `JSON`
 pub async fn delete(

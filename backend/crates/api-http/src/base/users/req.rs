@@ -3,7 +3,53 @@ use neocrates::{
     helper::core::{serde_helpers, snowflake::generate_sonyflake_id},
     serde::Deserialize,
 };
-use validator::Validate;
+use validator::{Validate, ValidateEmail, ValidateUrl, ValidationError};
+
+fn validate_nullable_email(email: &String) -> Result<(), ValidationError> {
+    let email = email.trim();
+    if email.is_empty() || !email.validate_email() {
+        return Err(ValidationError::new("email"));
+    }
+    if email.len() > 255 {
+        return Err(ValidationError::new("length"));
+    }
+
+    Ok(())
+}
+
+fn validate_nullable_phone(phone: &String) -> Result<(), ValidationError> {
+    let phone = phone.trim();
+    if phone.is_empty() || phone.len() > 20 {
+        return Err(ValidationError::new("length"));
+    }
+
+    Ok(())
+}
+
+fn validate_nullable_nickname(nickname: &String) -> Result<(), ValidationError> {
+    if nickname.trim().len() > 100 {
+        return Err(ValidationError::new("length"));
+    }
+
+    Ok(())
+}
+
+fn validate_nullable_avatar_url(avatar_url: &String) -> Result<(), ValidationError> {
+    let avatar_url = avatar_url.trim();
+    if avatar_url.is_empty() || !avatar_url.validate_url() {
+        return Err(ValidationError::new("url"));
+    }
+
+    Ok(())
+}
+
+fn validate_nullable_bio(bio: &String) -> Result<(), ValidationError> {
+    if bio.trim().len() > 2000 {
+        return Err(ValidationError::new("length"));
+    }
+
+    Ok(())
+}
 
 #[derive(Debug, Clone, Deserialize, Validate)]
 pub struct CreateUserReq {
@@ -63,17 +109,21 @@ pub struct UpdateUserReq {
     #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
     pub id: i64,
 
-    #[validate(email)]
-    pub email: Option<String>,
+    #[serde(default)]
+    #[validate(custom(function = "validate_nullable_email"))]
+    pub email: Option<Option<String>>,
 
-    #[validate(length(min = 1, max = 20))]
-    pub phone: Option<String>,
+    #[serde(default)]
+    #[validate(custom(function = "validate_nullable_phone"))]
+    pub phone: Option<Option<String>>,
 
-    #[validate(length(max = 100))]
-    pub nickname: Option<String>,
+    #[serde(default)]
+    #[validate(custom(function = "validate_nullable_nickname"))]
+    pub nickname: Option<Option<String>>,
 
-    #[validate(url)]
-    pub avatar_url: Option<String>,
+    #[serde(default)]
+    #[validate(custom(function = "validate_nullable_avatar_url"))]
+    pub avatar_url: Option<Option<String>>,
 
     #[validate(range(min = 0, max = 2))]
     pub gender: Option<i16>,
@@ -81,8 +131,9 @@ pub struct UpdateUserReq {
     #[validate(range(min = 0, max = 2))]
     pub status: Option<i16>,
 
-    #[validate(length(max = 2000))]
-    pub bio: Option<String>,
+    #[serde(default)]
+    #[validate(custom(function = "validate_nullable_bio"))]
+    pub bio: Option<Option<String>>,
 }
 
 impl From<UpdateUserReq> for UpdateUserCmd {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 
 import { DictMutateFormFields } from "@/components/base/dicts/dict-mutate-form-fields"
 import { useDictMutateForm } from "@/components/base/dicts/hooks/use-dict-mutate-form"
@@ -59,10 +59,36 @@ export function DictMutateSheet({
 
     return getDictDisplayName(parent)
   }, [parent])
-  const { form } = useDictMutateForm({ mode, dict, parent, onSubmit })
+  const { defaultValues, form } = useDictMutateForm({
+    mode,
+    dict,
+    parent,
+    onSubmit,
+  })
+
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+
+    form.reset(defaultValues)
+  }, [defaultValues, form, open])
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
+      form.reset(defaultValues)
+    }
+
+    onOpenChange(nextOpen)
+  }
+
+  const handleCancel = () => {
+    form.reset(defaultValues)
+    onOpenChange(false)
+  }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent className="w-full sm:max-w-3xl">
         <DictMutateSheetHeader
           title={header.title}
@@ -86,7 +112,7 @@ export function DictMutateSheet({
             <DictMutateSheetFooter
               isBusy={isPending || form.state.isSubmitting}
               submitLabel={header.submitLabel}
-              onCancel={() => onOpenChange(false)}
+              onCancel={handleCancel}
             />
           </SheetFooter>
         </form>

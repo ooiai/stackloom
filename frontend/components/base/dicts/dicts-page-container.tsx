@@ -12,10 +12,7 @@ import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
 interface DictsPageViewProps {
   treeSearch: string
-  total: number
-  loadedCount: number
   tree: DictTreeNode[]
-  filteredTree: DictTreeNode[]
   selectedNodeId: string | null
   selectedNode: DictTreeNode | null
   breadcrumb: DictTreeNode[]
@@ -23,7 +20,6 @@ interface DictsPageViewProps {
   expandedIds: Set<string>
   isFetching: boolean
   isInitialLoading: boolean
-  isTreeTruncated: boolean
   onTreeSearchChange: (value: string) => void
   onToggleExpand: (id: string) => void
   onSelectNode: (id: string | null) => void
@@ -36,10 +32,7 @@ interface DictsPageViewProps {
 
 export function DictsPageView({
   treeSearch,
-  total,
-  loadedCount,
   tree,
-  filteredTree,
   selectedNodeId,
   selectedNode,
   breadcrumb,
@@ -47,7 +40,6 @@ export function DictsPageView({
   expandedIds,
   isFetching,
   isInitialLoading,
-  isTreeTruncated,
   onTreeSearchChange,
   onToggleExpand,
   onSelectNode,
@@ -85,17 +77,10 @@ export function DictsPageView({
         onOpenCreateRoot={onOpenCreateRoot}
       />
 
-      {isTreeTruncated ? (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          当前共返回 {total} 条字典数据，前端本次加载了 {loadedCount}{" "}
-          条用于构建树。若字典量继续增大，需要补后端树形接口。
-        </div>
-      ) : null}
-
       <div className="grid gap-5 xl:grid-cols-[320px_minmax(0,1fr)]">
         <DictsTreeSidebar
           treeSearch={treeSearch}
-          filteredTree={filteredTree}
+          tree={tree}
           selectedNodeId={selectedNodeId}
           expandedIds={expandedIds}
           isInitialLoading={isInitialLoading}

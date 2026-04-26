@@ -1,15 +1,14 @@
 use super::{
     req::{
-        CreateDictReq,
-        DeleteDictReq,
-        GetDictReq,
-        PageDictReq,
-        UpdateDictReq,
+        ChildrenDictReq, CreateDictReq, DeleteDictReq, GetDictReq, PageDictReq,
+        RemoveCascadeDictReq, TreeDictReq, UpdateDictReq,
     },
-    resp::{DictResp, PaginateDictResp},
+    resp::{DictChildrenResp, DictResp, DictTreeNodeResp, DictTreeResp, PaginateDictResp},
 };
 use crate::base::BaseHttpState;
-use domain_base::{CreateDictCmd, PageDictCmd, UpdateDictCmd};
+use domain_base::{
+    ChildrenDictCmd, CreateDictCmd, PageDictCmd, RemoveCascadeDictCmd, TreeDictCmd, UpdateDictCmd,
+};
 use neocrates::{
     axum::{Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
@@ -92,6 +91,54 @@ pub async fn page(
     Ok(Json(resp))
 }
 
+/// Load the dict tree.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<DictTreeResp>>` - The dict tree response.
+pub async fn tree(
+    State(state): State<DictsState>,
+    DetailedJson(req): DetailedJson<TreeDictReq>,
+) -> AppResult<Json<DictTreeResp>> {
+    tracing::info!("...Tree Dict Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: TreeDictCmd = req.into();
+    let dicts = state.dict_service.tree(cmd).await?;
+    let items = DictTreeNodeResp::from_flat(dicts);
+
+    Ok(Json(DictTreeResp::new(items)))
+}
+
+/// Load direct dict children by parent.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<DictChildrenResp>>` - The direct child response.
+pub async fn children(
+    State(state): State<DictsState>,
+    DetailedJson(req): DetailedJson<ChildrenDictReq>,
+) -> AppResult<Json<DictChildrenResp>> {
+    tracing::info!("...Children Dict Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: ChildrenDictCmd = req.into();
+    let dicts = state.dict_service.children(cmd).await?;
+    let items = dicts.into_iter().map(DictResp::from).collect::<Vec<_>>();
+
+    Ok(Json(DictChildrenResp::new(items)))
+}
+
 /// Update an existing dict.
 ///
 /// # Arguments
@@ -116,7 +163,7 @@ pub async fn update(
     Ok(Json(()))
 }
 
-/// Delete dicts.
+/// Delete leaf dicts.
 ///
 /// # Arguments
 /// * `state` - The base HTTP state.
@@ -134,6 +181,29 @@ pub async fn delete(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     state.dict_service.delete(req.ids).await?;
+
+    Ok(Json(()))
+}
+
+/// Delete a dict and all descendants.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the cascade delete operation.
+pub async fn remove_cascade(
+    State(state): State<DictsState>,
+    DetailedJson(req): DetailedJson<RemoveCascadeDictReq>,
+) -> AppResult<Json<()>> {
+    tracing::info!("...Remove Cascade Dict Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: RemoveCascadeDictCmd = req.into();
+    state.dict_service.remove_cascade(cmd).await?;
 
     Ok(Json(()))
 }

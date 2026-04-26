@@ -30,7 +30,7 @@ import {
 
 interface DictsTreeSidebarProps {
   treeSearch: string
-  filteredTree: DictTreeNode[]
+  tree: DictTreeNode[]
   selectedNodeId: string | null
   expandedIds: Set<string>
   isInitialLoading: boolean
@@ -142,7 +142,9 @@ function DictTreeNodeItem({
           ) : null}
 
           <DropdownMenu>
-            <DropdownMenuTrigger render={<Button size="icon-xs" variant="ghost" />}>
+            <DropdownMenuTrigger
+              render={<Button size="icon-xs" variant="ghost" />}
+            >
               <EllipsisIcon className="size-3.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" side="bottom">
@@ -191,7 +193,7 @@ function DictTreeNodeItem({
 
 export function DictsTreeSidebar({
   treeSearch,
-  filteredTree,
+  tree,
   selectedNodeId,
   expandedIds,
   isInitialLoading,
@@ -241,7 +243,7 @@ export function DictsTreeSidebar({
               <RefreshCwIcon className="mr-2 size-4 animate-spin" />
               正在加载...
             </div>
-          ) : filteredTree.length === 0 ? (
+          ) : tree.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
               <BookMarkedIcon className="size-8 text-muted-foreground/50" />
               <div className="space-y-1">
@@ -249,7 +251,9 @@ export function DictsTreeSidebar({
                   {treeSearch.trim() ? "没有匹配的节点" : "暂无数据"}
                 </p>
                 <p className="max-w-xs text-sm leading-6 text-muted-foreground">
-                  {treeSearch.trim() ? "换个关键词，或清空搜索" : "先创建根节点，再补充子项"}
+                  {treeSearch.trim()
+                    ? "换个关键词，或清空搜索"
+                    : "先创建根节点，再补充子项"}
                 </p>
               </div>
               {!treeSearch.trim() ? (
@@ -260,7 +264,7 @@ export function DictsTreeSidebar({
               ) : null}
             </div>
           ) : (
-            filteredTree.map((node) => (
+            tree.map((node) => (
               <DictTreeNodeItem
                 key={node.id}
                 node={node}

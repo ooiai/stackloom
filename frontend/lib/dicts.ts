@@ -6,6 +6,7 @@ import type {
   DictFormValues,
   DictMutateMode,
   DictStatus,
+  DictTreeNodeData,
   DictValueType,
   UpdateDictParam,
 } from "@/types/base.types"
@@ -13,9 +14,7 @@ import type { BadgeProps } from "@/components/reui/badge"
 
 export const DICT_ROOT_NODE_ID = "__dict_root__"
 
-export interface DictTreeNode extends DictData {
-  children: DictTreeNode[]
-}
+export type DictTreeNode = DictTreeNodeData
 
 type DictStatusMeta = {
   label: string
@@ -47,7 +46,6 @@ const optionalExtSchema = z
   .transform((value) => (value === "" ? "{}" : value))
 
 export const dictFormSchema = z.object({
-  parent_id: z.string(),
   dict_type: z
     .string()
     .trim()
@@ -124,8 +122,8 @@ function sortDictNodes(a: DictData, b: DictData) {
   return a.label.localeCompare(b.label, "zh-CN")
 }
 
-function parseOptionalId(value: string) {
-  if (!value.trim()) {
+function parseOptionalId(value: string | null | undefined) {
+  if (!value?.trim()) {
     return undefined
   }
 
@@ -258,7 +256,6 @@ export function getDefaultDictFormValues(
   parent: DictData | null
 ): DictFormValues {
   return {
-    parent_id: dict?.parent_id ?? parent?.id ?? "",
     dict_type: dict?.dict_type ?? parent?.dict_type ?? "",
     dict_key: dict?.dict_key ?? "",
     dict_value: dict?.dict_value ?? "",
@@ -288,11 +285,14 @@ export function validateDictForm(values: DictFormValues) {
   ) as Partial<Record<keyof DictFormValues, string>>
 }
 
-export function buildCreateDictParam(values: DictFormValues): CreateDictParam {
+export function buildCreateDictParam(
+  values: DictFormValues,
+  parentId?: string | null
+): CreateDictParam {
   const parsed = dictFormSchema.parse(values)
 
   return {
-    parent_id: parseOptionalId(parsed.parent_id),
+    parent_id: parseOptionalId(parentId),
     dict_type: parsed.dict_type,
     dict_key: parsed.dict_key,
     dict_value: parsed.dict_value,
@@ -302,7 +302,6 @@ export function buildCreateDictParam(values: DictFormValues): CreateDictParam {
     sort: parsed.sort,
     status: parsed.status,
     is_builtin: parsed.is_builtin,
-    is_leaf: true,
     ext: parsed.ext,
   }
 }
@@ -315,7 +314,6 @@ export function buildUpdateDictParam(
 
   return {
     id,
-    parent_id: parseOptionalId(parsed.parent_id),
     dict_type: parsed.dict_type,
     dict_key: parsed.dict_key,
     dict_value: parsed.dict_value,
@@ -325,7 +323,6 @@ export function buildUpdateDictParam(
     sort: parsed.sort,
     status: parsed.status,
     is_builtin: parsed.is_builtin,
-    is_leaf: true,
     ext: parsed.ext,
   }
 }

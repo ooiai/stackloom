@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use domain_base::Dict;
 use neocrates::{
     chrono::{DateTime, Utc},
@@ -9,7 +11,9 @@ use neocrates::{
 pub struct DictResp {
     #[serde(serialize_with = "serde_helpers::serialize_i64")]
     pub id: i64,
+    #[serde(serialize_with = "serde_helpers::serialize_option_i64")]
     pub tenant_id: Option<i64>,
+    #[serde(serialize_with = "serde_helpers::serialize_option_i64")]
     pub parent_id: Option<i64>,
     pub dict_type: String,
     pub dict_key: String,
@@ -50,6 +54,45 @@ impl From<Dict> for DictResp {
 }
 
 #[derive(Debug, Clone, Serialize)]
+pub struct DictTreeNodeResp {
+    #[serde(flatten)]
+    pub dict: DictResp,
+    pub children: Vec<DictTreeNodeResp>,
+}
+
+impl DictTreeNodeResp {
+    pub fn from_flat(items: Vec<Dict>) -> Vec<Self> {
+        let mut items_by_parent = HashMap::<Option<i64>, Vec<Dict>>::new();
+        for item in items {
+            items_by_parent
+                .entry(item.parent_id)
+                .or_default()
+                .push(item);
+        }
+
+        fn build_branch(
+            parent_id: Option<i64>,
+            items_by_parent: &mut HashMap<Option<i64>, Vec<Dict>>,
+        ) -> Vec<DictTreeNodeResp> {
+            let nodes = items_by_parent.remove(&parent_id).unwrap_or_default();
+
+            nodes
+                .into_iter()
+                .map(|dict| {
+                    let id = dict.id;
+                    DictTreeNodeResp {
+                        dict: DictResp::from(dict),
+                        children: build_branch(Some(id), items_by_parent),
+                    }
+                })
+                .collect()
+        }
+
+        build_branch(None, &mut items_by_parent)
+    }
+}
+
+#[derive(Debug, Clone, Serialize)]
 pub struct PaginateDictResp {
     pub items: Vec<DictResp>,
     pub total: usize,
@@ -58,6 +101,28 @@ pub struct PaginateDictResp {
 impl PaginateDictResp {
     pub fn new(items: Vec<DictResp>, total: usize) -> Self {
         Self { items, total }
+    }
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct DictTreeResp {
+    pub items: Vec<DictTreeNodeResp>,
+}
+
+impl DictTreeResp {
+    pub fn new(items: Vec<DictTreeNodeResp>) -> Self {
+        Self { items }
+    }
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct DictChildrenResp {
+    pub items: Vec<DictResp>,
+}
+
+impl DictChildrenResp {
+    pub fn new(items: Vec<DictResp>) -> Self {
+        Self { items }
     }
 }
 

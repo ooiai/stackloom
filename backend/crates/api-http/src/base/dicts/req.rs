@@ -1,4 +1,6 @@
-use domain_base::{CreateDictCmd, PageDictCmd, UpdateDictCmd};
+use domain_base::{
+    ChildrenDictCmd, CreateDictCmd, PageDictCmd, RemoveCascadeDictCmd, TreeDictCmd, UpdateDictCmd,
+};
 use neocrates::{
     helper::core::{serde_helpers, snowflake::generate_sonyflake_id},
     serde::Deserialize,
@@ -7,7 +9,9 @@ use validator::Validate;
 
 #[derive(Debug, Clone, Deserialize, Validate)]
 pub struct CreateDictReq {
+    #[serde(default, deserialize_with = "serde_helpers::deserialize_option_i64")]
     pub tenant_id: Option<i64>,
+    #[serde(default, deserialize_with = "serde_helpers::deserialize_option_i64")]
     pub parent_id: Option<i64>,
     pub dict_type: String,
     pub dict_key: String,
@@ -18,7 +22,6 @@ pub struct CreateDictReq {
     pub sort: i32,
     pub status: i16,
     pub is_builtin: bool,
-    pub is_leaf: bool,
     pub ext: String,
 }
 
@@ -37,7 +40,7 @@ impl From<CreateDictReq> for CreateDictCmd {
             sort: req.sort,
             status: req.status,
             is_builtin: req.is_builtin,
-            is_leaf: req.is_leaf,
+            is_leaf: true,
             ext: req.ext,
         }
     }
@@ -54,7 +57,9 @@ pub struct UpdateDictReq {
     #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
     pub id: i64,
 
+    #[serde(default, deserialize_with = "serde_helpers::deserialize_option_i64")]
     pub tenant_id: Option<i64>,
+    #[serde(default, deserialize_with = "serde_helpers::deserialize_option_i64")]
     pub parent_id: Option<i64>,
     pub dict_type: Option<String>,
     pub dict_key: Option<String>,
@@ -65,7 +70,6 @@ pub struct UpdateDictReq {
     pub sort: Option<i32>,
     pub status: Option<i16>,
     pub is_builtin: Option<bool>,
-    pub is_leaf: Option<bool>,
     pub ext: Option<String>,
 }
 
@@ -83,7 +87,7 @@ impl From<UpdateDictReq> for UpdateDictCmd {
             sort: req.sort,
             status: req.status,
             is_builtin: req.is_builtin,
-            is_leaf: req.is_leaf,
+            is_leaf: None,
             ext: req.ext,
         }
     }
@@ -92,11 +96,8 @@ impl From<UpdateDictReq> for UpdateDictCmd {
 #[derive(Debug, Clone, Deserialize, Validate, Default)]
 pub struct PageDictReq {
     pub keyword: Option<String>,
-
     pub status: Option<i16>,
-
     pub limit: Option<i64>,
-
     pub offset: Option<i64>,
 }
 
@@ -112,7 +113,52 @@ impl From<PageDictReq> for PageDictCmd {
 }
 
 #[derive(Debug, Clone, Deserialize, Validate, Default)]
+pub struct TreeDictReq {
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+impl From<TreeDictReq> for TreeDictCmd {
+    fn from(req: TreeDictReq) -> Self {
+        Self {
+            keyword: req.keyword,
+            status: req.status,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Validate, Default)]
+pub struct ChildrenDictReq {
+    #[serde(default, deserialize_with = "serde_helpers::deserialize_option_i64")]
+    pub parent_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+impl From<ChildrenDictReq> for ChildrenDictCmd {
+    fn from(req: ChildrenDictReq) -> Self {
+        Self {
+            parent_id: req.parent_id,
+            keyword: req.keyword,
+            status: req.status,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Validate, Default)]
 pub struct DeleteDictReq {
     #[serde(deserialize_with = "serde_helpers::deserialize_vec_i64")]
     pub ids: Vec<i64>,
+}
+
+#[derive(Debug, Clone, Deserialize, Validate, Default)]
+pub struct RemoveCascadeDictReq {
+    #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
+    pub id: i64,
+}
+
+impl From<RemoveCascadeDictReq> for RemoveCascadeDictCmd {
+    fn from(req: RemoveCascadeDictReq) -> Self {
+        Self { id: req.id }
+    }
 }

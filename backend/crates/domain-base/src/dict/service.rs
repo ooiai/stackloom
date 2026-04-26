@@ -1,6 +1,9 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{CreateDictCmd, PageDictCmd, UpdateDictCmd, Dict};
+use crate::{
+    ChildrenDictCmd, CreateDictCmd, Dict, PageDictCmd, RemoveCascadeDictCmd, TreeDictCmd,
+    UpdateDictCmd,
+};
 
 #[async_trait]
 pub trait DictService: Send + Sync {
@@ -31,6 +34,24 @@ pub trait DictService: Send + Sync {
     /// * `AppResult<(Vec<Dict>, i64)>` - The result of the page operation.
     async fn page(&self, cmd: PageDictCmd) -> AppResult<(Vec<Dict>, i64)>;
 
+    /// Load the dict tree.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing tree filter details.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Dict>>` - The dict tree as a flat list.
+    async fn tree(&self, cmd: TreeDictCmd) -> AppResult<Vec<Dict>>;
+
+    /// Load direct dict children by parent.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing parent and filter details.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Dict>>` - Direct child dict items.
+    async fn children(&self, cmd: ChildrenDictCmd) -> AppResult<Vec<Dict>>;
+
     /// Update an existing dict.
     ///
     /// # Arguments
@@ -49,4 +70,13 @@ pub trait DictService: Send + Sync {
     /// # Returns
     /// * `AppResult<()>` - The result of the delete operation.
     async fn delete(&self, ids: Vec<i64>) -> AppResult<()>;
+
+    /// Delete a dict and all its descendants.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing the root dict id.
+    ///
+    /// # Returns
+    /// * `AppResult<()>` - The result of the cascade delete operation.
+    async fn remove_cascade(&self, cmd: RemoveCascadeDictCmd) -> AppResult<()>;
 }

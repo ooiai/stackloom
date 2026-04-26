@@ -3,15 +3,12 @@ pub mod req;
 pub mod resp;
 
 use super::BaseHttpState;
-pub use handlers::{DictsState, create, delete, get, page, update};
+pub use handlers::{DictsState, children, create, delete, get, page, remove_cascade, tree, update};
 pub use req::{
-    CreateDictReq,
-    DeleteDictReq,
-    GetDictReq,
-    PageDictReq,
-    UpdateDictReq,
+    ChildrenDictReq, CreateDictReq, DeleteDictReq, GetDictReq, PageDictReq, RemoveCascadeDictReq,
+    TreeDictReq, UpdateDictReq,
 };
-pub use resp::{DeleteDictResp, PaginateDictResp, DictResp};
+pub use resp::{DeleteDictResp, DictChildrenResp, DictResp, DictTreeResp, PaginateDictResp};
 
 use neocrates::axum::{Router, routing::post};
 
@@ -21,6 +18,9 @@ pub fn router(state: BaseHttpState) -> Router {
         .route("/get", post(get))
         .route("/update", post(update))
         .route("/page", post(page))
+        .route("/tree", post(tree))
+        .route("/children", post(children))
         .route("/remove", post(delete))
+        .route("/remove_cascade", post(remove_cascade))
         .with_state(state)
 }

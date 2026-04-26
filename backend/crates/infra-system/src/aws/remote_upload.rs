@@ -297,7 +297,9 @@ pub async fn upload_remote_url_to_storage(
 
     let ext = extension_from_content_type(&content_type);
     let path = build_remote_upload_path(&folder, resource_type, ext);
-    object_storage_service.put_object_via_http(&path, bytes.to_vec()).await?;
+    object_storage_service
+        .put_object_via_http(&path, bytes.to_vec())
+        .await?;
 
     Ok(path)
 }

@@ -78,6 +78,17 @@ const createUserFormSchema = commonUserFormSchema.extend({
 
 const updateUserFormSchema = commonUserFormSchema
 
+function normalizeOptionalUpdateValue(
+  rawValue: string,
+  parsedValue: string | undefined
+) {
+  if (rawValue.trim() === "") {
+    return null
+  }
+
+  return parsedValue
+}
+
 type ValidationSchema =
   | typeof createUserFormSchema
   | typeof updateUserFormSchema
@@ -203,12 +214,15 @@ export function buildUpdateUserParam(
 
   return {
     id,
-    email: parsed.email,
-    phone: parsed.phone,
-    nickname: parsed.nickname,
-    avatar_url: parsed.avatar_url,
+    email: normalizeOptionalUpdateValue(values.email, parsed.email),
+    phone: normalizeOptionalUpdateValue(values.phone, parsed.phone),
+    nickname: normalizeOptionalUpdateValue(values.nickname, parsed.nickname),
+    avatar_url: normalizeOptionalUpdateValue(
+      values.avatar_url,
+      parsed.avatar_url
+    ),
     gender: parsed.gender,
     status: parsed.status,
-    bio: parsed.bio,
+    bio: normalizeOptionalUpdateValue(values.bio, parsed.bio),
   }
 }
