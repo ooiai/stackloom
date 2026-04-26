@@ -130,6 +130,31 @@ shadcn/ui is a set of beautifully-designed, accessible components and a code dis
 - [TanStack Form](https://ui.shadcn.com/docs/forms/tanstack-form): Using shadcn/ui with TanStack Form.
 - [Forms - Next.js](https://ui.shadcn.com/docs/forms/next): Building forms in Next.js with Server Actions.
 
+## TanStack Form Rules
+
+When building forms with shadcn/ui and TanStack Form, follow these rules:
+
+- Use `useForm` from `@tanstack/react-form` as the default form state solution for new shadcn-based forms.
+- Prefer Zod schemas for validation and wire them through the `validators` option on `useForm`.
+- Default to `validators.onSubmit` unless the UX clearly requires `onChange` or `onBlur`.
+- Build fields with `form.Field` render props plus shadcn `Field` primitives instead of ad-hoc wrappers.
+- For invalid state, compute `isInvalid` from `field.state.meta.isTouched && !field.state.meta.isValid`.
+- Always set `data-invalid={isInvalid}` on the outer `Field` when showing validation state.
+- Always set `aria-invalid={isInvalid}` on the actual form control such as `Input`, `Textarea`, `SelectTrigger`, `Checkbox`, `RadioGroupItem`, or `Switch`.
+- For text inputs and textareas, bind `value`, `onBlur`, and `onChange` directly from TanStack Form field APIs.
+- For select controls, bind `value` and `onValueChange` from the field object, and place `aria-invalid` on `SelectTrigger`.
+- For checkbox and switch controls, bind `checked` and the corresponding checked-change handler from the field object.
+- Use `FieldError` to render validation messages, preferably with `errors={field.state.meta.errors}`.
+- Use `FieldDescription` for helper text, not inline custom paragraphs when a field explanation belongs to the form primitive.
+- Use `FieldGroup`, `FieldSet`, `FieldLegend`, `FieldLabel`, `FieldContent`, and `FieldTitle` to preserve consistent layout and accessibility.
+- For checkbox groups backed by arrays, use `mode="array"` on `form.Field`.
+- For array fields, use TanStack Form array helpers such as `pushValue` and `removeValue` instead of manual array mutation.
+- For array item subfields, use bracket notation names like `emails[${index}].address`.
+- Use `form.reset()` for reset actions instead of manually restoring default values.
+- In submit handlers, call `e.preventDefault()` and then `form.handleSubmit()`.
+- Keep browser-native validation in production unless there is a deliberate reason to disable it.
+- Prefer accessible, composable shadcn field markup over custom one-off field abstractions unless the abstraction preserves the same semantics.
+
 ## Advanced
 
 - [Monorepo](https://ui.shadcn.com/docs/monorepo): Using shadcn/ui in a monorepo setup.

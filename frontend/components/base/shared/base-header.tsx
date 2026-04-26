@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils"
 import { userSharedApi } from "@/stores/base-api"
 import {
   BellIcon,
+  BookMarkedIcon,
   ChevronDownIcon,
   LayoutGridIcon,
   Settings2Icon,
@@ -32,6 +33,8 @@ import {
 
 function MenuGlyph({ icon, className }: { icon?: string; className?: string }) {
   switch (icon) {
+    case "BookMarked":
+      return <BookMarkedIcon className={className} />
     case "ShieldCheck":
       return <ShieldCheckIcon className={className} />
     case "Users":
@@ -67,7 +70,7 @@ function ListItem({
       <Link
         href={href}
         aria-label={typeof title === "string" ? title : undefined}
-        className="group -mx-2 block rounded-md px-2 py-2 transition hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="group -mx-2 block rounded-md px-2 py-2 transition hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
       >
         <div className="flex items-start gap-3">
           <div
@@ -146,65 +149,65 @@ function AdminNavBar({
   return (
     <nav className="hidden md:block">
       <div className="flex items-center">
-      {items.map((item: MenuTreeNode) => {
-        const active = isItemActive(item, pathname)
+        {items.map((item: MenuTreeNode) => {
+          const active = isItemActive(item, pathname)
 
-        if (item.children.length === 0) {
+          if (item.children.length === 0) {
+            return (
+              <Link
+                key={item.id}
+                href={item.path}
+                className={cn(
+                  "inline-flex h-9 items-center rounded-md px-3 text-sm font-medium transition",
+                  active
+                    ? "bg-accent text-foreground"
+                    : "text-foreground/80 hover:bg-accent hover:text-foreground"
+                )}
+              >
+                {item.name}
+              </Link>
+            )
+          }
+
           return (
-            <Link
-              key={item.id}
-              href={item.path}
-              className={cn(
-                "inline-flex h-9 items-center rounded-md px-3 text-sm font-medium transition",
-                active
-                  ? "bg-accent text-foreground"
-                  : "text-foreground/80 hover:bg-accent hover:text-foreground"
-              )}
-            >
-              {item.name}
-            </Link>
+            <Popover key={item.id}>
+              <PopoverTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={cn(
+                      "h-9 rounded-md px-3 text-sm font-medium",
+                      active
+                        ? "bg-accent text-foreground hover:bg-accent"
+                        : "text-foreground/80 hover:bg-accent hover:text-foreground"
+                    )}
+                  />
+                }
+              >
+                {item.name}
+                <ChevronDownIcon className="size-3.5" />
+              </PopoverTrigger>
+              <PopoverContent
+                align="start"
+                className="w-100 gap-0 p-2 md:w-125 lg:w-150"
+              >
+                <ul className="grid gap-2 md:grid-cols-2">
+                  {item.children.map((child: MenuTreeNode) => (
+                    <ListItem
+                      key={child.id}
+                      title={child.name}
+                      href={child.path}
+                      icon={child.icon}
+                    >
+                      {child.remark || child.name}
+                    </ListItem>
+                  ))}
+                </ul>
+              </PopoverContent>
+            </Popover>
           )
-        }
-
-        return (
-          <Popover key={item.id}>
-            <PopoverTrigger
-              render={
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn(
-                    "h-9 rounded-md px-3 text-sm font-medium",
-                    active
-                      ? "bg-accent text-foreground hover:bg-accent"
-                      : "text-foreground/80 hover:bg-accent hover:text-foreground"
-                  )}
-                />
-              }
-            >
-              {item.name}
-              <ChevronDownIcon className="size-3.5" />
-            </PopoverTrigger>
-            <PopoverContent
-              align="start"
-              className="w-[400px] gap-0 p-2 md:w-[500px] lg:w-[600px]"
-            >
-              <ul className="grid gap-2 md:grid-cols-2">
-                {item.children.map((child: MenuTreeNode) => (
-                  <ListItem
-                    key={child.id}
-                    title={child.name}
-                    href={child.path}
-                    icon={child.icon}
-                  >
-                    {child.remark || child.name}
-                  </ListItem>
-                ))}
-              </ul>
-            </PopoverContent>
-          </Popover>
-        )
-      })}
+        })}
       </div>
     </nav>
   )
@@ -259,7 +262,7 @@ export default function BaseHeader({
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    className="-translate-y-[7px] origin-center transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-315"
+                    className="origin-center -translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-315"
                     d="M4 12L20 12"
                   />
                   <path
@@ -279,10 +282,7 @@ export default function BaseHeader({
           </div>
 
           <div className="flex items-center gap-6">
-            <Link
-              href="/"
-              className="text-primary hover:text-primary/90"
-            >
+            <Link href="/" className="text-primary hover:text-primary/90">
               <div className="flex items-center gap-3">
                 <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary ring-1 ring-primary/15">
                   <LayoutGridIcon className="size-4" />

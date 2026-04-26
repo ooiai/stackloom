@@ -15,14 +15,7 @@ import { toast } from "sonner"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-  FieldSeparator,
-} from "@/components/ui/field"
+import { FieldError, FieldGroup, FieldSeparator } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
   Sheet,
@@ -57,6 +50,7 @@ import type {
   UserMutateMode,
 } from "@/types/base.types"
 import { cn } from "@/lib/utils"
+import { LabelField } from "@/components/topui/label-field"
 
 interface UserMutateSheetProps {
   open: boolean
@@ -95,109 +89,57 @@ interface ProfileSectionProps {
   children: ReactNode
 }
 
-const fieldLabelClassName =
-  "text-[13px] font-semibold leading-5 text-foreground/80"
-const fieldContentClassName = "gap-2"
-
-const optionalEmailSchema = z
-  .string()
-  .trim()
-  .max(255, "邮箱长度不能超过 255 个字符")
-  .refine((value) => value === "" || z.email().safeParse(value).success, {
-    message: "请输入有效的邮箱地址",
-  })
-
-const optionalUrlSchema = z
-  .string()
-  .trim()
-  .refine(
-    (value) =>
-      value === "" ||
-      z
-        .url({
-          protocol: /^https?$/,
-          hostname: z.regexes.domain,
-        })
-        .safeParse(value).success,
-    {
-      message: "请输入有效的头像地址",
-    }
-  )
-
-const commonUserFormSchema = z.object({
+const userFormSchema = z.object({
   username: z
     .string()
     .trim()
     .min(1, "请输入用户名")
     .max(50, "用户名长度不能超过 50 个字符"),
-  email: optionalEmailSchema,
+  email: z.union([
+    z.literal(""),
+    z.email("请输入有效的邮箱地址").max(255, "邮箱长度不能超过 255 个字符"),
+  ]),
   phone: z.string().trim().max(20, "手机号长度不能超过 20 个字符"),
   nickname: z.string().trim().max(100, "昵称长度不能超过 100 个字符"),
-  avatar_url: optionalUrlSchema,
+  avatar_url: z.union([
+    z.literal(""),
+    z.url({
+      protocol: /^https?$/,
+      hostname: z.regexes.domain,
+      message: "请输入有效的头像地址",
+    }),
+  ]),
   gender: z.union([z.literal(0), z.literal(1), z.literal(2)]),
   status: z.union([z.literal(0), z.literal(1), z.literal(2)]),
   bio: z.string().trim().max(2000, "简介长度不能超过 2000 个字符"),
 })
 
-const createUserFormSchema = commonUserFormSchema.extend({
+const createUserFormSchema = userFormSchema.extend({
   password: z
     .string()
     .min(8, "密码至少需要 8 位")
     .max(72, "密码长度不能超过 72 位"),
 })
 
-const updateUserFormSchema = commonUserFormSchema.extend({
+const updateUserFormSchema = userFormSchema.extend({
   password: z.string(),
 })
 
 const SHEET_HEADER_MAP: Record<UserMutateMode, UserMutateSheetHeader> = {
   create: {
     title: "新增用户",
-    description: "录入基础信息并创建用户。",
+    description: "录入基础信息并创建用户",
     submitLabel: "创建用户",
   },
   update: {
     title: "编辑用户",
-    description: "维护当前用户资料。",
+    description: "维护当前用户资料",
     submitLabel: "保存变更",
   },
 }
 
 function getUserMutateSchema(mode: UserMutateMode) {
   return mode === "create" ? createUserFormSchema : updateUserFormSchema
-}
-
-function getFieldError(field: {
-  state: {
-    meta: {
-      errors?: unknown[]
-      isTouched?: boolean
-      isBlurred?: boolean
-      isDirty?: boolean
-      isSubmitted?: boolean
-    }
-  }
-}) {
-  const { meta } = field.state
-  const shouldShowError =
-    meta.isTouched || meta.isBlurred || meta.isDirty || meta.isSubmitted
-
-  if (!shouldShowError) {
-    return undefined
-  }
-
-  const firstError = meta.errors?.[0]
-
-  if (typeof firstError === "string") {
-    return firstError
-  }
-
-  if (Array.isArray(firstError)) {
-    const nestedError = firstError.find((item) => typeof item === "string")
-    return typeof nestedError === "string" ? nestedError : undefined
-  }
-
-  return undefined
 }
 
 function SectionHeader({ title, description, className }: SectionHeaderProps) {
@@ -212,50 +154,6 @@ function SectionHeader({ title, description, className }: SectionHeaderProps) {
         </p>
       </div>
     </div>
-  )
-}
-
-function TextField({
-  label,
-  htmlFor,
-  error,
-  children,
-}: {
-  label: string
-  htmlFor?: string
-  error?: string
-  children: ReactNode
-}) {
-  return (
-    <Field>
-      <FieldLabel className={fieldLabelClassName} htmlFor={htmlFor}>
-        {label}
-      </FieldLabel>
-      <FieldContent className={fieldContentClassName}>
-        {children}
-        <FieldError>{error}</FieldError>
-      </FieldContent>
-    </Field>
-  )
-}
-
-function SelectField({
-  label,
-  error,
-  children,
-}: {
-  label: string
-  error?: string
-  children: ReactNode
-}) {
-  return (
-    <Field>
-      <FieldLabel className={fieldLabelClassName}>{label}</FieldLabel>
-      <FieldContent className={fieldContentClassName}>
-        {children}
-        <FieldError>{error}</FieldError>
-      </FieldContent>
-    </Field>
   )
 }
 
@@ -310,7 +208,7 @@ function AvatarSection({
               {avatarLabel}
             </h2>
             <p className="max-w-xs text-[12px] leading-5 text-muted-foreground">
-              支持上传图片或填写链接。
+              支持上传头像图片
             </p>
           </div>
         </div>
@@ -477,113 +375,171 @@ export function UserMutateSheet({
             <FieldGroup>
               <AccountSection>
                 <form.Field name="username">
-                  {(field) => (
-                    <TextField
-                      label="用户名"
-                      htmlFor={field.name}
-                      error={getFieldError(field)}
-                    >
-                      <Input
-                        id={field.name}
-                        value={field.state.value}
-                        disabled={mode === "update"}
-                        onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+
+                    return (
+                      <LabelField
+                        label="用户名"
+                        htmlFor={field.name}
+                        invalid={isInvalid}
+                        error={
+                          isInvalid ? (
+                            <FieldError errors={field.state.meta.errors} />
+                          ) : null
                         }
-                        placeholder="请输入用户名"
-                        className={cn(
-                          "transition-colors",
-                          mode === "update" &&
-                            "cursor-not-allowed bg-muted/50 text-muted-foreground"
-                        )}
-                      />
-                    </TextField>
-                  )}
+                      >
+                        <Input
+                          id={field.name}
+                          name={field.name}
+                          value={field.state.value}
+                          disabled={mode === "update"}
+                          onBlur={field.handleBlur}
+                          onChange={(event) =>
+                            field.handleChange(event.target.value)
+                          }
+                          aria-invalid={isInvalid}
+                          placeholder="请输入用户名"
+                          className={cn(
+                            "transition-colors",
+                            mode === "update" &&
+                              "cursor-not-allowed bg-muted/50 text-muted-foreground"
+                          )}
+                        />
+                      </LabelField>
+                    )
+                  }}
                 </form.Field>
 
                 <form.Field name="nickname">
-                  {(field) => (
-                    <TextField
-                      label="昵称"
-                      htmlFor={field.name}
-                      error={getFieldError(field)}
-                    >
-                      <Input
-                        id={field.name}
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+
+                    return (
+                      <LabelField
+                        label="昵称"
+                        htmlFor={field.name}
+                        invalid={isInvalid}
+                        error={
+                          isInvalid ? (
+                            <FieldError errors={field.state.meta.errors} />
+                          ) : null
                         }
-                        placeholder="展示名称"
-                      />
-                    </TextField>
-                  )}
+                      >
+                        <Input
+                          id={field.name}
+                          name={field.name}
+                          value={field.state.value}
+                          onBlur={field.handleBlur}
+                          onChange={(event) =>
+                            field.handleChange(event.target.value)
+                          }
+                          aria-invalid={isInvalid}
+                          placeholder="展示名称"
+                        />
+                      </LabelField>
+                    )
+                  }}
                 </form.Field>
 
                 <form.Field name="email">
-                  {(field) => (
-                    <TextField
-                      label="邮箱"
-                      htmlFor={field.name}
-                      error={getFieldError(field)}
-                    >
-                      <Input
-                        id={field.name}
-                        type="email"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+
+                    return (
+                      <LabelField
+                        label="邮箱"
+                        htmlFor={field.name}
+                        invalid={isInvalid}
+                        error={
+                          isInvalid ? (
+                            <FieldError errors={field.state.meta.errors} />
+                          ) : null
                         }
-                        placeholder="name@example.com"
-                      />
-                    </TextField>
-                  )}
+                      >
+                        <Input
+                          id={field.name}
+                          name={field.name}
+                          type="email"
+                          value={field.state.value}
+                          onBlur={field.handleBlur}
+                          onChange={(event) =>
+                            field.handleChange(event.target.value)
+                          }
+                          aria-invalid={isInvalid}
+                          placeholder="name@example.com"
+                        />
+                      </LabelField>
+                    )
+                  }}
                 </form.Field>
 
                 <form.Field name="phone">
-                  {(field) => (
-                    <TextField
-                      label="手机号"
-                      htmlFor={field.name}
-                      error={getFieldError(field)}
-                    >
-                      <Input
-                        id={field.name}
-                        type="tel"
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+
+                    return (
+                      <LabelField
+                        label="手机号"
+                        htmlFor={field.name}
+                        invalid={isInvalid}
+                        error={
+                          isInvalid ? (
+                            <FieldError errors={field.state.meta.errors} />
+                          ) : null
                         }
-                        placeholder="请输入手机号"
-                      />
-                    </TextField>
-                  )}
+                      >
+                        <Input
+                          id={field.name}
+                          name={field.name}
+                          type="tel"
+                          value={field.state.value}
+                          onBlur={field.handleBlur}
+                          onChange={(event) =>
+                            field.handleChange(event.target.value)
+                          }
+                          aria-invalid={isInvalid}
+                          placeholder="请输入手机号"
+                        />
+                      </LabelField>
+                    )
+                  }}
                 </form.Field>
 
                 {mode === "create" ? (
                   <form.Field name="password">
-                    {(field) => (
-                      <Field className="md:col-span-2">
-                        <FieldLabel
-                          className={fieldLabelClassName}
+                    {(field) => {
+                      const isInvalid =
+                        field.state.meta.isTouched && !field.state.meta.isValid
+
+                      return (
+                        <LabelField
+                          className="md:col-span-2"
+                          label="登录密码"
                           htmlFor={field.name}
+                          invalid={isInvalid}
+                          tooltip={{ content: "密码至少 8 位，最长 72 位" }}
+                          error={
+                            isInvalid ? (
+                              <FieldError errors={field.state.meta.errors} />
+                            ) : null
+                          }
                         >
-                          登录密码
-                        </FieldLabel>
-                        <FieldContent className={fieldContentClassName}>
                           <div className="relative">
                             <Input
                               id={field.name}
+                              name={field.name}
                               type={showPassword ? "text" : "password"}
                               value={field.state.value}
                               onBlur={field.handleBlur}
                               onChange={(event) =>
                                 field.handleChange(event.target.value)
                               }
+                              aria-invalid={isInvalid}
                               placeholder="设置登录密码"
                               className="pr-10"
                             />
@@ -604,10 +560,9 @@ export function UserMutateSheet({
                               </span>
                             </Button>
                           </div>
-                          <FieldError>{getFieldError(field)}</FieldError>
-                        </FieldContent>
-                      </Field>
-                    )}
+                        </LabelField>
+                      )
+                    }}
                   </form.Field>
                 ) : null}
               </AccountSection>
@@ -616,98 +571,136 @@ export function UserMutateSheet({
 
               <ProfileSection>
                 <form.Field name="gender">
-                  {(field) => (
-                    <SelectField label="性别" error={getFieldError(field)}>
-                      <Select
-                        value={String(field.state.value)}
-                        onValueChange={(value) =>
-                          field.handleChange(Number(value) as 0 | 1 | 2)
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+
+                    return (
+                      <LabelField
+                        label="性别"
+                        invalid={isInvalid}
+                        error={
+                          isInvalid ? (
+                            <FieldError errors={field.state.meta.errors} />
+                          ) : null
                         }
                       >
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {USER_GENDER_OPTIONS.map((option) => (
-                            <SelectItem
-                              key={option.value}
-                              value={String(option.value)}
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </SelectField>
-                  )}
+                        <Select
+                          name={field.name}
+                          value={String(field.state.value)}
+                          onValueChange={(value) =>
+                            field.handleChange(Number(value) as 0 | 1 | 2)
+                          }
+                        >
+                          <SelectTrigger
+                            className="w-full"
+                            aria-invalid={isInvalid}
+                          >
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {USER_GENDER_OPTIONS.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={String(option.value)}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </LabelField>
+                    )
+                  }}
                 </form.Field>
 
                 <form.Field name="status">
-                  {(field) => (
-                    <SelectField label="状态" error={getFieldError(field)}>
-                      <Select
-                        value={String(field.state.value)}
-                        onValueChange={(value) =>
-                          field.handleChange(Number(value) as 0 | 1 | 2)
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+
+                    return (
+                      <LabelField
+                        label="状态"
+                        invalid={isInvalid}
+                        error={
+                          isInvalid ? (
+                            <FieldError errors={field.state.meta.errors} />
+                          ) : null
                         }
                       >
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {USER_STATUS_OPTIONS.map((option) => (
-                            <SelectItem
-                              key={option.value}
-                              value={String(option.value)}
-                            >
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </SelectField>
-                  )}
+                        <Select
+                          name={field.name}
+                          value={String(field.state.value)}
+                          onValueChange={(value) =>
+                            field.handleChange(Number(value) as 0 | 1 | 2)
+                          }
+                        >
+                          <SelectTrigger
+                            className="w-full"
+                            aria-invalid={isInvalid}
+                          >
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {USER_STATUS_OPTIONS.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={String(option.value)}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </LabelField>
+                    )
+                  }}
                 </form.Field>
               </ProfileSection>
 
               <form.Field name="bio">
                 {(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid
                   const bioLength = field.state.value.trim().length
 
                   return (
-                    <Field>
-                      <FieldLabel
-                        className={fieldLabelClassName}
-                        htmlFor={field.name}
-                      >
-                        个人简介
-                      </FieldLabel>
-                      <FieldContent className={fieldContentClassName}>
-                        <Textarea
-                          id={field.name}
-                          value={field.state.value}
-                          onBlur={field.handleBlur}
-                          onChange={(event) =>
-                            field.handleChange(event.target.value)
-                          }
-                          placeholder="填写用户简介..."
-                          className="min-h-28 resize-y text-[12px] leading-6"
-                        />
-                        <div className="flex justify-end">
-                          <span
-                            className={cn(
-                              "text-xs tabular-nums transition-colors",
-                              bioLength > 1800
-                                ? "text-amber-500"
-                                : "text-muted-foreground"
-                            )}
-                          >
-                            {bioLength}/2000
-                          </span>
-                        </div>
-                        <FieldError>{getFieldError(field)}</FieldError>
-                      </FieldContent>
-                    </Field>
+                    <LabelField
+                      label="个人简介"
+                      htmlFor={field.name}
+                      invalid={isInvalid}
+                      description={
+                        <span
+                          className={cn(
+                            "block text-right text-xs tabular-nums transition-colors",
+                            bioLength > 1800
+                              ? "text-amber-500"
+                              : "text-muted-foreground"
+                          )}
+                        >
+                          {bioLength}/2000
+                        </span>
+                      }
+                      error={
+                        isInvalid ? (
+                          <FieldError errors={field.state.meta.errors} />
+                        ) : null
+                      }
+                    >
+                      <Textarea
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value)
+                        }
+                        aria-invalid={isInvalid}
+                        placeholder="填写用户简介..."
+                        className="min-h-28 resize-y text-[12px] leading-6"
+                      />
+                    </LabelField>
                   )
                 }}
               </form.Field>

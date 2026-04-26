@@ -1,6 +1,9 @@
 export type UserStatus = 0 | 1 | 2
 export type UserGender = 0 | 1 | 2
 export type UserMutateMode = "create" | "update"
+export type DictStatus = 0 | 1
+export type DictValueType = "string" | "number" | "boolean" | "json"
+export type DictMutateMode = "create" | "update"
 
 export interface UserData {
   id: string
@@ -21,6 +24,25 @@ export interface UserData {
 export interface PaginateResp<T> {
   items: T[]
   total: number
+}
+
+export interface DictData {
+  id: string
+  tenant_id: string | null
+  parent_id: string | null
+  dict_type: string
+  dict_key: string
+  dict_value: string
+  label: string
+  value_type: DictValueType
+  description: string | null
+  sort: number
+  status: DictStatus
+  is_builtin: boolean
+  is_leaf: boolean
+  ext: string
+  created_at: string
+  updated_at: string
 }
 
 export interface GetUserParam {
@@ -61,6 +83,54 @@ export interface DeleteUserParam {
   ids: string[]
 }
 
+export interface GetDictParam {
+  id: string
+}
+
+export interface PageDictParam {
+  keyword?: string
+  status?: DictStatus
+  limit?: number
+  offset?: number
+}
+
+export interface CreateDictParam {
+  tenant_id?: number
+  parent_id?: number
+  dict_type: string
+  dict_key: string
+  dict_value: string
+  label: string
+  value_type: DictValueType
+  description?: string
+  sort: number
+  status: DictStatus
+  is_builtin: boolean
+  is_leaf: boolean
+  ext: string
+}
+
+export interface UpdateDictParam {
+  id: string
+  tenant_id?: number
+  parent_id?: number
+  dict_type?: string
+  dict_key?: string
+  dict_value?: string
+  label?: string
+  value_type?: DictValueType
+  description?: string
+  sort?: number
+  status?: DictStatus
+  is_builtin?: boolean
+  is_leaf?: boolean
+  ext?: string
+}
+
+export interface DeleteDictParam {
+  ids: string[]
+}
+
 export interface UserFormValues {
   username: string
   email: string
@@ -74,3 +144,18 @@ export interface UserFormValues {
 }
 
 export type PaginateUser = PaginateResp<UserData>
+export type PaginateDict = PaginateResp<DictData>
+
+export interface DictFormValues {
+  parent_id: string
+  dict_type: string
+  dict_key: string
+  dict_value: string
+  label: string
+  value_type: DictValueType
+  description: string
+  sort: number
+  status: DictStatus
+  is_builtin: boolean
+  ext: string
+}
