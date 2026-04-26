@@ -123,7 +123,7 @@ export function DictMutateSheet({
                 </p>
               </div>
 
-              <div className="grid gap-x-4 gap-y-5 md:grid-cols-2">
+              <div className="grid gap-x-4 gap-y-5 md:grid-cols-1">
                 <Field>
                   <FieldLabel>
                     <LabelTooltip
