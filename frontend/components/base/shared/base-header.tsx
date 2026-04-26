@@ -18,6 +18,7 @@ import {
 } from "@/components/reui/popover"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { useI18n } from "@/providers/i18n-provider"
 import { buildMenuTree, type MenuTreeNode } from "@/lib/tree"
 import { cn } from "@/lib/utils"
 import { userSharedApi } from "@/stores/base-api"
@@ -220,13 +221,26 @@ export default function BaseHeader({
   layoutMode?: LayoutWidthMode
   onLayoutModeChange?: (mode: LayoutWidthMode) => void
 }) {
+  const { t } = useI18n()
   const pathname = usePathname()
   const { data: currentMenus = [] } = useQuery({
     queryKey: ["listCurrentMenusQuery"],
     queryFn: () => userSharedApi.listCurrentMenus(),
     staleTime: Number.POSITIVE_INFINITY,
   })
-  const trees = useMemo(() => buildMenuTree(currentMenus), [currentMenus])
+  const trees = useMemo(() => {
+    return buildMenuTree(currentMenus).map((node) => ({
+      ...node,
+      name: t(`navigation.${node.code}.name`, undefined, node.name),
+      remark: t(`navigation.${node.code}.remark`, undefined, node.remark),
+      children: node.children.map((child) => ({
+        ...child,
+        name: t(`navigation.${child.code}.name`, undefined, child.name),
+        remark: t(`navigation.${child.code}.remark`, undefined, child.remark),
+        children: child.children,
+      })),
+    }))
+  }, [currentMenus, t])
 
   return (
     <header className="border-b px-4 md:px-6">
@@ -244,7 +258,7 @@ export default function BaseHeader({
                   <Button
                     variant="ghost"
                     size="icon-sm"
-                    aria-label="打开导航菜单"
+                    aria-label={t("navigation.actions.openMenu")}
                     className="group size-8"
                   />
                 }
@@ -289,7 +303,7 @@ export default function BaseHeader({
                 </div>
                 <div className="hidden min-w-0 sm:block">
                   <p className="truncate text-sm font-semibold text-foreground">
-                    Stackloom Admin
+                    {t("navigation.brand.title")}
                   </p>
                 </div>
               </div>
@@ -306,10 +320,18 @@ export default function BaseHeader({
               onModeChange={onLayoutModeChange}
             />
           ) : null}
-          <Button variant="ghost" size="icon-sm" aria-label="通知">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={t("navigation.actions.notifications")}
+          >
             <BellIcon />
           </Button>
-          <Button variant="ghost" size="icon-sm" aria-label="设置">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={t("navigation.actions.settings")}
+          >
             <Settings2Icon />
           </Button>
           <div className="hidden items-center gap-3 ps-2 lg:flex">
@@ -317,8 +339,12 @@ export default function BaseHeader({
               <AvatarFallback>AD</AvatarFallback>
             </Avatar>
             <div className="leading-tight">
-              <p className="text-xs font-medium text-foreground">Admin</p>
-              <p className="text-[11px] text-muted-foreground">系统管理员</p>
+              <p className="text-xs font-medium text-foreground">
+                {t("navigation.user.name")}
+              </p>
+              <p className="text-[11px] text-muted-foreground">
+                {t("navigation.user.role")}
+              </p>
             </div>
           </div>
         </div>

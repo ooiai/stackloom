@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { useI18n } from "@/providers/i18n-provider"
 import { RefreshCwIcon, UserPlusIcon } from "lucide-react"
 
 interface UsersPageHeaderProps {
@@ -14,12 +15,16 @@ export function UsersPageHeader({
   onRefresh,
   onOpenCreate,
 }: UsersPageHeaderProps) {
+  const { t } = useI18n()
+
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div className="space-y-1.5">
-        <h2 className="text-xl font-bold tracking-tight">用户管理</h2>
+        <h2 className="text-xl font-bold tracking-tight">
+          {t("users.page.title")}
+        </h2>
         <p className="text-sm text-muted-foreground">
-          统一维护系统用户资料、基础联系信息与账号状态。
+          {t("users.page.subtitle")}
         </p>
       </div>
       <div className="flex items-center gap-2">
@@ -31,11 +36,11 @@ export function UsersPageHeader({
           disabled={isFetching}
         >
           <RefreshCwIcon className={isFetching ? "animate-spin" : undefined} />
-          刷新
+          {t("common.actions.refresh")}
         </Button>
         <Button onClick={onOpenCreate}>
           <UserPlusIcon />
-          添加用户
+          {t("users.page.create")}
         </Button>
       </div>
     </div>

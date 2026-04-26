@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 import { z } from "zod"
 import { useMutation } from "@tanstack/react-query"
@@ -24,6 +24,7 @@ import { setStorageItem } from "@/hooks/use-persisted-state"
 import { STORAGE_ENUM } from "@/lib/config/enums"
 import { AuthTokenResult } from "@/lib/http/axios"
 import { cn } from "@/lib/utils"
+import { useI18n } from "@/providers/i18n-provider"
 import { signinApi } from "@/stores/auth-api"
 import type {
   AccountAuthParam,
@@ -35,12 +36,10 @@ import type { SliderCaptcha } from "@/types/system.types"
 import CaptchaSlider from "./captcha-slider"
 import { SelectTenantDialog } from "./select-tenant-dialog"
 
-const formSchema = z.object({
-  account: z.string().min(1, "请输入手机号或账号名"),
-  password: z.string().min(8, "密码至少需要 8 位"),
-})
-
-type FormValues = z.infer<typeof formSchema>
+type FormValues = {
+  account: string
+  password: string
+}
 type FormErrors = Partial<Record<keyof FormValues, string>>
 
 const DEFAULT_VALUES: FormValues = {
@@ -54,6 +53,7 @@ export function SigninForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const { t } = useI18n()
   const router = useRouter()
   const [values, setValues] = useState<FormValues>(DEFAULT_VALUES)
   const [errors, setErrors] = useState<FormErrors>({})
@@ -63,6 +63,14 @@ export function SigninForm({
     null
   )
   const [tenants, setTenants] = useState<ListSelectOrgunit[]>([])
+  const formSchema = useMemo(
+    () =>
+      z.object({
+        account: z.string().min(1, t("auth.signin.validation.accountRequired")),
+        password: z.string().min(8, t("auth.signin.validation.passwordMin")),
+      }),
+    [t]
+  )
 
   const queryOrgUnitsMutation = useMutation({
     mutationFn: (params: QueryOrgUnitsParam) => signinApi.queryOrgUnits(params),
@@ -79,7 +87,7 @@ export function SigninForm({
         JSON.stringify(data),
         data.refreshExpiresAt
       )
-      toast.success("登录成功")
+      toast.success(t("auth.signin.toast.success"))
       router.replace(DASHBOARD_ROUTE)
     },
     onError: () => {
@@ -148,7 +156,7 @@ export function SigninForm({
 
     if (!nextTenants.length) {
       setShowSlider(false)
-      toast.error("当前账号没有可用的登录组织")
+      toast.error(t("auth.signin.toast.noOrg"))
       return
     }
 
@@ -167,18 +175,20 @@ export function SigninForm({
       >
         <FieldGroup>
           <div className="flex flex-col items-center gap-1 text-center">
-            <h1 className="text-2xl font-bold">登录您的账户</h1>
+            <h1 className="text-2xl font-bold">{t("auth.signin.title")}</h1>
             <p className="text-sm text-balance text-muted-foreground">
-              在下方输入您的账户以登录账户
+              {t("auth.signin.subtitle")}
             </p>
           </div>
 
           <Field data-invalid={!!errors.account}>
-            <FieldLabel htmlFor="form-signin-account">账号/手机号</FieldLabel>
+            <FieldLabel htmlFor="form-signin-account">
+              {t("auth.signin.accountLabel")}
+            </FieldLabel>
             <Input
               id="form-signin-account"
               type="text"
-              placeholder="输入手机号或账号名"
+              placeholder={t("auth.signin.accountPlaceholder")}
               autoComplete="username"
               disabled={isLoading}
               value={values.account}
@@ -189,17 +199,19 @@ export function SigninForm({
 
           <Field data-invalid={!!errors.password}>
             <div className="flex items-center">
-              <FieldLabel htmlFor="form-signin-password">密码</FieldLabel>
+              <FieldLabel htmlFor="form-signin-password">
+                {t("auth.signin.passwordLabel")}
+              </FieldLabel>
               <a
                 href="#"
                 className="ml-auto text-sm underline-offset-4 hover:underline"
               >
-                忘记密码？
+                {t("auth.signin.forgotPassword")}
               </a>
             </div>
             <PasswordStrengthInput
               id="form-signin-password"
-              placeholder="输入 8 位以上密码"
+              placeholder={t("auth.signin.passwordPlaceholder")}
               autoComplete="current-password"
               disabled={isLoading}
               value={values.password}
@@ -225,40 +237,39 @@ export function SigninForm({
           <Field>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? <Spinner className="size-4" /> : null}
-              登录
+              {t("auth.signin.submit")}
             </Button>
           </Field>
 
           <div className="text-center text-xs text-balance text-muted-foreground">
-            点击登录即表示您同意{" "}
+            {t("auth.signin.agreementPrefix")}{" "}
             <a
               className="text-primary underline underline-offset-4"
               target="_blank"
               rel="noreferrer"
               href="#"
             >
-              用户协议
+              {t("auth.signin.userAgreement")}
             </a>{" "}
-            和{" "}
+            {t("auth.signin.and")}{" "}
             <a
               className="text-primary underline underline-offset-4"
               target="_blank"
               rel="noreferrer"
               href="#"
             >
-              隐私政策
+              {t("auth.signin.privacyPolicy")}
             </a>
-            。
           </div>
 
-          <FieldSeparator>或使用以下方式继续</FieldSeparator>
+          <FieldSeparator>{t("auth.signin.continueWith")}</FieldSeparator>
 
           <Field>
             <Button variant="outline" type="button" className="w-full">
-              导航至官网
+              {t("auth.signin.goWebsite")}
             </Button>
             <FieldDescription className="text-center">
-              如需开通账号，请联系系统管理员完成授权。
+              {t("auth.signin.contactAdmin")}
             </FieldDescription>
           </Field>
         </FieldGroup>
@@ -271,7 +282,7 @@ export function SigninForm({
         onOpenChange={setShowTenantDialog}
         onSubmit={async (tenant) => {
           if (!captchaFormData) {
-            toast.error("验证码状态已失效，请重新登录")
+            toast.error(t("auth.signin.toast.captchaExpired"))
             setShowTenantDialog(false)
             return
           }

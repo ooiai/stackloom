@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import type { TranslateFn } from "@/lib/i18n"
 import { formatDateTimeAt } from "@/lib/time"
 import type { DictData } from "@/types/base.types"
 import type { ColumnDef } from "@tanstack/react-table"
@@ -26,6 +27,7 @@ import {
 } from "lucide-react"
 
 interface CreateDictColumnsOptions {
+  t: TranslateFn
   tree: DictTreeNode[]
   onSelectNode: (id: string | null) => void
   onOpenAddChild: (parentId: string) => void
@@ -34,6 +36,7 @@ interface CreateDictColumnsOptions {
 }
 
 export function createDictColumns({
+  t,
   tree,
   onSelectNode,
   onOpenAddChild,
@@ -46,7 +49,7 @@ export function createDictColumns({
       id: "label",
       header: ({ column }) => (
         <DataGridColumnHeader
-          title="名称"
+          title={t("dicts.table.name")}
           column={column}
           className="font-medium"
         />
@@ -72,7 +75,7 @@ export function createDictColumns({
             </div>
             {childCount > 0 ? (
               <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                {childCount} 子项
+                {t("dicts.table.childCount", { count: childCount })}
               </span>
             ) : null}
           </div>
@@ -86,7 +89,7 @@ export function createDictColumns({
       id: "dict_value",
       header: ({ column }) => (
         <DataGridColumnHeader
-          title="字典值"
+          title={t("dicts.table.value")}
           column={column}
           className="font-medium"
         />
@@ -104,7 +107,7 @@ export function createDictColumns({
       id: "value_type",
       header: ({ column }) => (
         <DataGridColumnHeader
-          title="值类型"
+          title={t("dicts.table.valueType")}
           column={column}
           className="font-medium"
         />
@@ -122,7 +125,7 @@ export function createDictColumns({
       id: "status",
       header: ({ column }) => (
         <DataGridColumnHeader
-          title="状态"
+          title={t("dicts.table.status")}
           column={column}
           className="font-medium"
         />
@@ -136,14 +139,14 @@ export function createDictColumns({
       id: "description",
       header: ({ column }) => (
         <DataGridColumnHeader
-          title="说明"
+          title={t("dicts.table.description")}
           column={column}
           className="font-medium"
         />
       ),
       cell: ({ row }) => (
         <span className="line-clamp-2 text-sm text-muted-foreground">
-          {row.original.description || "—"}
+          {row.original.description || t("common.misc.none")}
         </span>
       ),
       size: 260,
@@ -154,7 +157,7 @@ export function createDictColumns({
       id: "updated_at",
       header: ({ column }) => (
         <DataGridColumnHeader
-          title="更新时间"
+          title={t("dicts.table.updatedAt")}
           column={column}
           className="font-medium"
         />
@@ -178,16 +181,16 @@ export function createDictColumns({
           <DropdownMenuContent side="bottom" align="end">
             <DropdownMenuItem onClick={() => onSelectNode(row.original.id)}>
               <ArrowRightIcon />
-              查看子级
+              {t("common.actions.viewChildren")}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onOpenAddChild(row.original.id)}>
               <PlusIcon />
-              添加子级
+              {t("common.actions.addChild")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
               <Edit3Icon />
-              编辑
+              {t("common.actions.edit")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -195,7 +198,7 @@ export function createDictColumns({
               onClick={() => onDelete(row.original)}
             >
               <Trash2Icon />
-              删除
+              {t("common.actions.delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

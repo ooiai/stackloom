@@ -9,6 +9,7 @@ import { DictMutateSheetHeader } from "@/components/base/dicts/dict-mutate-sheet
 import { DictMutateSheetFooter } from "@/components/base/dicts/dict-mutate-sheet-sections"
 import { FieldGroup } from "@/components/ui/field"
 import { Sheet, SheetContent, SheetFooter } from "@/components/ui/sheet"
+import { useI18n } from "@/providers/i18n-provider"
 import type {
   DictData,
   DictFormValues,
@@ -25,22 +26,6 @@ interface DictMutateSheetProps {
   onSubmit: (values: DictFormValues) => Promise<void>
 }
 
-const SHEET_HEADER_MAP: Record<
-  DictMutateMode,
-  { title: string; description: string; submitLabel: string }
-> = {
-  create: {
-    title: "新增字典",
-    description: "维护字典树节点、值类型与业务展示文案",
-    submitLabel: "创建字典",
-  },
-  update: {
-    title: "编辑字典",
-    description: "更新当前字典项的键值、状态和说明信息",
-    submitLabel: "保存更新",
-  },
-}
-
 export function DictMutateSheet({
   open,
   mode,
@@ -50,15 +35,27 @@ export function DictMutateSheet({
   onOpenChange,
   onSubmit,
 }: DictMutateSheetProps) {
-  const header = SHEET_HEADER_MAP[mode]
+  const { t } = useI18n()
+  const header =
+    mode === "create"
+      ? {
+          title: t("dicts.sheet.create.title"),
+          description: t("dicts.sheet.create.description"),
+          submitLabel: t("dicts.sheet.create.submit"),
+        }
+      : {
+          title: t("dicts.sheet.update.title"),
+          description: t("dicts.sheet.update.description"),
+          submitLabel: t("dicts.sheet.update.submit"),
+        }
 
   const parentLabel = useMemo(() => {
     if (!parent) {
-      return "根字典"
+      return t("dicts.rootLabel")
     }
 
     return getDictDisplayName(parent)
-  }, [parent])
+  }, [parent, t])
   const { defaultValues, form } = useDictMutateForm({
     mode,
     dict,

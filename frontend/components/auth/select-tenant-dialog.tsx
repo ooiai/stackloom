@@ -6,6 +6,7 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import { Building2Icon, CheckCircle2Icon } from "lucide-react"
 import Image from "next/image"
 
+import { useI18n } from "@/providers/i18n-provider"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
@@ -32,6 +33,7 @@ export function SelectTenantDialog({
   onOpenChange,
   onSubmit,
 }: SelectTenantDialogProps) {
+  const { locale, t } = useI18n()
   const [selectedOuid, setSelectedOuid] = useState("")
   const resolvedSelectedOuid = tenants.some(
     (tenant) => tenant.ouid === selectedOuid
@@ -61,10 +63,10 @@ export function SelectTenantDialog({
             </div>
             <div className="space-y-1">
               <DialogPrimitive.Title className="text-left text-lg font-semibold">
-                选择登录组织
+                {t("auth.tenantDialog.title")}
               </DialogPrimitive.Title>
               <DialogPrimitive.Description className="text-sm leading-6 text-muted-foreground">
-                当前账号绑定了多个组织，请先选择要进入的租户或校区。
+                {t("auth.tenantDialog.description")}
               </DialogPrimitive.Description>
             </div>
           </div>
@@ -101,10 +103,14 @@ export function SelectTenantDialog({
                     </p>
                     <p className="text-xs leading-5 text-muted-foreground">
                       {(tenant.dname || tenant.nname || tenant.uname) ?? "-"} ·{" "}
-                      {tenant.rnames.join("、") || "未分配角色"}
+                      {tenant.rnames.join(
+                        locale === "zh-CN" ? "、" : ", "
+                      ) || t("auth.tenantDialog.unassignedRoles")}
                     </p>
                     {!selectable ? (
-                      <p className="text-xs text-amber-600">当前组织暂不可登录</p>
+                      <p className="text-xs text-amber-600">
+                        {t("auth.tenantDialog.unavailable")}
+                      </p>
                     ) : null}
                   </div>
                 </button>
@@ -116,7 +122,7 @@ export function SelectTenantDialog({
             <DialogPrimitive.Close
               render={<Button type="button" variant="outline" />}
             >
-              取消
+              {t("auth.tenantDialog.cancel")}
             </DialogPrimitive.Close>
             <Button
               type="button"
@@ -128,7 +134,7 @@ export function SelectTenantDialog({
               }}
             >
               {loading ? <Spinner className="size-4" /> : null}
-              确认登录
+              {t("auth.tenantDialog.confirm")}
             </Button>
           </div>
         </DialogPrimitive.Popup>

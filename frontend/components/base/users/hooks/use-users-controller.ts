@@ -6,6 +6,7 @@ import { createFilter, type Filter } from "@/components/reui/filters"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { buildCreateUserParam, buildUpdateUserParam } from "@/lib/users"
 import { useAlertDialog } from "@/providers/dialog-providers"
+import { useI18n } from "@/providers/i18n-provider"
 import { userApi } from "@/stores/base-api"
 import type {
   PageUserParam,
@@ -113,6 +114,7 @@ function getStatusFilterValue(filters: Filter<UsersFilterValue>[]) {
 }
 
 export function useUsersController() {
+  const { t } = useI18n()
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -175,11 +177,11 @@ export function useUsersController() {
 
   const createMutation = useMutation({
     mutationFn: async (values: UserFormValues) => {
-      return userApi.create(await buildCreateUserParam(values))
+      return userApi.create(await buildCreateUserParam(values, t))
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["base", "users"] })
-      toast.success("用户已创建")
+      toast.success(t("users.toast.created"))
       setSheet(DEFAULT_SHEET_STATE)
     },
   })
@@ -192,11 +194,11 @@ export function useUsersController() {
       id: string
       values: UserFormValues
     }) => {
-      return userApi.update(buildUpdateUserParam(id, values))
+      return userApi.update(buildUpdateUserParam(id, values, t))
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["base", "users"] })
-      toast.success("用户资料已更新")
+      toast.success(t("users.toast.updated"))
       setSheet(DEFAULT_SHEET_STATE)
     },
   })
@@ -205,7 +207,7 @@ export function useUsersController() {
     mutationFn: async (ids: string[]) => userApi.remove(ids),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["base", "users"] })
-      toast.success("用户已删除")
+      toast.success(t("users.toast.deleted"))
     },
   })
 
@@ -264,17 +266,19 @@ export function useUsersController() {
   const confirmRemoveUser = useCallback(
     (user: UserData) => {
       dialog.show({
-        title: "删除用户",
-        description: `确定删除用户“${user.username}”吗？此操作无法撤销。`,
-        confirmText: "删除",
-        cancelText: "取消",
+        title: t("users.dialog.deleteTitle"),
+        description: t("users.dialog.deleteDescription", {
+          username: user.username,
+        }),
+        confirmText: t("common.actions.delete"),
+        cancelText: t("common.actions.cancel"),
         autoCloseOnConfirm: true,
         onConfirm: async () => {
           await removeMutation.mutateAsync([user.id])
         },
       })
     },
-    [dialog, removeMutation]
+    [dialog, removeMutation, t]
   )
 
   return {

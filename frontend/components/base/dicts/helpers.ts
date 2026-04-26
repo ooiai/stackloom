@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import type { TranslateFn } from "@/lib/i18n"
 import type {
   CreateDictParam,
   DictData,
@@ -21,99 +22,71 @@ type DictStatusMeta = {
   description: string
   badgeVariant: BadgeProps["variant"]
 }
+const defaultT: TranslateFn = (key, _values, fallback) => fallback ?? key
 
-const optionalDescriptionSchema = z
-  .string()
-  .trim()
-  .max(500, "说明长度不能超过 500 个字符")
-  .transform((value) => (value === "" ? undefined : value))
-
-const optionalExtSchema = z
-  .string()
-  .trim()
-  .refine((value) => {
-    if (value === "") {
-      return true
-    }
-
-    try {
-      JSON.parse(value)
-      return true
-    } catch {
-      return false
-    }
-  }, "扩展配置必须是合法 JSON")
-  .transform((value) => (value === "" ? "{}" : value))
-
-export const dictFormSchema = z.object({
-  parent_id: z.string().nullable().optional(),
-  dict_type: z
+export function createDictFormSchema(t: TranslateFn = defaultT) {
+  const optionalDescriptionSchema = z
     .string()
     .trim()
-    .min(1, "请输入字典类型")
-    .max(100, "字典类型长度不能超过 100 个字符"),
-  dict_key: z
-    .string()
-    .trim()
-    .min(1, "请输入字典键")
-    .max(100, "字典键长度不能超过 100 个字符"),
-  dict_value: z
-    .string()
-    .trim()
-    .min(1, "请输入字典值")
-    .max(255, "字典值长度不能超过 255 个字符"),
-  label: z
-    .string()
-    .trim()
-    .min(1, "请输入显示名称")
-    .max(255, "显示名称长度不能超过 255 个字符"),
-  value_type: z.union([
-    z.literal("string"),
-    z.literal("number"),
-    z.literal("boolean"),
-    z.literal("json"),
-  ]),
-  description: optionalDescriptionSchema,
-  sort: z
-    .number()
-    .int("排序值必须是整数")
-    .min(0, "排序值不能小于 0")
-    .max(9999, "排序值不能超过 9999"),
-  status: z.union([z.literal(0), z.literal(1)]),
-  is_builtin: z.boolean(),
-  ext: optionalExtSchema,
-})
+    .max(500, t("dicts.form.description.validation.max"))
+    .transform((value) => (value === "" ? undefined : value))
 
-const DICT_STATUS_META_MAP: Record<DictStatus, DictStatusMeta> = {
-  0: {
-    label: "禁用",
-    description: "该字典项已停用，不建议继续被业务侧使用。",
-    badgeVariant: "destructive-outline",
-  },
-  1: {
-    label: "正常",
-    description: "该字典项可正常被选择和消费。",
-    badgeVariant: "success-outline",
-  },
+  const optionalExtSchema = z
+    .string()
+    .trim()
+    .refine((value) => {
+      if (value === "") {
+        return true
+      }
+
+      try {
+        JSON.parse(value)
+        return true
+      } catch {
+        return false
+      }
+    }, t("dicts.form.ext.validation.invalid"))
+    .transform((value) => (value === "" ? "{}" : value))
+
+  return z.object({
+    parent_id: z.string().nullable().optional(),
+    dict_type: z
+      .string()
+      .trim()
+      .min(1, t("dicts.form.type.validation.required"))
+      .max(100, t("dicts.form.type.validation.max")),
+    dict_key: z
+      .string()
+      .trim()
+      .min(1, t("dicts.form.key.validation.required"))
+      .max(100, t("dicts.form.key.validation.max")),
+    dict_value: z
+      .string()
+      .trim()
+      .min(1, t("dicts.form.value.validation.required"))
+      .max(255, t("dicts.form.value.validation.max")),
+    label: z
+      .string()
+      .trim()
+      .min(1, t("dicts.form.label.validation.required"))
+      .max(255, t("dicts.form.label.validation.max")),
+    value_type: z.union([
+      z.literal("string"),
+      z.literal("number"),
+      z.literal("boolean"),
+      z.literal("json"),
+    ]),
+    description: optionalDescriptionSchema,
+    sort: z
+      .number()
+      .int(t("dicts.form.sort.validation.int"))
+      .min(0, t("dicts.form.sort.validation.min"))
+      .max(9999, t("dicts.form.sort.validation.max")),
+    status: z.union([z.literal(0), z.literal(1)]),
+    is_builtin: z.boolean(),
+    ext: optionalExtSchema,
+  })
 }
-
-export const DICT_STATUS_OPTIONS = (
-  Object.keys(DICT_STATUS_META_MAP) as Array<`${DictStatus}`>
-).map((key) => ({
-  value: Number(key) as DictStatus,
-  label: DICT_STATUS_META_MAP[Number(key) as DictStatus].label,
-}))
-
-export const DICT_VALUE_TYPE_OPTIONS: Array<{
-  value: DictValueType
-  label: string
-  description: string
-}> = [
-  { value: "string", label: "字符串", description: "适合文案、编码和枚举值。" },
-  { value: "number", label: "数字", description: "适合数字型业务值。" },
-  { value: "boolean", label: "布尔", description: "适合 true / false 场景。" },
-  { value: "json", label: "JSON", description: "适合结构化扩展值。" },
-]
 
 function sortDictNodes(a: DictData, b: DictData) {
   if (a.sort !== b.sort) {
@@ -123,8 +96,64 @@ function sortDictNodes(a: DictData, b: DictData) {
   return a.label.localeCompare(b.label, "zh-CN")
 }
 
-export function getDictStatusMeta(status: DictStatus): DictStatusMeta {
-  return DICT_STATUS_META_MAP[status] ?? DICT_STATUS_META_MAP[1]
+export function getDictStatusMeta(
+  status: DictStatus,
+  t: TranslateFn = defaultT
+): DictStatusMeta {
+  const statusMap: Record<DictStatus, DictStatusMeta> = {
+    0: {
+      label: t("dicts.status.disabled.label"),
+      description: t("dicts.status.disabled.description"),
+      badgeVariant: "destructive-outline",
+    },
+    1: {
+      label: t("dicts.status.active.label"),
+      description: t("dicts.status.active.description"),
+      badgeVariant: "success-outline",
+    },
+  }
+
+  return statusMap[status] ?? statusMap[1]
+}
+
+export function getDictStatusOptions(t: TranslateFn = defaultT) {
+  return (Object.keys({ 0: true, 1: true }) as Array<`${DictStatus}`>).map(
+    (key) => ({
+      value: Number(key) as DictStatus,
+      label: getDictStatusMeta(Number(key) as DictStatus, t).label,
+    })
+  )
+}
+
+export function getDictValueTypeOptions(
+  t: TranslateFn = defaultT
+): Array<{
+  value: DictValueType
+  label: string
+  description: string
+}> {
+  return [
+    {
+      value: "string",
+      label: t("dicts.valueType.string.label"),
+      description: t("dicts.valueType.string.description"),
+    },
+    {
+      value: "number",
+      label: t("dicts.valueType.number.label"),
+      description: t("dicts.valueType.number.description"),
+    },
+    {
+      value: "boolean",
+      label: t("dicts.valueType.boolean.label"),
+      description: t("dicts.valueType.boolean.description"),
+    },
+    {
+      value: "json",
+      label: t("dicts.valueType.json.label"),
+      description: t("dicts.valueType.json.description"),
+    },
+  ]
 }
 
 export function getDictDisplayName(dict: Pick<DictData, "label" | "dict_key">) {
@@ -258,8 +287,11 @@ export function getDefaultDictFormValues(
   }
 }
 
-export function validateDictForm(values: DictFormValues) {
-  const result = dictFormSchema.safeParse(values)
+export function validateDictForm(
+  values: DictFormValues,
+  t: TranslateFn = defaultT
+) {
+  const result = createDictFormSchema(t).safeParse(values)
 
   if (result.success) {
     return {}
@@ -275,9 +307,10 @@ export function validateDictForm(values: DictFormValues) {
 }
 
 export function buildCreateDictParam(
-  values: DictFormValues
+  values: DictFormValues,
+  t: TranslateFn = defaultT
 ): CreateDictParam {
-  const parsed = dictFormSchema.parse(values)
+  const parsed = createDictFormSchema(t).parse(values)
 
   return {
     parent_id: parsed.parent_id ?? null,
@@ -296,9 +329,10 @@ export function buildCreateDictParam(
 
 export function buildUpdateDictParam(
   id: string,
-  values: DictFormValues
+  values: DictFormValues,
+  t: TranslateFn = defaultT
 ): UpdateDictParam {
-  const parsed = dictFormSchema.parse(values)
+  const parsed = createDictFormSchema(t).parse(values)
 
   return {
     id,

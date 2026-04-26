@@ -8,6 +8,7 @@ import { DataGridTable } from "@/components/reui/data-grid-table"
 import { ScrollArea, ScrollBar } from "@/components/reui/scroll-area"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useI18n } from "@/providers/i18n-provider"
 import type { DictData } from "@/types/base.types"
 import type { Table } from "@tanstack/react-table"
 import {
@@ -40,12 +41,14 @@ export function DictsDetailPanel({
   onOpenEdit,
   onOpenAddChild,
 }: DictsDetailPanelProps) {
+  const { t } = useI18n()
+
   if (!selectedNode) {
     return (
       <div className="flex min-h-140 items-center justify-center rounded-2xl border border-dashed border-border/80 bg-card">
         <EntityEmptyState
-          title="选择字典节点"
-          description="选择左侧节点后查看详情和子级。"
+          title={t("dicts.detail.emptyTitle")}
+          description={t("dicts.detail.emptyDescription")}
         />
       </div>
     )
@@ -60,7 +63,7 @@ export function DictsDetailPanel({
           onClick={() => onSelectNode(null)}
         >
           <HomeIcon className="size-3.5" />
-          根目录
+          {t("common.misc.rootDirectory")}
         </button>
         {breadcrumb.map((item, index) => (
           <div key={item.id} className="flex items-center gap-1">
@@ -99,13 +102,15 @@ export function DictsDetailPanel({
               <DictStatusBadge status={selectedNode.status} />
             </div>
             <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-              <span>类型：{selectedNode.dict_type}</span>
-              <span>值：{selectedNode.dict_value}</span>
-              <span>值类型：{selectedNode.value_type}</span>
-              <span>排序：{selectedNode.sort}</span>
+              <span>{t("dicts.detail.type", { value: selectedNode.dict_type })}</span>
+              <span>{t("dicts.detail.value", { value: selectedNode.dict_value })}</span>
+              <span>
+                {t("dicts.detail.valueType", { value: selectedNode.value_type })}
+              </span>
+              <span>{t("dicts.detail.sort", { value: selectedNode.sort })}</span>
             </div>
             <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
-              {selectedNode.description || "当前节点暂无补充说明。"}
+              {selectedNode.description || t("dicts.detail.noDescription")}
             </p>
           </div>
 
@@ -116,11 +121,11 @@ export function DictsDetailPanel({
               onClick={() => onOpenEdit(selectedNode)}
             >
               <Edit3Icon />
-              编辑
+              {t("common.actions.edit")}
             </Button>
             <Button size="sm" onClick={() => onOpenAddChild(selectedNode.id)}>
               <PlusIcon />
-              添加子级
+              {t("common.actions.addChild")}
             </Button>
           </div>
         </div>
@@ -131,14 +136,16 @@ export function DictsDetailPanel({
         recordCount={childItems.length}
         isLoading={isFetching}
         loadingMode="spinner"
-        loadingMessage="正在同步字典列表..."
+        loadingMessage={t("common.loading.syncingDicts")}
         emptyMessage={
           <div className="flex flex-col items-center gap-3 py-14 text-center">
             <TagIcon className="size-8 text-muted-foreground/50" />
             <div className="space-y-1">
-              <p className="font-medium text-foreground">当前节点下暂无子级</p>
+              <p className="font-medium text-foreground">
+                {t("dicts.detail.emptyChildrenTitle")}
+              </p>
               <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-                可继续添加子级节点
+                {t("dicts.detail.emptyChildrenDescription")}
               </p>
             </div>
           </div>
@@ -149,9 +156,11 @@ export function DictsDetailPanel({
       >
         <div className="w-full space-y-2.5">
           <div className="space-y-1 px-1">
-            <h4 className="text-sm font-semibold text-foreground">直接子级</h4>
+            <h4 className="text-sm font-semibold text-foreground">
+              {t("dicts.detail.directChildrenTitle")}
+            </h4>
             <p className="text-sm text-muted-foreground">
-              仅展示当前节点的直属子项
+              {t("dicts.detail.directChildrenDescription")}
             </p>
           </div>
           <DataGridContainer className="[&_svg.animate-spin]:text-primary">

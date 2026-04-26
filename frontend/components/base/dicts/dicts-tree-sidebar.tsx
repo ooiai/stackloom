@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/reui/scroll-area"
 import { cn } from "@/lib/utils"
+import { useI18n } from "@/providers/i18n-provider"
 import type { DictData } from "@/types/base.types"
 import {
   BookMarkedIcon,
@@ -64,6 +65,7 @@ function DictTreeNodeItem({
   onDelete: (dict: DictData) => void
   depth?: number
 }) {
+  const { t } = useI18n()
   const isSelected = selectedNodeId === node.id
   const hasChildren = node.children.length > 0
   const isExpanded = expandedIds.has(node.id)
@@ -150,11 +152,11 @@ function DictTreeNodeItem({
             <DropdownMenuContent align="end" side="bottom">
               <DropdownMenuItem onClick={() => onOpenAddChild(node.id)}>
                 <PlusIcon />
-                添加子级
+                {t("common.actions.addChild")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onOpenEdit(node)}>
                 <Edit3Icon />
-                编辑
+                {t("common.actions.edit")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -162,7 +164,7 @@ function DictTreeNodeItem({
                 onClick={() => onDelete(node)}
               >
                 <Trash2Icon />
-                删除
+                {t("common.actions.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -205,19 +207,23 @@ export function DictsTreeSidebar({
   onOpenEdit,
   onDelete,
 }: DictsTreeSidebarProps) {
+  const { t } = useI18n()
+
   return (
     <aside className="overflow-hidden rounded-2xl border border-border/70 bg-card">
       <div className="flex items-center justify-between border-b border-border/70 px-4 py-3">
         <div className="space-y-0.5">
-          <p className="text-sm font-semibold text-foreground">字典树</p>
+          <p className="text-sm font-semibold text-foreground">
+            {t("dicts.sidebar.title")}
+          </p>
           <p className="text-xs text-muted-foreground">
-            从左侧浏览层级并选中当前节点。
+            {t("dicts.sidebar.subtitle")}
           </p>
         </div>
         <Button
           variant="ghost"
           size="icon-sm"
-          title="添加根节点"
+          title={t("dicts.sidebar.addRoot")}
           onClick={onOpenCreateRoot}
         >
           <PlusIcon />
@@ -230,7 +236,7 @@ export function DictsTreeSidebar({
           <Input
             value={treeSearch}
             onChange={(event) => onTreeSearchChange(event.target.value)}
-            placeholder="搜索名称、键或类型"
+            placeholder={t("dicts.sidebar.searchPlaceholder")}
             className="pl-8"
           />
         </div>
@@ -241,25 +247,27 @@ export function DictsTreeSidebar({
           {isInitialLoading ? (
             <div className="flex items-center justify-center py-16 text-sm text-muted-foreground">
               <RefreshCwIcon className="mr-2 size-4 animate-spin" />
-              正在加载...
+              {t("common.loading.loadingTree")}
             </div>
           ) : tree.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
               <BookMarkedIcon className="size-8 text-muted-foreground/50" />
               <div className="space-y-1">
                 <p className="font-medium text-foreground">
-                  {treeSearch.trim() ? "没有匹配的节点" : "暂无数据"}
+                  {treeSearch.trim()
+                    ? t("dicts.sidebar.emptySearchTitle")
+                    : t("dicts.sidebar.emptyDefaultTitle")}
                 </p>
                 <p className="max-w-xs text-sm leading-6 text-muted-foreground">
                   {treeSearch.trim()
-                    ? "换个关键词，或清空搜索"
-                    : "先创建根节点，再补充子项"}
+                    ? t("dicts.sidebar.emptySearchDescription")
+                    : t("dicts.sidebar.emptyDefaultDescription")}
                 </p>
               </div>
               {!treeSearch.trim() ? (
                 <Button size="sm" onClick={onOpenCreateRoot}>
                   <PlusIcon />
-                  创建字典
+                  {t("dicts.sidebar.create")}
                 </Button>
               ) : null}
             </div>

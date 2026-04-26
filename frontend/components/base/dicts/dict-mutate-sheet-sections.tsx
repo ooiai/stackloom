@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useI18n } from "@/providers/i18n-provider"
 import { Loader2Icon } from "lucide-react"
 
 interface SectionHeaderProps {
@@ -36,11 +37,12 @@ export function DictMutateBasicSection({
 }: {
   children: ReactNode
 }) {
+  const { t } = useI18n()
   return (
     <section className="space-y-5">
       <SectionHeader
-        title="基础信息"
-        description="定义字典项的展示名称、键值和归属类型。"
+        title={t("dicts.sections.basic.title")}
+        description={t("dicts.sections.basic.description")}
       />
       <div className="grid gap-x-4 gap-y-5 md:grid-cols-1">{children}</div>
     </section>
@@ -52,11 +54,12 @@ export function DictMutateSupplementSection({
 }: {
   children: ReactNode
 }) {
+  const { t } = useI18n()
   return (
     <section className="space-y-5">
       <SectionHeader
-        title="说明与扩展"
-        description="补充业务含义、适用范围和扩展 JSON 配置。"
+        title={t("dicts.sections.supplement.title")}
+        description={t("dicts.sections.supplement.description")}
       />
       <div className="space-y-5">{children}</div>
     </section>
@@ -72,6 +75,7 @@ export function DictMutateSheetFooter({
   submitLabel: string
   onCancel: () => void
 }) {
+  const { t } = useI18n()
   return (
     <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-end">
       <Button
@@ -81,7 +85,7 @@ export function DictMutateSheetFooter({
         onClick={onCancel}
         disabled={isBusy}
       >
-        取消
+        {t("common.actions.cancel")}
       </Button>
       <Button
         type="submit"

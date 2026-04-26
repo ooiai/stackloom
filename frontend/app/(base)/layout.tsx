@@ -3,25 +3,43 @@ import type { Metadata } from "next"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { AxiosErrorHandler } from "@/hooks/setup-axios"
+import { getLocaleMessages, getMessageValue } from "@/lib/i18n"
+import { getRequestLocale } from "@/lib/i18n/server"
 import { fontVariables } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { AlertDialogProvider } from "@/providers/dialog-providers"
+import { I18nProvider } from "@/providers/i18n-provider"
 import { QueryProviders } from "@/providers/query-providers"
 import "../globals.css"
 
-export const metadata: Metadata = {
-  title: "Stackloom 后台管理系统",
-  description: "Stackloom 后台管理系统，用于用户、租户、角色与权限的统一管理。",
-  keywords: ["Stackloom", "后台管理", "用户管理", "租户管理", "权限管理"],
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale()
+  const messages = await getLocaleMessages(locale)
+
+  return {
+    title: getMessageValue(messages, "metadata.base.title", "Stackloom Admin"),
+    description: getMessageValue(
+      messages,
+      "metadata.base.description",
+      "Stackloom admin console."
+    ),
+    keywords: getMessageValue(messages, "metadata.base.keywords")
+      .split(",")
+      .map((keyword) => keyword.trim())
+      .filter(Boolean),
+  }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const locale = await getRequestLocale()
+  const messages = await getLocaleMessages(locale)
+
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#FFFFFF" />
@@ -35,11 +53,13 @@ export default function RootLayout({
       </head>
       <body className={cn(fontVariables, "font-sans antialiased")}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <AlertDialogProvider>
-            <QueryProviders>{children}</QueryProviders>
-          </AlertDialogProvider>
-          <AxiosErrorHandler />
-          <Toaster richColors />
+          <I18nProvider locale={locale} messages={messages}>
+            <AlertDialogProvider>
+              <QueryProviders>{children}</QueryProviders>
+            </AlertDialogProvider>
+            <AxiosErrorHandler />
+            <Toaster richColors />
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

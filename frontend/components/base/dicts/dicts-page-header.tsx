@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { useI18n } from "@/providers/i18n-provider"
 import { PlusIcon, RefreshCwIcon } from "lucide-react"
 
 interface DictsPageHeaderProps {
@@ -14,12 +15,16 @@ export function DictsPageHeader({
   onRefresh,
   onOpenCreateRoot,
 }: DictsPageHeaderProps) {
+  const { t } = useI18n()
+
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div className="space-y-1.5">
-        <h2 className="text-lg font-bold tracking-tight">字典管理</h2>
+        <h2 className="text-lg font-bold tracking-tight">
+          {t("dicts.page.title")}
+        </h2>
         <p className="text-sm text-muted-foreground">
-          字典是一种键值对数据结构，常用于存储和管理配置信息、翻译文本等
+          {t("dicts.page.subtitle")}
         </p>
       </div>
       <div className="flex items-center gap-2">
@@ -30,11 +35,11 @@ export function DictsPageHeader({
           disabled={isFetching}
         >
           <RefreshCwIcon className={isFetching ? "animate-spin" : undefined} />
-          刷新
+          {t("common.actions.refresh")}
         </Button>
         <Button hidden onClick={onOpenCreateRoot}>
           <PlusIcon />
-          添加根字典
+          {t("dicts.page.addRoot")}
         </Button>
       </div>
     </div>

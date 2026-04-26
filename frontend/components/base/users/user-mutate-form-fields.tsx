@@ -18,7 +18,8 @@ import {
 } from "@/components/base/users/user-mutate-sheet-sections"
 import type { UserMutateFormApi } from "@/components/base/users/hooks/use-user-mutate-form"
 import { cn } from "@/lib/utils"
-import { USER_GENDER_OPTIONS, USER_STATUS_OPTIONS } from "@/lib/users"
+import { getUserGenderOptions, getUserStatusOptions } from "@/lib/users"
+import { useI18n } from "@/providers/i18n-provider"
 import type { UserMutateMode } from "@/types/base.types"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
 
@@ -35,6 +36,10 @@ export function UserMutateFormFields({
   showPassword,
   onTogglePassword,
 }: UserMutateFormFieldsProps) {
+  const { t } = useI18n()
+  const genderOptions = getUserGenderOptions(t)
+  const statusOptions = getUserStatusOptions(t)
+
   return (
     <>
       <UserMutateAccountSection>
@@ -46,7 +51,7 @@ export function UserMutateFormFields({
             return (
               <LabelField
                 className="md:col-span-2"
-                label="用户名"
+                label={t("users.form.username.label")}
                 htmlFor={field.name}
                 invalid={isInvalid}
                 error={
@@ -63,7 +68,7 @@ export function UserMutateFormFields({
                   onBlur={field.handleBlur}
                   onChange={(event) => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
-                  placeholder="请输入用户名"
+                  placeholder={t("users.form.username.placeholder")}
                   className={cn(
                     "transition-colors",
                     mode === "update" &&
@@ -83,7 +88,7 @@ export function UserMutateFormFields({
             return (
               <LabelField
                 className="md:col-span-2"
-                label="昵称"
+                label={t("users.form.nickname.label")}
                 htmlFor={field.name}
                 invalid={isInvalid}
                 error={
@@ -99,7 +104,7 @@ export function UserMutateFormFields({
                   onBlur={field.handleBlur}
                   onChange={(event) => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
-                  placeholder="展示名称"
+                  placeholder={t("users.form.nickname.placeholder")}
                 />
               </LabelField>
             )
@@ -114,7 +119,7 @@ export function UserMutateFormFields({
             return (
               <LabelField
                 className="md:col-span-2"
-                label="邮箱"
+                label={t("users.form.email.label")}
                 htmlFor={field.name}
                 invalid={isInvalid}
                 error={
@@ -146,7 +151,7 @@ export function UserMutateFormFields({
             return (
               <LabelField
                 className="md:col-span-2"
-                label="手机号"
+                label={t("users.form.phone.label")}
                 htmlFor={field.name}
                 invalid={isInvalid}
                 error={
@@ -163,7 +168,7 @@ export function UserMutateFormFields({
                   onBlur={field.handleBlur}
                   onChange={(event) => field.handleChange(event.target.value)}
                   aria-invalid={isInvalid}
-                  placeholder="请输入手机号"
+                  placeholder={t("users.form.phone.placeholder")}
                 />
               </LabelField>
             )
@@ -179,10 +184,10 @@ export function UserMutateFormFields({
               return (
                 <LabelField
                   className="md:col-span-2"
-                  label="登录密码"
+                  label={t("users.form.password.label")}
                   htmlFor={field.name}
                   invalid={isInvalid}
-                  tooltip={{ content: "密码至少 8 位，最长 72 位" }}
+                  tooltip={{ content: t("users.form.password.tooltip") }}
                   error={
                     isInvalid ? (
                       <FieldError errors={field.state.meta.errors} />
@@ -200,7 +205,7 @@ export function UserMutateFormFields({
                         field.handleChange(event.target.value)
                       }
                       aria-invalid={isInvalid}
-                      placeholder="设置登录密码"
+                      placeholder={t("users.form.password.placeholder")}
                       className="pr-10"
                     />
                     <Button
@@ -216,7 +221,9 @@ export function UserMutateFormFields({
                         <EyeIcon className="size-4" />
                       )}
                       <span className="sr-only">
-                        {showPassword ? "隐藏密码" : "显示密码"}
+                        {showPassword
+                          ? t("users.form.password.hide")
+                          : t("users.form.password.show")}
                       </span>
                     </Button>
                   </div>
@@ -235,7 +242,7 @@ export function UserMutateFormFields({
 
             return (
               <LabelField
-                label="性别"
+                label={t("users.form.gender.label")}
                 invalid={isInvalid}
                 error={
                   isInvalid ? (
@@ -254,7 +261,7 @@ export function UserMutateFormFields({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {USER_GENDER_OPTIONS.map((option) => (
+                    {genderOptions.map((option) => (
                       <SelectItem
                         key={option.value}
                         value={String(option.value)}
@@ -276,7 +283,7 @@ export function UserMutateFormFields({
 
             return (
               <LabelField
-                label="状态"
+                label={t("users.form.status.label")}
                 invalid={isInvalid}
                 error={
                   isInvalid ? (
@@ -295,7 +302,7 @@ export function UserMutateFormFields({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {USER_STATUS_OPTIONS.map((option) => (
+                    {statusOptions.map((option) => (
                       <SelectItem
                         key={option.value}
                         value={String(option.value)}
@@ -319,7 +326,7 @@ export function UserMutateFormFields({
 
           return (
             <LabelField
-              label="个人简介"
+              label={t("users.form.bio.label")}
               htmlFor={field.name}
               invalid={isInvalid}
               description={
@@ -347,7 +354,7 @@ export function UserMutateFormFields({
                 onBlur={field.handleBlur}
                 onChange={(event) => field.handleChange(event.target.value)}
                 aria-invalid={isInvalid}
-                placeholder="填写用户简介..."
+                placeholder={t("users.form.bio.placeholder")}
                 className="min-h-28 resize-y text-[12px] leading-6"
               />
             </LabelField>

@@ -3,10 +3,11 @@
 import { useMemo } from "react"
 
 import {
-  dictFormSchema,
+  createDictFormSchema,
   getDefaultDictFormValues,
 } from "@/components/base/dicts/helpers"
 import { useForm } from "@tanstack/react-form"
+import { useI18n } from "@/providers/i18n-provider"
 import type {
   DictData,
   DictFormValues,
@@ -24,15 +25,17 @@ export function useDictMutateForm({
   parent: DictData | null
   onSubmit: (values: DictFormValues) => Promise<void>
 }) {
+  const { t } = useI18n()
   const defaultValues = useMemo(
     () => getDefaultDictFormValues(dict, parent),
     [dict, parent]
   )
+  const schema = useMemo(() => createDictFormSchema(t), [t])
 
   const form = useForm({
     defaultValues,
     validators: {
-      onSubmit: dictFormSchema,
+      onSubmit: schema,
     },
     onSubmit: async ({ value }) => {
       await onSubmit(value)

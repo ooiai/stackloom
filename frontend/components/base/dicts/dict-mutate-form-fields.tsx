@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import type { DictMutateFormApi } from "@/components/base/dicts/hooks/use-dict-mutate-form"
+import { useI18n } from "@/providers/i18n-provider"
 
 interface DictMutateFormFieldsProps {
   form: DictMutateFormApi
@@ -29,6 +30,7 @@ export function DictMutateFormFields({
   hasParent,
   parentLabel,
 }: DictMutateFormFieldsProps) {
+  const { t } = useI18n()
   const isDictTypeLocked = mode === "update" || hasParent
 
   return (
@@ -37,8 +39,8 @@ export function DictMutateFormFields({
         <Field>
           <FieldLabel>
             <LabelTooltip
-              label="所属节点"
-              content="当前编辑不会变更父子层级关系。"
+              label={t("dicts.form.parent.label")}
+              content={t("dicts.form.parent.description")}
             />
           </FieldLabel>
           <FieldContent>
@@ -53,15 +55,15 @@ export function DictMutateFormFields({
 
             return (
               <LabelField
-                label="字典类型"
+                label={t("dicts.form.type.label")}
                 htmlFor={field.name}
                 invalid={isInvalid}
                 description={
                   isDictTypeLocked ? (
                     <span className="text-[13px] leading-5 text-muted-foreground">
                       {mode === "update"
-                        ? "编辑时不允许修改字典类型。"
-                        : "子级节点会继承父级字典类型。"}
+                        ? t("dicts.form.type.lockedOnEdit")
+                        : t("dicts.form.type.lockedOnChild")}
                     </span>
                   ) : null
                 }
@@ -77,7 +79,7 @@ export function DictMutateFormFields({
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(event) => field.handleChange(event.target.value)}
-                  placeholder="例如：gender"
+                  placeholder={t("dicts.form.type.placeholder")}
                   aria-invalid={isInvalid}
                   disabled={isDictTypeLocked}
                 />
@@ -93,7 +95,7 @@ export function DictMutateFormFields({
 
             return (
               <LabelField
-                label="显示名称"
+                label={t("dicts.form.label.label")}
                 htmlFor={field.name}
                 invalid={isInvalid}
                 error={
@@ -108,7 +110,7 @@ export function DictMutateFormFields({
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(event) => field.handleChange(event.target.value)}
-                  placeholder="例如：男"
+                  placeholder={t("dicts.form.label.placeholder")}
                   aria-invalid={isInvalid}
                 />
               </LabelField>
@@ -123,7 +125,7 @@ export function DictMutateFormFields({
 
             return (
               <LabelField
-                label="字典键"
+                label={t("dicts.form.key.label")}
                 htmlFor={field.name}
                 invalid={isInvalid}
                 error={
@@ -138,7 +140,7 @@ export function DictMutateFormFields({
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(event) => field.handleChange(event.target.value)}
-                  placeholder="例如：male"
+                  placeholder={t("dicts.form.key.placeholder")}
                   aria-invalid={isInvalid}
                 />
               </LabelField>
@@ -153,7 +155,7 @@ export function DictMutateFormFields({
 
             return (
               <LabelField
-                label="字典值"
+                label={t("dicts.form.value.label")}
                 htmlFor={field.name}
                 invalid={isInvalid}
                 error={
@@ -168,7 +170,7 @@ export function DictMutateFormFields({
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(event) => field.handleChange(event.target.value)}
-                  placeholder="例如：1"
+                  placeholder={t("dicts.form.value.placeholder")}
                   aria-invalid={isInvalid}
                 />
               </LabelField>
@@ -183,7 +185,7 @@ export function DictMutateFormFields({
 
             return (
               <LabelField
-                label="排序值"
+                label={t("dicts.form.sort.label")}
                 htmlFor={field.name}
                 invalid={isInvalid}
                 error={
@@ -191,7 +193,7 @@ export function DictMutateFormFields({
                     <FieldError errors={field.state.meta.errors} />
                   ) : null
                 }
-                tooltip={{ content: "数值越小，列表中越靠前" }}
+                tooltip={{ content: t("dicts.form.sort.tooltip") }}
               >
                 <Input
                   id={field.name}
@@ -220,7 +222,7 @@ export function DictMutateFormFields({
 
             return (
               <LabelField
-                label="说明"
+                label={t("dicts.form.description.label")}
                 htmlFor={field.name}
                 invalid={isInvalid}
                 error={
@@ -236,7 +238,7 @@ export function DictMutateFormFields({
                   onBlur={field.handleBlur}
                   onChange={(event) => field.handleChange(event.target.value)}
                   rows={3}
-                  placeholder="记录字典项的适用范围、业务含义或注意事项。"
+                  placeholder={t("dicts.form.description.placeholder")}
                   aria-invalid={isInvalid}
                 />
               </LabelField>
@@ -251,7 +253,7 @@ export function DictMutateFormFields({
 
             return (
               <LabelField
-                label="扩展配置"
+                label={t("dicts.form.ext.label")}
                 htmlFor={field.name}
                 invalid={isInvalid}
                 error={
@@ -261,7 +263,7 @@ export function DictMutateFormFields({
                 }
                 description={
                   <span className="text-[13px] leading-5 text-muted-foreground">
-                    使用 JSON 存储额外配置，留空时会自动写入空对象。
+                    {t("dicts.form.ext.description")}
                   </span>
                 }
               >
@@ -272,7 +274,7 @@ export function DictMutateFormFields({
                   onBlur={field.handleBlur}
                   onChange={(event) => field.handleChange(event.target.value)}
                   rows={6}
-                  placeholder='例如：{"color":"blue"}'
+                  placeholder={t("dicts.form.ext.placeholder")}
                   aria-invalid={isInvalid}
                 />
               </LabelField>

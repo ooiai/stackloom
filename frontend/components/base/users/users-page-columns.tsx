@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import type { TranslateFn } from "@/lib/i18n"
 import { formatDateTimeAt } from "@/lib/time"
 import { getUserAvatarFallback, getUserDisplayName } from "@/lib/users"
 import type { UserData } from "@/types/base.types"
@@ -18,11 +19,13 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { Edit3Icon, EllipsisIcon, Trash2Icon } from "lucide-react"
 
 interface CreateUserColumnsOptions {
+  t: TranslateFn
   onOpenEdit: (user: UserData) => void
   onDelete: (user: UserData) => void
 }
 
 export function createUserColumns({
+  t,
   onOpenEdit,
   onDelete,
 }: CreateUserColumnsOptions): ColumnDef<UserData>[] {
@@ -33,7 +36,7 @@ export function createUserColumns({
       header: ({ column }) => (
         <DataGridColumnHeader
           className="font-medium"
-          title="用户"
+          title={t("users.table.user")}
           column={column}
         />
       ),
@@ -56,7 +59,7 @@ export function createUserColumns({
       header: ({ column }) => (
         <DataGridColumnHeader
           className="font-medium"
-          title="昵称"
+          title={t("users.table.nickname")}
           column={column}
         />
       ),
@@ -73,7 +76,7 @@ export function createUserColumns({
       header: ({ column }) => (
         <DataGridColumnHeader
           className="font-medium"
-          title="手机号"
+          title={t("users.table.phone")}
           column={column}
         />
       ),
@@ -88,7 +91,7 @@ export function createUserColumns({
       header: ({ column }) => (
         <DataGridColumnHeader
           className="font-medium"
-          title="邮箱"
+          title={t("users.table.email")}
           column={column}
         />
       ),
@@ -102,7 +105,7 @@ export function createUserColumns({
       header: ({ column }) => (
         <DataGridColumnHeader
           className="font-medium"
-          title="状态"
+          title={t("users.table.status")}
           column={column}
         />
       ),
@@ -116,7 +119,7 @@ export function createUserColumns({
       header: ({ column }) => (
         <DataGridColumnHeader
           className="font-medium"
-          title="创建时间"
+          title={t("users.table.createdAt")}
           column={column}
         />
       ),
@@ -139,7 +142,7 @@ export function createUserColumns({
           <DropdownMenuContent side="bottom" align="end">
             <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
               <Edit3Icon />
-              编辑
+              {t("common.actions.edit")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -147,7 +150,7 @@ export function createUserColumns({
               onClick={() => onDelete(row.original)}
             >
               <Trash2Icon />
-              删除
+              {t("common.actions.delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

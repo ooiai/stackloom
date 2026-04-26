@@ -1,3 +1,5 @@
+"use client"
+
 import { GalleryVerticalEnd } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -10,11 +12,14 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { useI18n } from "@/providers/i18n-provider"
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const { t } = useI18n()
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <form>
@@ -27,26 +32,26 @@ export function SignupForm({
               <div className="flex size-8 items-center justify-center rounded-md">
                 <GalleryVerticalEnd className="size-6" />
               </div>
-              <span className="sr-only">Acme Inc.</span>
+              <span className="sr-only">{t("auth.signup.brand")}</span>
             </a>
-            <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
+            <h1 className="text-xl font-bold">{t("auth.signup.title")}</h1>
             <FieldDescription>
-              Already have an account? <a href="#">Sign in</a>
+              {t("auth.signup.subtitle")} <a href="#">{t("auth.signup.signIn")}</a>
             </FieldDescription>
           </div>
           <Field>
-            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <FieldLabel htmlFor="email">{t("auth.signup.emailLabel")}</FieldLabel>
             <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder={t("auth.signup.emailPlaceholder")}
               required
             />
           </Field>
           <Field>
-            <Button type="submit">Create Account</Button>
+            <Button type="submit">{t("auth.signup.submit")}</Button>
           </Field>
-          <FieldSeparator>Or</FieldSeparator>
+          <FieldSeparator>{t("auth.signup.or")}</FieldSeparator>
           <Field className="grid gap-4 sm:grid-cols-2">
             <Button variant="outline" type="button">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -55,7 +60,7 @@ export function SignupForm({
                   fill="currentColor"
                 />
               </svg>
-              Continue with Apple
+              {t("auth.signup.continueWithApple")}
             </Button>
             <Button variant="outline" type="button">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -64,14 +69,14 @@ export function SignupForm({
                   fill="currentColor"
                 />
               </svg>
-              Continue with Google
+              {t("auth.signup.continueWithGoogle")}
             </Button>
           </Field>
         </FieldGroup>
       </form>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        {t("auth.signup.agreementPrefix")} <a href="#">{t("auth.signup.terms")}</a>{" "}
+        {t("auth.signup.and")} <a href="#">{t("auth.signup.privacy")}</a>
       </FieldDescription>
     </div>
   )

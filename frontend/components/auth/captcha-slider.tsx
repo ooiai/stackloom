@@ -9,6 +9,7 @@ import SliderCaptcha, {
   type VerifyParam,
 } from "rc-slider-captcha"
 
+import { useI18n } from "@/providers/i18n-provider"
 import { captchaApi } from "@/stores/system-api"
 
 const CONTROL_BUTTON_WIDTH = 40
@@ -51,6 +52,7 @@ export default function CaptchaSlider({
   onVerifySuccess,
   onVerifyError,
 }: CaptchaSliderProps) {
+  const { t } = useI18n()
   const { ref, width } = useElementWidth<HTMLDivElement>()
   const actionRef = useRef<ActionType | undefined>(undefined)
   const [verifyData, setVerifyData] = useState<VerifyParam | null>(null)
@@ -83,10 +85,10 @@ export default function CaptchaSlider({
         <SliderCaptcha
           mode="slider"
           tipText={{
-            default: "请按住滑块，拖动到最右边",
-            moving: "请按住滑块，拖动到最右边",
-            error: "验证失败，请重新操作",
-            success: "验证成功",
+            default: t("auth.captcha.tip.default"),
+            moving: t("auth.captcha.tip.moving"),
+            error: t("auth.captcha.tip.error"),
+            success: t("auth.captcha.tip.success"),
           }}
           errorHoldDuration={1000}
           bgSize={{ width: sliderWidth }}

@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { getUserAvatarFallback } from "@/lib/users"
+import { useI18n } from "@/providers/i18n-provider"
 import type { UserFormValues } from "@/types/base.types"
 import { CameraIcon, Loader2Icon } from "lucide-react"
 
@@ -49,6 +50,7 @@ export function UserMutateAvatarSection({
   fileInputRef,
   onAvatarFileChange,
 }: AvatarSectionProps) {
+  const { t } = useI18n()
   const triggerFileInput = () => fileInputRef.current?.click()
 
   const handleAvatarKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -66,7 +68,7 @@ export function UserMutateAvatarSection({
             className="group relative cursor-pointer rounded-full ring-offset-2 ring-offset-background transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary"
             role="button"
             tabIndex={0}
-            aria-label="点击更换头像"
+            aria-label={t("users.avatar.change")}
             onClick={triggerFileInput}
             onKeyDown={handleAvatarKeyDown}
           >
@@ -93,7 +95,7 @@ export function UserMutateAvatarSection({
               {avatarLabel}
             </h2>
             <p className="max-w-xs text-[12px] leading-5 text-muted-foreground">
-              支持上传头像图片
+              {t("users.avatar.hint")}
             </p>
           </div>
         </div>
@@ -115,9 +117,13 @@ export function UserMutateAccountSection({
 }: {
   children: ReactNode
 }) {
+  const { t } = useI18n()
   return (
     <section className="w-full space-y-5">
-      <SectionHeader title="账户信息" description="维护用户账号信息" />
+      <SectionHeader
+        title={t("users.sections.account.title")}
+        description={t("users.sections.account.description")}
+      />
       <div className="grid gap-x-5 gap-y-5 md:grid-cols-2">{children}</div>
     </section>
   )
@@ -128,9 +134,13 @@ export function UserMutateProfileSection({
 }: {
   children: ReactNode
 }) {
+  const { t } = useI18n()
   return (
     <section className="space-y-5">
-      <SectionHeader title="展示信息" description="展示用户额外信息" />
+      <SectionHeader
+        title={t("users.sections.profile.title")}
+        description={t("users.sections.profile.description")}
+      />
       <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2">{children}</div>
     </section>
   )
@@ -145,6 +155,7 @@ export function UserMutateSheetFooter({
   submitLabel: string
   onCancel: () => void
 }) {
+  const { t } = useI18n()
   return (
     <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-end">
       <Button
@@ -154,7 +165,7 @@ export function UserMutateSheetFooter({
         onClick={onCancel}
         disabled={isBusy}
       >
-        取消
+        {t("common.actions.cancel")}
       </Button>
       <Button
         type="submit"

@@ -7,6 +7,7 @@ import { DictsDetailPanel } from "@/components/base/dicts/dicts-detail-panel"
 import { DictsPageHeader } from "@/components/base/dicts/dicts-page-header"
 import { DictsTreeSidebar } from "@/components/base/dicts/dicts-tree-sidebar"
 import type { DictTreeNode } from "@/components/base/dicts/helpers"
+import { useI18n } from "@/providers/i18n-provider"
 import type { DictData } from "@/types/base.types"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
@@ -49,16 +50,18 @@ export function DictsPageView({
   onOpenEdit,
   onDelete,
 }: DictsPageViewProps) {
+  const { t } = useI18n()
   const columns = useMemo(
     () =>
       createDictColumns({
+        t,
         tree,
         onSelectNode,
         onOpenAddChild,
         onOpenEdit,
         onDelete,
       }),
-    [onDelete, onOpenAddChild, onOpenEdit, onSelectNode, tree]
+    [onDelete, onOpenAddChild, onOpenEdit, onSelectNode, t, tree]
   )
 
   // eslint-disable-next-line react-hooks/incompatible-library

@@ -4,8 +4,11 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { SigninForm } from "@/components/auth/signin-form"
+import { useI18n } from "@/providers/i18n-provider"
 
 export default function SigninPage() {
+  const { t } = useI18n()
+
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
@@ -13,7 +16,7 @@ export default function SigninPage() {
           <Link href="/" className="flex items-center gap-2 font-medium">
             <Image
               src="/svg/logo.svg"
-              alt="Stackloom 品牌标识"
+              alt={t("auth.signin.logoAlt")}
               width={0}
               height={0}
               priority
@@ -33,18 +36,17 @@ export default function SigninPage() {
         <div className="flex h-full w-auto flex-col items-center justify-center">
           <Image
             src="/svg/auth.svg"
-            alt="身份与授权插画"
+            alt={t("auth.signin.heroAlt")}
             width={0}
             height={0}
             priority
             className="mx-auto h-auto w-xl"
           />
           <span className="mt-8 text-xl font-semibold">
-            Stackloom · 欢迎回来 ✨
+            {t("auth.signin.heroTitle")}
           </span>
           <span className="mt-3 max-w-2xl text-sm text-muted-foreground italic">
-            一次登录，直达后台 Admin 与业务端
-            Web；从组织到权限，协作更统一、更稳定、更高效。
+            {t("auth.signin.heroDescription")}
           </span>
         </div>
       </div>

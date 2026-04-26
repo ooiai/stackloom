@@ -18,6 +18,7 @@ import { useAwsS3 } from "@/hooks/use-aws-s3"
 import { uploadAwsObject } from "@/lib/aws"
 import { OSS_ENUM } from "@/lib/config/enums"
 import { getUserDisplayName } from "@/lib/users"
+import { useI18n } from "@/providers/i18n-provider"
 import { awsApi } from "@/stores/system-api"
 import type {
   UserData,
@@ -40,19 +41,6 @@ interface UserMutateSheetHeader {
   submitLabel: string
 }
 
-const SHEET_HEADER_MAP: Record<UserMutateMode, UserMutateSheetHeader> = {
-  create: {
-    title: "新增用户",
-    description: "录入基础信息并创建用户",
-    submitLabel: "创建用户",
-  },
-  update: {
-    title: "编辑用户",
-    description: "维护当前用户资料",
-    submitLabel: "保存变更",
-  },
-}
-
 export function UserMutateSheet({
   open,
   mode,
@@ -61,12 +49,24 @@ export function UserMutateSheet({
   onOpenChange,
   onSubmit,
 }: UserMutateSheetProps) {
+  const { t } = useI18n()
   const { uploadFile } = useAwsS3()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
-  const header = SHEET_HEADER_MAP[mode]
+  const header: UserMutateSheetHeader =
+    mode === "create"
+      ? {
+          title: t("users.sheet.create.title"),
+          description: t("users.sheet.create.description"),
+          submitLabel: t("users.sheet.create.submit"),
+        }
+      : {
+          title: t("users.sheet.update.title"),
+          description: t("users.sheet.update.description"),
+          submitLabel: t("users.sheet.update.submit"),
+        }
   const { defaultValues, form } = useUserMutateForm({ mode, user, onSubmit })
 
   const resetFormState = () => {
@@ -102,7 +102,7 @@ export function UserMutateSheet({
     }
 
     if (!file.type.startsWith("image/")) {
-      toast.error("请选择图片文件作为头像")
+      toast.error(t("users.toast.avatarInvalid"))
       return
     }
 
@@ -120,10 +120,10 @@ export function UserMutateSheet({
         errors: [],
         isTouched: true,
       }))
-      toast.success("头像上传成功")
+      toast.success(t("users.toast.avatarUploaded"))
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "头像上传失败，请稍后重试"
+        error instanceof Error ? error.message : t("users.toast.avatarUploadFailed")
       )
     } finally {
       setIsUploadingAvatar(false)
@@ -135,9 +135,9 @@ export function UserMutateSheet({
     () =>
       getUserDisplayName({
         nickname: values.nickname,
-        username: values.username || "用户头像",
-      }) || "用户头像",
-    [values.nickname, values.username]
+        username: values.username || t("users.avatar.defaultName"),
+      }) || t("users.avatar.defaultName"),
+    [t, values.nickname, values.username]
   )
 
   const isBusy = isPending || isUploadingAvatar || form.state.isSubmitting

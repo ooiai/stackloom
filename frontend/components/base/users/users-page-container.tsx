@@ -14,6 +14,7 @@ import { type Filter } from "@/components/reui/filters"
 import { ScrollArea, ScrollBar } from "@/components/reui/scroll-area"
 import type { UserData } from "@/types/base.types"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
+import { useI18n } from "@/providers/i18n-provider"
 
 interface UsersPageViewProps {
   filters: Filter<UsersFilterValue>[]
@@ -47,9 +48,10 @@ export function UsersPageView({
   onOpenEdit,
   onDelete,
 }: UsersPageViewProps) {
+  const { t } = useI18n()
   const columns = useMemo(
-    () => createUserColumns({ onOpenEdit, onDelete }),
-    [onDelete, onOpenEdit]
+    () => createUserColumns({ t, onOpenEdit, onDelete }),
+    [onDelete, onOpenEdit, t]
   )
 
   const [columnOrder, setColumnOrder] = useState<string[]>(
@@ -96,11 +98,11 @@ export function UsersPageView({
         recordCount={total}
         isLoading={isFetching}
         loadingMode="spinner"
-        loadingMessage="加载中..."
+        loadingMessage={t("common.loading.default")}
         emptyMessage={
           <EntityEmptyState
-            title="暂无相关用户"
-            description="尝试调整筛选条件，或者先创建一位新的系统用户。"
+            title={t("users.page.emptyTitle")}
+            description={t("users.page.emptyDescription")}
           />
         }
         tableLayout={{
@@ -117,9 +119,9 @@ export function UsersPageView({
           {total > 0 ? (
             <DataGridPagination
               info="{from} - {to} / {count}"
-              rowsPerPageLabel="每页显示"
-              previousPageLabel="上一页"
-              nextPageLabel="下一页"
+              rowsPerPageLabel={t("common.pagination.rowsPerPage")}
+              previousPageLabel={t("common.pagination.previous")}
+              nextPageLabel={t("common.pagination.next")}
             />
           ) : null}
         </div>

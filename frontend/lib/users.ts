@@ -1,6 +1,7 @@
 import { hash } from "bcryptjs"
 import { z } from "zod"
 
+import type { TranslateFn } from "@/lib/i18n"
 import type {
   CreateUserParam,
   UpdateUserParam,
@@ -11,72 +12,7 @@ import type {
 } from "@/types/base.types"
 import type { BadgeProps } from "@/components/reui/badge"
 
-const optionalEmailSchema = z
-  .string()
-  .trim()
-  .max(255, "邮箱长度不能超过 255 个字符")
-  .refine((value) => value === "" || z.email().safeParse(value).success, {
-    message: "请输入有效的邮箱地址",
-  })
-  .transform((value) => (value === "" ? undefined : value))
-
-const optionalPhoneSchema = z
-  .string()
-  .trim()
-  .max(20, "手机号长度不能超过 20 个字符")
-  .transform((value) => (value === "" ? undefined : value))
-
-const optionalUrlSchema = z
-  .string()
-  .trim()
-  .refine(
-    (value) =>
-      value === "" ||
-      z.url({
-        protocol: /^https?$/,
-        hostname: z.regexes.domain,
-      }).safeParse(value).success,
-    {
-      message: "请输入有效的头像地址",
-    }
-  )
-  .transform((value) => (value === "" ? undefined : value))
-
-const optionalNicknameSchema = z
-  .string()
-  .trim()
-  .max(100, "昵称长度不能超过 100 个字符")
-  .transform((value) => (value === "" ? undefined : value))
-
-const optionalBioSchema = z
-  .string()
-  .trim()
-  .max(2000, "简介长度不能超过 2000 个字符")
-  .transform((value) => (value === "" ? undefined : value))
-
-const commonUserFormSchema = z.object({
-  username: z
-    .string()
-    .trim()
-    .min(1, "请输入用户名")
-    .max(50, "用户名长度不能超过 50 个字符"),
-  email: optionalEmailSchema,
-  phone: optionalPhoneSchema,
-  nickname: optionalNicknameSchema,
-  avatar_url: optionalUrlSchema,
-  gender: z.union([z.literal(0), z.literal(1), z.literal(2)]),
-  status: z.union([z.literal(0), z.literal(1), z.literal(2)]),
-  bio: optionalBioSchema,
-})
-
-const createUserFormSchema = commonUserFormSchema.extend({
-  password: z
-    .string()
-    .min(8, "密码至少需要 8 位")
-    .max(72, "密码长度不能超过 72 位"),
-})
-
-const updateUserFormSchema = commonUserFormSchema
+const defaultT: TranslateFn = (key, _values, fallback) => fallback ?? key
 
 function normalizeOptionalUpdateValue(
   rawValue: string,
@@ -89,9 +25,9 @@ function normalizeOptionalUpdateValue(
   return parsedValue
 }
 
-type ValidationSchema =
-  | typeof createUserFormSchema
-  | typeof updateUserFormSchema
+type UserFormSchema =
+  | ReturnType<typeof createUserFormSchema>
+  | ReturnType<typeof createUserUpdateSchema>
 
 type UserStatusMeta = {
   label: string
@@ -99,43 +35,136 @@ type UserStatusMeta = {
   badgeVariant: BadgeProps["variant"]
 }
 
-const USER_STATUS_META_MAP: Record<UserStatus, UserStatusMeta> = {
-  0: {
-    label: "禁用",
-    description: "账号已停用，不允许继续访问系统。",
-    badgeVariant: "destructive-outline",
-  },
-  1: {
-    label: "正常",
-    description: "账号可正常登录和使用。",
-    badgeVariant: "success-outline",
-  },
-  2: {
-    label: "锁定",
-    description: "账号被锁定，需要管理员确认。",
-    badgeVariant: "warning-outline",
-  },
+function createOptionalEmailSchema(t: TranslateFn) {
+  return z
+    .string()
+    .trim()
+    .max(255, t("users.form.email.validation.max"))
+    .refine((value) => value === "" || z.email().safeParse(value).success, {
+      message: t("users.form.email.validation.invalid"),
+    })
+    .transform((value) => (value === "" ? undefined : value))
 }
 
-export const USER_STATUS_OPTIONS = (Object.keys(USER_STATUS_META_MAP) as Array<
-  `${UserStatus}`
->).map((key) => ({
-  value: Number(key) as UserStatus,
-  label: USER_STATUS_META_MAP[Number(key) as UserStatus].label,
-}))
-
-export const USER_GENDER_OPTIONS = [
-  { value: 0 as const, label: "未知" },
-  { value: 1 as const, label: "男" },
-  { value: 2 as const, label: "女" },
-]
-
-function getValidationSchema(mode: UserMutateMode): ValidationSchema {
-  return mode === "create" ? createUserFormSchema : updateUserFormSchema
+function createOptionalPhoneSchema(t: TranslateFn) {
+  return z
+    .string()
+    .trim()
+    .max(20, t("users.form.phone.validation.max"))
+    .transform((value) => (value === "" ? undefined : value))
 }
 
-export function getUserStatusMeta(status: UserStatus): UserStatusMeta {
-  return USER_STATUS_META_MAP[status] ?? USER_STATUS_META_MAP[1]
+function createOptionalUrlSchema(t: TranslateFn) {
+  return z
+    .string()
+    .trim()
+    .refine(
+      (value) =>
+        value === "" ||
+        z.url({
+          protocol: /^https?$/,
+          hostname: z.regexes.domain,
+        }).safeParse(value).success,
+      {
+        message: t("users.form.avatar.validation.invalid"),
+      }
+    )
+    .transform((value) => (value === "" ? undefined : value))
+}
+
+function createOptionalNicknameSchema(t: TranslateFn) {
+  return z
+    .string()
+    .trim()
+    .max(100, t("users.form.nickname.validation.max"))
+    .transform((value) => (value === "" ? undefined : value))
+}
+
+function createOptionalBioSchema(t: TranslateFn) {
+  return z
+    .string()
+    .trim()
+    .max(2000, t("users.form.bio.validation.max"))
+    .transform((value) => (value === "" ? undefined : value))
+}
+
+export function createUserFormSchema(t: TranslateFn = defaultT) {
+  const commonUserFormSchema = z.object({
+    username: z
+      .string()
+      .trim()
+      .min(1, t("users.form.username.validation.required"))
+      .max(50, t("users.form.username.validation.max")),
+    email: createOptionalEmailSchema(t),
+    phone: createOptionalPhoneSchema(t),
+    nickname: createOptionalNicknameSchema(t),
+    avatar_url: createOptionalUrlSchema(t),
+    gender: z.union([z.literal(0), z.literal(1), z.literal(2)]),
+    status: z.union([z.literal(0), z.literal(1), z.literal(2)]),
+    bio: createOptionalBioSchema(t),
+  })
+
+  return commonUserFormSchema.extend({
+    password: z
+      .string()
+      .min(8, t("users.form.password.validation.min"))
+      .max(72, t("users.form.password.validation.max")),
+  })
+}
+
+export function createUserUpdateSchema(t: TranslateFn = defaultT) {
+  return createUserFormSchema(t).extend({
+    password: z.string(),
+  })
+}
+
+export function getValidationSchema(
+  mode: UserMutateMode,
+  t: TranslateFn = defaultT
+): UserFormSchema {
+  return mode === "create" ? createUserFormSchema(t) : createUserUpdateSchema(t)
+}
+
+export function getUserStatusMeta(
+  status: UserStatus,
+  t: TranslateFn = defaultT
+): UserStatusMeta {
+  const statusMap: Record<UserStatus, UserStatusMeta> = {
+    0: {
+      label: t("users.status.disabled.label"),
+      description: t("users.status.disabled.description"),
+      badgeVariant: "destructive-outline",
+    },
+    1: {
+      label: t("users.status.active.label"),
+      description: t("users.status.active.description"),
+      badgeVariant: "success-outline",
+    },
+    2: {
+      label: t("users.status.locked.label"),
+      description: t("users.status.locked.description"),
+      badgeVariant: "warning-outline",
+    },
+  }
+
+  return statusMap[status] ?? statusMap[1]
+}
+
+export function getUserStatusOptions(t: TranslateFn = defaultT) {
+  return (Object.keys({ 0: true, 1: true, 2: true }) as Array<`${UserStatus}`>).map(
+    (key) => ({
+      value: Number(key) as UserStatus,
+      label: getUserStatusMeta(Number(key) as UserStatus, t).label,
+    })
+  )
+}
+
+export function getUserGenderOptions(t: TranslateFn = defaultT) {
+  return [
+    { value: 0 as const, label: t("users.gender.unknown") },
+    { value: 1 as const, label: t("users.gender.male") },
+    { value: 2 as const, label: t("users.gender.female") },
+  ]
 }
 
 export function getUserDisplayName(
@@ -171,9 +200,10 @@ export function getDefaultUserFormValues(user: UserData | null): UserFormValues 
 
 export function validateUserForm(
   mode: UserMutateMode,
-  values: UserFormValues
+  values: UserFormValues,
+  t: TranslateFn = defaultT
 ) {
-  const result = getValidationSchema(mode).safeParse(values)
+  const result = getValidationSchema(mode, t).safeParse(values)
 
   if (result.success) {
     return {}
@@ -182,16 +212,19 @@ export function validateUserForm(
   const fieldErrors = result.error.flatten().fieldErrors
 
   return Object.fromEntries(
-    Object.entries(fieldErrors)
+    Object.entries(
+      fieldErrors as Partial<Record<keyof UserFormValues, string[] | undefined>>
+    )
       .filter(([, messages]) => messages && messages.length > 0)
-      .map(([key, messages]) => [key, messages?.[0]])
+      .map(([key, messages]) => [key, messages[0]])
   ) as Partial<Record<keyof UserFormValues, string>>
 }
 
 export async function buildCreateUserParam(
-  values: UserFormValues
+  values: UserFormValues,
+  t: TranslateFn = defaultT
 ): Promise<CreateUserParam> {
-  const parsed = createUserFormSchema.parse(values)
+  const parsed = createUserFormSchema(t).parse(values)
 
   return {
     username: parsed.username,
@@ -208,9 +241,10 @@ export async function buildCreateUserParam(
 
 export function buildUpdateUserParam(
   id: string,
-  values: UserFormValues
+  values: UserFormValues,
+  t: TranslateFn = defaultT
 ): UpdateUserParam {
-  const parsed = updateUserFormSchema.parse(values)
+  const parsed = createUserUpdateSchema(t).parse(values)
 
   return {
     id,

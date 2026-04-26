@@ -1,6 +1,9 @@
 import { fontVariables } from "@/lib/fonts"
+import { getLocaleMessages, getMessageValue } from "@/lib/i18n"
+import { getRequestLocale } from "@/lib/i18n/server"
 import { cn } from "@/lib/utils"
 import { AlertDialogProvider } from "@/providers/dialog-providers"
+import { I18nProvider } from "@/providers/i18n-provider"
 import { QueryProviders } from "@/providers/query-providers"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
@@ -8,19 +11,30 @@ import "../globals.css"
 import { AxiosErrorHandler } from "@/hooks/setup-axios"
 import type { Metadata } from "next"
 
-export const metadata: Metadata = {
-  title: "法悟合同-用户登录/注册",
-  description: "",
-  keywords: [],
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale()
+  const messages = await getLocaleMessages(locale)
+
+  return {
+    title: getMessageValue(messages, "metadata.auth.title", "Stackloom Auth"),
+    description: getMessageValue(
+      messages,
+      "metadata.auth.description",
+      "Sign in or register to access Stackloom."
+    ),
+  }
 }
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const locale = await getRequestLocale()
+  const messages = await getLocaleMessages(locale)
+
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#FFFFFF" />
@@ -34,11 +48,13 @@ export default function AuthLayout({
       </head>
       <body className={cn(fontVariables, "font-sans antialiased")}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <AlertDialogProvider>
-            <QueryProviders>{children}</QueryProviders>
-          </AlertDialogProvider>
-          <AxiosErrorHandler />
-          <Toaster richColors />
+          <I18nProvider locale={locale} messages={messages}>
+            <AlertDialogProvider>
+              <QueryProviders>{children}</QueryProviders>
+            </AlertDialogProvider>
+            <AxiosErrorHandler />
+            <Toaster richColors />
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

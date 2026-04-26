@@ -10,7 +10,8 @@ import {
 } from "@/components/reui/filters"
 import type { UsersFilterValue } from "@/components/base/users/hooks/use-users-controller"
 import { Button } from "@/components/ui/button"
-import { USER_STATUS_OPTIONS } from "@/lib/users"
+import { getUserStatusOptions } from "@/lib/users"
+import { useI18n } from "@/providers/i18n-provider"
 import {
   FunnelXIcon,
   ListFilterIcon,
@@ -29,41 +30,44 @@ export function UsersPageFilters({
   onFiltersChange,
   onClearFilters,
 }: UsersPageFiltersProps) {
+  const { t } = useI18n()
   const fields = useMemo<FilterFieldConfig<UsersFilterValue>[]>(
     () => [
       {
         key: "keyword",
-        label: "关键词",
+        label: t("users.filters.keywordLabel"),
         icon: <UserIcon className="size-3.5" />,
         type: "text",
         defaultOperator: "contains",
-        operators: [{ value: "contains", label: "包含" }],
+        operators: [
+          { value: "contains", label: t("users.filters.operator.contains") },
+        ],
         className: "w-56",
-        placeholder: "搜索用户名、昵称、邮箱或手机号",
+        placeholder: t("users.filters.keywordPlaceholder"),
       },
       {
         key: "status",
-        label: "状态",
+        label: t("users.filters.statusLabel"),
         icon: <ShieldCheckIcon className="size-3.5" />,
         type: "select",
         defaultOperator: "is",
-        operators: [{ value: "is", label: "是" }],
-        options: USER_STATUS_OPTIONS.map((option) => ({
+        operators: [{ value: "is", label: t("users.filters.operator.is") }],
+        options: getUserStatusOptions(t).map((option) => ({
           value: option.value,
           label: option.label,
         })),
         className: "w-36",
       },
     ],
-    []
+    [t]
   )
 
   const i18n = useMemo<Partial<FilterI18nConfig>>(
     () => ({
-      addFilter: "过滤字段",
-      searchFields: "搜索筛选字段...",
+      addFilter: t("users.filters.addField"),
+      searchFields: t("users.filters.searchFields"),
     }),
-    []
+    [t]
   )
 
   return (
@@ -80,7 +84,7 @@ export function UsersPageFilters({
           trigger={
             <Button variant="outline" size="sm">
               <ListFilterIcon />
-              添加筛选
+              {t("common.actions.addFilter")}
             </Button>
           }
           i18n={i18n}
@@ -89,7 +93,7 @@ export function UsersPageFilters({
       {filters.length > 0 ? (
         <Button variant="outline" size="sm" onClick={onClearFilters}>
           <FunnelXIcon />
-          清空
+          {t("common.actions.clear")}
         </Button>
       ) : null}
     </div>

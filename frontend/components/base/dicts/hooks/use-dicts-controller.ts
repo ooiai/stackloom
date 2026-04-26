@@ -11,6 +11,7 @@ import {
 } from "@/components/base/dicts/helpers"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAlertDialog } from "@/providers/dialog-providers"
+import { useI18n } from "@/providers/i18n-provider"
 import { dictApi } from "@/stores/base-api"
 import type {
   DictData,
@@ -43,6 +44,7 @@ const DEFAULT_SHEET_STATE: DictSheetState = {
 }
 
 export function useDictsController() {
+  const { t } = useI18n()
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -127,14 +129,14 @@ export function useDictsController() {
 
   const createMutation = useMutation({
     mutationFn: async (values: DictFormValues) => {
-      await dictApi.create(buildCreateDictParam(values))
+      await dictApi.create(buildCreateDictParam(values, t))
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["base", "dicts"] })
       if (sheet.parent) {
         setRawSelectedNodeId(sheet.parent.id)
       }
-      toast.success("字典项已创建")
+      toast.success(t("dicts.toast.created"))
       setSheet(DEFAULT_SHEET_STATE)
     },
   })
@@ -147,11 +149,11 @@ export function useDictsController() {
       dict: DictData
       values: DictFormValues
     }) => {
-      await dictApi.update(buildUpdateDictParam(dict.id, values))
+      await dictApi.update(buildUpdateDictParam(dict.id, values, t))
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["base", "dicts"] })
-      toast.success("字典项已更新")
+      toast.success(t("dicts.toast.updated"))
       setSheet(DEFAULT_SHEET_STATE)
     },
   })
@@ -171,7 +173,7 @@ export function useDictsController() {
         setRawSelectedNodeId(dict.parent_id)
       }
 
-      toast.success("字典项已删除")
+      toast.success(t("dicts.toast.deleted"))
     },
   })
 
@@ -285,19 +287,19 @@ export function useDictsController() {
   const removeDict = useCallback(
     (dict: DictData) => {
       dialog.show({
-        title: "删除字典项",
+        title: t("dicts.dialog.deleteTitle"),
         description: dict.is_leaf
-          ? `确定删除“${dict.label}”吗？此操作无法撤销`
-          : `确定删除“${dict.label}”以及其全部子级吗？此操作无法撤销`,
-        confirmText: "删除",
-        cancelText: "取消",
+          ? t("dicts.dialog.deleteLeafDescription", { label: dict.label })
+          : t("dicts.dialog.deleteBranchDescription", { label: dict.label }),
+        confirmText: t("common.actions.delete"),
+        cancelText: t("common.actions.cancel"),
         autoCloseOnConfirm: true,
         onConfirm: async () => {
           await deleteMutation.mutateAsync(dict)
         },
       })
     },
-    [deleteMutation, dialog]
+    [deleteMutation, dialog, t]
   )
 
   return {
