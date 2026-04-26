@@ -1,12 +1,10 @@
 use std::sync::Arc;
 
-use domain_base::UserService;
-use neocrates::{
-    axum::Router,
-    middlewares::models::MiddlewareConfig,
-    rediscache::RedisPool,
-};
+use domain_base::{DictService, TenantService, UserService};
+use neocrates::{axum::Router, middlewares::models::MiddlewareConfig, rediscache::RedisPool};
 
+pub mod dicts;
+pub mod tenants;
 pub mod users;
 
 /// The shared state for the HTTP server, which includes the user service.
@@ -14,6 +12,8 @@ pub mod users;
 pub struct BaseHttpState {
     pub redis_pool: Arc<RedisPool>,
     pub user_service: Arc<dyn UserService>,
+    pub tenant_service: Arc<dyn TenantService>,
+    pub dict_service: Arc<dyn DictService>,
 }
 
 /// The users router, which will be nested under the `/users` path.
@@ -27,7 +27,13 @@ pub struct BaseHttpState {
 ///
 pub fn router(state: BaseHttpState, _mw: Arc<MiddlewareConfig>) -> Router {
     let user_router = users::router(state.clone());
+    let tenant_router = tenants::router(state.clone());
+    let dict_router = dicts::router(state.clone());
 
-    Router::new().with_state(state).nest("/users", user_router)
+    Router::new()
+        .with_state(state)
+        .nest("/users", user_router)
+        .nest("/tenants", tenant_router)
+        .nest("/dicts", dict_router)
     // .layer(middleware::from_fn_with_state(mw, interceptor))
 }

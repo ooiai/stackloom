@@ -1,4 +1,4 @@
-use api_http::{BaseHttpState, SysHttpState, base_router, system_router, user_routes};
+use api_http::{BaseHttpState, SysHttpState, base_router, system_router};
 use common::config::env_config::EnvConfig;
 
 use neocrates::{
@@ -19,7 +19,7 @@ use std::sync::Arc;
 use crate::{
     redis_init::RedisInit, sms_init::SmsInit, sqlx_init::SqlxInit, sqlx_migrations::SqlxMigrations,
 };
-use infra_base::UserServiceImpl;
+use infra_base::{DictServiceImpl, TenantServiceImpl, UserServiceImpl};
 use infra_system::SysModule;
 
 mod diesel_init;
@@ -81,6 +81,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     let base_http_state = BaseHttpState {
         redis_pool: redis_pool.clone(),
         user_service: Arc::new(UserServiceImpl::new(base_pool.clone())),
+        dict_service: Arc::new(DictServiceImpl::new(base_pool.clone())),
+        tenant_service: Arc::new(TenantServiceImpl::new(base_pool.clone())),
     };
 
     let sys = SysModule::new(cfg.as_ref().clone(), redis_pool.as_ref().clone());
@@ -94,9 +96,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
 
     let router = Router::new()
         .route("/ping", get(ping))
-        .nest("/apiv1/users", user_routes(base_http_state.clone()))
         .nest(
-            "/apiv1/sys",
+            "/sys",
             system_router(sys_http_state, middleware_config.clone()),
         )
         .nest(
