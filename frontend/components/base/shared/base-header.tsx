@@ -191,7 +191,7 @@ function AdminNavBar({
               </PopoverTrigger>
               <PopoverContent
                 align="start"
-                className="w-96 gap-0 p-2 md:w-[32rem] lg:w-[38rem]"
+                className="w-96 gap-0 p-2 md:w-lg lg:w-152"
               >
                 <ul className="grid gap-2 md:grid-cols-2">
                   {item.children.map((child: MenuTreeNode) => (
@@ -276,7 +276,7 @@ export default function BaseHeader({
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    className="origin-center -translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-315"
+                    className="origin-center -translate-y-1.75 transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-315"
                     d="M4 12L20 12"
                   />
                   <path
@@ -284,15 +284,12 @@ export default function BaseHeader({
                     d="M4 12H20"
                   />
                   <path
-                    className="origin-center translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-135"
+                    className="origin-center translate-y-1.75 transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-135"
                     d="M4 12H20"
                   />
                 </svg>
               </PopoverTrigger>
-              <PopoverContent
-                align="start"
-                className="w-72 p-1 md:hidden"
-              >
+              <PopoverContent align="start" className="w-72 p-1 md:hidden">
                 <AdminNavBar data={trees} pathname={pathname} mobile />
               </PopoverContent>
             </Popover>
