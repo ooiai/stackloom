@@ -22,6 +22,8 @@ These are already part of the shared design system in this repo:
 - Prefer the local `@/components/ui/*` primitive before adding anything new.
 - If a missing primitive is genuinely needed, add it via the shadcn CLI and keep it inside `frontend/components/ui`.
 - Do not create one-off copies of shadcn primitives inside feature folders.
+- In feature code, prefer `@/components/ui/button` over a raw `<button>` when button semantics match the shared primitive.
+- A raw `<button>` is still acceptable inside `frontend/components/ui/**` when implementing a shared primitive itself.
 - Use `Field`, `FieldLabel`, `FieldDescription`, `FieldError`, `FieldContent`, and related primitives consistently in forms.
 - For dialogs, drawers, and sheets, keep the shared primitive untouched and build feature-specific shells above it.
 

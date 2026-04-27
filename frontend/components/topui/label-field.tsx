@@ -3,6 +3,7 @@
 import type { ReactNode } from "react"
 import { LucideCircleQuestionMark } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import {
   Field,
   FieldContent,
@@ -63,16 +64,18 @@ export function LabelField({
         {tooltip?.content ? (
           <Tooltip>
             <TooltipTrigger>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon-xs"
                 tabIndex={-1}
                 aria-label="查看字段说明"
-                className="inline-flex size-4 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground"
+                className="size-4 rounded-full p-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
               >
                 <LucideCircleQuestionMark
                   className={cn("size-3", tooltip.iconClassName)}
                 />
-              </button>
+              </Button>
             </TooltipTrigger>
             <TooltipContent
               side={tooltip.side}

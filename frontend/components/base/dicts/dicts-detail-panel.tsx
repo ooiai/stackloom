@@ -57,27 +57,31 @@ export function DictsDetailPanel({
   return (
     <section className="space-y-4">
       <div className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
-        <button
+        <Button
           type="button"
-          className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 hover:bg-muted hover:text-foreground"
+          variant="ghost"
+          size="sm"
+          className="h-auto rounded-md px-1.5 py-1 text-muted-foreground hover:text-foreground"
           onClick={() => onSelectNode(null)}
         >
           <HomeIcon className="size-3.5" />
           {t("common.misc.rootDirectory")}
-        </button>
+        </Button>
         {breadcrumb.map((item, index) => (
           <div key={item.id} className="flex items-center gap-1">
             <ChevronRightIcon className="size-3 text-muted-foreground/60" />
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               className={cn(
-                "rounded-md px-1.5 py-1 transition hover:bg-muted hover:text-foreground",
+                "h-auto rounded-md px-1.5 py-1 transition hover:text-foreground",
                 index === breadcrumb.length - 1 && "font-medium text-foreground"
               )}
               onClick={() => onSelectNode(item.id)}
             >
               {item.label}
-            </button>
+            </Button>
           </div>
         ))}
       </div>
@@ -102,12 +106,20 @@ export function DictsDetailPanel({
               <DictStatusBadge status={selectedNode.status} />
             </div>
             <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-              <span>{t("dicts.detail.type", { value: selectedNode.dict_type })}</span>
-              <span>{t("dicts.detail.value", { value: selectedNode.dict_value })}</span>
               <span>
-                {t("dicts.detail.valueType", { value: selectedNode.value_type })}
+                {t("dicts.detail.type", { value: selectedNode.dict_type })}
               </span>
-              <span>{t("dicts.detail.sort", { value: selectedNode.sort })}</span>
+              <span>
+                {t("dicts.detail.value", { value: selectedNode.dict_value })}
+              </span>
+              <span>
+                {t("dicts.detail.valueType", {
+                  value: selectedNode.value_type,
+                })}
+              </span>
+              <span>
+                {t("dicts.detail.sort", { value: selectedNode.sort })}
+              </span>
             </div>
             <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
               {selectedNode.description || t("dicts.detail.noDescription")}

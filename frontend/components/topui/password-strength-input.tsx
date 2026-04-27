@@ -1,6 +1,7 @@
 /** eslint-disable react/display-name */
 "use client"
 
+import { Button } from "@/components/ui/button"
 import { CheckIcon, EyeIcon, EyeOffIcon, XIcon } from "lucide-react"
 import { forwardRef, useId, useMemo, useState } from "react"
 import { Input } from "../ui/input"
@@ -65,8 +66,10 @@ const PasswordStrengthInput = forwardRef<HTMLInputElement, any>(
               {...props}
               // onChange={(e) => setPassword(e.target.value)}
             />
-            <button
-              className="absolute inset-y-0 inset-e-0 flex h-full w-9 items-center justify-center rounded-e-md text-muted-foreground/80 transition-[color,box-shadow] outline-none hover:text-foreground focus:z-10 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="absolute inset-y-0 inset-e-0 h-full w-9 rounded-e-md rounded-s-none px-0 text-muted-foreground/80 hover:bg-transparent hover:text-foreground focus:z-10"
               type="button"
               onClick={toggleVisibility}
               aria-label={isVisible ? "Hide password" : "Show password"}
@@ -78,7 +81,7 @@ const PasswordStrengthInput = forwardRef<HTMLInputElement, any>(
               ) : (
                 <EyeIcon size={16} aria-hidden="true" />
               )}
-            </button>
+            </Button>
           </div>
         </div>
 

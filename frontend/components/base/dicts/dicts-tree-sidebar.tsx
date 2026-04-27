@@ -83,10 +83,12 @@ function DictTreeNodeItem({
         onClick={() => onSelectNode(node.id)}
       >
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon-xs"
             className={cn(
-              "flex size-5 shrink-0 items-center justify-center rounded-md text-muted-foreground transition hover:bg-background",
+              "size-5 shrink-0 rounded-md p-0 text-muted-foreground hover:bg-background",
               !hasChildren && "invisible"
             )}
             onClick={(event) => {
@@ -101,7 +103,7 @@ function DictTreeNodeItem({
                 <ChevronRightIcon className="size-3.5" />
               )
             ) : null}
-          </button>
+          </Button>
 
           {hasChildren ? (
             isExpanded ? (

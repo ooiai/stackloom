@@ -77,13 +77,14 @@ export function SelectTenantDialog({
               const active = resolvedSelectedOuid === tenant.ouid
 
               return (
-                <button
+                <Button
                   key={tenant.ouid}
                   type="button"
+                  variant="ghost"
                   disabled={!selectable || loading}
                   onClick={() => setSelectedOuid(tenant.ouid)}
                   className={cn(
-                    "flex w-full items-start gap-3 rounded-2xl border px-4 py-3 text-left transition-colors",
+                    "h-auto w-full justify-start gap-3 rounded-2xl border px-4 py-3 text-left whitespace-normal transition-colors",
                     active
                       ? "border-primary/40 bg-primary/5"
                       : "border-border/70 bg-background hover:bg-muted/30",
@@ -113,7 +114,7 @@ export function SelectTenantDialog({
                       </p>
                     ) : null}
                   </div>
-                </button>
+                </Button>
               )
             })}
           </div>
