@@ -215,7 +215,7 @@ function AdminNavBar({
 }
 
 export default function BaseHeader({
-  layoutMode = "contained",
+  layoutMode = "full",
   onLayoutModeChange,
 }: {
   layoutMode?: LayoutWidthMode
