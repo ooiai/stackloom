@@ -7,7 +7,6 @@ import {
   buildDictBreadcrumb,
   buildUpdateDictParam,
   findDictNode,
-  getExpandedIdsForTree,
 } from "@/components/base/dicts/helpers"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { useAlertDialog } from "@/providers/dialog-providers"
@@ -100,15 +99,10 @@ export function useDictsController() {
     [childrenQuery.data?.items]
   )
 
-  const expandedIds = useMemo(() => {
-    const selectedPathIds = new Set(breadcrumb.map((node) => node.id))
-
-    if (debouncedTreeSearch.trim()) {
-      return getExpandedIdsForTree(tree)
-    }
-
-    return new Set([...manualExpandedIds, ...selectedPathIds])
-  }, [breadcrumb, debouncedTreeSearch, manualExpandedIds, tree])
+  const expandedIds = useMemo(
+    () => new Set(manualExpandedIds),
+    [manualExpandedIds]
+  )
 
   useEffect(() => {
     const params = new URLSearchParams()
@@ -263,25 +257,8 @@ export function useDictsController() {
   const selectNode = useCallback(
     (id: string | null) => {
       setRawSelectedNodeId(id)
-
-      if (!id) {
-        return
-      }
-
-      const path = buildDictBreadcrumb(tree, id)
-      if (!path) {
-        return
-      }
-
-      setManualExpandedIds((prev) => {
-        const next = new Set(prev)
-        for (const node of path) {
-          next.add(node.id)
-        }
-        return next
-      })
     },
-    [tree]
+    []
   )
 
   const removeDict = useCallback(

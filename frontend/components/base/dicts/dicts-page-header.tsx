@@ -20,7 +20,7 @@ export function DictsPageHeader({
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div className="space-y-1.5">
-        <h2 className="text-lg font-bold tracking-tight">
+        <h2 className="text-md font-bold tracking-tight">
           {t("dicts.page.title")}
         </h2>
         <p className="text-sm text-muted-foreground">

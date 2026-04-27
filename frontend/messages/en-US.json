@@ -47,6 +47,14 @@
       "name": "Admin",
       "remark": "Stackloom admin workspace entry"
     },
+    "upms": {
+      "name": "Accounts & Access",
+      "remark": "Users, roles, tenants, and permissions"
+    },
+    "tools": {
+      "name": "Tools",
+      "remark": "Configure shared capabilities and dictionaries"
+    },
     "tools-dicts": {
       "name": "Dictionaries",
       "remark": "Manage tree dictionaries, values, and extensions"

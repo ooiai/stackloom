@@ -348,22 +348,6 @@ export function buildUpdateDictParam(
   }
 }
 
-export function getExpandedIdsForTree(nodes: DictTreeNode[]) {
-  const ids = new Set<string>()
-
-  function walk(branch: DictTreeNode[]) {
-    for (const node of branch) {
-      if (node.children.length > 0) {
-        ids.add(node.id)
-        walk(node.children)
-      }
-    }
-  }
-
-  walk(nodes)
-  return ids
-}
-
 export function getParentDictForSheet(
   mode: DictMutateMode,
   current: DictData | null,

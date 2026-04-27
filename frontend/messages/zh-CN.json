@@ -47,6 +47,14 @@
       "name": "后台管理",
       "remark": "Stackloom 管理后台入口"
     },
+    "upms": {
+      "name": "账号与权限",
+      "remark": "用户、角色、租户与权限模块"
+    },
+    "tools": {
+      "name": "系统工具",
+      "remark": "配置业务基础能力和通用字典"
+    },
     "tools-dicts": {
       "name": "字典管理",
       "remark": "维护树形字典项、键值和扩展配置"
