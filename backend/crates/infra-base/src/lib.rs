@@ -11,3 +11,7 @@ pub mod dict;
 pub use dict::DictRow;
 pub use dict::repo::SqlxDictRepository;
 pub use dict::service::DictServiceImpl;
+pub mod menu;
+pub use menu::MenuRow;
+pub use menu::repo::SqlxMenuRepository;
+pub use menu::service::MenuServiceImpl;

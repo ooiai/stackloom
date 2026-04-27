@@ -14,3 +14,7 @@ pub use dict::{
     ChildrenDictCmd, CreateDictCmd, Dict, PageDictCmd, RemoveCascadeDictCmd, TreeDictCmd,
     UpdateDictCmd,
 };
+pub mod menu;
+pub use menu::repo::MenuRepository;
+pub use menu::service::MenuService;
+pub use menu::{CreateMenuCmd, PageMenuCmd, UpdateMenuCmd, Menu};
