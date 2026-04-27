@@ -11,6 +11,9 @@ Use this skill whenever you work inside `frontend/`.
 
 The goal is not generic Next.js output. The goal is to preserve the **current Stackloom frontend architecture** and extend it in the same style.
 
+For visual and interaction decisions, read `skills/frontend/UI-SKILL.md` together with this file.  
+The UI reference for backend CRUD work is the eduweb admin implementation in `topeducation/topedu`, especially its `users` and `dicts` pages.
+
 ## Current stack
 
 - Next.js App Router
@@ -225,6 +228,7 @@ When you add or change a frontend feature:
 
 Read these files when relevant:
 
+- `skills/frontend/UI-SKILL.md`
 - `skills/frontend/rules/feature-architecture.md`
 - `skills/frontend/rules/i18n.md`
 - `skills/frontend/rules/reui.md`

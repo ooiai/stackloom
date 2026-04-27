@@ -59,19 +59,19 @@ export function createDictColumns({
         const childCount = node?.children.length ?? 0
 
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             {childCount > 0 ? (
               <FolderOpenIcon className="size-3.5 text-muted-foreground" />
             ) : (
               <TagIcon className="size-3.5 text-muted-foreground" />
             )}
             <div className="min-w-0">
-              <div className="truncate font-medium text-foreground">
+              <div className="truncate text-sm font-medium text-foreground">
                 {row.original.label}
               </div>
-              <div className="truncate text-xs text-muted-foreground">
+              {/*<div className="truncate text-[12px] text-muted-foreground">
                 {row.original.dict_key}
-              </div>
+              </div>*/}
             </div>
             {childCount > 0 ? (
               <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
@@ -85,6 +85,24 @@ export function createDictColumns({
       enableSorting: false,
     },
     {
+      accessorKey: "dict_key",
+      id: "dict_key",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          title={t("dicts.table.value")}
+          column={column}
+          className="font-medium"
+        />
+      ),
+      cell: ({ row }) => (
+        <code className="rounded-md bg-muted px-1.5 py-1 text-[11px] text-foreground/80">
+          {row.original.dict_key}
+        </code>
+      ),
+      size: 150,
+      enableSorting: false,
+    },
+    {
       accessorKey: "dict_value",
       id: "dict_value",
       header: ({ column }) => (
@@ -95,31 +113,31 @@ export function createDictColumns({
         />
       ),
       cell: ({ row }) => (
-        <code className="rounded-md bg-muted px-1.5 py-1 text-xs text-foreground/80">
+        <code className="rounded-md bg-muted px-1.5 py-1 text-[11px] text-foreground/80">
           {row.original.dict_value}
         </code>
       ),
       size: 150,
       enableSorting: false,
     },
-    {
-      accessorKey: "value_type",
-      id: "value_type",
-      header: ({ column }) => (
-        <DataGridColumnHeader
-          title={t("dicts.table.valueType")}
-          column={column}
-          className="font-medium"
-        />
-      ),
-      cell: ({ row }) => (
-        <span className="text-sm text-muted-foreground">
-          {row.original.value_type}
-        </span>
-      ),
-      size: 110,
-      enableSorting: false,
-    },
+    // {
+    //   accessorKey: "value_type",
+    //   id: "value_type",
+    //   header: ({ column }) => (
+    //     <DataGridColumnHeader
+    //       title={t("dicts.table.valueType")}
+    //       column={column}
+    //       className="font-medium"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <span className="text-[13px] text-muted-foreground">
+    //       {row.original.value_type}
+    //     </span>
+    //   ),
+    //   size: 110,
+    //   enableSorting: false,
+    // },
     {
       accessorKey: "status",
       id: "status",
@@ -145,7 +163,7 @@ export function createDictColumns({
         />
       ),
       cell: ({ row }) => (
-        <span className="line-clamp-2 text-sm text-muted-foreground">
+        <span className="line-clamp-2 text-[13px] leading-5 text-muted-foreground">
           {row.original.description || t("common.misc.none")}
         </span>
       ),
@@ -163,7 +181,7 @@ export function createDictColumns({
         />
       ),
       cell: ({ row }) => (
-        <span className="text-xs text-muted-foreground">
+        <span className="text-[12px] text-muted-foreground">
           {formatDateTimeAt(row.original.updated_at)}
         </span>
       ),
@@ -175,7 +193,9 @@ export function createDictColumns({
       header: "",
       cell: ({ row }) => (
         <DropdownMenu>
-          <DropdownMenuTrigger render={<Button size="icon-sm" variant="ghost" />}>
+          <DropdownMenuTrigger
+            render={<Button size="icon-sm" variant="ghost" />}
+          >
             <EllipsisIcon />
           </DropdownMenuTrigger>
           <DropdownMenuContent side="bottom" align="end">

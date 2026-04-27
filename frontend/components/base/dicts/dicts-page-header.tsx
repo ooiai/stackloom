@@ -20,15 +20,16 @@ export function DictsPageHeader({
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div className="space-y-1.5">
-        <h2 className="text-xl font-bold tracking-tight text-foreground">
+        <h2 className="text-lg font-bold tracking-tight text-foreground">
           {t("dicts.page.title")}
         </h2>
-        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           {t("dicts.page.subtitle")}
         </p>
       </div>
       <div className="flex items-center gap-2">
         <Button
+          hidden
           variant="outline"
           size="sm"
           onClick={onRefresh}
@@ -37,7 +38,7 @@ export function DictsPageHeader({
           <RefreshCwIcon className={isFetching ? "animate-spin" : undefined} />
           {t("common.actions.refresh")}
         </Button>
-        <Button hidden onClick={onOpenCreateRoot}>
+        <Button onClick={onOpenCreateRoot}>
           <PlusIcon />
           {t("dicts.page.addRoot")}
         </Button>

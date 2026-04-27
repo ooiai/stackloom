@@ -31,19 +31,15 @@ interface DictsDetailPanelProps {
   onOpenAddChild: (parentId: string) => void
 }
 
-function DetailMetaItem({
-  label,
-  value,
-}: {
-  label: string
-  value: string
-}) {
+function DetailMetaItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="space-y-1 rounded-lg border border-border/60 bg-muted/20 px-3 py-2">
+    <div className="space-y-1">
       <div className="text-[11px] font-medium text-muted-foreground">
         {label}
       </div>
-      <div className="truncate text-sm font-medium text-foreground">{value}</div>
+      <div className="truncate text-sm font-medium text-foreground">
+        {value}
+      </div>
     </div>
   )
 }
@@ -62,7 +58,7 @@ export function DictsDetailPanel({
 
   if (!selectedNode) {
     return (
-      <div className="flex min-h-140 items-center justify-center rounded-2xl border border-dashed border-border/80 bg-card">
+      <div className="flex min-h-140 items-center justify-center rounded-lg border border-dashed border-border/70 bg-background">
         <EntityEmptyState
           title={t("dicts.detail.emptyTitle")}
           description={t("dicts.detail.emptyDescription")}
@@ -103,7 +99,7 @@ export function DictsDetailPanel({
         ))}
       </div>
 
-      <div className="rounded-2xl border border-border/70 bg-card px-5 py-4">
+      <div className="rounded-lg border border-border bg-background px-4 py-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0 flex-1 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
@@ -113,7 +109,7 @@ export function DictsDetailPanel({
                 ) : (
                   <TagIcon className="size-4 text-primary" />
                 )}
-                <h3 className="text-lg font-semibold text-foreground">
+                <h3 className="sm:text-md text-base font-semibold text-foreground">
                   {selectedNode.label}
                 </h3>
               </div>
@@ -122,7 +118,7 @@ export function DictsDetailPanel({
               </code>
               <DictStatusBadge status={selectedNode.status} />
             </div>
-            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2 xl:grid-cols-4">
               <DetailMetaItem
                 label={t("dicts.detail.type")}
                 value={selectedNode.dict_type}
@@ -169,17 +165,10 @@ export function DictsDetailPanel({
         loadingMode="spinner"
         loadingMessage={t("common.loading.syncingDicts")}
         emptyMessage={
-          <div className="flex flex-col items-center gap-3 py-14 text-center">
-            <TagIcon className="size-8 text-muted-foreground/50" />
-            <div className="space-y-1">
-              <p className="font-medium text-foreground">
-                {t("dicts.detail.emptyChildrenTitle")}
-              </p>
-              <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-                {t("dicts.detail.emptyChildrenDescription")}
-              </p>
-            </div>
-          </div>
+          <EntityEmptyState
+            title={t("dicts.detail.emptyChildrenTitle")}
+            description={t("dicts.detail.emptyChildrenDescription")}
+          />
         }
         tableLayout={{
           columnsMovable: false,

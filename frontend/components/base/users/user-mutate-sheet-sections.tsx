@@ -61,7 +61,7 @@ export function UserMutateAvatarSection({
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-border/60 bg-muted/30 p-5 transition-colors hover:border-border/80">
+    <section className="overflow-hidden rounded-xl border border-border/60 bg-muted/20 p-4 transition-colors hover:border-border/80">
       <div className="flex flex-col items-start gap-5">
         <div className="flex items-center gap-4">
           <div
@@ -91,7 +91,7 @@ export function UserMutateAvatarSection({
           </div>
 
           <div className="min-w-0 space-y-1.5">
-            <h2 className="text-base leading-tight font-semibold text-foreground">
+            <h2 className="text-sm leading-tight font-semibold text-foreground sm:text-base">
               {avatarLabel}
             </h2>
             <p className="max-w-xs text-[12px] leading-5 text-muted-foreground">
@@ -119,12 +119,12 @@ export function UserMutateAccountSection({
 }) {
   const { t } = useI18n()
   return (
-    <section className="w-full space-y-5">
+    <section className="w-full space-y-4">
       <SectionHeader
         title={t("users.sections.account.title")}
         description={t("users.sections.account.description")}
       />
-      <div className="grid gap-x-5 gap-y-5 md:grid-cols-2">{children}</div>
+      <div className="grid gap-x-4 gap-y-4 md:grid-cols-2">{children}</div>
     </section>
   )
 }
@@ -136,12 +136,12 @@ export function UserMutateProfileSection({
 }) {
   const { t } = useI18n()
   return (
-    <section className="space-y-5">
+    <section className="space-y-4">
       <SectionHeader
         title={t("users.sections.profile.title")}
         description={t("users.sections.profile.description")}
       />
-      <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2">{children}</div>
+      <div className="grid gap-x-4 gap-y-4 sm:grid-cols-2">{children}</div>
     </section>
   )
 }

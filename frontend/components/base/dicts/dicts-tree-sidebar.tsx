@@ -74,10 +74,10 @@ function DictTreeNodeItem({
     <div>
       <div
         className={cn(
-          "group flex cursor-pointer items-center justify-between rounded-md px-2 py-1.5 text-[13px] transition-colors",
+          "group flex cursor-pointer items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors",
           isSelected
             ? "bg-primary/10 text-primary"
-            : "text-foreground hover:bg-muted"
+            : "text-foreground hover:bg-muted/70"
         )}
         style={{ paddingLeft: `${depth * 16 + 8}px` }}
         onClick={() => onSelectNode(node.id)}
@@ -88,7 +88,7 @@ function DictTreeNodeItem({
             variant="ghost"
             size="icon-xs"
             className={cn(
-              "size-5 shrink-0 rounded-md p-0 text-muted-foreground hover:bg-background",
+              "size-5 shrink-0 rounded p-0 text-muted-foreground hover:bg-accent/50",
               !hasChildren && "invisible"
             )}
             onClick={(event) => {
@@ -130,15 +130,15 @@ function DictTreeNodeItem({
             />
           )}
 
-          <div className="min-w-0 space-y-0.5">
-            <div className="truncate font-medium leading-5">{node.label}</div>
-            <div className="truncate text-[11px] text-muted-foreground">
-              {node.dict_key}
-            </div>
+          <div className="min-w-0 space-y-px">
+            <div className="truncate leading-5 font-medium">{node.label}</div>
+            {/*<div className="truncate text-xs text-muted-foreground">
+                {node.dict_key}
+              </div>*/}
           </div>
         </div>
 
-        <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="flex items-center gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
           {hasChildren ? (
             <span className="text-[11px] text-muted-foreground">
               {node.children.length}
@@ -212,8 +212,8 @@ export function DictsTreeSidebar({
   const { t } = useI18n()
 
   return (
-    <aside className="overflow-hidden rounded-2xl border border-border/70 bg-card">
-      <div className="flex items-center justify-between border-b border-border/70 px-4 py-3">
+    <aside className="overflow-hidden rounded-lg border border-border bg-background">
+      <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
         <div className="space-y-0.5">
           <p className="text-sm font-semibold text-foreground">
             {t("dicts.sidebar.title")}
@@ -225,6 +225,7 @@ export function DictsTreeSidebar({
         <Button
           variant="ghost"
           size="icon-sm"
+          className="text-muted-foreground hover:text-foreground"
           title={t("dicts.sidebar.addRoot")}
           onClick={onOpenCreateRoot}
         >
@@ -232,7 +233,7 @@ export function DictsTreeSidebar({
         </Button>
       </div>
 
-      <div className="border-b border-border/70 px-4 py-3">
+      <div className="border-b border-border/60 px-4 py-3">
         <div className="relative">
           <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -245,7 +246,7 @@ export function DictsTreeSidebar({
       </div>
 
       <ScrollArea className="h-140">
-        <div className="space-y-0.5 p-2">
+        <div className="space-y-0.5 p-2.5">
           {isInitialLoading ? (
             <div className="flex items-center justify-center py-16 text-sm text-muted-foreground">
               <RefreshCwIcon className="mr-2 size-4 animate-spin" />

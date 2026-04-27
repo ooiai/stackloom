@@ -19,15 +19,13 @@ function SectionHeader({
   className,
 }: SectionHeaderProps) {
   return (
-    <div className={cn("space-y-1.5", className)}>
-      <div className="space-y-1">
-        <h3 className="text-sm leading-none font-semibold tracking-tight text-foreground">
-          {title}
-        </h3>
-        <p className="text-[12px] leading-5 text-muted-foreground">
-          {description}
-        </p>
-      </div>
+    <div className={cn("space-y-1", className)}>
+      <h3 className="text-sm leading-none font-semibold tracking-tight text-foreground">
+        {title}
+      </h3>
+      <p className="text-[12px] leading-5 text-muted-foreground">
+        {description}
+      </p>
     </div>
   )
 }
@@ -39,12 +37,12 @@ export function DictMutateBasicSection({
 }) {
   const { t } = useI18n()
   return (
-    <section className="space-y-5">
+    <section className="space-y-3">
       <SectionHeader
         title={t("dicts.sections.basic.title")}
         description={t("dicts.sections.basic.description")}
       />
-      <div className="grid gap-x-4 gap-y-5 md:grid-cols-1">{children}</div>
+      <div className="grid gap-y-4">{children}</div>
     </section>
   )
 }
@@ -56,12 +54,12 @@ export function DictMutateSupplementSection({
 }) {
   const { t } = useI18n()
   return (
-    <section className="space-y-5">
+    <section className="space-y-3">
       <SectionHeader
         title={t("dicts.sections.supplement.title")}
         description={t("dicts.sections.supplement.description")}
       />
-      <div className="space-y-5">{children}</div>
+      <div className="space-y-4">{children}</div>
     </section>
   )
 }
@@ -81,7 +79,7 @@ export function DictMutateSheetFooter({
       <Button
         type="button"
         variant="outline"
-        className="h-9 w-full rounded-lg text-[13px] sm:w-auto"
+        className="h-9 w-full text-[13px] sm:w-auto"
         onClick={onCancel}
         disabled={isBusy}
       >
@@ -89,7 +87,7 @@ export function DictMutateSheetFooter({
       </Button>
       <Button
         type="submit"
-        className="h-9 w-full gap-2 rounded-lg text-[13px] sm:w-auto"
+        className="h-9 w-full gap-2 text-[13px] sm:w-auto"
         disabled={isBusy}
       >
         {isBusy ? <Loader2Icon className="size-3.5 animate-spin" /> : null}

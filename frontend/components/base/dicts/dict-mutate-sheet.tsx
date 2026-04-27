@@ -86,7 +86,7 @@ export function DictMutateSheet({
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent className="w-full sm:max-w-3xl">
+      <SheetContent className="w-full sm:max-w-xl">
         <DictMutateSheetHeader
           title={header.title}
           description={header.description}
@@ -99,7 +99,7 @@ export function DictMutateSheet({
             void form.handleSubmit()
           }}
         >
-          <div className="flex-1 space-y-6 overflow-y-auto px-5 py-5">
+          <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
             <FieldGroup>
               <DictMutateFormFields
                 form={form}
@@ -110,7 +110,7 @@ export function DictMutateSheet({
             </FieldGroup>
           </div>
 
-          <SheetFooter className="border-t border-border/60 bg-muted/20 px-5 py-4 sm:flex-row sm:justify-end">
+          <SheetFooter className="border-t border-border/60 px-5 py-4 sm:flex-row sm:justify-end">
             <DictMutateSheetFooter
               isBusy={isPending || form.state.isSubmitting}
               submitLabel={header.submitLabel}

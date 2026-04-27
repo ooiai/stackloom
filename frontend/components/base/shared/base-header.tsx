@@ -85,7 +85,7 @@ function ListItem({
             <div className="truncate text-sm font-medium text-foreground">
               {title}
             </div>
-            <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">
+            <p className="mt-1 line-clamp-2 text-[12px] leading-5 text-muted-foreground">
               {children}
             </p>
           </div>
@@ -120,7 +120,7 @@ function AdminNavBar({
             <section key={item.id} className="space-y-2">
               <div
                 className={cn(
-                  "flex items-center gap-2 rounded-xl px-2 py-1 text-sm font-medium",
+                  "flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium",
                   active ? "bg-primary/10 text-primary" : "text-foreground"
                 )}
               >
@@ -149,7 +149,7 @@ function AdminNavBar({
 
   return (
     <nav className="hidden md:block">
-      <div className="flex items-center">
+      <div className="flex items-center gap-1">
         {items.map((item: MenuTreeNode) => {
           const active = isItemActive(item, pathname)
 
@@ -162,7 +162,7 @@ function AdminNavBar({
                   "inline-flex h-9 items-center rounded-md px-3 text-sm font-medium transition",
                   active
                     ? "bg-accent text-foreground"
-                    : "text-foreground/80 hover:bg-accent hover:text-foreground"
+                    : "text-foreground/80 hover:bg-accent/70 hover:text-foreground"
                 )}
               >
                 {item.name}
@@ -181,7 +181,7 @@ function AdminNavBar({
                       "h-9 rounded-md px-3 text-sm font-medium",
                       active
                         ? "bg-accent text-foreground hover:bg-accent"
-                        : "text-foreground/80 hover:bg-accent hover:text-foreground"
+                        : "text-foreground/80 hover:bg-accent/70 hover:text-foreground"
                     )}
                   />
                 }
@@ -191,7 +191,7 @@ function AdminNavBar({
               </PopoverTrigger>
               <PopoverContent
                 align="start"
-                className="w-100 gap-0 p-2 md:w-125 lg:w-150"
+                className="w-96 gap-0 p-2 md:w-[32rem] lg:w-[38rem]"
               >
                 <ul className="grid gap-2 md:grid-cols-2">
                   {item.children.map((child: MenuTreeNode) => (
@@ -246,11 +246,11 @@ export default function BaseHeader({
     <header className="border-b px-4 md:px-6">
       <div
         className={cn(
-          "flex h-16 justify-between gap-4",
+          "flex h-16 items-center justify-between gap-4",
           layoutMode === "full" ? "w-full" : "mx-auto max-w-7xl"
         )}
       >
-        <div className="flex gap-2">
+        <div className="flex min-w-0 items-center gap-2">
           <div className="flex items-center md:hidden">
             <Popover>
               <PopoverTrigger
@@ -289,13 +289,16 @@ export default function BaseHeader({
                   />
                 </svg>
               </PopoverTrigger>
-              <PopoverContent align="start" className="w-72 p-1 md:hidden">
+              <PopoverContent
+                align="start"
+                className="w-72 p-1 md:hidden"
+              >
                 <AdminNavBar data={trees} pathname={pathname} mobile />
               </PopoverContent>
             </Popover>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex min-w-0 items-center gap-6">
             <Link href="/" className="text-primary hover:text-primary/90">
               <div className="flex items-center gap-3">
                 <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary ring-1 ring-primary/15">
@@ -313,7 +316,7 @@ export default function BaseHeader({
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5">
           {onLayoutModeChange ? (
             <LayoutWidthToggle
               mode={layoutMode}
@@ -324,6 +327,7 @@ export default function BaseHeader({
             variant="ghost"
             size="icon-sm"
             aria-label={t("navigation.actions.notifications")}
+            className="text-muted-foreground hover:text-foreground"
           >
             <BellIcon />
           </Button>
@@ -331,10 +335,11 @@ export default function BaseHeader({
             variant="ghost"
             size="icon-sm"
             aria-label={t("navigation.actions.settings")}
+            className="text-muted-foreground hover:text-foreground"
           >
             <Settings2Icon />
           </Button>
-          <div className="hidden items-center gap-3 ps-2 lg:flex">
+          <div className="hidden items-center gap-3 border-s border-border/60 ps-3 lg:flex">
             <Avatar size="sm">
               <AvatarFallback>AD</AvatarFallback>
             </Avatar>

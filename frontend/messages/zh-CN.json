@@ -79,29 +79,29 @@
   "metadata": {
     "base": {
       "title": "Stackloom 后台管理系统",
-      "description": "Stackloom 后台管理系统，用于用户、租户、角色与权限的统一管理。",
+      "description": "Stackloom 后台管理系统，用于用户、租户、角色与权限的统一管理",
       "keywords": "Stackloom,后台管理,用户管理,租户管理,权限管理"
     },
     "auth": {
       "title": "Stackloom 认证中心",
-      "description": "登录或注册以访问 Stackloom。"
+      "description": "登录或注册以访问 Stackloom"
     },
     "web": {
       "title": "Stackloom Web",
-      "description": "Stackloom 前台站点与产品入口。"
+      "description": "Stackloom 前台站点与产品入口"
     }
   },
   "errors": {
     "notFound": {
       "alt": "404",
       "title": "这页可能在外星球度假了 👽",
-      "description": "地址可能写错了，或页面已搬家。先回到首页，从导航重新出发吧。",
+      "description": "地址可能写错了，或页面已搬家先回到首页，从导航重新出发吧",
       "button": "飞回首页基地 🛸"
     },
     "forbidden": {
       "alt": "403",
       "title": "此路不通，权限警察在值班 👮",
-      "description": "权限门禁把我们拦住了，换个账号试试，或联系管理员帮你开门。",
+      "description": "权限门禁把我们拦住了，换个账号试试，或联系管理员帮你开门",
       "button": "撤退到首页，重新集合 🧭"
     }
   },
@@ -110,7 +110,7 @@
       "logoAlt": "Stackloom 品牌标识",
       "heroAlt": "身份与授权插画",
       "heroTitle": "Stackloom · 欢迎回来 ✨",
-      "heroDescription": "一次登录，直达后台 Admin 与业务端 Web；从组织到权限，协作更统一、更稳定、更高效。",
+      "heroDescription": "一次登录，直达后台 Admin 与业务端 Web；从组织到权限，协作更统一、更稳定、更高效",
       "title": "登录您的账户",
       "subtitle": "在下方输入您的账户以登录账户",
       "accountLabel": "账号/手机号",
@@ -125,7 +125,7 @@
       "privacyPolicy": "隐私政策",
       "continueWith": "或使用以下方式继续",
       "goWebsite": "导航至官网",
-      "contactAdmin": "如需开通账号，请联系系统管理员完成授权。",
+      "contactAdmin": "如需开通账号，请联系系统管理员完成授权",
       "toast": {
         "success": "登录成功",
         "noOrg": "当前账号没有可用的登录组织",
@@ -138,7 +138,7 @@
     },
     "tenantDialog": {
       "title": "选择登录组织",
-      "description": "当前账号绑定了多个组织，请先选择要进入的租户或校区。",
+      "description": "当前账号绑定了多个组织，请先选择要进入的租户或校区",
       "unassignedRoles": "未分配角色",
       "unavailable": "当前组织暂不可登录",
       "cancel": "取消",
@@ -172,10 +172,10 @@
   "users": {
     "page": {
       "title": "用户管理",
-      "subtitle": "统一维护系统用户资料、基础联系信息与账号状态。",
+      "subtitle": "统一维护系统用户资料、基础联系信息与账号状态",
       "create": "添加用户",
       "emptyTitle": "暂无相关用户",
-      "emptyDescription": "尝试调整筛选条件，或者先创建一位新的系统用户。"
+      "emptyDescription": "尝试调整筛选条件，或者先创建一位新的系统用户"
     },
     "filters": {
       "keywordLabel": "关键词",
@@ -206,7 +206,7 @@
     },
     "dialog": {
       "deleteTitle": "删除用户",
-      "deleteDescription": "确定删除用户“{username}”吗？此操作无法撤销。"
+      "deleteDescription": "确定删除用户“{username}”吗？此操作无法撤销"
     },
     "sheet": {
       "create": {
@@ -298,15 +298,15 @@
     "status": {
       "disabled": {
         "label": "禁用",
-        "description": "账号已停用，不允许继续访问系统。"
+        "description": "账号已停用，不允许继续访问系统"
       },
       "active": {
         "label": "正常",
-        "description": "账号可正常登录和使用。"
+        "description": "账号可正常登录和使用"
       },
       "locked": {
         "label": "锁定",
-        "description": "账号被锁定，需要管理员确认。"
+        "description": "账号被锁定，需要管理员确认"
       }
     },
     "gender": {
@@ -318,7 +318,7 @@
   "dicts": {
     "page": {
       "title": "字典管理",
-      "subtitle": "维护树形字典项、业务键值和扩展配置。",
+      "subtitle": "维护树形字典项、业务键值和扩展配置",
       "addRoot": "添加根字典"
     },
     "toast": {
@@ -347,23 +347,23 @@
     "sections": {
       "basic": {
         "title": "基础信息",
-        "description": "定义字典项的展示名称、键值和归属类型。"
+        "description": "定义字典项的展示名称、键值和归属类型"
       },
       "supplement": {
         "title": "说明与扩展",
-        "description": "补充业务含义、适用范围和扩展 JSON 配置。"
+        "description": "补充业务含义、适用范围和扩展 JSON 配置"
       }
     },
     "form": {
       "parent": {
         "label": "所属节点",
-        "description": "当前编辑不会变更父子层级关系。"
+        "description": "当前编辑不会变更父子层级关系"
       },
       "type": {
         "label": "字典类型",
         "placeholder": "例如：gender",
-        "lockedOnEdit": "编辑时不允许修改字典类型。",
-        "lockedOnChild": "子级节点会继承父级字典类型。",
+        "lockedOnEdit": "编辑时不允许修改字典类型",
+        "lockedOnChild": "子级节点会继承父级字典类型",
         "validation": {
           "required": "请输入字典类型",
           "max": "字典类型长度不能超过 100 个字符"
@@ -404,14 +404,14 @@
       },
       "description": {
         "label": "说明",
-        "placeholder": "记录字典项的适用范围、业务含义或注意事项。",
+        "placeholder": "记录字典项的适用范围、业务含义或注意事项",
         "validation": {
           "max": "说明长度不能超过 500 个字符"
         }
       },
       "ext": {
         "label": "扩展配置",
-        "description": "使用 JSON 存储额外配置，留空时会自动写入空对象。",
+        "description": "使用 JSON 存储额外配置，留空时会自动写入空对象",
         "placeholder": "例如：{\"color\":\"blue\"}",
         "validation": {
           "invalid": "扩展配置必须是合法 JSON"
@@ -421,34 +421,34 @@
     "status": {
       "disabled": {
         "label": "禁用",
-        "description": "该字典项已停用，不建议继续被业务侧使用。"
+        "description": "该字典项已停用，不建议继续被业务侧使用"
       },
       "active": {
         "label": "正常",
-        "description": "该字典项可正常被选择和消费。"
+        "description": "该字典项可正常被选择和消费"
       }
     },
     "valueType": {
       "string": {
         "label": "字符串",
-        "description": "适合文案、编码和枚举值。"
+        "description": "适合文案、编码和枚举值"
       },
       "number": {
         "label": "数字",
-        "description": "适合数字型业务值。"
+        "description": "适合数字型业务值"
       },
       "boolean": {
         "label": "布尔",
-        "description": "适合 true / false 场景。"
+        "description": "适合 true / false 场景"
       },
       "json": {
         "label": "JSON",
-        "description": "适合结构化扩展值。"
+        "description": "适合结构化扩展值"
       }
     },
     "sidebar": {
       "title": "字典树",
-      "subtitle": "浏览层级并切换当前节点。",
+      "subtitle": "浏览层级并切换当前节点",
       "addRoot": "添加根节点",
       "searchPlaceholder": "搜索名称、键或类型",
       "emptySearchTitle": "没有匹配的节点",
@@ -459,7 +459,7 @@
     },
     "detail": {
       "emptyTitle": "选择字典节点",
-      "emptyDescription": "选择左侧节点后查看详情和子级。",
+      "emptyDescription": "选择左侧节点后查看详情和子级",
       "type": "类型",
       "value": "字典值",
       "valueType": "值类型",
@@ -467,8 +467,8 @@
       "noDescription": "暂无说明",
       "emptyChildrenTitle": "当前节点下暂无子级",
       "emptyChildrenDescription": "可继续添加子级节点",
-      "directChildrenTitle": "直属子项",
-      "directChildrenDescription": "仅展示当前节点的直属子项"
+      "directChildrenTitle": "子字典",
+      "directChildrenDescription": "仅展示当前节点的直属子字典"
     },
     "table": {
       "name": "名称",

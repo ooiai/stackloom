@@ -80,7 +80,7 @@ export function DictsPageView({
         onOpenCreateRoot={onOpenCreateRoot}
       />
 
-      <div className="grid gap-5 xl:grid-cols-[320px_minmax(0,1fr)]">
+      <div className="grid gap-5 xl:grid-cols-[300px_minmax(0,1fr)]">
         <DictsTreeSidebar
           treeSearch={treeSearch}
           tree={tree}

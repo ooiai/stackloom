@@ -22,33 +22,35 @@ export function ManagementPageHeader({
   return (
     <section
       className={cn(
-        "overflow-hidden rounded-[1.75rem] border border-border/70 bg-[radial-gradient(circle_at_top_right,_color-mix(in_oklab,var(--primary)_10%,transparent),transparent_32%),linear-gradient(180deg,color-mix(in_oklab,var(--background)_92%,white),color-mix(in_oklab,var(--background)_98%,black))] p-6 shadow-sm",
+        "overflow-hidden rounded-xl border border-border/70 bg-card shadow-sm",
         className
       )}
     >
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-2xl space-y-3">
+      <div className="flex flex-col gap-4 px-5 py-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="max-w-3xl space-y-2">
           {eyebrow ? (
-            <p className="text-xs font-medium tracking-[0.24em] text-muted-foreground uppercase">
+            <p className="text-[11px] font-medium tracking-[0.16em] text-muted-foreground uppercase">
               {eyebrow}
             </p>
           ) : null}
-          <div className="space-y-2">
-            <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <div className="space-y-1.5">
+            <h1 className="text-xl font-semibold tracking-tight text-foreground">
               {title}
             </h1>
             {description ? (
-              <p className="max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
+              <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
                 {description}
               </p>
             ) : null}
           </div>
         </div>
 
-        {actions ? <div className="flex shrink-0 items-center">{actions}</div> : null}
+        {actions ? (
+          <div className="flex shrink-0 items-center gap-2">{actions}</div>
+        ) : null}
       </div>
 
-      {children ? <div className="mt-6">{children}</div> : null}
+      {children ? <div className="border-t border-border/60 px-5 py-3">{children}</div> : null}
     </section>
   )
 }
