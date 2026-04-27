@@ -318,7 +318,7 @@
   "dicts": {
     "page": {
       "title": "字典管理",
-      "subtitle": "字典是一种键值对数据结构，常用于存储和管理配置信息、翻译文本等",
+      "subtitle": "维护树形字典项、业务键值和扩展配置。",
       "addRoot": "添加根字典"
     },
     "toast": {
@@ -448,7 +448,7 @@
     },
     "sidebar": {
       "title": "字典树",
-      "subtitle": "从左侧浏览层级并选中当前节点。",
+      "subtitle": "浏览层级并切换当前节点。",
       "addRoot": "添加根节点",
       "searchPlaceholder": "搜索名称、键或类型",
       "emptySearchTitle": "没有匹配的节点",
@@ -460,14 +460,14 @@
     "detail": {
       "emptyTitle": "选择字典节点",
       "emptyDescription": "选择左侧节点后查看详情和子级。",
-      "type": "类型：{value}",
-      "value": "值：{value}",
-      "valueType": "值类型：{value}",
-      "sort": "排序：{value}",
-      "noDescription": "当前节点暂无补充说明。",
+      "type": "类型",
+      "value": "字典值",
+      "valueType": "值类型",
+      "sort": "排序",
+      "noDescription": "暂无说明",
       "emptyChildrenTitle": "当前节点下暂无子级",
       "emptyChildrenDescription": "可继续添加子级节点",
-      "directChildrenTitle": "直接子级",
+      "directChildrenTitle": "直属子项",
       "directChildrenDescription": "仅展示当前节点的直属子项"
     },
     "table": {

@@ -74,7 +74,7 @@ function DictTreeNodeItem({
     <div>
       <div
         className={cn(
-          "group flex cursor-pointer items-center justify-between rounded-lg px-2 py-1.5 text-sm transition-colors",
+          "group flex cursor-pointer items-center justify-between rounded-md px-2 py-1.5 text-[13px] transition-colors",
           isSelected
             ? "bg-primary/10 text-primary"
             : "text-foreground hover:bg-muted"
@@ -130,8 +130,8 @@ function DictTreeNodeItem({
             />
           )}
 
-          <div className="min-w-0">
-            <div className="truncate font-medium">{node.label}</div>
+          <div className="min-w-0 space-y-0.5">
+            <div className="truncate font-medium leading-5">{node.label}</div>
             <div className="truncate text-[11px] text-muted-foreground">
               {node.dict_key}
             </div>
@@ -218,7 +218,7 @@ export function DictsTreeSidebar({
           <p className="text-sm font-semibold text-foreground">
             {t("dicts.sidebar.title")}
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[12px] leading-5 text-muted-foreground">
             {t("dicts.sidebar.subtitle")}
           </p>
         </div>
@@ -239,7 +239,7 @@ export function DictsTreeSidebar({
             value={treeSearch}
             onChange={(event) => onTreeSearchChange(event.target.value)}
             placeholder={t("dicts.sidebar.searchPlaceholder")}
-            className="pl-8"
+            className="h-8 pl-8 text-xs"
           />
         </div>
       </div>

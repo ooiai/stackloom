@@ -318,7 +318,7 @@
   "dicts": {
     "page": {
       "title": "Dictionaries",
-      "subtitle": "Dictionaries are key-value structures commonly used for configuration, labels, and reusable business metadata.",
+      "subtitle": "Manage tree dictionaries, business values, and extension settings.",
       "addRoot": "Add root dictionary"
     },
     "toast": {
@@ -448,7 +448,7 @@
     },
     "sidebar": {
       "title": "Dictionary tree",
-      "subtitle": "Browse the hierarchy on the left and select the current node.",
+      "subtitle": "Browse the hierarchy and switch the current node.",
       "addRoot": "Add root dictionary",
       "searchPlaceholder": "Search name, key, or type",
       "emptySearchTitle": "No matching nodes",
@@ -460,14 +460,14 @@
     "detail": {
       "emptyTitle": "Choose a dictionary node",
       "emptyDescription": "Select a node on the left to view details and children.",
-      "type": "Type: {value}",
-      "value": "Value: {value}",
-      "valueType": "Value type: {value}",
-      "sort": "Sort: {value}",
-      "noDescription": "No additional description is available for this node.",
+      "type": "Type",
+      "value": "Value",
+      "valueType": "Value type",
+      "sort": "Sort",
+      "noDescription": "No description",
       "emptyChildrenTitle": "No child items under this node",
       "emptyChildrenDescription": "You can continue by adding child nodes.",
-      "directChildrenTitle": "Direct children",
+      "directChildrenTitle": "Child items",
       "directChildrenDescription": "Only direct child items of the current node are shown here."
     },
     "table": {

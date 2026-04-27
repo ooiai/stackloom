@@ -31,6 +31,23 @@ interface DictsDetailPanelProps {
   onOpenAddChild: (parentId: string) => void
 }
 
+function DetailMetaItem({
+  label,
+  value,
+}: {
+  label: string
+  value: string
+}) {
+  return (
+    <div className="space-y-1 rounded-lg border border-border/60 bg-muted/20 px-3 py-2">
+      <div className="text-[11px] font-medium text-muted-foreground">
+        {label}
+      </div>
+      <div className="truncate text-sm font-medium text-foreground">{value}</div>
+    </div>
+  )
+}
+
 export function DictsDetailPanel({
   selectedNode,
   breadcrumb,
@@ -56,12 +73,12 @@ export function DictsDetailPanel({
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
         <Button
           type="button"
           variant="ghost"
           size="sm"
-          className="h-auto rounded-md px-1.5 py-1 text-muted-foreground hover:text-foreground"
+          className="h-auto rounded-md px-1.5 py-1 text-xs text-muted-foreground hover:text-foreground"
           onClick={() => onSelectNode(null)}
         >
           <HomeIcon className="size-3.5" />
@@ -75,7 +92,7 @@ export function DictsDetailPanel({
               variant="ghost"
               size="sm"
               className={cn(
-                "h-auto rounded-md px-1.5 py-1 transition hover:text-foreground",
+                "h-auto rounded-md px-1.5 py-1 text-xs transition hover:text-foreground",
                 index === breadcrumb.length - 1 && "font-medium text-foreground"
               )}
               onClick={() => onSelectNode(item.id)}
@@ -88,7 +105,7 @@ export function DictsDetailPanel({
 
       <div className="rounded-2xl border border-border/70 bg-card px-5 py-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="space-y-2">
+          <div className="min-w-0 flex-1 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
               <div className="flex items-center gap-2">
                 {selectedNode.children.length > 0 ? (
@@ -96,7 +113,7 @@ export function DictsDetailPanel({
                 ) : (
                   <TagIcon className="size-4 text-primary" />
                 )}
-                <h3 className="text-base font-semibold text-foreground">
+                <h3 className="text-lg font-semibold text-foreground">
                   {selectedNode.label}
                 </h3>
               </div>
@@ -105,23 +122,25 @@ export function DictsDetailPanel({
               </code>
               <DictStatusBadge status={selectedNode.status} />
             </div>
-            <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-              <span>
-                {t("dicts.detail.type", { value: selectedNode.dict_type })}
-              </span>
-              <span>
-                {t("dicts.detail.value", { value: selectedNode.dict_value })}
-              </span>
-              <span>
-                {t("dicts.detail.valueType", {
-                  value: selectedNode.value_type,
-                })}
-              </span>
-              <span>
-                {t("dicts.detail.sort", { value: selectedNode.sort })}
-              </span>
+            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+              <DetailMetaItem
+                label={t("dicts.detail.type")}
+                value={selectedNode.dict_type}
+              />
+              <DetailMetaItem
+                label={t("dicts.detail.value")}
+                value={selectedNode.dict_value}
+              />
+              <DetailMetaItem
+                label={t("dicts.detail.valueType")}
+                value={selectedNode.value_type}
+              />
+              <DetailMetaItem
+                label={t("dicts.detail.sort")}
+                value={String(selectedNode.sort)}
+              />
             </div>
-            <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
+            <p className="max-w-3xl text-[13px] leading-6 text-muted-foreground">
               {selectedNode.description || t("dicts.detail.noDescription")}
             </p>
           </div>
@@ -167,13 +186,10 @@ export function DictsDetailPanel({
         }}
       >
         <div className="w-full space-y-2.5">
-          <div className="space-y-1 px-1">
+          <div className="px-1">
             <h4 className="text-sm font-semibold text-foreground">
               {t("dicts.detail.directChildrenTitle")}
             </h4>
-            <p className="text-sm text-muted-foreground">
-              {t("dicts.detail.directChildrenDescription")}
-            </p>
           </div>
           <DataGridContainer className="[&_svg.animate-spin]:text-primary">
             <ScrollArea>

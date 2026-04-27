@@ -1,29 +1,58 @@
 "use client"
 
-import { useState } from "react"
+import { useSyncExternalStore } from "react"
 
 import { getStorageItem, setStorageItem } from "@/hooks/use-persisted-state"
 import type { LayoutWidthMode } from "@/components/base/shared/layout-width-toggle"
 
 const STORAGE_KEY = "base-layout-width-mode"
+const STORAGE_EVENT = "base-layout-width-mode-change"
 
 function isLayoutWidthMode(value: unknown): value is LayoutWidthMode {
   return value === "contained" || value === "full"
 }
 
-export function useBaseLayoutMode() {
-  const [mode, setMode] = useState<LayoutWidthMode>(() => {
-    const storedMode = getStorageItem(STORAGE_KEY)
-    if (isLayoutWidthMode(storedMode)) {
-      return storedMode
-    }
+function getStoredLayoutMode(): LayoutWidthMode {
+  const storedMode = getStorageItem(STORAGE_KEY)
+  return isLayoutWidthMode(storedMode) ? storedMode : "contained"
+}
 
-    return "contained"
-  })
+function subscribeLayoutMode(onStoreChange: () => void) {
+  if (typeof window === "undefined") {
+    return () => {}
+  }
+
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === null || event.storageArea === window.localStorage) {
+      onStoreChange()
+    }
+  }
+
+  const handleCustomEvent = () => {
+    onStoreChange()
+  }
+
+  window.addEventListener("storage", handleStorage)
+  window.addEventListener(STORAGE_EVENT, handleCustomEvent)
+
+  return () => {
+    window.removeEventListener("storage", handleStorage)
+    window.removeEventListener(STORAGE_EVENT, handleCustomEvent)
+  }
+}
+
+export function useBaseLayoutMode() {
+  const mode: LayoutWidthMode = useSyncExternalStore(
+    subscribeLayoutMode,
+    getStoredLayoutMode,
+    () => "contained"
+  )
 
   const updateMode = (nextMode: LayoutWidthMode) => {
-    setMode(nextMode)
     setStorageItem(STORAGE_KEY, nextMode)
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event(STORAGE_EVENT))
+    }
   }
 
   return {
