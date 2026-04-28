@@ -1,6 +1,9 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{CreateMenuCmd, PageMenuCmd, UpdateMenuCmd, Menu};
+use crate::{
+    CreateMenuCmd, Menu, PageMenuCmd, UpdateMenuCmd,
+    menu::{ChildrenMenuCmd, RemoveCascadeMenuCmd, TreeMenuCmd},
+};
 
 #[async_trait]
 pub trait MenuService: Send + Sync {
@@ -31,6 +34,24 @@ pub trait MenuService: Send + Sync {
     /// * `AppResult<(Vec<Menu>, i64)>` - The result of the page operation.
     async fn page(&self, cmd: PageMenuCmd) -> AppResult<(Vec<Menu>, i64)>;
 
+    /// Load the menu tree.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing tree filter details.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Menu>>` - The menu tree as a flat list.
+    async fn tree(&self, cmd: TreeMenuCmd) -> AppResult<Vec<Menu>>;
+
+    /// Load direct menu children by parent.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing parent and filter details.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Menu>>` - Direct child menu items.
+    async fn children(&self, cmd: ChildrenMenuCmd) -> AppResult<Vec<Menu>>;
+
     /// Update an existing menu.
     ///
     /// # Arguments
@@ -49,4 +70,13 @@ pub trait MenuService: Send + Sync {
     /// # Returns
     /// * `AppResult<()>` - The result of the delete operation.
     async fn delete(&self, ids: Vec<i64>) -> AppResult<()>;
+
+    /// Delete a menu and all its descendants.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing the root menu id.
+    ///
+    /// # Returns
+    /// * `AppResult<()>` - The result of the cascade delete operation.
+    async fn remove_cascade(&self, cmd: RemoveCascadeMenuCmd) -> AppResult<()>;
 }

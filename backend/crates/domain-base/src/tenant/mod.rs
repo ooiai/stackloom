@@ -11,6 +11,7 @@ use neocrates::response::error::{AppError, AppResult};
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Tenant {
     pub id: i64,
+    pub parent_id: Option<i64>,
     pub slug: String,
     pub name: String,
     pub description: Option<String>,
@@ -31,6 +32,7 @@ impl Tenant {
 
         Ok(Self {
             id: cmd.id,
+            parent_id: cmd.parent_id,
             slug: cmd.slug,
             name: cmd.name,
             description: cmd.description,
@@ -46,6 +48,10 @@ impl Tenant {
 
     pub fn apply_update(&mut self, cmd: UpdateTenantCmd) -> AppResult<()> {
         cmd.validate()?;
+
+        if let Some(parent_id) = cmd.parent_id {
+            self.parent_id = Some(parent_id);
+        }
 
         if let Some(slug) = cmd.slug {
             self.slug = slug;
@@ -105,6 +111,7 @@ impl Tenant {
 #[derive(Debug, Clone)]
 pub struct CreateTenantCmd {
     pub id: i64,
+    pub parent_id: Option<i64>,
     pub slug: String,
     pub name: String,
     pub description: Option<String>,
@@ -134,6 +141,7 @@ impl CreateTenantCmd {
 
 #[derive(Debug, Clone, Default)]
 pub struct UpdateTenantCmd {
+    pub parent_id: Option<i64>,
     pub slug: Option<String>,
     pub name: Option<String>,
     pub description: Option<String>,
@@ -190,9 +198,63 @@ pub struct PageTenantCmd {
 }
 
 #[derive(Debug, Clone, Default)]
+pub struct TreeTenantCmd {
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ChildrenTenantCmd {
+    pub parent_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone)]
+pub struct RemoveCascadeTenantCmd {
+    pub id: i64,
+}
+
+#[derive(Debug, Clone, Default)]
 pub struct TenantPageQuery {
     pub keyword: Option<String>,
     pub status: Option<i16>,
     pub limit: Option<i64>,
     pub offset: Option<i64>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct TenantTreeQuery {
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct TenantChildrenQuery {
+    pub parent_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+impl Tenant {
+    pub fn matches_keyword(&self, keyword: &str) -> bool {
+        let keyword = keyword.trim().to_lowercase();
+        if keyword.is_empty() {
+            return true;
+        }
+
+        self.slug.to_lowercase().contains(&keyword)
+            || self.name.to_lowercase().contains(&keyword)
+            || self
+                .description
+                .as_deref()
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains(&keyword)
+            || self
+                .plan_code
+                .as_deref()
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains(&keyword)
+    }
 }

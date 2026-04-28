@@ -21,6 +21,13 @@ The visual source of truth is the existing eduweb admin implementation:
 
 When Stackloom UI work is ambiguous, align to those two references first.
 
+In Stackloom itself:
+
+- `users` is the CRUD list baseline
+- `dicts` is the tree/detail baseline
+- `menus` should visually follow `dicts` with the same tree workspace rhythm
+- hierarchical `tenants` should follow the same tree/detail pattern as `dicts` and `menus`
+
 ## Core rule
 
 For backend CRUD pages, prefer **reference alignment** over design invention.
@@ -102,6 +109,21 @@ Use the eduweb `dicts` page as the tree/detail baseline.
 - selection should be obvious but restrained
 - node actions appear in compact contextual menus
 - adding a child should feel like a direct maintenance action, not a separate flow
+
+## Menus and tenants baseline
+
+Use the same baseline as `dicts` for:
+
+- `upms/menus`
+- hierarchical `upms/tenants`
+
+### Rules
+
+- left column is the hierarchy work area
+- right column is the selected node work area
+- direct children remain table-based, not card-based
+- summary metadata stays compact
+- action placement mirrors the `dicts` reference, not a custom dashboard layout
 
 ## Typography and spacing
 

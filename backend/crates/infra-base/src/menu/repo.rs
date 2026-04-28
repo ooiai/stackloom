@@ -1,7 +1,10 @@
 use std::sync::Arc;
 
 use chrono::Utc;
-use domain_base::{Menu, MenuRepository, menu::MenuPageQuery};
+use domain_base::{
+    Menu, MenuRepository,
+    menu::{MenuChildrenQuery, MenuPageQuery, MenuTreeQuery},
+};
 use neocrates::{
     async_trait::async_trait,
     response::error::{AppError, AppResult},
@@ -234,6 +237,157 @@ impl MenuRepository for SqlxMenuRepository {
             .map_err(Self::map_sqlx_error)?;
 
         Ok((rows.into_iter().map(Into::into).collect(), total))
+    }
+
+    async fn list_for_tree(&self, query: &MenuTreeQuery) -> AppResult<Vec<Menu>> {
+        let mut builder = QueryBuilder::new(
+            r#"
+            SELECT
+                id,
+                tenant_id,
+                parent_id,
+                code,
+                name,
+                path,
+                component,
+                redirect,
+                icon,
+                menu_type,
+                sort,
+                visible,
+                keep_alive,
+                status,
+                created_at,
+                updated_at,
+                deleted_at
+            FROM menus
+            WHERE deleted_at IS NULL
+            "#,
+        );
+
+        if let Some(status) = query.status {
+            builder.push(" AND status = ");
+            builder.push_bind(status);
+        }
+
+        builder.push(" ORDER BY sort ASC, name ASC, created_at ASC");
+
+        let rows: Vec<MenuRow> = builder
+            .build_query_as()
+            .fetch_all(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows.into_iter().map(Into::into).collect())
+    }
+
+    async fn list_by_parent(&self, query: &MenuChildrenQuery) -> AppResult<Vec<Menu>> {
+        let mut builder = QueryBuilder::new(
+            r#"
+            SELECT
+                id,
+                tenant_id,
+                parent_id,
+                code,
+                name,
+                path,
+                component,
+                redirect,
+                icon,
+                menu_type,
+                sort,
+                visible,
+                keep_alive,
+                status,
+                created_at,
+                updated_at,
+                deleted_at
+            FROM menus
+            WHERE deleted_at IS NULL
+            "#,
+        );
+
+        if let Some(parent_id) = query.parent_id {
+            builder.push(" AND parent_id = ");
+            builder.push_bind(parent_id);
+        } else {
+            builder.push(" AND parent_id IS NULL");
+        }
+
+        if let Some(status) = query.status {
+            builder.push(" AND status = ");
+            builder.push_bind(status);
+        }
+
+        if let Some(keyword) = query.keyword.as_ref() {
+            let pattern = format!("%{}%", keyword.trim());
+            builder.push(" AND (code ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR name ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR path ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR component ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR redirect ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR icon ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(")");
+        }
+
+        builder.push(" ORDER BY sort ASC, name ASC, created_at ASC");
+
+        let rows: Vec<MenuRow> = builder
+            .build_query_as()
+            .fetch_all(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows.into_iter().map(Into::into).collect())
+    }
+
+    async fn count_by_parent_id(&self, parent_id: i64) -> AppResult<i64> {
+        let total = sqlx::query_scalar::<_, i64>(
+            r#"
+            SELECT COUNT(*) AS total
+            FROM menus
+            WHERE parent_id = $1
+              AND deleted_at IS NULL
+            "#,
+        )
+        .bind(parent_id)
+        .fetch_one(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(total)
+    }
+
+    async fn find_descendant_ids(&self, id: i64) -> AppResult<Vec<i64>> {
+        let ids = sqlx::query_scalar::<_, i64>(
+            r#"
+            WITH RECURSIVE menu_tree AS (
+                SELECT id, parent_id
+                FROM menus
+                WHERE id = $1
+                  AND deleted_at IS NULL
+                UNION ALL
+                SELECT child.id, child.parent_id
+                FROM menus child
+                INNER JOIN menu_tree parent ON child.parent_id = parent.id
+                WHERE child.deleted_at IS NULL
+            )
+            SELECT id
+            FROM menu_tree
+            "#,
+        )
+        .bind(id)
+        .fetch_all(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(ids)
     }
 
     async fn update(&self, menu: &Menu) -> AppResult<Menu> {

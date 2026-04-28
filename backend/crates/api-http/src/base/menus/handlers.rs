@@ -1,15 +1,15 @@
 use super::{
     req::{
-        CreateMenuReq,
-        DeleteMenuReq,
-        GetMenuReq,
-        PageMenuReq,
-        UpdateMenuReq,
+        ChildrenMenuReq, CreateMenuReq, DeleteMenuReq, GetMenuReq, PageMenuReq,
+        RemoveCascadeMenuReq, TreeMenuReq, UpdateMenuReq,
     },
-    resp::{MenuResp, PaginateMenuResp},
+    resp::{MenuChildrenResp, MenuResp, MenuTreeNodeResp, MenuTreeResp, PaginateMenuResp},
 };
 use crate::base::BaseHttpState;
-use domain_base::{CreateMenuCmd, PageMenuCmd, UpdateMenuCmd};
+use domain_base::{
+    CreateMenuCmd, PageMenuCmd, UpdateMenuCmd,
+    menu::{ChildrenMenuCmd, RemoveCascadeMenuCmd, TreeMenuCmd},
+};
 use neocrates::{
     axum::{Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
@@ -92,6 +92,54 @@ pub async fn page(
     Ok(Json(resp))
 }
 
+/// Load the menu tree.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<MenuTreeResp>>` - The menu tree response.
+pub async fn tree(
+    State(state): State<MenusState>,
+    DetailedJson(req): DetailedJson<TreeMenuReq>,
+) -> AppResult<Json<MenuTreeResp>> {
+    tracing::info!("...Tree Menu Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: TreeMenuCmd = req.into();
+    let menus = state.menu_service.tree(cmd).await?;
+    let items = MenuTreeNodeResp::from_flat(menus);
+
+    Ok(Json(MenuTreeResp::new(items)))
+}
+
+/// Load direct menu children by parent.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<MenuChildrenResp>>` - The direct child response.
+pub async fn children(
+    State(state): State<MenusState>,
+    DetailedJson(req): DetailedJson<ChildrenMenuReq>,
+) -> AppResult<Json<MenuChildrenResp>> {
+    tracing::info!("...Children Menu Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: ChildrenMenuCmd = req.into();
+    let menus = state.menu_service.children(cmd).await?;
+    let items = menus.into_iter().map(MenuResp::from).collect::<Vec<_>>();
+
+    Ok(Json(MenuChildrenResp::new(items)))
+}
+
 /// Update an existing menu.
 ///
 /// # Arguments
@@ -134,6 +182,29 @@ pub async fn delete(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     state.menu_service.delete(req.ids).await?;
+
+    Ok(Json(()))
+}
+
+/// Delete a menu and all descendants.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the cascade delete operation.
+pub async fn remove_cascade(
+    State(state): State<MenusState>,
+    DetailedJson(req): DetailedJson<RemoveCascadeMenuReq>,
+) -> AppResult<Json<()>> {
+    tracing::info!("...Remove Cascade Menu Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: RemoveCascadeMenuCmd = req.into();
+    state.menu_service.remove_cascade(cmd).await?;
 
     Ok(Json(()))
 }

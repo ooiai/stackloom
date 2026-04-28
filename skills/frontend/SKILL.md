@@ -77,6 +77,24 @@ frontend/components/base/dicts/
 ├── dict-mutate-*.tsx
 ├── dicts-*.tsx
 └── dict-status-badge.tsx
+
+frontend/components/base/menus/
+├── hooks/
+│   ├── use-menu-mutate-form.ts
+│   └── use-menus-controller.ts
+├── helpers.ts
+├── menu-mutate-*.tsx
+├── menus-*.tsx
+└── menu-status-badge.tsx
+
+frontend/components/base/tenants/
+├── hooks/
+│   ├── use-tenant-mutate-form.ts
+│   └── use-tenants-controller.ts
+├── helpers.ts
+├── tenant-mutate-*.tsx
+├── tenants-*.tsx
+└── tenant-status-badge.tsx
 ```
 
 Use the same layering for new features:
@@ -95,6 +113,13 @@ Use the same layering for new features:
    Form initialization and validation wiring.
 7. `components/base/<feature>/helpers.ts`
    Feature-local helpers, schemas, option builders, tree helpers, and payload builders.
+
+Tree-backed admin features such as `dicts`, `menus`, and hierarchical `tenants` should follow the same pattern:
+
+- left tree workspace
+- right detail panel + direct children table
+- explicit expand/collapse
+- create root / add child / edit / delete routed through the controller hook
 
 ## Hard boundaries
 

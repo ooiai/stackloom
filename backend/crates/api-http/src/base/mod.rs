@@ -1,9 +1,10 @@
 use std::sync::Arc;
 
-use domain_base::{DictService, TenantService, UserService};
+use domain_base::{DictService, MenuService, TenantService, UserService};
 use neocrates::{axum::Router, middlewares::models::MiddlewareConfig, rediscache::RedisPool};
 
 pub mod dicts;
+pub mod menus;
 pub mod tenants;
 pub mod users;
 
@@ -14,6 +15,7 @@ pub struct BaseHttpState {
     pub user_service: Arc<dyn UserService>,
     pub tenant_service: Arc<dyn TenantService>,
     pub dict_service: Arc<dyn DictService>,
+    pub menu_service: Arc<dyn MenuService>,
 }
 
 /// The users router, which will be nested under the `/users` path.
@@ -29,11 +31,13 @@ pub fn router(state: BaseHttpState, _mw: Arc<MiddlewareConfig>) -> Router {
     let user_router = users::router(state.clone());
     let tenant_router = tenants::router(state.clone());
     let dict_router = dicts::router(state.clone());
+    let menu_router = menus::router(state.clone());
 
     Router::new()
         .with_state(state)
         .nest("/users", user_router)
         .nest("/tenants", tenant_router)
         .nest("/dicts", dict_router)
+        .nest("/menus", menu_router)
     // .layer(middleware::from_fn_with_state(mw, interceptor))
 }

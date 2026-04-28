@@ -1,6 +1,9 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{Menu, menu::MenuPageQuery};
+use crate::{
+    Menu,
+    menu::{MenuChildrenQuery, MenuPageQuery, MenuTreeQuery},
+};
 
 #[async_trait]
 pub trait MenuRepository: Send + Sync {
@@ -30,6 +33,42 @@ pub trait MenuRepository: Send + Sync {
     /// # Returns
     /// * `AppResult<(Vec<Menu>, i64)>` - Paged menus and total count
     async fn page(&self, query: &MenuPageQuery) -> AppResult<(Vec<Menu>, i64)>;
+
+    /// Load menu items for tree building.
+    ///
+    /// # Arguments
+    /// * `query` - Tree filter query
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Menu>>` - Flat menu items for tree building
+    async fn list_for_tree(&self, query: &MenuTreeQuery) -> AppResult<Vec<Menu>>;
+
+    /// Load direct menu children by parent id.
+    ///
+    /// # Arguments
+    /// * `query` - Child list query
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Menu>>` - Direct child menu items
+    async fn list_by_parent(&self, query: &MenuChildrenQuery) -> AppResult<Vec<Menu>>;
+
+    /// Count direct menu children by parent id.
+    ///
+    /// # Arguments
+    /// * `parent_id` - Parent menu id
+    ///
+    /// # Returns
+    /// * `AppResult<i64>` - Direct child count
+    async fn count_by_parent_id(&self, parent_id: i64) -> AppResult<i64>;
+
+    /// Find a menu and all descendant ids.
+    ///
+    /// # Arguments
+    /// * `id` - Root menu id
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<i64>>` - Root and descendant ids
+    async fn find_descendant_ids(&self, id: i64) -> AppResult<Vec<i64>>;
 
     /// Update an existing Menu.
     ///

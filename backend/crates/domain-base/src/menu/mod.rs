@@ -254,9 +254,65 @@ pub struct PageMenuCmd {
 }
 
 #[derive(Debug, Clone, Default)]
+pub struct TreeMenuCmd {
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ChildrenMenuCmd {
+    pub parent_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone)]
+pub struct RemoveCascadeMenuCmd {
+    pub id: i64,
+}
+
+#[derive(Debug, Clone, Default)]
 pub struct MenuPageQuery {
     pub keyword: Option<String>,
     pub status: Option<i16>,
     pub limit: Option<i64>,
     pub offset: Option<i64>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct MenuTreeQuery {
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct MenuChildrenQuery {
+    pub parent_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+impl Menu {
+    pub fn matches_keyword(&self, keyword: &str) -> bool {
+        let keyword = keyword.trim().to_lowercase();
+        if keyword.is_empty() {
+            return true;
+        }
+
+        self.code.to_lowercase().contains(&keyword)
+            || self.name.to_lowercase().contains(&keyword)
+            || self.path.as_deref().unwrap_or_default().to_lowercase().contains(&keyword)
+            || self
+                .component
+                .as_deref()
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains(&keyword)
+            || self
+                .redirect
+                .as_deref()
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains(&keyword)
+            || self.icon.as_deref().unwrap_or_default().to_lowercase().contains(&keyword)
+    }
 }

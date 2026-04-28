@@ -1,7 +1,10 @@
 use std::sync::Arc;
 
 use chrono::Utc;
-use domain_base::{Tenant, TenantRepository, tenant::TenantPageQuery};
+use domain_base::{
+    Tenant, TenantRepository,
+    tenant::{TenantChildrenQuery, TenantPageQuery, TenantTreeQuery},
+};
 use neocrates::{
     async_trait::async_trait,
     response::error::{AppError, AppResult},
@@ -33,6 +36,7 @@ impl TenantRepository for SqlxTenantRepository {
             r#"
             INSERT INTO tenants (
                 id,
+                parent_id,
                 slug,
                 name,
                 description,
@@ -44,9 +48,10 @@ impl TenantRepository for SqlxTenantRepository {
                 updated_at,
                 deleted_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
             RETURNING
                 id,
+                parent_id,
                 slug,
                 name,
                 description,
@@ -60,6 +65,7 @@ impl TenantRepository for SqlxTenantRepository {
             "#,
         )
         .bind(&tenant.id)
+        .bind(&tenant.parent_id)
         .bind(&tenant.slug)
         .bind(&tenant.name)
         .bind(&tenant.description)
@@ -82,6 +88,7 @@ impl TenantRepository for SqlxTenantRepository {
             r#"
             SELECT
                 id,
+                parent_id,
                 slug,
                 name,
                 description,
@@ -143,6 +150,7 @@ impl TenantRepository for SqlxTenantRepository {
             r#"
             SELECT
                 id,
+                parent_id,
                 slug,
                 name,
                 description,
@@ -198,22 +206,161 @@ impl TenantRepository for SqlxTenantRepository {
         Ok((rows.into_iter().map(Into::into).collect(), total))
     }
 
+    async fn list_for_tree(&self, query: &TenantTreeQuery) -> AppResult<Vec<Tenant>> {
+        let mut builder = QueryBuilder::new(
+            r#"
+            SELECT
+                id,
+                parent_id,
+                slug,
+                name,
+                description,
+                owner_user_id,
+                status,
+                plan_code,
+                expired_at,
+                created_at,
+                updated_at,
+                deleted_at
+            FROM tenants
+            WHERE deleted_at IS NULL
+            "#,
+        );
+
+        if let Some(status) = query.status {
+            builder.push(" AND status = ");
+            builder.push_bind(status);
+        }
+
+        builder.push(" ORDER BY name ASC, created_at ASC");
+
+        let rows: Vec<TenantRow> = builder
+            .build_query_as()
+            .fetch_all(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows.into_iter().map(Into::into).collect())
+    }
+
+    async fn list_by_parent(&self, query: &TenantChildrenQuery) -> AppResult<Vec<Tenant>> {
+        let mut builder = QueryBuilder::new(
+            r#"
+            SELECT
+                id,
+                parent_id,
+                slug,
+                name,
+                description,
+                owner_user_id,
+                status,
+                plan_code,
+                expired_at,
+                created_at,
+                updated_at,
+                deleted_at
+            FROM tenants
+            WHERE deleted_at IS NULL
+            "#,
+        );
+
+        if let Some(parent_id) = query.parent_id {
+            builder.push(" AND parent_id = ");
+            builder.push_bind(parent_id);
+        } else {
+            builder.push(" AND parent_id IS NULL");
+        }
+
+        if let Some(status) = query.status {
+            builder.push(" AND status = ");
+            builder.push_bind(status);
+        }
+
+        if let Some(keyword) = query.keyword.as_ref() {
+            let pattern = format!("%{}%", keyword.trim());
+            builder.push(" AND (slug ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR name ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR description ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR plan_code ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(")");
+        }
+
+        builder.push(" ORDER BY name ASC, created_at ASC");
+
+        let rows: Vec<TenantRow> = builder
+            .build_query_as()
+            .fetch_all(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows.into_iter().map(Into::into).collect())
+    }
+
+    async fn count_by_parent_id(&self, parent_id: i64) -> AppResult<i64> {
+        let total = sqlx::query_scalar::<_, i64>(
+            r#"
+            SELECT COUNT(*) AS total
+            FROM tenants
+            WHERE parent_id = $1
+              AND deleted_at IS NULL
+            "#,
+        )
+        .bind(parent_id)
+        .fetch_one(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(total)
+    }
+
+    async fn find_descendant_ids(&self, id: i64) -> AppResult<Vec<i64>> {
+        let ids = sqlx::query_scalar::<_, i64>(
+            r#"
+            WITH RECURSIVE tenant_tree AS (
+                SELECT id, parent_id
+                FROM tenants
+                WHERE id = $1
+                  AND deleted_at IS NULL
+                UNION ALL
+                SELECT child.id, child.parent_id
+                FROM tenants child
+                INNER JOIN tenant_tree parent ON child.parent_id = parent.id
+                WHERE child.deleted_at IS NULL
+            )
+            SELECT id
+            FROM tenant_tree
+            "#,
+        )
+        .bind(id)
+        .fetch_all(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(ids)
+    }
+
     async fn update(&self, tenant: &Tenant) -> AppResult<Tenant> {
         let row = sqlx::query_as::<_, TenantRow>(
             r#"
             UPDATE tenants
             SET
-                slug = $2,
-                name = $3,
-                description = $4,
-                owner_user_id = $5,
-                status = $6,
-                plan_code = $7,
-                expired_at = $8,
-                updated_at = $9
+                parent_id = $2,
+                slug = $3,
+                name = $4,
+                description = $5,
+                owner_user_id = $6,
+                status = $7,
+                plan_code = $8,
+                expired_at = $9,
+                updated_at = $10
             WHERE id = $1
             RETURNING
                 id,
+                parent_id,
                 slug,
                 name,
                 description,
@@ -227,6 +374,7 @@ impl TenantRepository for SqlxTenantRepository {
             "#,
         )
         .bind(tenant.id)
+        .bind(&tenant.parent_id)
         .bind(&tenant.slug)
         .bind(&tenant.name)
         .bind(&tenant.description)

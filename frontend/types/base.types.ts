@@ -1,6 +1,11 @@
 export type UserStatus = 0 | 1 | 2
 export type UserGender = 0 | 1 | 2
 export type UserMutateMode = "create" | "update"
+export type TenantStatus = 0 | 1
+export type TenantMutateMode = "create" | "update"
+export type MenuStatus = 0 | 1
+export type MenuType = 1 | 2 | 3
+export type MenuMutateMode = "create" | "update"
 export type DictStatus = 0 | 1
 export type DictValueType = "string" | "number" | "boolean" | "json"
 export type DictMutateMode = "create" | "update"
@@ -49,6 +54,47 @@ export interface DictTreeNodeData extends DictData {
   children: DictTreeNodeData[]
 }
 
+export interface MenuData {
+  id: string
+  tenant_id: string | null
+  parent_id: string | null
+  code: string
+  name: string
+  path: string | null
+  component: string | null
+  redirect: string | null
+  icon: string | null
+  menu_type: MenuType
+  sort: number
+  visible: boolean
+  keep_alive: boolean
+  status: MenuStatus
+  created_at: string
+  updated_at: string
+}
+
+export interface MenuTreeNodeData extends MenuData {
+  children: MenuTreeNodeData[]
+}
+
+export interface TenantData {
+  id: string
+  parent_id: string | null
+  slug: string
+  name: string
+  description: string | null
+  owner_user_id: string | null
+  status: TenantStatus
+  plan_code: string | null
+  expired_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface TenantTreeNodeData extends TenantData {
+  children: TenantTreeNodeData[]
+}
+
 export interface GetUserParam {
   id: string
 }
@@ -84,6 +130,114 @@ export interface UpdateUserParam {
 }
 
 export interface DeleteUserParam {
+  ids: string[]
+}
+
+export interface GetTenantParam {
+  id: string
+}
+
+export interface PageTenantParam {
+  keyword?: string
+  status?: TenantStatus
+  limit?: number
+  offset?: number
+}
+
+export interface TreeTenantParam {
+  keyword?: string
+  status?: TenantStatus
+}
+
+export interface ChildrenTenantParam {
+  parent_id?: string | null
+  keyword?: string
+  status?: TenantStatus
+}
+
+export interface CreateTenantParam {
+  parent_id?: string | null
+  slug: string
+  name: string
+  description?: string
+  owner_user_id?: string | null
+  status: TenantStatus
+  plan_code?: string
+  expired_at?: string | null
+}
+
+export interface UpdateTenantParam {
+  id: string
+  parent_id?: string | null
+  slug?: string
+  name?: string
+  description?: string
+  owner_user_id?: string | null
+  status?: TenantStatus
+  plan_code?: string
+  expired_at?: string | null
+}
+
+export interface DeleteTenantParam {
+  ids: string[]
+}
+
+export interface GetMenuParam {
+  id: string
+}
+
+export interface PageMenuParam {
+  keyword?: string
+  status?: MenuStatus
+  limit?: number
+  offset?: number
+}
+
+export interface TreeMenuParam {
+  keyword?: string
+  status?: MenuStatus
+}
+
+export interface ChildrenMenuParam {
+  parent_id?: string | null
+  keyword?: string
+  status?: MenuStatus
+}
+
+export interface CreateMenuParam {
+  tenant_id?: string | null
+  parent_id?: string | null
+  code: string
+  name: string
+  path?: string
+  component?: string
+  redirect?: string
+  icon?: string
+  menu_type: MenuType
+  sort: number
+  visible: boolean
+  keep_alive: boolean
+  status: MenuStatus
+}
+
+export interface UpdateMenuParam {
+  id: string
+  tenant_id?: string | null
+  parent_id?: string | null
+  code?: string
+  name?: string
+  path?: string
+  component?: string
+  redirect?: string
+  icon?: string
+  menu_type?: MenuType
+  sort?: number
+  visible?: boolean
+  keep_alive?: boolean
+  status?: MenuStatus
+}
+
+export interface DeleteMenuParam {
   ids: string[]
 }
 
@@ -155,8 +309,41 @@ export interface UserFormValues {
   bio: string
 }
 
+export interface TenantFormValues {
+  parent_id?: string | null
+  slug: string
+  name: string
+  description: string
+  owner_user_id: string
+  status: TenantStatus
+  plan_code: string
+  expired_at: string
+}
+
+export interface MenuFormValues {
+  tenant_id?: string | null
+  parent_id?: string | null
+  code: string
+  name: string
+  path: string
+  component: string
+  redirect: string
+  icon: string
+  menu_type: MenuType
+  sort: number
+  visible: boolean
+  keep_alive: boolean
+  status: MenuStatus
+}
+
 export type PaginateUser = PaginateResp<UserData>
+export type PaginateTenant = PaginateResp<TenantData>
+export type PaginateMenu = PaginateResp<MenuData>
 export type PaginateDict = PaginateResp<DictData>
+export type TenantTreeResp = { items: TenantTreeNodeData[] }
+export type TenantChildrenResp = { items: TenantData[] }
+export type MenuTreeResp = { items: MenuTreeNodeData[] }
+export type MenuChildrenResp = { items: MenuData[] }
 export type DictTreeResp = { items: DictTreeNodeData[] }
 export type DictChildrenResp = { items: DictData[] }
 

@@ -1,4 +1,7 @@
-use domain_base::{CreateMenuCmd, PageMenuCmd, UpdateMenuCmd};
+use domain_base::{
+    CreateMenuCmd, PageMenuCmd, UpdateMenuCmd,
+    menu::{ChildrenMenuCmd, RemoveCascadeMenuCmd, TreeMenuCmd},
+};
 use neocrates::{
     helper::core::{serde_helpers, snowflake::generate_sonyflake_id},
     serde::Deserialize,
@@ -7,7 +10,9 @@ use validator::Validate;
 
 #[derive(Debug, Clone, Deserialize, Validate)]
 pub struct CreateMenuReq {
+    #[serde(default, deserialize_with = "serde_helpers::deserialize_option_i64")]
     pub tenant_id: Option<i64>,
+    #[serde(default, deserialize_with = "serde_helpers::deserialize_option_i64")]
     pub parent_id: Option<i64>,
     pub code: String,
     pub name: String,
@@ -54,7 +59,9 @@ pub struct UpdateMenuReq {
     #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
     pub id: i64,
 
+    #[serde(default, deserialize_with = "serde_helpers::deserialize_option_i64")]
     pub tenant_id: Option<i64>,
+    #[serde(default, deserialize_with = "serde_helpers::deserialize_option_i64")]
     pub parent_id: Option<i64>,
     pub code: Option<String>,
     pub name: Option<String>,
@@ -112,7 +119,52 @@ impl From<PageMenuReq> for PageMenuCmd {
 }
 
 #[derive(Debug, Clone, Deserialize, Validate, Default)]
+pub struct TreeMenuReq {
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+impl From<TreeMenuReq> for TreeMenuCmd {
+    fn from(req: TreeMenuReq) -> Self {
+        Self {
+            keyword: req.keyword,
+            status: req.status,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Validate, Default)]
+pub struct ChildrenMenuReq {
+    #[serde(default, deserialize_with = "serde_helpers::deserialize_option_i64")]
+    pub parent_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+impl From<ChildrenMenuReq> for ChildrenMenuCmd {
+    fn from(req: ChildrenMenuReq) -> Self {
+        Self {
+            parent_id: req.parent_id,
+            keyword: req.keyword,
+            status: req.status,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Validate, Default)]
 pub struct DeleteMenuReq {
     #[serde(deserialize_with = "serde_helpers::deserialize_vec_i64")]
     pub ids: Vec<i64>,
+}
+
+#[derive(Debug, Clone, Deserialize, Validate, Default)]
+pub struct RemoveCascadeMenuReq {
+    #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
+    pub id: i64,
+}
+
+impl From<RemoveCascadeMenuReq> for RemoveCascadeMenuCmd {
+    fn from(req: RemoveCascadeMenuReq) -> Self {
+        Self { id: req.id }
+    }
 }

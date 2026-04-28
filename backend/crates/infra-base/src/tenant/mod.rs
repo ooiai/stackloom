@@ -11,6 +11,7 @@ use sqlx::FromRow;
 #[derive(Debug, Clone, FromRow)]
 pub struct TenantRow {
     pub id: i64,
+    pub parent_id: Option<i64>,
     pub slug: String,
     pub name: String,
     pub description: Option<String>,
@@ -27,6 +28,7 @@ impl From<TenantRow> for Tenant {
     fn from(row: TenantRow) -> Self {
         Self {
             id: row.id,
+            parent_id: row.parent_id,
             slug: row.slug,
             name: row.name,
             description: row.description,

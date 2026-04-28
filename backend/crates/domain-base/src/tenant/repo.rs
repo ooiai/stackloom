@@ -1,6 +1,9 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{Tenant, tenant::TenantPageQuery};
+use crate::{
+    Tenant,
+    tenant::{TenantChildrenQuery, TenantPageQuery, TenantTreeQuery},
+};
 
 #[async_trait]
 pub trait TenantRepository: Send + Sync {
@@ -30,6 +33,42 @@ pub trait TenantRepository: Send + Sync {
     /// # Returns
     /// * `AppResult<(Vec<Tenant>, i64)>` - Paged tenants and total count
     async fn page(&self, query: &TenantPageQuery) -> AppResult<(Vec<Tenant>, i64)>;
+
+    /// Load tenant items for tree building.
+    ///
+    /// # Arguments
+    /// * `query` - Tree filter query
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Tenant>>` - Flat tenant items for tree building
+    async fn list_for_tree(&self, query: &TenantTreeQuery) -> AppResult<Vec<Tenant>>;
+
+    /// Load direct tenant children by parent id.
+    ///
+    /// # Arguments
+    /// * `query` - Child list query
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Tenant>>` - Direct child tenant items
+    async fn list_by_parent(&self, query: &TenantChildrenQuery) -> AppResult<Vec<Tenant>>;
+
+    /// Count direct tenant children by parent id.
+    ///
+    /// # Arguments
+    /// * `parent_id` - Parent tenant id
+    ///
+    /// # Returns
+    /// * `AppResult<i64>` - Direct child count
+    async fn count_by_parent_id(&self, parent_id: i64) -> AppResult<i64>;
+
+    /// Find a tenant and all descendant ids.
+    ///
+    /// # Arguments
+    /// * `id` - Root tenant id
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<i64>>` - Root and descendant ids
+    async fn find_descendant_ids(&self, id: i64) -> AppResult<Vec<i64>>;
 
     /// Update an existing Tenant.
     ///

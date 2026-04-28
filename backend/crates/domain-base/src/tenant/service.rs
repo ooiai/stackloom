@@ -1,6 +1,9 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{CreateTenantCmd, PageTenantCmd, Tenant, UpdateTenantCmd};
+use crate::{
+    CreateTenantCmd, PageTenantCmd, Tenant, UpdateTenantCmd,
+    tenant::{ChildrenTenantCmd, RemoveCascadeTenantCmd, TreeTenantCmd},
+};
 
 #[async_trait]
 pub trait TenantService: Send + Sync {
@@ -31,6 +34,24 @@ pub trait TenantService: Send + Sync {
     /// * `AppResult<(Vec<Tenant>, i64)>` - The result of the page operation.
     async fn page(&self, cmd: PageTenantCmd) -> AppResult<(Vec<Tenant>, i64)>;
 
+    /// Load the tenant tree.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing tree filter details.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Tenant>>` - The tenant tree as a flat list.
+    async fn tree(&self, cmd: TreeTenantCmd) -> AppResult<Vec<Tenant>>;
+
+    /// Load direct tenant children by parent.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing parent and filter details.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Tenant>>` - Direct child tenant items.
+    async fn children(&self, cmd: ChildrenTenantCmd) -> AppResult<Vec<Tenant>>;
+
     /// Update an existing tenant.
     ///
     /// # Arguments
@@ -49,4 +70,13 @@ pub trait TenantService: Send + Sync {
     /// # Returns
     /// * `AppResult<()>` - The result of the delete operation.
     async fn delete(&self, ids: Vec<i64>) -> AppResult<()>;
+
+    /// Delete a tenant and all descendants.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing the root tenant id.
+    ///
+    /// # Returns
+    /// * `AppResult<()>` - The result of the cascade delete operation.
+    async fn remove_cascade(&self, cmd: RemoveCascadeTenantCmd) -> AppResult<()>;
 }

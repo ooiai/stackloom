@@ -1,0 +1,117 @@
+"use client"
+
+import { useEffect, useMemo } from "react"
+
+import { MenuMutateFormFields } from "@/components/base/menus/menu-mutate-form-fields"
+import { useMenuMutateForm } from "@/components/base/menus/hooks/use-menu-mutate-form"
+import { MenuMutateSheetFooter } from "@/components/base/menus/menu-mutate-sheet-sections"
+import { FieldGroup } from "@/components/ui/field"
+import { Sheet, SheetContent, SheetFooter } from "@/components/ui/sheet"
+import { useI18n } from "@/providers/i18n-provider"
+import type {
+  MenuData,
+  MenuFormValues,
+  MenuMutateMode,
+} from "@/types/base.types"
+
+export function MenuMutateSheet({
+  open,
+  mode,
+  menu,
+  parent,
+  isPending,
+  onOpenChange,
+  onSubmit,
+}: {
+  open: boolean
+  mode: MenuMutateMode
+  menu: MenuData | null
+  parent: MenuData | null
+  isPending: boolean
+  onOpenChange: (open: boolean) => void
+  onSubmit: (values: MenuFormValues) => Promise<void>
+}) {
+  const { t } = useI18n()
+  const header =
+    mode === "create"
+      ? {
+          title: t("menus.sheet.create.title"),
+          description: t("menus.sheet.create.description"),
+          submitLabel: t("menus.sheet.create.submit"),
+        }
+      : {
+          title: t("menus.sheet.update.title"),
+          description: t("menus.sheet.update.description"),
+          submitLabel: t("menus.sheet.update.submit"),
+        }
+
+  const parentLabel = useMemo(() => {
+    if (!parent) {
+      return t("common.misc.rootDirectory")
+    }
+
+    return parent.name
+  }, [parent, t])
+  const { defaultValues, form } = useMenuMutateForm({
+    mode,
+    menu,
+    parent,
+    onSubmit,
+  })
+
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+
+    form.reset(defaultValues)
+  }, [defaultValues, form, open])
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
+      form.reset(defaultValues)
+    }
+
+    onOpenChange(nextOpen)
+  }
+
+  const handleCancel = () => {
+    form.reset(defaultValues)
+    onOpenChange(false)
+  }
+
+  return (
+    <Sheet open={open} onOpenChange={handleOpenChange}>
+      <SheetContent className="w-full sm:max-w-xl">
+        <div className="space-y-1 border-b border-border/60 px-5 py-4">
+          <h3 className="text-base font-semibold text-foreground">
+            {header.title}
+          </h3>
+          <p className="text-sm text-muted-foreground">{header.description}</p>
+        </div>
+
+        <form
+          className="flex min-h-0 flex-1 flex-col overflow-hidden"
+          onSubmit={(event) => {
+            event.preventDefault()
+            void form.handleSubmit()
+          }}
+        >
+          <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
+            <FieldGroup>
+              <MenuMutateFormFields form={form} parentLabel={parentLabel} />
+            </FieldGroup>
+          </div>
+
+          <SheetFooter className="border-t border-border/60 bg-muted/20 px-5 py-4">
+            <MenuMutateSheetFooter
+              isBusy={isPending || form.state.isSubmitting}
+              submitLabel={header.submitLabel}
+              onCancel={handleCancel}
+            />
+          </SheetFooter>
+        </form>
+      </SheetContent>
+    </Sheet>
+  )
+}

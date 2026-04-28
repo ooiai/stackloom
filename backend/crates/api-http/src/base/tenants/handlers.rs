@@ -1,9 +1,17 @@
 use super::{
-    req::{CreateTenantReq, DeleteTenantReq, GetTenantReq, PageTenantReq, UpdateTenantReq},
-    resp::{PaginateTenantResp, TenantResp},
+    req::{
+        ChildrenTenantReq, CreateTenantReq, DeleteTenantReq, GetTenantReq, PageTenantReq,
+        RemoveCascadeTenantReq, TreeTenantReq, UpdateTenantReq,
+    },
+    resp::{
+        PaginateTenantResp, TenantChildrenResp, TenantResp, TenantTreeNodeResp, TenantTreeResp,
+    },
 };
 use crate::base::BaseHttpState;
-use domain_base::{CreateTenantCmd, PageTenantCmd, UpdateTenantCmd};
+use domain_base::{
+    CreateTenantCmd, PageTenantCmd, UpdateTenantCmd,
+    tenant::{ChildrenTenantCmd, RemoveCascadeTenantCmd, TreeTenantCmd},
+};
 use neocrates::{
     axum::{Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
@@ -89,6 +97,54 @@ pub async fn page(
     Ok(Json(resp))
 }
 
+/// Load the tenant tree.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<TenantTreeResp>>` - The tenant tree response.
+pub async fn tree(
+    State(state): State<TenantsState>,
+    DetailedJson(req): DetailedJson<TreeTenantReq>,
+) -> AppResult<Json<TenantTreeResp>> {
+    tracing::info!("...Tree Tenant Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: TreeTenantCmd = req.into();
+    let tenants = state.tenant_service.tree(cmd).await?;
+    let items = TenantTreeNodeResp::from_flat(tenants);
+
+    Ok(Json(TenantTreeResp::new(items)))
+}
+
+/// Load direct tenant children by parent.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<TenantChildrenResp>>` - The direct child response.
+pub async fn children(
+    State(state): State<TenantsState>,
+    DetailedJson(req): DetailedJson<ChildrenTenantReq>,
+) -> AppResult<Json<TenantChildrenResp>> {
+    tracing::info!("...Children Tenant Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: ChildrenTenantCmd = req.into();
+    let tenants = state.tenant_service.children(cmd).await?;
+    let items = tenants.into_iter().map(TenantResp::from).collect::<Vec<_>>();
+
+    Ok(Json(TenantChildrenResp::new(items)))
+}
+
 /// Update an existing tenant.
 ///
 /// # Arguments
@@ -131,6 +187,29 @@ pub async fn delete(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     state.tenant_service.delete(req.ids).await?;
+
+    Ok(Json(()))
+}
+
+/// Delete a tenant and all descendants.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the cascade delete operation.
+pub async fn remove_cascade(
+    State(state): State<TenantsState>,
+    DetailedJson(req): DetailedJson<RemoveCascadeTenantReq>,
+) -> AppResult<Json<()>> {
+    tracing::info!("...Remove Cascade Tenant Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: RemoveCascadeTenantCmd = req.into();
+    state.tenant_service.remove_cascade(cmd).await?;
 
     Ok(Json(()))
 }

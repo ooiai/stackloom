@@ -3,9 +3,16 @@ pub mod req;
 pub mod resp;
 
 use super::BaseHttpState;
-pub use handlers::{TenantsState, create, delete, get, page, update};
-pub use req::{CreateTenantReq, DeleteTenantReq, GetTenantReq, PageTenantReq, UpdateTenantReq};
-pub use resp::{DeleteTenantResp, PaginateTenantResp, TenantResp};
+pub use handlers::{
+    TenantsState, children, create, delete, get, page, remove_cascade, tree, update,
+};
+pub use req::{
+    ChildrenTenantReq, CreateTenantReq, DeleteTenantReq, GetTenantReq, PageTenantReq,
+    RemoveCascadeTenantReq, TreeTenantReq, UpdateTenantReq,
+};
+pub use resp::{
+    DeleteTenantResp, PaginateTenantResp, TenantChildrenResp, TenantResp, TenantTreeResp,
+};
 
 use neocrates::axum::{Router, routing::post};
 
@@ -15,6 +22,9 @@ pub fn router(state: BaseHttpState) -> Router {
         .route("/get", post(get))
         .route("/update", post(update))
         .route("/page", post(page))
+        .route("/tree", post(tree))
+        .route("/children", post(children))
         .route("/remove", post(delete))
+        .route("/remove_cascade", post(remove_cascade))
         .with_state(state)
 }
