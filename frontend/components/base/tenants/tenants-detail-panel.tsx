@@ -1,5 +1,6 @@
 "use client"
 
+import { DetailMetaItem } from "@/components/base/shared/detail-meta-item"
 import { EntityEmptyState } from "@/components/base/shared/entity-empty-state"
 import { TenantStatusBadge } from "@/components/base/tenants/tenant-status-badge"
 import type { TenantTreeNode } from "@/components/base/tenants/helpers"
@@ -20,17 +21,15 @@ import {
   PlusIcon,
 } from "lucide-react"
 
-function DetailMetaItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="space-y-1">
-      <div className="text-[11px] font-medium text-muted-foreground">
-        {label}
-      </div>
-      <div className="truncate text-sm font-medium text-foreground">
-        {value}
-      </div>
-    </div>
-  )
+interface TenantsDetailPanelProps {
+  selectedNode: TenantTreeNode | null
+  breadcrumb: TenantTreeNode[]
+  childItems: TenantData[]
+  table: Table<TenantData>
+  isFetching: boolean
+  onSelectNode: (id: string | null) => void
+  onOpenEdit: (tenant: TenantData) => void
+  onOpenAddChild: (parentId: string) => void
 }
 
 export function TenantsDetailPanel({
@@ -42,16 +41,7 @@ export function TenantsDetailPanel({
   onSelectNode,
   onOpenEdit,
   onOpenAddChild,
-}: {
-  selectedNode: TenantTreeNode | null
-  breadcrumb: TenantTreeNode[]
-  childItems: TenantData[]
-  table: Table<TenantData>
-  isFetching: boolean
-  onSelectNode: (id: string | null) => void
-  onOpenEdit: (tenant: TenantData) => void
-  onOpenAddChild: (parentId: string) => void
-}) {
+}: TenantsDetailPanelProps) {
   const { t } = useI18n()
 
   if (!selectedNode) {

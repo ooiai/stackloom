@@ -95,7 +95,7 @@ export function createDictColumns({
         />
       ),
       cell: ({ row }) => (
-        <code className="rounded-md bg-muted px-1.5 py-1 text-[11px] text-foreground/80">
+        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-[11px] text-primary">
           {row.original.dict_key}
         </code>
       ),
@@ -113,7 +113,7 @@ export function createDictColumns({
         />
       ),
       cell: ({ row }) => (
-        <code className="rounded-md bg-muted px-1.5 py-1 text-[11px] text-foreground/80">
+        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-[11px] text-primary">
           {row.original.dict_value}
         </code>
       ),

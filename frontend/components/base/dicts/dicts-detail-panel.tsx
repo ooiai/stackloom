@@ -1,5 +1,6 @@
 "use client"
 
+import { DetailMetaItem } from "@/components/base/shared/detail-meta-item"
 import { EntityEmptyState } from "@/components/base/shared/entity-empty-state"
 import type { DictTreeNode } from "@/components/base/dicts/helpers"
 import { DictStatusBadge } from "@/components/base/dicts/dict-status-badge"
@@ -29,19 +30,6 @@ interface DictsDetailPanelProps {
   onSelectNode: (id: string | null) => void
   onOpenEdit: (dict: DictData) => void
   onOpenAddChild: (parentId: string) => void
-}
-
-function DetailMetaItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="space-y-1">
-      <div className="text-[11px] font-medium text-muted-foreground">
-        {label}
-      </div>
-      <div className="truncate text-sm font-medium text-foreground">
-        {value}
-      </div>
-    </div>
-  )
 }
 
 export function DictsDetailPanel({

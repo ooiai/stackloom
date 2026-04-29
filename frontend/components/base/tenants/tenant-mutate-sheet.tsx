@@ -4,6 +4,7 @@ import { useEffect, useMemo } from "react"
 
 import { TenantMutateFormFields } from "@/components/base/tenants/tenant-mutate-form-fields"
 import { useTenantMutateForm } from "@/components/base/tenants/hooks/use-tenant-mutate-form"
+import { TenantMutateSheetHeader } from "@/components/base/tenants/tenant-mutate-sheet-header"
 import { TenantMutateSheetFooter } from "@/components/base/tenants/tenant-mutate-sheet-sections"
 import { FieldGroup } from "@/components/ui/field"
 import { Sheet, SheetContent, SheetFooter } from "@/components/ui/sheet"
@@ -14,6 +15,16 @@ import type {
   TenantMutateMode,
 } from "@/types/base.types"
 
+interface TenantMutateSheetProps {
+  open: boolean
+  mode: TenantMutateMode
+  tenant: TenantData | null
+  parent: TenantData | null
+  isPending: boolean
+  onOpenChange: (open: boolean) => void
+  onSubmit: (values: TenantFormValues) => Promise<void>
+}
+
 export function TenantMutateSheet({
   open,
   mode,
@@ -22,15 +33,7 @@ export function TenantMutateSheet({
   isPending,
   onOpenChange,
   onSubmit,
-}: {
-  open: boolean
-  mode: TenantMutateMode
-  tenant: TenantData | null
-  parent: TenantData | null
-  isPending: boolean
-  onOpenChange: (open: boolean) => void
-  onSubmit: (values: TenantFormValues) => Promise<void>
-}) {
+}: TenantMutateSheetProps) {
   const { t } = useI18n()
   const header =
     mode === "create"
@@ -82,12 +85,10 @@ export function TenantMutateSheet({
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent className="w-full sm:max-w-xl">
-        <div className="space-y-1 border-b border-border/60 px-5 py-4">
-          <h3 className="text-base font-semibold text-foreground">
-            {header.title}
-          </h3>
-          <p className="text-sm text-muted-foreground">{header.description}</p>
-        </div>
+        <TenantMutateSheetHeader
+          title={header.title}
+          description={header.description}
+        />
 
         <form
           className="flex min-h-0 flex-1 flex-col overflow-hidden"
@@ -102,7 +103,7 @@ export function TenantMutateSheet({
             </FieldGroup>
           </div>
 
-          <SheetFooter className="border-t border-border/60 bg-muted/20 px-5 py-4">
+          <SheetFooter className="border-t border-border/60 px-5 py-4 sm:flex-row sm:justify-end">
             <TenantMutateSheetFooter
               isBusy={isPending || form.state.isSubmitting}
               submitLabel={header.submitLabel}

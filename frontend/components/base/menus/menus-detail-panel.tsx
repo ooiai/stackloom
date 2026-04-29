@@ -1,5 +1,6 @@
 "use client"
 
+import { DetailMetaItem } from "@/components/base/shared/detail-meta-item"
 import { EntityEmptyState } from "@/components/base/shared/entity-empty-state"
 import { getMenuTypeMeta } from "@/components/base/menus/helpers"
 import { MenuStatusBadge } from "@/components/base/menus/menu-status-badge"
@@ -21,17 +22,15 @@ import {
   SquareMenuIcon,
 } from "lucide-react"
 
-function DetailMetaItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="space-y-1">
-      <div className="text-[11px] font-medium text-muted-foreground">
-        {label}
-      </div>
-      <div className="truncate text-sm font-medium text-foreground">
-        {value}
-      </div>
-    </div>
-  )
+interface MenusDetailPanelProps {
+  selectedNode: MenuTreeNode | null
+  breadcrumb: MenuTreeNode[]
+  childItems: MenuData[]
+  table: Table<MenuData>
+  isFetching: boolean
+  onSelectNode: (id: string | null) => void
+  onOpenEdit: (menu: MenuData) => void
+  onOpenAddChild: (parentId: string) => void
 }
 
 export function MenusDetailPanel({
@@ -43,16 +42,7 @@ export function MenusDetailPanel({
   onSelectNode,
   onOpenEdit,
   onOpenAddChild,
-}: {
-  selectedNode: MenuTreeNode | null
-  breadcrumb: MenuTreeNode[]
-  childItems: MenuData[]
-  table: Table<MenuData>
-  isFetching: boolean
-  onSelectNode: (id: string | null) => void
-  onOpenEdit: (menu: MenuData) => void
-  onOpenAddChild: (parentId: string) => void
-}) {
+}: MenusDetailPanelProps) {
   const { t } = useI18n()
   const menuTypeMeta = selectedNode
     ? getMenuTypeMeta(selectedNode.menu_type, t)

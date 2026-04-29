@@ -90,13 +90,13 @@ export function createTenantColumns({
       id: "slug",
       header: ({ column }) => (
         <DataGridColumnHeader
-          title={t("tenants.table.slug")}
+          title={t("tenants.detail.slug")}
           column={column}
           className="font-medium"
         />
       ),
       cell: ({ row }) => (
-        <code className="rounded-md bg-muted px-1.5 py-1 text-[11px] text-foreground/80">
+        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-[11px] text-primary">
           {row.original.slug}
         </code>
       ),

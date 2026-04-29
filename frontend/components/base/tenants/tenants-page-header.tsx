@@ -4,15 +4,17 @@ import { Button } from "@/components/ui/button"
 import { useI18n } from "@/providers/i18n-provider"
 import { PlusIcon, RefreshCwIcon } from "lucide-react"
 
+interface TenantsPageHeaderProps {
+  isFetching: boolean
+  onRefresh: () => void
+  onOpenCreateRoot: () => void
+}
+
 export function TenantsPageHeader({
   isFetching,
   onRefresh,
   onOpenCreateRoot,
-}: {
-  isFetching: boolean
-  onRefresh: () => void
-  onOpenCreateRoot: () => void
-}) {
+}: TenantsPageHeaderProps) {
   const { t } = useI18n()
 
   return (

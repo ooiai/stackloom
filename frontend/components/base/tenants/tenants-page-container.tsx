@@ -11,6 +11,26 @@ import { useI18n } from "@/providers/i18n-provider"
 import type { TenantData } from "@/types/base.types"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
+interface TenantsPageViewProps {
+  treeSearch: string
+  tree: TenantTreeNode[]
+  selectedNodeId: string | null
+  selectedNode: TenantTreeNode | null
+  breadcrumb: TenantTreeNode[]
+  children: TenantData[]
+  expandedIds: Set<string>
+  isFetching: boolean
+  isInitialLoading: boolean
+  onTreeSearchChange: (value: string) => void
+  onToggleExpand: (id: string) => void
+  onSelectNode: (id: string | null) => void
+  onRefresh: () => void
+  onOpenCreateRoot: () => void
+  onOpenAddChild: (parentId: string) => void
+  onOpenEdit: (tenant: TenantData) => void
+  onDelete: (tenant: TenantData) => void
+}
+
 export function TenantsPageView({
   treeSearch,
   tree,
@@ -29,25 +49,7 @@ export function TenantsPageView({
   onOpenAddChild,
   onOpenEdit,
   onDelete,
-}: {
-  treeSearch: string
-  tree: TenantTreeNode[]
-  selectedNodeId: string | null
-  selectedNode: TenantTreeNode | null
-  breadcrumb: TenantTreeNode[]
-  children: TenantData[]
-  expandedIds: Set<string>
-  isFetching: boolean
-  isInitialLoading: boolean
-  onTreeSearchChange: (value: string) => void
-  onToggleExpand: (id: string) => void
-  onSelectNode: (id: string | null) => void
-  onRefresh: () => void
-  onOpenCreateRoot: () => void
-  onOpenAddChild: (parentId: string) => void
-  onOpenEdit: (tenant: TenantData) => void
-  onDelete: (tenant: TenantData) => void
-}) {
+}: TenantsPageViewProps) {
   const { t } = useI18n()
   const columns = useMemo(
     () =>

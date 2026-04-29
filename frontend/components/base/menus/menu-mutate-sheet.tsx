@@ -4,6 +4,7 @@ import { useEffect, useMemo } from "react"
 
 import { MenuMutateFormFields } from "@/components/base/menus/menu-mutate-form-fields"
 import { useMenuMutateForm } from "@/components/base/menus/hooks/use-menu-mutate-form"
+import { MenuMutateSheetHeader } from "@/components/base/menus/menu-mutate-sheet-header"
 import { MenuMutateSheetFooter } from "@/components/base/menus/menu-mutate-sheet-sections"
 import { FieldGroup } from "@/components/ui/field"
 import { Sheet, SheetContent, SheetFooter } from "@/components/ui/sheet"
@@ -14,6 +15,16 @@ import type {
   MenuMutateMode,
 } from "@/types/base.types"
 
+interface MenuMutateSheetProps {
+  open: boolean
+  mode: MenuMutateMode
+  menu: MenuData | null
+  parent: MenuData | null
+  isPending: boolean
+  onOpenChange: (open: boolean) => void
+  onSubmit: (values: MenuFormValues) => Promise<void>
+}
+
 export function MenuMutateSheet({
   open,
   mode,
@@ -22,15 +33,7 @@ export function MenuMutateSheet({
   isPending,
   onOpenChange,
   onSubmit,
-}: {
-  open: boolean
-  mode: MenuMutateMode
-  menu: MenuData | null
-  parent: MenuData | null
-  isPending: boolean
-  onOpenChange: (open: boolean) => void
-  onSubmit: (values: MenuFormValues) => Promise<void>
-}) {
+}: MenuMutateSheetProps) {
   const { t } = useI18n()
   const header =
     mode === "create"
@@ -83,12 +86,10 @@ export function MenuMutateSheet({
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent className="w-full sm:max-w-xl">
-        <div className="space-y-1 border-b border-border/60 px-5 py-4">
-          <h3 className="text-base font-semibold text-foreground">
-            {header.title}
-          </h3>
-          <p className="text-sm text-muted-foreground">{header.description}</p>
-        </div>
+        <MenuMutateSheetHeader
+          title={header.title}
+          description={header.description}
+        />
 
         <form
           className="flex min-h-0 flex-1 flex-col overflow-hidden"
@@ -103,7 +104,7 @@ export function MenuMutateSheet({
             </FieldGroup>
           </div>
 
-          <SheetFooter className="border-t border-border/60 bg-muted/20 px-5 py-4">
+          <SheetFooter className="border-t border-border/60 px-5 py-4 sm:flex-row sm:justify-end">
             <MenuMutateSheetFooter
               isBusy={isPending || form.state.isSubmitting}
               submitLabel={header.submitLabel}

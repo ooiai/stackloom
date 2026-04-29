@@ -11,6 +11,26 @@ import { useI18n } from "@/providers/i18n-provider"
 import type { MenuData } from "@/types/base.types"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
+interface MenusPageViewProps {
+  treeSearch: string
+  tree: MenuTreeNode[]
+  selectedNodeId: string | null
+  selectedNode: MenuTreeNode | null
+  breadcrumb: MenuTreeNode[]
+  children: MenuData[]
+  expandedIds: Set<string>
+  isFetching: boolean
+  isInitialLoading: boolean
+  onTreeSearchChange: (value: string) => void
+  onToggleExpand: (id: string) => void
+  onSelectNode: (id: string | null) => void
+  onRefresh: () => void
+  onOpenCreateRoot: () => void
+  onOpenAddChild: (parentId: string) => void
+  onOpenEdit: (menu: MenuData) => void
+  onDelete: (menu: MenuData) => void
+}
+
 export function MenusPageView({
   treeSearch,
   tree,
@@ -29,25 +49,7 @@ export function MenusPageView({
   onOpenAddChild,
   onOpenEdit,
   onDelete,
-}: {
-  treeSearch: string
-  tree: MenuTreeNode[]
-  selectedNodeId: string | null
-  selectedNode: MenuTreeNode | null
-  breadcrumb: MenuTreeNode[]
-  children: MenuData[]
-  expandedIds: Set<string>
-  isFetching: boolean
-  isInitialLoading: boolean
-  onTreeSearchChange: (value: string) => void
-  onToggleExpand: (id: string) => void
-  onSelectNode: (id: string | null) => void
-  onRefresh: () => void
-  onOpenCreateRoot: () => void
-  onOpenAddChild: (parentId: string) => void
-  onOpenEdit: (menu: MenuData) => void
-  onDelete: (menu: MenuData) => void
-}) {
+}: MenusPageViewProps) {
   const { t } = useI18n()
   const columns = useMemo(
     () =>

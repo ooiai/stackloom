@@ -28,6 +28,21 @@ import {
   Trash2Icon,
 } from "lucide-react"
 
+interface TenantsTreeSidebarProps {
+  treeSearch: string
+  tree: TenantTreeNode[]
+  selectedNodeId: string | null
+  expandedIds: Set<string>
+  isInitialLoading: boolean
+  onTreeSearchChange: (value: string) => void
+  onToggleExpand: (id: string) => void
+  onSelectNode: (id: string | null) => void
+  onOpenCreateRoot: () => void
+  onOpenAddChild: (parentId: string) => void
+  onOpenEdit: (tenant: TenantData) => void
+  onDelete: (tenant: TenantData) => void
+}
+
 function TenantTreeNodeItem({
   node,
   selectedNodeId,
@@ -174,35 +189,21 @@ function TenantTreeNodeItem({
   )
 }
 
-export function TenantsTreeSidebar(props: {
-  treeSearch: string
-  tree: TenantTreeNode[]
-  selectedNodeId: string | null
-  expandedIds: Set<string>
-  isInitialLoading: boolean
-  onTreeSearchChange: (value: string) => void
-  onToggleExpand: (id: string) => void
-  onSelectNode: (id: string | null) => void
-  onOpenCreateRoot: () => void
-  onOpenAddChild: (parentId: string) => void
-  onOpenEdit: (tenant: TenantData) => void
-  onDelete: (tenant: TenantData) => void
-}) {
+export function TenantsTreeSidebar({
+  treeSearch,
+  tree,
+  selectedNodeId,
+  expandedIds,
+  isInitialLoading,
+  onTreeSearchChange,
+  onToggleExpand,
+  onSelectNode,
+  onOpenCreateRoot,
+  onOpenAddChild,
+  onOpenEdit,
+  onDelete,
+}: TenantsTreeSidebarProps) {
   const { t } = useI18n()
-  const {
-    treeSearch,
-    tree,
-    selectedNodeId,
-    expandedIds,
-    isInitialLoading,
-    onTreeSearchChange,
-    onToggleExpand,
-    onSelectNode,
-    onOpenCreateRoot,
-    onOpenAddChild,
-    onOpenEdit,
-    onDelete,
-  } = props
 
   return (
     <aside className="overflow-hidden rounded-lg border border-border bg-background">
