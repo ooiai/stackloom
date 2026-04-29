@@ -64,18 +64,9 @@ export function LabelField({
         {tooltip?.content ? (
           <Tooltip>
             <TooltipTrigger>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                tabIndex={-1}
-                aria-label="查看字段说明"
-                className="size-4 rounded-full p-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
-              >
-                <LucideCircleQuestionMark
-                  className={cn("size-3", tooltip.iconClassName)}
-                />
-              </Button>
+              <LucideCircleQuestionMark
+                className={cn("size-3", tooltip.iconClassName)}
+              />
             </TooltipTrigger>
             <TooltipContent
               side={tooltip.side}

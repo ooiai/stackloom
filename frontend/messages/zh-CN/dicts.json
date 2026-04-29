@@ -95,7 +95,7 @@
     "ext": {
       "label": "扩展配置",
       "description": "使用 JSON 存储额外配置，留空时会自动写入空对象",
-      "placeholder": "例如：{\"color\":\"blue\"}",
+      "placeholder": "例如：'{'\"color\":\"blue\"'}'",
       "validation": {
         "invalid": "扩展配置必须是合法 JSON"
       }
