@@ -17,11 +17,3 @@ COMMENT ON COLUMN role_perms.created_at IS '创建时间';
 
 CREATE INDEX idx_role_perms_role_id ON role_perms (role_id);
 CREATE INDEX idx_role_perms_perm_id ON role_perms (perm_id);
-
-ALTER TABLE role_perms
-    ADD CONSTRAINT fk_role_perms_role
-    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE;
-
-ALTER TABLE role_perms
-    ADD CONSTRAINT fk_role_perms_perm
-    FOREIGN KEY (perm_id) REFERENCES perms(id) ON DELETE CASCADE;

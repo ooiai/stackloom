@@ -56,11 +56,3 @@ CREATE INDEX idx_dicts_dict_type ON dicts (dict_type);
 CREATE INDEX idx_dicts_status ON dicts (status);
 CREATE INDEX idx_dicts_sort ON dicts (sort);
 CREATE INDEX idx_dicts_deleted_at ON dicts (deleted_at);
-
-ALTER TABLE dicts
-    ADD CONSTRAINT fk_dicts_tenant
-    FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE;
-
-ALTER TABLE dicts
-    ADD CONSTRAINT fk_dicts_parent
-    FOREIGN KEY (parent_id) REFERENCES dicts(id) ON DELETE SET NULL;

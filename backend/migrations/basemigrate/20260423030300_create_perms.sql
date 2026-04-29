@@ -40,7 +40,3 @@ CREATE UNIQUE INDEX uq_perms_system_code
 CREATE INDEX idx_perms_tenant_id ON perms (tenant_id);
 CREATE INDEX idx_perms_status ON perms (status);
 CREATE INDEX idx_perms_deleted_at ON perms (deleted_at);
-
-ALTER TABLE perms
-    ADD CONSTRAINT fk_perms_tenant
-    FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE;

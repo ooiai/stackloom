@@ -40,7 +40,3 @@ CREATE UNIQUE INDEX uq_roles_system_code
 CREATE INDEX idx_roles_tenant_id ON roles (tenant_id);
 CREATE INDEX idx_roles_status ON roles (status);
 CREATE INDEX idx_roles_deleted_at ON roles (deleted_at);
-
-ALTER TABLE roles
-    ADD CONSTRAINT fk_roles_tenant
-    FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE;

@@ -48,6 +48,36 @@ export function DictMutateFormFields({
           </FieldContent>
         </Field>
 
+        <form.Field name="label">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid
+
+            return (
+              <LabelField
+                label={t("dicts.form.label.label")}
+                htmlFor={field.name}
+                invalid={isInvalid}
+                error={
+                  isInvalid ? (
+                    <FieldError errors={field.state.meta.errors} />
+                  ) : null
+                }
+              >
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  placeholder={t("dicts.form.label.placeholder")}
+                  aria-invalid={isInvalid}
+                />
+              </LabelField>
+            )
+          }}
+        </form.Field>
+
         <form.Field name="dict_type">
           {(field) => {
             const isInvalid =
@@ -82,36 +112,6 @@ export function DictMutateFormFields({
                   placeholder={t("dicts.form.type.placeholder")}
                   aria-invalid={isInvalid}
                   disabled={isDictTypeLocked}
-                />
-              </LabelField>
-            )
-          }}
-        </form.Field>
-
-        <form.Field name="label">
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid
-
-            return (
-              <LabelField
-                label={t("dicts.form.label.label")}
-                htmlFor={field.name}
-                invalid={isInvalid}
-                error={
-                  isInvalid ? (
-                    <FieldError errors={field.state.meta.errors} />
-                  ) : null
-                }
-              >
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(event) => field.handleChange(event.target.value)}
-                  placeholder={t("dicts.form.label.placeholder")}
-                  aria-invalid={isInvalid}
                 />
               </LabelField>
             )

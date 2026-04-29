@@ -40,15 +40,3 @@ CREATE INDEX idx_user_tenants_user_id ON user_tenants (user_id);
 CREATE INDEX idx_user_tenants_tenant_id ON user_tenants (tenant_id);
 CREATE INDEX idx_user_tenants_status ON user_tenants (status);
 CREATE INDEX idx_user_tenants_deleted_at ON user_tenants (deleted_at);
-
-ALTER TABLE user_tenants
-    ADD CONSTRAINT fk_user_tenants_user
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE user_tenants
-    ADD CONSTRAINT fk_user_tenants_tenant
-    FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE;
-
-ALTER TABLE user_tenants
-    ADD CONSTRAINT fk_user_tenants_invited_by
-    FOREIGN KEY (invited_by) REFERENCES users(id) ON DELETE SET NULL;

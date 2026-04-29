@@ -35,11 +35,3 @@ COMMENT ON COLUMN tenants.deleted_at IS '软删除时间';
 CREATE INDEX idx_tenants_status ON tenants (status);
 CREATE INDEX idx_tenants_deleted_at ON tenants (deleted_at);
 CREATE INDEX idx_tenants_parent_id ON tenants(parent_id);
-
-ALTER TABLE tenants
-    ADD CONSTRAINT fk_tenants_owner_user
-    FOREIGN KEY (owner_user_id) REFERENCES users(id) ON DELETE SET NULL;
-
-ALTER TABLE tenants
-    ADD CONSTRAINT tenants_parent_id_fkey
-    FOREIGN KEY (parent_id) REFERENCES tenants(id);

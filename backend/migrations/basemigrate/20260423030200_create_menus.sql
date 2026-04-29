@@ -54,11 +54,3 @@ CREATE INDEX idx_menus_tenant_id ON menus (tenant_id);
 CREATE INDEX idx_menus_parent_id ON menus (parent_id);
 CREATE INDEX idx_menus_status ON menus (status);
 CREATE INDEX idx_menus_deleted_at ON menus (deleted_at);
-
-ALTER TABLE menus
-    ADD CONSTRAINT fk_menus_tenant
-    FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE;
-
-ALTER TABLE menus
-    ADD CONSTRAINT fk_menus_parent
-    FOREIGN KEY (parent_id) REFERENCES menus(id) ON DELETE SET NULL;

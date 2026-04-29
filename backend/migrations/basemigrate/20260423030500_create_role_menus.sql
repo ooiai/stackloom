@@ -17,11 +17,3 @@ COMMENT ON COLUMN role_menus.created_at IS '创建时间';
 
 CREATE INDEX idx_role_menus_role_id ON role_menus (role_id);
 CREATE INDEX idx_role_menus_menu_id ON role_menus (menu_id);
-
-ALTER TABLE role_menus
-    ADD CONSTRAINT fk_role_menus_role
-    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE;
-
-ALTER TABLE role_menus
-    ADD CONSTRAINT fk_role_menus_menu
-    FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE;
