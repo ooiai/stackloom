@@ -247,7 +247,7 @@ export function TenantsTreeSidebar(props: {
             <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
               <Building2Icon className="size-8 text-muted-foreground/50" />
               <div className="space-y-1">
-                <p className="font-medium text-foreground">
+                <p className="text-sm font-medium text-foreground">
                   {treeSearch.trim()
                     ? t("tenants.sidebar.emptySearchTitle")
                     : t("tenants.sidebar.emptyDefaultTitle")}
