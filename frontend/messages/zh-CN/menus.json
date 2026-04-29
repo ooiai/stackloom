@@ -46,7 +46,7 @@
     },
     "code": {
       "label": "菜单编码",
-      "placeholder": "例如：upms-users",
+      "placeholder": "例如：UPMS::USERS",
       "validation": {
         "required": "请输入菜单编码",
         "max": "菜单编码长度不能超过 100 个字符"
@@ -161,6 +161,8 @@
   },
   "table": {
     "name": "菜单名称",
+    "code": "菜单编码",
+    "sort": "排序",
     "path": "路由路径",
     "component": "组件路径",
     "status": "状态",

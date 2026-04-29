@@ -132,7 +132,7 @@ function MenuTreeNodeItem({
 
           <div className="min-w-0 space-y-px">
             <div className="truncate leading-5 font-medium">{node.name}</div>
-            <div className="truncate text-xs text-muted-foreground">
+            <div hidden className="truncate text-xs text-muted-foreground">
               {node.code}
             </div>
           </div>
@@ -255,7 +255,7 @@ export function MenusTreeSidebar({
             <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
               <LayoutPanelTopIcon className="size-8 text-muted-foreground/50" />
               <div className="space-y-1">
-                <p className="font-medium text-foreground">
+                <p className="text-md font-medium text-foreground">
                   {treeSearch.trim()
                     ? t("menus.sidebar.emptySearchTitle")
                     : t("menus.sidebar.emptyDefaultTitle")}

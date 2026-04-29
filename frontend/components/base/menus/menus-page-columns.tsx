@@ -13,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { TranslateFn } from "@/lib/i18n"
-import { formatDateTimeAt } from "@/lib/time"
 import type { MenuData } from "@/types/base.types"
 import type { ColumnDef } from "@tanstack/react-table"
 import {
@@ -67,7 +66,10 @@ export function createMenuColumns({
               <div className="truncate text-sm font-medium text-foreground">
                 {row.original.name}
               </div>
-              <div className="truncate text-[12px] text-muted-foreground">
+              <div
+                hidden
+                className="truncate text-[12px] text-muted-foreground"
+              >
                 {row.original.code}
               </div>
             </div>
@@ -83,6 +85,24 @@ export function createMenuColumns({
       enableSorting: false,
     },
     {
+      accessorKey: "code",
+      id: "code",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          title={t("menus.table.code")}
+          column={column}
+          className="font-medium"
+        />
+      ),
+      cell: ({ row }) => (
+        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-[11px] text-primary">
+          {row.original.code || t("common.misc.none")}
+        </code>
+      ),
+      size: 180,
+      enableSorting: false,
+    },
+    {
       accessorKey: "path",
       id: "path",
       header: ({ column }) => (
@@ -93,11 +113,29 @@ export function createMenuColumns({
         />
       ),
       cell: ({ row }) => (
-        <code className="rounded-md bg-muted px-1.5 py-1 text-[11px] text-foreground/80">
+        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-[11px] text-primary">
           {row.original.path || t("common.misc.none")}
         </code>
       ),
       size: 180,
+      enableSorting: false,
+    },
+    {
+      accessorKey: "sort",
+      id: "sort",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          title={t("menus.table.sort")}
+          column={column}
+          className="font-medium"
+        />
+      ),
+      cell: ({ row }) => (
+        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-[11px] text-primary">
+          {row.original.sort}
+        </code>
+      ),
+      size: 110,
       enableSorting: false,
     },
     {
@@ -132,24 +170,24 @@ export function createMenuColumns({
       size: 110,
       enableSorting: false,
     },
-    {
-      accessorKey: "updated_at",
-      id: "updated_at",
-      header: ({ column }) => (
-        <DataGridColumnHeader
-          title={t("menus.table.updatedAt")}
-          column={column}
-          className="font-medium"
-        />
-      ),
-      cell: ({ row }) => (
-        <span className="text-[12px] text-muted-foreground">
-          {formatDateTimeAt(row.original.updated_at)}
-        </span>
-      ),
-      size: 170,
-      enableSorting: false,
-    },
+    // {
+    //   accessorKey: "updated_at",
+    //   id: "updated_at",
+    //   header: ({ column }) => (
+    //     <DataGridColumnHeader
+    //       title={t("menus.table.updatedAt")}
+    //       column={column}
+    //       className="font-medium"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <span className="text-[12px] text-muted-foreground">
+    //       {formatDateTimeAt(row.original.updated_at)}
+    //     </span>
+    //   ),
+    //   size: 170,
+    //   enableSorting: false,
+    // },
     {
       id: "actions",
       header: "",

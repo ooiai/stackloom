@@ -52,28 +52,6 @@ export function MenuMutateFormFields({
           </FieldContent>
         </Field>
 
-        <form.Field name="code">
-          {(field) => (
-            <LabelField
-              label={t("menus.form.code.label")}
-              htmlFor={field.name}
-              error={
-                field.state.meta.isTouched && !field.state.meta.isValid ? (
-                  <FieldError errors={field.state.meta.errors} />
-                ) : null
-              }
-            >
-              <Input
-                id={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(event) => field.handleChange(event.target.value)}
-                placeholder={t("menus.form.code.placeholder")}
-              />
-            </LabelField>
-          )}
-        </form.Field>
-
         <form.Field name="name">
           {(field) => (
             <LabelField
@@ -91,6 +69,28 @@ export function MenuMutateFormFields({
                 onBlur={field.handleBlur}
                 onChange={(event) => field.handleChange(event.target.value)}
                 placeholder={t("menus.form.name.placeholder")}
+              />
+            </LabelField>
+          )}
+        </form.Field>
+
+        <form.Field name="code">
+          {(field) => (
+            <LabelField
+              label={t("menus.form.code.label")}
+              htmlFor={field.name}
+              error={
+                field.state.meta.isTouched && !field.state.meta.isValid ? (
+                  <FieldError errors={field.state.meta.errors} />
+                ) : null
+              }
+            >
+              <Input
+                id={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(event) => field.handleChange(event.target.value)}
+                placeholder={t("menus.form.code.placeholder")}
               />
             </LabelField>
           )}
