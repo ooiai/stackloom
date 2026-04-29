@@ -49,7 +49,8 @@
       "placeholder": "例如：UPMS::USERS",
       "validation": {
         "required": "请输入菜单编码",
-        "max": "菜单编码长度不能超过 100 个字符"
+        "max": "菜单编码长度不能超过 100 个字符",
+        "duplicate": "菜单编码已存在"
       }
     },
     "name": {

@@ -25,6 +25,15 @@ pub trait MenuRepository: Send + Sync {
     /// * `AppResult<Option<Menu>>` - Found Menu or None if not found
     async fn find_by_id(&self, id: i64) -> AppResult<Option<Menu>>;
 
+    /// Find a Menu by code.
+    ///
+    /// # Arguments
+    /// * `code` - Code of the Menu to find
+    ///
+    /// # Returns
+    /// * `AppResult<Option<Menu>>` - Found Menu or None if not found
+    async fn find_by_code(&self, code: &str) -> AppResult<Option<Menu>>;
+
     /// Get a paginated list of menus.
     ///
     /// # Arguments

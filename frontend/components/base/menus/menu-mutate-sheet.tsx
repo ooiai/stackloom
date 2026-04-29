@@ -25,6 +25,22 @@ interface MenuMutateSheetProps {
   onSubmit: (values: MenuFormValues) => Promise<void>
 }
 
+type MenuSubmitError = {
+  code?: number
+  message?: string
+}
+
+const normalizeErrorMessage = (error: unknown): string => {
+  const message =
+    typeof error === "object" && error !== null && "message" in error
+      ? String((error as MenuSubmitError).message ?? "")
+      : error instanceof Error
+        ? error.message
+        : ""
+
+  return message.replace(/^[A-Za-z ]+:\s*/, "").replace(/^.*?:\d+\s+/, "").trim()
+}
+
 export function MenuMutateSheet({
   open,
   mode,
@@ -95,7 +111,18 @@ export function MenuMutateSheet({
           className="flex min-h-0 flex-1 flex-col overflow-hidden"
           onSubmit={(event) => {
             event.preventDefault()
-            void form.handleSubmit()
+            void form.handleSubmit().catch((error: unknown) => {
+              const message = normalizeErrorMessage(error)
+              if (message.includes("menu code already exists")) {
+                form.setFieldMeta("code", (prev) => ({
+                  ...prev,
+                  isTouched: true,
+                  errors: [t("menus.form.code.validation.duplicate")],
+                }))
+                return
+              }
+
+            })
           }}
         >
           <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">

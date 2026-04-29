@@ -53,6 +53,10 @@ where
         cmd.validate()
             .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
+        if self.repository.find_by_code(&cmd.code).await?.is_some() {
+            return Err(AppError::Conflict("menu code already exists".to_string()));
+        }
+
         if let Some(parent_id) = cmd.parent_id {
             self.repository
                 .find_by_id(parent_id)
@@ -136,6 +140,14 @@ where
     async fn update(&self, id: i64, cmd: UpdateMenuCmd) -> AppResult<Menu> {
         cmd.validate()
             .map_err(|err| AppError::ValidationError(err.to_string()))?;
+
+        if let Some(code) = cmd.code.as_ref() {
+            if let Some(existing) = self.repository.find_by_code(code).await? {
+                if existing.id != id {
+                    return Err(AppError::Conflict("menu code already exists".to_string()));
+                }
+            }
+        }
 
         if let Some(parent_id) = cmd.parent_id {
             if parent_id == id {

@@ -14,6 +14,17 @@ export interface ErrorResponse {
   data: any
 }
 
+const stripFrameworkPrefix = (message?: string): string => {
+  if (!message) {
+    return ""
+  }
+
+  return message
+    .replace(/^[A-Za-z ]+:\s*/, "")
+    .replace(/^.*?:\d+\s+/, "")
+    .trim()
+}
+
 // Utility functions that don't depend on translations
 export const isAuthError = (error: AxiosError<ErrorResponse>): boolean => {
   return (
@@ -54,8 +65,11 @@ export const isDataError = (code: BizErrorCode): boolean => {
 export function useAxiosErrorHandler() {
   // 处理业务错误码
   const handleBizError = (error: ErrorResponse) => {
+    const friendlyMessage = stripFrameworkPrefix(error.message)
+
     // If error code is 400007
     if (error.code === BizErrorCode.BIZ_DATA_ERROR) {
+      toast.warning(friendlyMessage || "Data conflict")
       return Promise.reject(error)
     }
     // If error code is in 410000-41999 range, don't show toast message
@@ -82,15 +96,15 @@ export function useAxiosErrorHandler() {
         toast.warning("Authorization expired, please log in again")
         break
       case BizErrorCode.CONFLICT:
-        toast.warning("Resource conflict")
+        toast.warning(friendlyMessage || "Resource conflict")
         break
       case BizErrorCode.BIZ_CLIENT_ERROR:
         toast.warning(
-          error?.message || "Client error: An unexpected error occurred"
+          friendlyMessage || "Client error: An unexpected error occurred"
         )
         break
       case BizErrorCode.UNPROCESSABLE_ENTITY:
-        toast.warning("Business rule validation failed")
+        toast.warning(friendlyMessage || "Business rule validation failed")
         break
       case BizErrorCode.RATE_LIMIT:
         toast.warning("Request frequency exceeded limit")
@@ -125,7 +139,10 @@ export function useAxiosErrorHandler() {
     const { status } = error
     switch (status) {
       case HttpStatusCode.BAD_REQUEST:
-        toast.error("Request error: Incorrect request parameter format")
+        toast.error(
+          stripFrameworkPrefix(error.response?.data?.message) ||
+            "Request error: Incorrect request parameter format"
+        )
         break
       case HttpStatusCode.UNAUTHORIZED:
         toast.error("Unauthorized access: Please log in again")
@@ -142,15 +159,22 @@ export function useAxiosErrorHandler() {
         toast.error("Resource not found: The requested resource does not exist")
         break
       case HttpStatusCode.CONFLICT:
-        toast.error("Operation conflict: Resource state conflict")
+        toast.error(
+          stripFrameworkPrefix(error.response?.data?.message) ||
+            "Operation conflict: Resource state conflict"
+        )
         break
       case HttpStatusCode.EXPECTATION_FAILED:
         toast.error(
-          "Operation failed: Please check the request parameters and try again"
+          stripFrameworkPrefix(error.response?.data?.message) ||
+            "Operation failed: Please check the request parameters and try again"
         )
         break
       case HttpStatusCode.UNPROCESSABLE_ENTITY:
-        toast.error("Data validation failed: Request data validation failed")
+        toast.error(
+          stripFrameworkPrefix(error.response?.data?.message) ||
+            "Data validation failed: Request data validation failed"
+        )
         break
       case HttpStatusCode.TOO_MANY_REQUESTS:
         toast.error("Too many requests: Please try again later")

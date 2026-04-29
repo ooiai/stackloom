@@ -10,7 +10,7 @@ use neocrates::{
     response::error::{AppError, AppResult},
     sqlxhelper::pool::SqlxPool,
 };
-use sqlx::QueryBuilder;
+use sqlx::{Error as SqlxError, QueryBuilder};
 
 use super::MenuRow;
 
@@ -24,7 +24,15 @@ impl SqlxMenuRepository {
         Self { pool }
     }
 
-    fn map_sqlx_error(err: sqlx::Error) -> AppError {
+    fn map_sqlx_error(err: SqlxError) -> AppError {
+        if let SqlxError::Database(db_err) = &err {
+            if db_err.code().as_deref() == Some("23505")
+                && db_err.constraint() == Some("uq_menus_system_code")
+            {
+                return AppError::Conflict("menu code already exists".to_string());
+            }
+        }
+
         AppError::data_here(err.to_string())
     }
 }
@@ -125,6 +133,41 @@ impl MenuRepository for SqlxMenuRepository {
             "#,
         )
         .bind(id)
+        .fetch_optional(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(row.map(Into::into))
+    }
+
+    async fn find_by_code(&self, code: &str) -> AppResult<Option<Menu>> {
+        let row = sqlx::query_as::<_, MenuRow>(
+            r#"
+            SELECT
+                id,
+                tenant_id,
+                parent_id,
+                code,
+                name,
+                path,
+                component,
+                redirect,
+                icon,
+                menu_type,
+                sort,
+                visible,
+                keep_alive,
+                status,
+                created_at,
+                updated_at,
+                deleted_at
+            FROM menus
+            WHERE code = $1
+              AND deleted_at IS NULL
+            LIMIT 1
+            "#,
+        )
+        .bind(code)
         .fetch_optional(self.pool.pool())
         .await
         .map_err(Self::map_sqlx_error)?;

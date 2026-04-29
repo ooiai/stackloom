@@ -344,12 +344,17 @@ instance.interceptors.response.use(
     // Client / Conflict biz errors — toast with the actual backend message
     if (
       code === BizErrorCode.BIZ_CLIENT_ERROR ||
+      code === BizErrorCode.BIZ_DATA_ERROR ||
       code === BizErrorCode.CONFLICT ||
+      code === HttpStatusCode.CONFLICT ||
+      code === HttpStatusCode.UNPROCESSABLE_ENTITY ||
       code === HttpStatusCode.EXPECTATION_FAILED
     ) {
       // Strip e.g. "Request conflict: " / "Validation error: " prefixes added by neocrates
       const msg =
-        (resultData?.message || "").replace(/^[A-Za-z ]+:\s*/, "") ||
+        (resultData?.message || "")
+          .replace(/^[A-Za-z ]+:\s*/, "")
+          .replace(/^.*?:\d+\s+/, "") ||
         resultData?.message
       toast.error(msg)
       // Reject with the decrypted biz-error object so callers can read .message
