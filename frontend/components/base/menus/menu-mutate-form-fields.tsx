@@ -21,9 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/reui/select"
-import {
-  getMenuTypeOptions,
-} from "@/components/base/menus/helpers"
+import { getMenuTypeOptions } from "@/components/base/menus/helpers"
 import type { MenuMutateFormApi } from "@/components/base/menus/hooks/use-menu-mutate-form"
 import { useI18n } from "@/providers/i18n-provider"
 
@@ -36,6 +34,13 @@ export function MenuMutateFormFields({
 }) {
   const { t } = useI18n()
   const typeOptions = getMenuTypeOptions(t)
+  const typeLabelMap = Object.fromEntries(
+    typeOptions.map((option) => [option.value, option.label])
+  ) as Record<1 | 2 | 3, string>
+  const statusLabelMap: Record<0 | 1, string> = {
+    0: t("menus.status.disabled.label"),
+    1: t("menus.status.active.label"),
+  }
 
   return (
     <>
@@ -103,11 +108,14 @@ export function MenuMutateFormFields({
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue />
+                    <SelectValue>{typeLabelMap[field.state.value]}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {typeOptions.map((option) => (
-                      <SelectItem key={option.value} value={String(option.value)}>
+                      <SelectItem
+                        key={option.value}
+                        value={String(option.value)}
+                      >
                         {option.label}
                       </SelectItem>
                     ))}
@@ -214,7 +222,9 @@ export function MenuMutateFormFields({
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue />
+                    <SelectValue>
+                      {statusLabelMap[field.state.value]}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="1">

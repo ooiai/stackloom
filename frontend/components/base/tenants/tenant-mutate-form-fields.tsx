@@ -5,6 +5,7 @@ import {
   TenantMutateSupplementSection,
 } from "@/components/base/tenants/tenant-mutate-sheet-sections"
 import { Textarea } from "@/components/reui/textarea"
+import { generateTenantCode } from "@/lib/generateCode"
 import { LabelField } from "@/components/topui/label-field"
 import {
   Field,
@@ -31,6 +32,11 @@ export function TenantMutateFormFields({
   parentLabel: string
 }) {
   const { t } = useI18n()
+  const tenantStatusLabelMap: Record<0 | 1 | 2, string> = {
+    0: t("tenants.status.disabled.label"),
+    1: t("tenants.status.active.label"),
+    2: t("tenants.status.expired.label"),
+  }
 
   return (
     <>
@@ -41,6 +47,32 @@ export function TenantMutateFormFields({
             <Input value={parentLabel} disabled />
           </FieldContent>
         </Field>
+
+        <form.Field name="name">
+          {(field) => (
+            <LabelField
+              label={t("tenants.form.name.label")}
+              htmlFor={field.name}
+              error={
+                field.state.meta.isTouched && !field.state.meta.isValid ? (
+                  <FieldError errors={field.state.meta.errors} />
+                ) : null
+              }
+            >
+              <Input
+                id={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(event) => {
+                  const value = event.target.value
+                  field.handleChange(value)
+                  form.setFieldValue("slug", generateTenantCode(value))
+                }}
+                placeholder={t("tenants.form.name.placeholder")}
+              />
+            </LabelField>
+          )}
+        </form.Field>
 
         <form.Field name="slug">
           {(field) => (
@@ -64,28 +96,6 @@ export function TenantMutateFormFields({
           )}
         </form.Field>
 
-        <form.Field name="name">
-          {(field) => (
-            <LabelField
-              label={t("tenants.form.name.label")}
-              htmlFor={field.name}
-              error={
-                field.state.meta.isTouched && !field.state.meta.isValid ? (
-                  <FieldError errors={field.state.meta.errors} />
-                ) : null
-              }
-            >
-              <Input
-                id={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(event) => field.handleChange(event.target.value)}
-                placeholder={t("tenants.form.name.placeholder")}
-              />
-            </LabelField>
-          )}
-        </form.Field>
-
         <form.Field name="status">
           {(field) => (
             <Field>
@@ -94,11 +104,13 @@ export function TenantMutateFormFields({
                 <Select
                   value={String(field.state.value)}
                   onValueChange={(value) =>
-                    field.handleChange(Number(value) as 0 | 1)
+                    field.handleChange(Number(value) as 0 | 1 | 2)
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue />
+                    <SelectValue>
+                      {tenantStatusLabelMap[field.state.value]}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="1">
@@ -106,6 +118,9 @@ export function TenantMutateFormFields({
                     </SelectItem>
                     <SelectItem value="0">
                       {t("tenants.status.disabled.label")}
+                    </SelectItem>
+                    <SelectItem value="2">
+                      {t("tenants.status.expired.label")}
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -138,7 +153,7 @@ export function TenantMutateFormFields({
         <form.Field name="plan_code">
           {(field) => (
             <LabelField
-              label={t("tenants.form.planCode.label")}
+              label={t("tenants.form.plan_code.label")}
               htmlFor={field.name}
             >
               <Input
@@ -146,7 +161,7 @@ export function TenantMutateFormFields({
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(event) => field.handleChange(event.target.value)}
-                placeholder={t("tenants.form.planCode.placeholder")}
+                placeholder={t("tenants.form.plan_code.placeholder")}
               />
             </LabelField>
           )}
@@ -155,7 +170,7 @@ export function TenantMutateFormFields({
         <form.Field name="owner_user_id">
           {(field) => (
             <LabelField
-              label={t("tenants.form.owner.label")}
+              label={t("tenants.form.owner_user_id.label")}
               htmlFor={field.name}
             >
               <Input
@@ -163,7 +178,7 @@ export function TenantMutateFormFields({
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(event) => field.handleChange(event.target.value)}
-                placeholder={t("tenants.form.owner.placeholder")}
+                placeholder={t("tenants.form.owner_user_id.placeholder")}
               />
             </LabelField>
           )}
@@ -172,7 +187,7 @@ export function TenantMutateFormFields({
         <form.Field name="expired_at">
           {(field) => (
             <LabelField
-              label={t("tenants.form.expiredAt.label")}
+              label={t("tenants.form.expired_at.label")}
               htmlFor={field.name}
             >
               <Input
@@ -180,7 +195,7 @@ export function TenantMutateFormFields({
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(event) => field.handleChange(event.target.value)}
-                placeholder={t("tenants.form.expiredAt.placeholder")}
+                placeholder={t("tenants.form.expired_at.placeholder")}
               />
             </LabelField>
           )}

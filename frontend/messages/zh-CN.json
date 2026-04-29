@@ -455,9 +455,9 @@
       }
     },
     "sidebar": {
-      "title": "字典树",
+      "title": "字典",
       "subtitle": "浏览层级并切换当前节点",
-      "addRoot": "添加根节点",
+      "addRoot": "添加根字典",
       "searchPlaceholder": "搜索名称、键或类型",
       "emptySearchTitle": "没有匹配的节点",
       "emptyDefaultTitle": "暂无数据",
@@ -492,7 +492,7 @@
     "page": {
       "title": "菜单管理",
       "subtitle": "维护导航菜单、页面路由与层级结构",
-      "addRoot": "添加根菜单"
+      "addRoot": "添加菜单"
     },
     "toast": {
       "created": "菜单已创建",
@@ -535,12 +535,18 @@
       "code": {
         "label": "菜单编码",
         "placeholder": "例如：upms-users",
-        "validation": { "required": "请输入菜单编码", "max": "菜单编码长度不能超过 100 个字符" }
+        "validation": {
+          "required": "请输入菜单编码",
+          "max": "菜单编码长度不能超过 100 个字符"
+        }
       },
       "name": {
         "label": "菜单名称",
         "placeholder": "例如：用户管理",
-        "validation": { "required": "请输入菜单名称", "max": "菜单名称长度不能超过 100 个字符" }
+        "validation": {
+          "required": "请输入菜单名称",
+          "max": "菜单名称长度不能超过 100 个字符"
+        }
       },
       "path": {
         "label": "路由路径",
@@ -587,9 +593,9 @@
       "action": { "label": "操作", "description": "用于页面内按钮或权限点" }
     },
     "sidebar": {
-      "title": "菜单树",
+      "title": "菜单",
       "subtitle": "浏览层级并切换当前菜单",
-      "addRoot": "添加根菜单",
+      "addRoot": "添加菜单",
       "searchPlaceholder": "搜索菜单名称、编码或路由",
       "emptySearchTitle": "没有匹配的菜单",
       "emptyDefaultTitle": "暂无菜单",
@@ -627,7 +633,7 @@
     "page": {
       "title": "租户管理",
       "subtitle": "维护学校、校区与部门等层级租户结构",
-      "addRoot": "添加根租户"
+      "addRoot": "添加租户"
     },
     "toast": {
       "created": "租户已创建",
@@ -665,42 +671,49 @@
       "parent": { "label": "所属节点" },
       "slug": {
         "label": "租户标识",
-        "placeholder": "例如：campus-east",
-        "validation": { "required": "请输入租户标识", "max": "租户标识长度不能超过 100 个字符" }
+        "placeholder": "请输入英文租户标识...",
+        "validation": {
+          "required": "请输入租户标识",
+          "max": "租户标识长度不能超过 100 个字符"
+        }
       },
       "name": {
         "label": "租户名称",
-        "placeholder": "例如：XX 校区",
-        "validation": { "required": "请输入租户名称", "max": "租户名称长度不能超过 100 个字符" }
+        "placeholder": "请输入租户名称...",
+        "validation": {
+          "required": "请输入租户名称",
+          "max": "租户名称长度不能超过 100 个字符"
+        }
       },
       "description": {
         "label": "说明",
         "placeholder": "记录组织定位、业务范围或备注信息",
         "validation": { "max": "说明长度不能超过 500 个字符" }
       },
-      "planCode": {
-        "label": "方案编码",
-        "placeholder": "例如：edu-pro",
-        "validation": { "max": "方案编码长度不能超过 100 个字符" }
+      "plan_code": {
+        "label": "套餐编码",
+        "placeholder": "请输入英文套餐编码...",
+        "validation": { "max": "套餐编码长度不能超过 100 个字符" }
       },
-      "owner": {
-        "label": "负责人用户",
-        "placeholder": "输入负责人用户 ID"
+      "owner_user_id": {
+        "label": "拥有者用户",
+        "placeholder": "输入拥有者用户"
       },
-      "expiredAt": {
-        "label": "过期时间",
-        "placeholder": "例如：2026-12-31T23:59:59Z"
+      "expired_at": {
+        "label": "到期时间",
+        "placeholder": "选择租户到期时间"
       },
       "status": { "label": "状态" }
     },
     "status": {
       "disabled": { "label": "禁用" },
-      "active": { "label": "正常" }
+      "active": { "label": "正常" },
+      "expired": { "label": "冻结/过期" }
     },
     "sidebar": {
-      "title": "租户树",
+      "title": "租户",
       "subtitle": "浏览学校、校区与部门层级",
-      "addRoot": "添加根租户",
+      "addRoot": "添加租户",
       "searchPlaceholder": "搜索租户名称、标识或方案编码",
       "emptySearchTitle": "没有匹配的租户",
       "emptyDefaultTitle": "暂无租户",

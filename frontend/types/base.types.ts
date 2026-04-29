@@ -1,7 +1,7 @@
 export type UserStatus = 0 | 1 | 2
 export type UserGender = 0 | 1 | 2
 export type UserMutateMode = "create" | "update"
-export type TenantStatus = 0 | 1
+export type TenantStatus = 0 | 1 | 2
 export type TenantMutateMode = "create" | "update"
 export type MenuStatus = 0 | 1
 export type MenuType = 1 | 2 | 3

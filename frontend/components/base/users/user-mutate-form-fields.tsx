@@ -39,6 +39,12 @@ export function UserMutateFormFields({
   const { t } = useI18n()
   const genderOptions = getUserGenderOptions(t)
   const statusOptions = getUserStatusOptions(t)
+  const genderLabelMap = Object.fromEntries(
+    genderOptions.map((option) => [option.value, option.label])
+  ) as Record<0 | 1 | 2, string>
+  const statusLabelMap = Object.fromEntries(
+    statusOptions.map((option) => [option.value, option.label])
+  ) as Record<0 | 1 | 2, string>
 
   return (
     <>
@@ -258,7 +264,9 @@ export function UserMutateFormFields({
                   }
                 >
                   <SelectTrigger className="w-full" aria-invalid={isInvalid}>
-                    <SelectValue />
+                    <SelectValue>
+                      {genderLabelMap[field.state.value]}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {genderOptions.map((option) => (
@@ -299,7 +307,9 @@ export function UserMutateFormFields({
                   }
                 >
                   <SelectTrigger className="w-full" aria-invalid={isInvalid}>
-                    <SelectValue />
+                    <SelectValue>
+                      {statusLabelMap[field.state.value]}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {statusOptions.map((option) => (

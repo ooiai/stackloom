@@ -535,12 +535,18 @@
       "code": {
         "label": "Menu code",
         "placeholder": "Example: upms-users",
-        "validation": { "required": "Enter a menu code", "max": "Menu code must be 100 characters or fewer" }
+        "validation": {
+          "required": "Enter a menu code",
+          "max": "Menu code must be 100 characters or fewer"
+        }
       },
       "name": {
         "label": "Menu name",
         "placeholder": "Example: User management",
-        "validation": { "required": "Enter a menu name", "max": "Menu name must be 100 characters or fewer" }
+        "validation": {
+          "required": "Enter a menu name",
+          "max": "Menu name must be 100 characters or fewer"
+        }
       },
       "path": {
         "label": "Route path",
@@ -550,7 +556,9 @@
       "component": {
         "label": "Component path",
         "placeholder": "Example: upms/users/page",
-        "validation": { "max": "Component path must be 255 characters or fewer" }
+        "validation": {
+          "max": "Component path must be 255 characters or fewer"
+        }
       },
       "redirect": {
         "label": "Redirect",
@@ -580,9 +588,15 @@
       "active": { "label": "Active" }
     },
     "type": {
-      "directory": { "label": "Directory", "description": "Used for groups and nested menus" },
+      "directory": {
+        "label": "Directory",
+        "description": "Used for groups and nested menus"
+      },
       "menu": { "label": "Menu", "description": "Used for navigable pages" },
-      "action": { "label": "Action", "description": "Used for page actions or permission points" }
+      "action": {
+        "label": "Action",
+        "description": "Used for page actions or permission points"
+      }
     },
     "sidebar": {
       "title": "Menu tree",
@@ -664,36 +678,43 @@
       "slug": {
         "label": "Tenant slug",
         "placeholder": "Example: campus-east",
-        "validation": { "required": "Enter a tenant slug", "max": "Tenant slug must be 100 characters or fewer" }
+        "validation": {
+          "required": "Enter a tenant slug",
+          "max": "Tenant slug must be 100 characters or fewer"
+        }
       },
       "name": {
         "label": "Tenant name",
         "placeholder": "Example: East Campus",
-        "validation": { "required": "Enter a tenant name", "max": "Tenant name must be 100 characters or fewer" }
+        "validation": {
+          "required": "Enter a tenant name",
+          "max": "Tenant name must be 100 characters or fewer"
+        }
       },
       "description": {
         "label": "Description",
         "placeholder": "Describe the unit, scope, or any notes",
         "validation": { "max": "Description must be 500 characters or fewer" }
       },
-      "planCode": {
+      "plan_code": {
         "label": "Plan code",
         "placeholder": "Example: edu-pro",
         "validation": { "max": "Plan code must be 100 characters or fewer" }
       },
-      "owner": {
-        "label": "Owner user",
+      "owner_user_id": {
+        "label": "Owner user ID",
         "placeholder": "Enter the owner user ID"
       },
-      "expiredAt": {
-        "label": "Expires at",
+      "expired_at": {
+        "label": "Expired at",
         "placeholder": "Example: 2026-12-31T23:59:59Z"
       },
       "status": { "label": "Status" }
     },
     "status": {
       "disabled": { "label": "Disabled" },
-      "active": { "label": "Active" }
+      "active": { "label": "Active" },
+      "expired": { "label": "Frozen/Expired" }
     },
     "sidebar": {
       "title": "Tenant tree",

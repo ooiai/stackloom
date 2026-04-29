@@ -6,6 +6,7 @@ CREATE TABLE tenants (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     owner_user_id BIGINT,
+    parent_id BIGINT,
     status SMALLINT NOT NULL DEFAULT 1,
     plan_code VARCHAR(100),
     expired_at TIMESTAMPTZ,
@@ -23,6 +24,7 @@ COMMENT ON COLUMN tenants.slug IS '租户唯一标识，如公司编码或子域
 COMMENT ON COLUMN tenants.name IS '租户名称';
 COMMENT ON COLUMN tenants.description IS '租户描述';
 COMMENT ON COLUMN tenants.owner_user_id IS '租户拥有者用户ID';
+COMMENT ON COLUMN tenants.parent_id IS '父租户ID';
 COMMENT ON COLUMN tenants.status IS '租户状态：0禁用，1正常，2过期/冻结';
 COMMENT ON COLUMN tenants.plan_code IS '租户套餐编码';
 COMMENT ON COLUMN tenants.expired_at IS '租户到期时间';
@@ -32,7 +34,12 @@ COMMENT ON COLUMN tenants.deleted_at IS '软删除时间';
 
 CREATE INDEX idx_tenants_status ON tenants (status);
 CREATE INDEX idx_tenants_deleted_at ON tenants (deleted_at);
+CREATE INDEX idx_tenants_parent_id ON tenants(parent_id);
 
 ALTER TABLE tenants
     ADD CONSTRAINT fk_tenants_owner_user
     FOREIGN KEY (owner_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE tenants
+    ADD CONSTRAINT tenants_parent_id_fkey
+    FOREIGN KEY (parent_id) REFERENCES tenants(id);

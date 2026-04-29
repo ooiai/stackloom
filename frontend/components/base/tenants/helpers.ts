@@ -40,10 +40,13 @@ export function createTenantFormSchema(t: TranslateFn = defaultT) {
       .trim()
       .min(1, t("tenants.form.name.validation.required"))
       .max(100, t("tenants.form.name.validation.max")),
-    description: optionalText(500, t("tenants.form.description.validation.max")),
+    description: optionalText(
+      500,
+      t("tenants.form.description.validation.max")
+    ),
     owner_user_id: z.string().trim(),
-    status: z.union([z.literal(0), z.literal(1)]),
-    plan_code: optionalText(100, t("tenants.form.planCode.validation.max")),
+    status: z.union([z.literal(0), z.literal(1), z.literal(2)]),
+    plan_code: optionalText(100, t("tenants.form.plan_code.validation.max")),
     expired_at: z.string().trim(),
   })
 }
@@ -60,6 +63,10 @@ export function getTenantStatusMeta(
     1: {
       label: t("tenants.status.active.label"),
       badgeVariant: "success-outline",
+    },
+    2: {
+      label: t("tenants.status.expired.label"),
+      badgeVariant: "warning-outline",
     },
   }
 

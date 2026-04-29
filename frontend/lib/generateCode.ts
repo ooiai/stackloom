@@ -241,6 +241,32 @@ function getHashLen(appendHash: boolean | number): number {
   return 0
 }
 
+/**
+ * 生成短租户编码，如：shdezx-3f8a
+ */
+export function generateTenantCode(name: string): string {
+  const raw = name.trim()
+  if (!raw) {
+    return `code-${shortHash(String(Date.now()), 4)}`
+  }
+
+  const tokenized = containsCJK(raw)
+    ? toPinyinAscii(raw, "-")
+    : normalizeAscii(raw, "-")
+
+  const initials = tokenized
+    .split("-")
+    .filter(Boolean)
+    .map((token) => token[0])
+    .join("")
+    .toLowerCase()
+
+  const body = initials || "code"
+  const suffix = shortHash(raw, 4)
+
+  return `${body}-${suffix}`
+}
+
 // ----------------------
 // 简单用例（可删除）
 // ----------------------
