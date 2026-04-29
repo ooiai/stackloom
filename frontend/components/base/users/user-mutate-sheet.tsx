@@ -7,9 +7,7 @@ import { FieldGroup } from "@/components/ui/field"
 import { Sheet, SheetContent, SheetFooter } from "@/components/ui/sheet"
 import { UserMutateFormFields } from "@/components/base/users/user-mutate-form-fields"
 import { UserMutateSheetHeader } from "@/components/base/users/user-mutate-sheet-header"
-import {
-  useUserMutateForm,
-} from "@/components/base/users/hooks/use-user-mutate-form"
+import { useUserMutateForm } from "@/components/base/users/hooks/use-user-mutate-form"
 import {
   UserMutateAvatarSection,
   UserMutateSheetFooter,
@@ -17,7 +15,7 @@ import {
 import { useAwsS3 } from "@/hooks/use-aws-s3"
 import { uploadAwsObject } from "@/lib/aws"
 import { OSS_ENUM } from "@/lib/config/enums"
-import { getUserDisplayName } from "@/lib/users"
+import { getUserDisplayName } from "./helpers"
 import { useI18n } from "@/providers/i18n-provider"
 import { awsApi } from "@/stores/system-api"
 import type {
@@ -123,7 +121,9 @@ export function UserMutateSheet({
       toast.success(t("users.toast.avatarUploaded"))
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : t("users.toast.avatarUploadFailed")
+        error instanceof Error
+          ? error.message
+          : t("users.toast.avatarUploadFailed")
       )
     } finally {
       setIsUploadingAvatar(false)

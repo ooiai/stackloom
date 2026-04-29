@@ -18,7 +18,7 @@ import {
 } from "@/components/base/users/user-mutate-sheet-sections"
 import type { UserMutateFormApi } from "@/components/base/users/hooks/use-user-mutate-form"
 import { cn } from "@/lib/utils"
-import { getUserGenderOptions, getUserStatusOptions } from "@/lib/users"
+import { getUserGenderOptions, getUserStatusOptions } from "./helpers"
 import { useI18n } from "@/providers/i18n-provider"
 import type { UserMutateMode } from "@/types/base.types"
 import { EyeIcon, EyeOffIcon } from "lucide-react"

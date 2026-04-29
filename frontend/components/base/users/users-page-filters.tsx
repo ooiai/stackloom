@@ -10,7 +10,7 @@ import {
 } from "@/components/reui/filters"
 import type { UsersFilterValue } from "@/components/base/users/hooks/use-users-controller"
 import { Button } from "@/components/ui/button"
-import { getUserStatusOptions } from "@/lib/users"
+import { getUserStatusOptions } from "./helpers"
 import { useI18n } from "@/providers/i18n-provider"
 import {
   FunnelXIcon,

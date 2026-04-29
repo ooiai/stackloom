@@ -3,8 +3,7 @@
 import { useMemo } from "react"
 
 import { useForm } from "@tanstack/react-form"
-import { getDefaultUserFormValues } from "@/lib/users"
-import { getValidationSchema } from "@/lib/users"
+import { getDefaultUserFormValues, getValidationSchema } from "../helpers"
 import { useI18n } from "@/providers/i18n-provider"
 import type {
   UserData,

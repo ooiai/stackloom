@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import type { TranslateFn } from "@/lib/i18n"
 import { formatDateTimeAt } from "@/lib/time"
-import { getUserAvatarFallback, getUserDisplayName } from "@/lib/users"
+import { getUserAvatarFallback, getUserDisplayName } from "./helpers"
 import type { UserData } from "@/types/base.types"
 import type { ColumnDef } from "@tanstack/react-table"
 import { Edit3Icon, EllipsisIcon, Trash2Icon } from "lucide-react"

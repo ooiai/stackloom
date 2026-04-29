@@ -1,5 +1,5 @@
 import { Badge } from "@/components/reui/badge"
-import { getUserStatusMeta } from "@/lib/users"
+import { getUserStatusMeta } from "./helpers"
 import { useI18n } from "@/providers/i18n-provider"
 import type { UserStatus } from "@/types/base.types"
 

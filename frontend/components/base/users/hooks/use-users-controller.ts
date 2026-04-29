@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { createFilter, type Filter } from "@/components/reui/filters"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
-import { buildCreateUserParam, buildUpdateUserParam } from "@/lib/users"
+import { buildCreateUserParam, buildUpdateUserParam } from "../helpers"
 import { useAlertDialog } from "@/providers/dialog-providers"
 import { useI18n } from "@/providers/i18n-provider"
 import { userApi } from "@/stores/base-api"
@@ -75,9 +75,9 @@ function parseStatus(value: string | null): UserStatus | undefined {
   return parsed as UserStatus
 }
 
-function createFiltersFromSearchParams(
-  searchParams: { get: (key: string) => string | null }
-) {
+function createFiltersFromSearchParams(searchParams: {
+  get: (key: string) => string | null
+}) {
   const filters: Filter<UsersFilterValue>[] = []
   const keyword = searchParams.get("keyword")?.trim()
   const status = parseStatus(searchParams.get("status"))
@@ -177,7 +177,12 @@ export function useUsersController() {
 
   const createMutation = useMutation({
     mutationFn: async (values: UserFormValues) => {
-      return userApi.create(await buildCreateUserParam(values, t))
+      // return userApi.create(await buildCreateUserParam(values, t))
+      console.log(
+        "create user with values:",
+        await buildCreateUserParam(values, t)
+      )
+      return null
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["base", "users"] })

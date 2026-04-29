@@ -1,6 +1,6 @@
-import { hash } from "bcryptjs"
 import { z } from "zod"
 
+import CryptUtil from "@/lib/crypt"
 import type { TranslateFn } from "@/lib/i18n"
 import type {
   CreateUserParam,
@@ -61,10 +61,12 @@ function createOptionalUrlSchema(t: TranslateFn) {
     .refine(
       (value) =>
         value === "" ||
-        z.url({
-          protocol: /^https?$/,
-          hostname: z.regexes.domain,
-        }).safeParse(value).success,
+        z
+          .url({
+            protocol: /^https?$/,
+            hostname: z.regexes.domain,
+          })
+          .safeParse(value).success,
       {
         message: t("users.form.avatar.validation.invalid"),
       }
@@ -151,12 +153,12 @@ export function getUserStatusMeta(
 }
 
 export function getUserStatusOptions(t: TranslateFn = defaultT) {
-  return (Object.keys({ 0: true, 1: true, 2: true }) as Array<`${UserStatus}`>).map(
-    (key) => ({
-      value: Number(key) as UserStatus,
-      label: getUserStatusMeta(Number(key) as UserStatus, t).label,
-    })
-  )
+  return (
+    Object.keys({ 0: true, 1: true, 2: true }) as Array<`${UserStatus}`>
+  ).map((key) => ({
+    value: Number(key) as UserStatus,
+    label: getUserStatusMeta(Number(key) as UserStatus, t).label,
+  }))
 }
 
 export function getUserGenderOptions(t: TranslateFn = defaultT) {
@@ -174,7 +176,9 @@ export function getUserDisplayName(
 }
 
 export function getUserAvatarFallback(
-  user: Pick<UserData, "nickname" | "username"> | Pick<UserFormValues, "nickname" | "username">
+  user:
+    | Pick<UserData, "nickname" | "username">
+    | Pick<UserFormValues, "nickname" | "username">
 ) {
   const displayName = getUserDisplayName({
     nickname: user.nickname,
@@ -184,7 +188,9 @@ export function getUserAvatarFallback(
   return displayName.slice(0, 1).toUpperCase()
 }
 
-export function getDefaultUserFormValues(user: UserData | null): UserFormValues {
+export function getDefaultUserFormValues(
+  user: UserData | null
+): UserFormValues {
   return {
     username: user?.username ?? "",
     email: user?.email ?? "",
@@ -230,7 +236,7 @@ export async function buildCreateUserParam(
     username: parsed.username,
     email: parsed.email,
     phone: parsed.phone,
-    password_hash: await hash(parsed.password, 10),
+    password_hash: await CryptUtil.bcryptHash(parsed.password, 10),
     nickname: parsed.nickname,
     avatar_url: parsed.avatar_url,
     gender: parsed.gender,

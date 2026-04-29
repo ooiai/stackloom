@@ -33,6 +33,7 @@ import type {
 } from "@/types/auth.types"
 import type { SliderCaptcha } from "@/types/system.types"
 
+import CryptUtil from "@/lib/crypt"
 import CaptchaSlider from "./captcha-slider"
 import { SelectTenantDialog } from "./select-tenant-dialog"
 
@@ -142,9 +143,11 @@ export function SigninForm({
   }
 
   const handleVerifySuccess = async (verifyData: VerifyParam) => {
+    const hashedPassword = await CryptUtil.bcryptHash(values.password || "", 10)
+
     const payload: SliderCaptcha = {
       account: values.account,
-      password: values.password,
+      password: hashedPassword,
       code: JSON.stringify(verifyData),
     }
 
