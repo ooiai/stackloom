@@ -1,0 +1,50 @@
+{
+  "actions": {
+    "notifications": "通知",
+    "openMenu": "打开导航菜单",
+    "settings": "设置"
+  },
+  "brand": {
+    "title": "Stackloom Admin"
+  },
+  "base-root": {
+    "name": "后台管理",
+    "remark": "Stackloom 管理后台入口"
+  },
+  "upms": {
+    "name": "账号与权限",
+    "remark": "用户、角色、租户与权限模块"
+  },
+  "tools": {
+    "name": "系统工具",
+    "remark": "配置业务基础能力和通用字典"
+  },
+  "tools-dicts": {
+    "name": "字典管理",
+    "remark": "维护树形字典项、键值和扩展配置"
+  },
+  "tools-group": {
+    "name": "系统工具",
+    "remark": "配置业务基础能力和通用字典"
+  },
+  "upms-group": {
+    "name": "账号与权限",
+    "remark": "用户、角色、租户与权限模块"
+  },
+  "upms-users": {
+    "name": "用户管理",
+    "remark": "维护系统用户资料、账号状态与联系方式"
+  },
+  "upms-tenants": {
+    "name": "租户管理",
+    "remark": "维护学校、校区与部门等层级租户结构"
+  },
+  "upms-menus": {
+    "name": "菜单管理",
+    "remark": "维护导航菜单、路由配置与层级结构"
+  },
+  "user": {
+    "name": "Admin",
+    "role": "系统管理员"
+  }
+}

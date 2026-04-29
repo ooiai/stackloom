@@ -1,0 +1,50 @@
+{
+  "actions": {
+    "notifications": "Notifications",
+    "openMenu": "Open navigation menu",
+    "settings": "Settings"
+  },
+  "brand": {
+    "title": "Stackloom Admin"
+  },
+  "base-root": {
+    "name": "Admin",
+    "remark": "Stackloom admin workspace entry"
+  },
+  "upms": {
+    "name": "Accounts & Access",
+    "remark": "Users, roles, tenants, and permissions"
+  },
+  "tools": {
+    "name": "Tools",
+    "remark": "Configure shared capabilities and dictionaries"
+  },
+  "tools-dicts": {
+    "name": "Dictionaries",
+    "remark": "Manage tree dictionaries, values, and extensions"
+  },
+  "tools-group": {
+    "name": "Tools",
+    "remark": "Configure shared capabilities and dictionaries"
+  },
+  "upms-group": {
+    "name": "Accounts & Access",
+    "remark": "Users, roles, tenants, and permissions"
+  },
+  "upms-users": {
+    "name": "Users",
+    "remark": "Manage profiles, account states, and contacts"
+  },
+  "upms-tenants": {
+    "name": "Tenants",
+    "remark": "Manage hierarchical tenants such as schools, campuses, and departments"
+  },
+  "upms-menus": {
+    "name": "Menus",
+    "remark": "Manage navigation menus, routes, and tree structure"
+  },
+  "user": {
+    "name": "Admin",
+    "role": "System administrator"
+  }
+}

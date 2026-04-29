@@ -1,0 +1,170 @@
+{
+  "page": {
+    "title": "Menus",
+    "subtitle": "Manage navigation menus, routes, and hierarchy",
+    "addRoot": "Add root menu"
+  },
+  "toast": {
+    "created": "Menu created",
+    "updated": "Menu updated",
+    "deleted": "Menu deleted"
+  },
+  "dialog": {
+    "deleteTitle": "Delete menu",
+    "deleteLeafDescription": "Delete \"{name}\"? This action cannot be undone.",
+    "deleteBranchDescription": "Delete \"{name}\" and all of its children? This action cannot be undone."
+  },
+  "sheet": {
+    "create": {
+      "title": "Create menu",
+      "description": "Maintain menu names, routes, and display settings",
+      "submit": "Create menu"
+    },
+    "update": {
+      "title": "Edit menu",
+      "description": "Update the current menu route and display details",
+      "submit": "Save changes"
+    }
+  },
+  "sections": {
+    "basic": {
+      "title": "Basic information",
+      "description": "Define the menu identity, name, and node type first"
+    },
+    "route": {
+      "title": "Route settings",
+      "description": "Fill in the page path, component entry, and icon details"
+    },
+    "display": {
+      "title": "Display settings",
+      "description": "Control status, sort order, and frontend visibility"
+    }
+  },
+  "form": {
+    "parent": {
+      "label": "Parent node"
+    },
+    "code": {
+      "label": "Menu code",
+      "placeholder": "Example: upms-users",
+      "validation": {
+        "required": "Enter a menu code",
+        "max": "Menu code must be 100 characters or fewer"
+      }
+    },
+    "name": {
+      "label": "Menu name",
+      "placeholder": "Example: User management",
+      "validation": {
+        "required": "Enter a menu name",
+        "max": "Menu name must be 100 characters or fewer"
+      }
+    },
+    "path": {
+      "label": "Route path",
+      "placeholder": "Example: /upms/users",
+      "validation": {
+        "max": "Route path must be 255 characters or fewer"
+      }
+    },
+    "component": {
+      "label": "Component path",
+      "placeholder": "Example: upms/users/page",
+      "validation": {
+        "max": "Component path must be 255 characters or fewer"
+      }
+    },
+    "redirect": {
+      "label": "Redirect",
+      "placeholder": "Example: /upms/users",
+      "validation": {
+        "max": "Redirect must be 255 characters or fewer"
+      }
+    },
+    "icon": {
+      "label": "Icon",
+      "placeholder": "Example: Users",
+      "validation": {
+        "max": "Icon must be 100 characters or fewer"
+      }
+    },
+    "type": {
+      "label": "Menu type"
+    },
+    "sort": {
+      "label": "Sort order",
+      "validation": {
+        "int": "Sort order must be an integer",
+        "min": "Sort order cannot be less than 0",
+        "max": "Sort order cannot exceed 9999"
+      }
+    },
+    "status": {
+      "label": "Status"
+    },
+    "visible": {
+      "label": "Visible in navigation"
+    },
+    "keepAlive": {
+      "label": "Enable cache"
+    }
+  },
+  "status": {
+    "disabled": {
+      "label": "Disabled"
+    },
+    "active": {
+      "label": "Active"
+    }
+  },
+  "type": {
+    "directory": {
+      "label": "Directory",
+      "description": "Used for groups and nested menus"
+    },
+    "menu": {
+      "label": "Menu",
+      "description": "Used for navigable pages"
+    },
+    "action": {
+      "label": "Action",
+      "description": "Used for page actions or permission points"
+    }
+  },
+  "sidebar": {
+    "title": "Menu tree",
+    "subtitle": "Browse the hierarchy and switch the current menu",
+    "addRoot": "Add root menu",
+    "searchPlaceholder": "Search by name, code, or route",
+    "emptySearchTitle": "No matching menus",
+    "emptyDefaultTitle": "No menus yet",
+    "emptySearchDescription": "Try another keyword or clear the search",
+    "emptyDefaultDescription": "Create a root menu first, then add child items",
+    "create": "Create menu"
+  },
+  "detail": {
+    "emptyTitle": "Choose a menu node",
+    "emptyDescription": "Select a node on the left to view details and children",
+    "path": "Route path",
+    "component": "Component path",
+    "type": "Menu type",
+    "sort": "Sort",
+    "visible": "Visible",
+    "keepAlive": "Cache",
+    "visibleOn": "Shown",
+    "visibleOff": "Hidden",
+    "keepAliveOn": "Enabled",
+    "keepAliveOff": "Disabled",
+    "emptyChildrenTitle": "No child menus under this node",
+    "emptyChildrenDescription": "You can continue by adding child menus",
+    "directChildrenTitle": "Child menus"
+  },
+  "table": {
+    "name": "Menu name",
+    "path": "Route path",
+    "component": "Component path",
+    "status": "Status",
+    "updatedAt": "Updated at",
+    "childCount": "{count} children"
+  }
+}

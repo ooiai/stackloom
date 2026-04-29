@@ -67,7 +67,10 @@ export function createTenantColumns({
               <div className="truncate text-sm font-medium text-foreground">
                 {row.original.name}
               </div>
-              <div className="truncate text-[12px] text-muted-foreground">
+              <div
+                hidden
+                className="truncate text-[12px] text-muted-foreground"
+              >
                 {row.original.slug}
               </div>
             </div>
@@ -80,6 +83,38 @@ export function createTenantColumns({
         )
       },
       size: 220,
+      enableSorting: false,
+    },
+    {
+      accessorKey: "slug",
+      id: "slug",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          title={t("tenants.table.slug")}
+          column={column}
+          className="font-medium"
+        />
+      ),
+      cell: ({ row }) => (
+        <code className="rounded-md bg-muted px-1.5 py-1 text-[11px] text-foreground/80">
+          {row.original.slug}
+        </code>
+      ),
+      size: 150,
+      enableSorting: false,
+    },
+    {
+      accessorKey: "status",
+      id: "status",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          title={t("tenants.table.status")}
+          column={column}
+          className="font-medium"
+        />
+      ),
+      cell: ({ row }) => <TenantStatusBadge status={row.original.status} />,
+      size: 110,
       enableSorting: false,
     },
     {
@@ -98,20 +133,6 @@ export function createTenantColumns({
         </span>
       ),
       size: 150,
-      enableSorting: false,
-    },
-    {
-      accessorKey: "status",
-      id: "status",
-      header: ({ column }) => (
-        <DataGridColumnHeader
-          title={t("tenants.table.status")}
-          column={column}
-          className="font-medium"
-        />
-      ),
-      cell: ({ row }) => <TenantStatusBadge status={row.original.status} />,
-      size: 110,
       enableSorting: false,
     },
     {

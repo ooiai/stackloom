@@ -1,0 +1,127 @@
+{
+  "page": {
+    "title": "租户管理",
+    "subtitle": "维护学校、校区与部门等层级租户结构",
+    "addRoot": "添加租户"
+  },
+  "toast": {
+    "created": "租户已创建",
+    "updated": "租户已更新",
+    "deleted": "租户已删除"
+  },
+  "dialog": {
+    "deleteTitle": "删除租户",
+    "deleteLeafDescription": "确定删除“{name}”吗？此操作无法撤销",
+    "deleteBranchDescription": "确定删除“{name}”以及其全部子级吗？此操作无法撤销"
+  },
+  "sheet": {
+    "create": {
+      "title": "新增租户",
+      "description": "维护组织名称、层级和基础租户信息",
+      "submit": "创建租户"
+    },
+    "update": {
+      "title": "编辑租户",
+      "description": "更新当前租户的基础资料和状态",
+      "submit": "保存更新"
+    }
+  },
+  "sections": {
+    "basic": {
+      "title": "基础信息",
+      "description": "先确定所属层级、租户标识和名称"
+    },
+    "supplement": {
+      "title": "补充信息",
+      "description": "补充说明、方案编码、负责人和时效信息"
+    }
+  },
+  "form": {
+    "parent": {
+      "label": "所属节点"
+    },
+    "slug": {
+      "label": "租户标识",
+      "placeholder": "请输入英文租户标识...",
+      "validation": {
+        "required": "请输入租户标识",
+        "max": "租户标识长度不能超过 100 个字符"
+      }
+    },
+    "name": {
+      "label": "租户名称",
+      "placeholder": "请输入租户名称...",
+      "validation": {
+        "required": "请输入租户名称",
+        "max": "租户名称长度不能超过 100 个字符"
+      }
+    },
+    "description": {
+      "label": "说明",
+      "placeholder": "记录组织定位、业务范围或备注信息",
+      "validation": {
+        "max": "说明长度不能超过 500 个字符"
+      }
+    },
+    "plan_code": {
+      "label": "套餐编码",
+      "placeholder": "请输入英文套餐编码...",
+      "validation": {
+        "max": "套餐编码长度不能超过 100 个字符"
+      }
+    },
+    "owner_user_id": {
+      "label": "拥有者用户",
+      "placeholder": "输入拥有者用户"
+    },
+    "expired_at": {
+      "label": "到期时间",
+      "placeholder": "选择租户到期时间"
+    },
+    "status": {
+      "label": "状态"
+    }
+  },
+  "status": {
+    "disabled": {
+      "label": "禁用"
+    },
+    "active": {
+      "label": "正常"
+    },
+    "expired": {
+      "label": "冻结/过期"
+    }
+  },
+  "sidebar": {
+    "title": "租户",
+    "subtitle": "浏览学校、校区与部门层级",
+    "addRoot": "添加租户",
+    "searchPlaceholder": "搜索租户名称、标识或方案编码",
+    "emptySearchTitle": "没有匹配的租户",
+    "emptyDefaultTitle": "暂无租户",
+    "emptySearchDescription": "换个关键词，或清空搜索",
+    "emptyDefaultDescription": "先创建根租户，再补充子级",
+    "create": "创建租户"
+  },
+  "detail": {
+    "emptyTitle": "选择租户节点",
+    "emptyDescription": "选择左侧节点后查看详情和子级",
+    "slug": "租户标识",
+    "planCode": "方案编码",
+    "owner": "负责人",
+    "expiredAt": "过期时间",
+    "noDescription": "暂无说明",
+    "emptyChildrenTitle": "当前租户下暂无子级",
+    "emptyChildrenDescription": "可继续添加子租户",
+    "directChildrenTitle": "子租户"
+  },
+  "table": {
+    "name": "租户名称",
+    "planCode": "方案编码",
+    "status": "状态",
+    "description": "说明",
+    "updatedAt": "更新时间",
+    "childCount": "{count} 子项"
+  }
+}

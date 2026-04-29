@@ -1,0 +1,165 @@
+{
+  "page": {
+    "title": "Dictionaries",
+    "subtitle": "Manage tree dictionaries, business values, and extension settings.",
+    "addRoot": "Add root dictionary"
+  },
+  "toast": {
+    "created": "Dictionary item created",
+    "updated": "Dictionary item updated",
+    "deleted": "Dictionary item deleted"
+  },
+  "dialog": {
+    "deleteTitle": "Delete dictionary item",
+    "deleteLeafDescription": "Delete \"{label}\"? This action cannot be undone.",
+    "deleteBranchDescription": "Delete \"{label}\" and all of its children? This action cannot be undone."
+  },
+  "sheet": {
+    "create": {
+      "title": "Create dictionary",
+      "description": "Maintain tree nodes, value types, and business-facing labels",
+      "submit": "Create dictionary"
+    },
+    "update": {
+      "title": "Edit dictionary",
+      "description": "Update the current item's key, value, status, and notes",
+      "submit": "Save changes"
+    }
+  },
+  "rootLabel": "Root dictionary",
+  "sections": {
+    "basic": {
+      "title": "Basic information",
+      "description": "Define display name, key-value pair, and dictionary type."
+    },
+    "supplement": {
+      "title": "Notes & extension",
+      "description": "Add business meaning, scope, and extended JSON configuration."
+    }
+  },
+  "form": {
+    "parent": {
+      "label": "Parent node",
+      "description": "Editing does not change the current parent-child relationship."
+    },
+    "type": {
+      "label": "Dictionary type",
+      "placeholder": "Example: gender",
+      "lockedOnEdit": "Dictionary type cannot be changed while editing.",
+      "lockedOnChild": "Child nodes inherit the dictionary type from the parent.",
+      "validation": {
+        "required": "Enter a dictionary type",
+        "max": "Dictionary type must be 100 characters or fewer"
+      }
+    },
+    "label": {
+      "label": "Display name",
+      "placeholder": "Example: Male",
+      "validation": {
+        "required": "Enter a display name",
+        "max": "Display name must be 255 characters or fewer"
+      }
+    },
+    "key": {
+      "label": "Dictionary key",
+      "placeholder": "Example: male",
+      "validation": {
+        "required": "Enter a dictionary key",
+        "max": "Dictionary key must be 100 characters or fewer"
+      }
+    },
+    "value": {
+      "label": "Dictionary value",
+      "placeholder": "Example: 1",
+      "validation": {
+        "required": "Enter a dictionary value",
+        "max": "Dictionary value must be 255 characters or fewer"
+      }
+    },
+    "sort": {
+      "label": "Sort order",
+      "tooltip": "Smaller numbers appear earlier in the list",
+      "validation": {
+        "int": "Sort order must be an integer",
+        "min": "Sort order cannot be less than 0",
+        "max": "Sort order cannot exceed 9999"
+      }
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Record the scope, business meaning, or notes for this item.",
+      "validation": {
+        "max": "Description must be 500 characters or fewer"
+      }
+    },
+    "ext": {
+      "label": "Extended config",
+      "description": "Store extra configuration in JSON. Empty input is saved as an empty object.",
+      "placeholder": "Example: {\"color\":\"blue\"}",
+      "validation": {
+        "invalid": "Extended config must be valid JSON"
+      }
+    }
+  },
+  "status": {
+    "disabled": {
+      "label": "Disabled",
+      "description": "This item is disabled and should no longer be used by the business layer."
+    },
+    "active": {
+      "label": "Active",
+      "description": "This item can be selected and consumed normally."
+    }
+  },
+  "valueType": {
+    "string": {
+      "label": "String",
+      "description": "Good for labels, codes, and enum values."
+    },
+    "number": {
+      "label": "Number",
+      "description": "Good for numeric business values."
+    },
+    "boolean": {
+      "label": "Boolean",
+      "description": "Good for true / false cases."
+    },
+    "json": {
+      "label": "JSON",
+      "description": "Good for structured extension values."
+    }
+  },
+  "sidebar": {
+    "title": "Dictionary tree",
+    "subtitle": "Browse the hierarchy and switch the current node.",
+    "addRoot": "Add root dictionary",
+    "searchPlaceholder": "Search name, key, or type",
+    "emptySearchTitle": "No matching nodes",
+    "emptyDefaultTitle": "No data yet",
+    "emptySearchDescription": "Try another keyword or clear the search",
+    "emptyDefaultDescription": "Create a root node first, then add children",
+    "create": "Create dictionary"
+  },
+  "detail": {
+    "emptyTitle": "Choose a dictionary node",
+    "emptyDescription": "Select a node on the left to view details and children.",
+    "type": "Type",
+    "value": "Value",
+    "valueType": "Value type",
+    "sort": "Sort",
+    "noDescription": "No description",
+    "emptyChildrenTitle": "No child items under this node",
+    "emptyChildrenDescription": "You can continue by adding child nodes.",
+    "directChildrenTitle": "Child items",
+    "directChildrenDescription": "Only direct child items of the current node are shown here."
+  },
+  "table": {
+    "name": "Name",
+    "childCount": "{count} children",
+    "value": "Dictionary value",
+    "valueType": "Value type",
+    "status": "Status",
+    "description": "Description",
+    "updatedAt": "Updated at"
+  }
+}

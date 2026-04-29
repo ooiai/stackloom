@@ -1,0 +1,35 @@
+{
+  "actions": {
+    "addChild": "添加子级",
+    "addFilter": "添加筛选",
+    "cancel": "取消",
+    "clear": "清空",
+    "confirm": "确认",
+    "create": "创建",
+    "delete": "删除",
+    "edit": "编辑",
+    "goToWebsite": "导航至官网",
+    "login": "登录",
+    "refresh": "刷新",
+    "save": "保存",
+    "viewChildren": "查看子级"
+  },
+  "loading": {
+    "default": "加载中...",
+    "loadingTree": "正在加载...",
+    "syncingDicts": "正在同步字典列表..."
+  },
+  "pagination": {
+    "next": "下一页",
+    "previous": "上一页",
+    "rowsPerPage": "每页显示"
+  },
+  "layout": {
+    "switchToContained": "切换为居中布局",
+    "switchToFull": "切换为铺满布局"
+  },
+  "misc": {
+    "none": "—",
+    "rootDirectory": "根目录"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "notFound": {
+    "alt": "404",
+    "title": "This page may be vacationing on another planet 👽",
+    "description": "The address may be wrong, or the page has moved. Head back home and navigate from there.",
+    "button": "Return to base 🛸"
+  },
+  "forbidden": {
+    "alt": "403",
+    "title": "Access denied, the permission officer is on duty 👮",
+    "description": "Permissions blocked the way. Try another account or contact an administrator for access.",
+    "button": "Retreat to home 🧭"
+  }
+}

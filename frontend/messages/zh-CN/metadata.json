@@ -1,0 +1,15 @@
+{
+  "base": {
+    "title": "Stackloom 后台管理系统",
+    "description": "Stackloom 后台管理系统，用于用户、租户、角色与权限的统一管理",
+    "keywords": "Stackloom,后台管理,用户管理,租户管理,权限管理"
+  },
+  "auth": {
+    "title": "Stackloom 认证中心",
+    "description": "登录或注册以访问 Stackloom"
+  },
+  "web": {
+    "title": "Stackloom Web",
+    "description": "Stackloom 前台站点与产品入口"
+  }
+}

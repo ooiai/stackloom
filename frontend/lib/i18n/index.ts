@@ -1,6 +1,19 @@
 export const SUPPORTED_LOCALES = ["zh-CN", "en-US"] as const
 
 export type AppLocale = (typeof SUPPORTED_LOCALES)[number]
+export const LOCALE_MESSAGE_MODULES = [
+  "common",
+  "navigation",
+  "metadata",
+  "errors",
+  "auth",
+  "users",
+  "dicts",
+  "menus",
+  "tenants",
+] as const
+
+export type LocaleMessageModule = (typeof LOCALE_MESSAGE_MODULES)[number]
 export type TranslationValues = Record<string, string | number>
 export type TranslateFn = (
   key: string,
@@ -25,6 +38,40 @@ export interface MessageTree {
   [key: string]: string | MessageTree
 }
 
+type MessageModule = Record<string, string | MessageTree>
+
+const MESSAGE_MODULE_LOADERS: Record<
+  AppLocale,
+  Record<LocaleMessageModule, () => Promise<MessageModule>>
+> = {
+  "en-US": {
+    common: async () => (await import("@/messages/en-US/common.json")).default,
+    navigation: async () =>
+      (await import("@/messages/en-US/navigation.json")).default,
+    metadata: async () =>
+      (await import("@/messages/en-US/metadata.json")).default,
+    errors: async () => (await import("@/messages/en-US/errors.json")).default,
+    auth: async () => (await import("@/messages/en-US/auth.json")).default,
+    users: async () => (await import("@/messages/en-US/users.json")).default,
+    dicts: async () => (await import("@/messages/en-US/dicts.json")).default,
+    menus: async () => (await import("@/messages/en-US/menus.json")).default,
+    tenants: async () => (await import("@/messages/en-US/tenants.json")).default,
+  },
+  "zh-CN": {
+    common: async () => (await import("@/messages/zh-CN/common.json")).default,
+    navigation: async () =>
+      (await import("@/messages/zh-CN/navigation.json")).default,
+    metadata: async () =>
+      (await import("@/messages/zh-CN/metadata.json")).default,
+    errors: async () => (await import("@/messages/zh-CN/errors.json")).default,
+    auth: async () => (await import("@/messages/zh-CN/auth.json")).default,
+    users: async () => (await import("@/messages/zh-CN/users.json")).default,
+    dicts: async () => (await import("@/messages/zh-CN/dicts.json")).default,
+    menus: async () => (await import("@/messages/zh-CN/menus.json")).default,
+    tenants: async () => (await import("@/messages/zh-CN/tenants.json")).default,
+  },
+}
+
 export function getMessageValue(
   messages: MessageTree,
   path: string,
@@ -42,11 +89,13 @@ export function getMessageValue(
 export async function getLocaleMessages(locale: AppLocale) {
   const resolvedLocale = resolveLocale(locale)
 
-  switch (resolvedLocale) {
-    case "en-US":
-      return (await import("@/messages/en-US.json")).default as MessageTree
-    case "zh-CN":
-    default:
-      return (await import("@/messages/zh-CN.json")).default as MessageTree
-  }
+  const moduleLoaders = MESSAGE_MODULE_LOADERS[resolvedLocale]
+  const moduleEntries = await Promise.all(
+    LOCALE_MESSAGE_MODULES.map(async (moduleName) => {
+      const moduleMessages = await moduleLoaders[moduleName]()
+      return [moduleName, moduleMessages] as const
+    })
+  )
+
+  return Object.fromEntries(moduleEntries) as MessageTree
 }

@@ -1,0 +1,15 @@
+{
+  "base": {
+    "title": "Stackloom Admin",
+    "description": "Stackloom admin console for unified management of users, tenants, roles and permissions.",
+    "keywords": "Stackloom,admin console,user management,tenant management,permission management"
+  },
+  "auth": {
+    "title": "Stackloom Auth",
+    "description": "Sign in or register to access Stackloom."
+  },
+  "web": {
+    "title": "Stackloom Web",
+    "description": "Stackloom website and product entry."
+  }
+}

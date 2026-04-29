@@ -1,0 +1,35 @@
+{
+  "actions": {
+    "addChild": "Add child",
+    "addFilter": "Add filter",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "confirm": "Confirm",
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit",
+    "goToWebsite": "Go to website",
+    "login": "Sign in",
+    "refresh": "Refresh",
+    "save": "Save",
+    "viewChildren": "View children"
+  },
+  "loading": {
+    "default": "Loading...",
+    "loadingTree": "Loading...",
+    "syncingDicts": "Syncing dictionary items..."
+  },
+  "pagination": {
+    "next": "Next",
+    "previous": "Previous",
+    "rowsPerPage": "Rows per page"
+  },
+  "layout": {
+    "switchToContained": "Switch to contained layout",
+    "switchToFull": "Switch to full-width layout"
+  },
+  "misc": {
+    "none": "—",
+    "rootDirectory": "Root"
+  }
+}

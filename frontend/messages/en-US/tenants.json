@@ -1,0 +1,127 @@
+{
+  "page": {
+    "title": "Tenants",
+    "subtitle": "Manage schools, campuses, departments, and other tenant hierarchies",
+    "addRoot": "Add root tenant"
+  },
+  "toast": {
+    "created": "Tenant created",
+    "updated": "Tenant updated",
+    "deleted": "Tenant deleted"
+  },
+  "dialog": {
+    "deleteTitle": "Delete tenant",
+    "deleteLeafDescription": "Delete \"{name}\"? This action cannot be undone.",
+    "deleteBranchDescription": "Delete \"{name}\" and all of its children? This action cannot be undone."
+  },
+  "sheet": {
+    "create": {
+      "title": "Create tenant",
+      "description": "Maintain organization name, hierarchy, and base tenant information",
+      "submit": "Create tenant"
+    },
+    "update": {
+      "title": "Edit tenant",
+      "description": "Update the current tenant profile and status",
+      "submit": "Save changes"
+    }
+  },
+  "sections": {
+    "basic": {
+      "title": "Basic information",
+      "description": "Define the hierarchy, tenant slug, and name first"
+    },
+    "supplement": {
+      "title": "Additional information",
+      "description": "Add notes, plan code, owner, and expiration details"
+    }
+  },
+  "form": {
+    "parent": {
+      "label": "Parent node"
+    },
+    "slug": {
+      "label": "Tenant slug",
+      "placeholder": "Example: campus-east",
+      "validation": {
+        "required": "Enter a tenant slug",
+        "max": "Tenant slug must be 100 characters or fewer"
+      }
+    },
+    "name": {
+      "label": "Tenant name",
+      "placeholder": "Example: East Campus",
+      "validation": {
+        "required": "Enter a tenant name",
+        "max": "Tenant name must be 100 characters or fewer"
+      }
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Describe the unit, scope, or any notes",
+      "validation": {
+        "max": "Description must be 500 characters or fewer"
+      }
+    },
+    "plan_code": {
+      "label": "Plan code",
+      "placeholder": "Example: edu-pro",
+      "validation": {
+        "max": "Plan code must be 100 characters or fewer"
+      }
+    },
+    "owner_user_id": {
+      "label": "Owner user ID",
+      "placeholder": "Enter the owner user ID"
+    },
+    "expired_at": {
+      "label": "Expired at",
+      "placeholder": "Example: 2026-12-31T23:59:59Z"
+    },
+    "status": {
+      "label": "Status"
+    }
+  },
+  "status": {
+    "disabled": {
+      "label": "Disabled"
+    },
+    "active": {
+      "label": "Active"
+    },
+    "expired": {
+      "label": "Frozen/Expired"
+    }
+  },
+  "sidebar": {
+    "title": "Tenant tree",
+    "subtitle": "Browse the school, campus, and department hierarchy",
+    "addRoot": "Add root tenant",
+    "searchPlaceholder": "Search tenant name, slug, or plan code",
+    "emptySearchTitle": "No matching tenants",
+    "emptyDefaultTitle": "No tenants yet",
+    "emptySearchDescription": "Try another keyword or clear the search",
+    "emptyDefaultDescription": "Create a root tenant first, then add child tenants",
+    "create": "Create tenant"
+  },
+  "detail": {
+    "emptyTitle": "Choose a tenant node",
+    "emptyDescription": "Select a node on the left to view details and children",
+    "slug": "Tenant slug",
+    "planCode": "Plan code",
+    "owner": "Owner",
+    "expiredAt": "Expires at",
+    "noDescription": "No description",
+    "emptyChildrenTitle": "No child tenants under this node",
+    "emptyChildrenDescription": "You can continue by adding child tenants",
+    "directChildrenTitle": "Child tenants"
+  },
+  "table": {
+    "name": "Tenant name",
+    "planCode": "Plan code",
+    "status": "Status",
+    "description": "Description",
+    "updatedAt": "Updated at",
+    "childCount": "{count} children"
+  }
+}

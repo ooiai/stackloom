@@ -174,8 +174,14 @@ Current structure:
 ```text
 frontend/
 ├── messages/
-│   ├── en-US.json
-│   └── zh-CN.json
+│   ├── en-US/
+│   │   ├── common.json
+│   │   ├── navigation.json
+│   │   └── ...
+│   └── zh-CN/
+│       ├── common.json
+│       ├── navigation.json
+│       └── ...
 ├── i18n/
 │   └── request.ts
 ├── lib/i18n/
@@ -187,7 +193,8 @@ frontend/
 Rules:
 
 - Use `next-intl` as the default i18n solution.
-- Keep local messages in `frontend/messages/*.json`.
+- Keep local messages in `frontend/messages/<locale>/*.json`.
+- Split message files by feature/shared domain, not by individual page file and not in one giant per-locale file.
 - Use nested JSON messages with dotted lookup keys.
 - Use `useI18n()` in client components where the repo already wraps `next-intl`.
 - Localize metadata too. `generateMetadata()` should read from the same message source.

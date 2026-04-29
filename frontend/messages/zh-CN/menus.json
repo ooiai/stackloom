@@ -1,0 +1,170 @@
+{
+  "page": {
+    "title": "菜单管理",
+    "subtitle": "维护导航菜单、页面路由与层级结构",
+    "addRoot": "添加菜单"
+  },
+  "toast": {
+    "created": "菜单已创建",
+    "updated": "菜单已更新",
+    "deleted": "菜单已删除"
+  },
+  "dialog": {
+    "deleteTitle": "删除菜单",
+    "deleteLeafDescription": "确定删除“{name}”吗？此操作无法撤销",
+    "deleteBranchDescription": "确定删除“{name}”以及其全部子级吗？此操作无法撤销"
+  },
+  "sheet": {
+    "create": {
+      "title": "新增菜单",
+      "description": "维护菜单名称、路由和展示属性",
+      "submit": "创建菜单"
+    },
+    "update": {
+      "title": "编辑菜单",
+      "description": "更新当前菜单项的路由和展示信息",
+      "submit": "保存更新"
+    }
+  },
+  "sections": {
+    "basic": {
+      "title": "基础信息",
+      "description": "先确定菜单标识、名称和节点类型"
+    },
+    "route": {
+      "title": "路由配置",
+      "description": "补充页面路径、组件入口和图标信息"
+    },
+    "display": {
+      "title": "显示设置",
+      "description": "控制状态、排序与前端展示行为"
+    }
+  },
+  "form": {
+    "parent": {
+      "label": "所属节点"
+    },
+    "code": {
+      "label": "菜单编码",
+      "placeholder": "例如：upms-users",
+      "validation": {
+        "required": "请输入菜单编码",
+        "max": "菜单编码长度不能超过 100 个字符"
+      }
+    },
+    "name": {
+      "label": "菜单名称",
+      "placeholder": "例如：用户管理",
+      "validation": {
+        "required": "请输入菜单名称",
+        "max": "菜单名称长度不能超过 100 个字符"
+      }
+    },
+    "path": {
+      "label": "路由路径",
+      "placeholder": "例如：/upms/users",
+      "validation": {
+        "max": "路由路径长度不能超过 255 个字符"
+      }
+    },
+    "component": {
+      "label": "组件路径",
+      "placeholder": "例如：upms/users/page",
+      "validation": {
+        "max": "组件路径长度不能超过 255 个字符"
+      }
+    },
+    "redirect": {
+      "label": "重定向",
+      "placeholder": "例如：/upms/users",
+      "validation": {
+        "max": "重定向长度不能超过 255 个字符"
+      }
+    },
+    "icon": {
+      "label": "图标",
+      "placeholder": "例如：Users",
+      "validation": {
+        "max": "图标长度不能超过 100 个字符"
+      }
+    },
+    "type": {
+      "label": "菜单类型"
+    },
+    "sort": {
+      "label": "排序值",
+      "validation": {
+        "int": "排序值必须是整数",
+        "min": "排序值不能小于 0",
+        "max": "排序值不能超过 9999"
+      }
+    },
+    "status": {
+      "label": "状态"
+    },
+    "visible": {
+      "label": "显示菜单"
+    },
+    "keepAlive": {
+      "label": "开启缓存"
+    }
+  },
+  "status": {
+    "disabled": {
+      "label": "禁用"
+    },
+    "active": {
+      "label": "正常"
+    }
+  },
+  "type": {
+    "directory": {
+      "label": "目录",
+      "description": "用于承载分组和子菜单"
+    },
+    "menu": {
+      "label": "菜单",
+      "description": "用于可访问的页面菜单"
+    },
+    "action": {
+      "label": "操作",
+      "description": "用于页面内按钮或权限点"
+    }
+  },
+  "sidebar": {
+    "title": "菜单",
+    "subtitle": "浏览层级并切换当前菜单",
+    "addRoot": "添加菜单",
+    "searchPlaceholder": "搜索菜单名称、编码或路由",
+    "emptySearchTitle": "没有匹配的菜单",
+    "emptyDefaultTitle": "暂无菜单",
+    "emptySearchDescription": "换个关键词，或清空搜索",
+    "emptyDefaultDescription": "先创建根菜单，再补充子级",
+    "create": "创建菜单"
+  },
+  "detail": {
+    "emptyTitle": "选择菜单节点",
+    "emptyDescription": "选择左侧节点后查看详情和子级",
+    "path": "路由路径",
+    "component": "组件路径",
+    "type": "菜单类型",
+    "sort": "排序",
+    "visible": "是否显示",
+    "keepAlive": "缓存",
+    "visibleOn": "显示",
+    "visibleOff": "隐藏",
+    "keepAliveOn": "开启",
+    "keepAliveOff": "关闭",
+    "emptyChildrenTitle": "当前菜单下暂无子级",
+    "emptyChildrenDescription": "可继续添加子菜单",
+    "directChildrenTitle": "子菜单"
+  },
+  "table": {
+    "name": "菜单名称",
+    "path": "路由路径",
+    "component": "组件路径",
+    "status": "状态",
+    "updatedAt": "更新时间",
+    "childCount": "{count} 子项"
+  }
+}

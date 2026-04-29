@@ -114,9 +114,9 @@ function TenantTreeNodeItem({
           )}
           <div className="min-w-0 space-y-px">
             <div className="truncate leading-5 font-medium">{node.name}</div>
-            <div className="truncate text-xs text-muted-foreground">
+            {/*<div className="truncate text-xs text-muted-foreground">
               {node.slug}
-            </div>
+            </div>*/}
           </div>
         </div>
         <div className="flex items-center gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">

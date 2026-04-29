@@ -1,0 +1,165 @@
+{
+  "page": {
+    "title": "字典管理",
+    "subtitle": "维护树形字典项、业务键值和扩展配置",
+    "addRoot": "添加根字典"
+  },
+  "toast": {
+    "created": "字典项已创建",
+    "updated": "字典项已更新",
+    "deleted": "字典项已删除"
+  },
+  "dialog": {
+    "deleteTitle": "删除字典项",
+    "deleteLeafDescription": "确定删除“{label}”吗？此操作无法撤销",
+    "deleteBranchDescription": "确定删除“{label}”以及其全部子级吗？此操作无法撤销"
+  },
+  "sheet": {
+    "create": {
+      "title": "新增字典",
+      "description": "维护字典树节点、值类型与业务展示文案",
+      "submit": "创建字典"
+    },
+    "update": {
+      "title": "编辑字典",
+      "description": "更新当前字典项的键值、状态和说明信息",
+      "submit": "保存更新"
+    }
+  },
+  "rootLabel": "根字典",
+  "sections": {
+    "basic": {
+      "title": "基础信息",
+      "description": "定义字典项的展示名称、键值和归属类型"
+    },
+    "supplement": {
+      "title": "说明与扩展",
+      "description": "补充业务含义、适用范围和扩展 JSON 配置"
+    }
+  },
+  "form": {
+    "parent": {
+      "label": "所属节点",
+      "description": "当前编辑不会变更父子层级关系"
+    },
+    "type": {
+      "label": "字典类型",
+      "placeholder": "例如：gender",
+      "lockedOnEdit": "编辑时不允许修改字典类型",
+      "lockedOnChild": "子级节点会继承父级字典类型",
+      "validation": {
+        "required": "请输入字典类型",
+        "max": "字典类型长度不能超过 100 个字符"
+      }
+    },
+    "label": {
+      "label": "显示名称",
+      "placeholder": "例如：男",
+      "validation": {
+        "required": "请输入显示名称",
+        "max": "显示名称长度不能超过 255 个字符"
+      }
+    },
+    "key": {
+      "label": "字典键",
+      "placeholder": "例如：male",
+      "validation": {
+        "required": "请输入字典键",
+        "max": "字典键长度不能超过 100 个字符"
+      }
+    },
+    "value": {
+      "label": "字典值",
+      "placeholder": "例如：1",
+      "validation": {
+        "required": "请输入字典值",
+        "max": "字典值长度不能超过 255 个字符"
+      }
+    },
+    "sort": {
+      "label": "排序值",
+      "tooltip": "数值越小，列表中越靠前",
+      "validation": {
+        "int": "排序值必须是整数",
+        "min": "排序值不能小于 0",
+        "max": "排序值不能超过 9999"
+      }
+    },
+    "description": {
+      "label": "说明",
+      "placeholder": "记录字典项的适用范围、业务含义或注意事项",
+      "validation": {
+        "max": "说明长度不能超过 500 个字符"
+      }
+    },
+    "ext": {
+      "label": "扩展配置",
+      "description": "使用 JSON 存储额外配置，留空时会自动写入空对象",
+      "placeholder": "例如：{\"color\":\"blue\"}",
+      "validation": {
+        "invalid": "扩展配置必须是合法 JSON"
+      }
+    }
+  },
+  "status": {
+    "disabled": {
+      "label": "禁用",
+      "description": "该字典项已停用，不建议继续被业务侧使用"
+    },
+    "active": {
+      "label": "正常",
+      "description": "该字典项可正常被选择和消费"
+    }
+  },
+  "valueType": {
+    "string": {
+      "label": "字符串",
+      "description": "适合文案、编码和枚举值"
+    },
+    "number": {
+      "label": "数字",
+      "description": "适合数字型业务值"
+    },
+    "boolean": {
+      "label": "布尔",
+      "description": "适合 true / false 场景"
+    },
+    "json": {
+      "label": "JSON",
+      "description": "适合结构化扩展值"
+    }
+  },
+  "sidebar": {
+    "title": "字典",
+    "subtitle": "浏览层级并切换当前节点",
+    "addRoot": "添加根字典",
+    "searchPlaceholder": "搜索名称、键或类型",
+    "emptySearchTitle": "没有匹配的节点",
+    "emptyDefaultTitle": "暂无数据",
+    "emptySearchDescription": "换个关键词，或清空搜索",
+    "emptyDefaultDescription": "先创建根节点，再补充子项",
+    "create": "创建字典"
+  },
+  "detail": {
+    "emptyTitle": "选择字典节点",
+    "emptyDescription": "选择左侧节点后查看详情和子级",
+    "type": "类型",
+    "value": "字典值",
+    "valueType": "值类型",
+    "sort": "排序",
+    "noDescription": "暂无说明",
+    "emptyChildrenTitle": "当前节点下暂无子级",
+    "emptyChildrenDescription": "可继续添加子级节点",
+    "directChildrenTitle": "子字典",
+    "directChildrenDescription": "仅展示当前节点的直属子字典"
+  },
+  "table": {
+    "name": "名称",
+    "childCount": "{count} 子项",
+    "value": "字典值",
+    "valueType": "值类型",
+    "status": "状态",
+    "description": "说明",
+    "updatedAt": "更新时间"
+  }
+}
