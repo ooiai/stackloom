@@ -177,12 +177,7 @@ export function useUsersController() {
 
   const createMutation = useMutation({
     mutationFn: async (values: UserFormValues) => {
-      // return userApi.create(await buildCreateUserParam(values, t))
-      console.log(
-        "create user with values:",
-        await buildCreateUserParam(values, t)
-      )
-      return null
+      return userApi.create(await buildCreateUserParam(values, t))
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["base", "users"] })
