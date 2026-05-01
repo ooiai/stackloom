@@ -11,8 +11,8 @@ Create a new backend module scaffold from migration schema.
 
 Usage:
   sh backend/scripts/new_backend_module.sh p=base table=users
-  sh backend/scripts/new_backend_module.sh p=base table=roles migration=basemigrate
-  sh backend/scripts/new_backend_module.sh p=web table=articles migration=webmigrate
+  sh backend/scripts/new_backend_module.sh p=base table=roles migration=basemigrate api-http=true
+  sh backend/scripts/new_backend_module.sh p=web table=articles migration=webmigrate api-http=true
   sh backend/scripts/new_backend_module.sh p=base table=users api-http=false
 
 Parameters:
