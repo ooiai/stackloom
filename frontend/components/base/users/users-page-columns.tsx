@@ -80,11 +80,7 @@ export function createUserColumns({
           column={column}
         />
       ),
-      cell: ({ row }) => (
-        <span className="text-[13px] text-foreground/90">
-          {row.original.phone || "-"}
-        </span>
-      ),
+      cell: ({ row }) => <span>{row.original.phone || "-"}</span>,
       size: 160,
       enableSorting: false,
       enableHiding: false,
@@ -99,11 +95,7 @@ export function createUserColumns({
           column={column}
         />
       ),
-      cell: ({ row }) => (
-        <span className="text-[13px] text-foreground/90">
-          {row.original.email || "-"}
-        </span>
-      ),
+      cell: ({ row }) => <span>{row.original.email || "-"}</span>,
       size: 220,
       enableSorting: false,
     },
@@ -132,9 +124,7 @@ export function createUserColumns({
         />
       ),
       cell: ({ row }) => (
-        <span className="text-[12px] text-muted-foreground">
-          {formatDateTimeAt(row.original.created_at)}
-        </span>
+        <span>{formatDateTimeAt(row.original.created_at)}</span>
       ),
       size: 180,
       enableSorting: false,

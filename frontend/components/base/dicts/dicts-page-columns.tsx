@@ -95,7 +95,7 @@ export function createDictColumns({
         />
       ),
       cell: ({ row }) => (
-        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-[11px] text-primary">
+        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-xs text-primary">
           {row.original.dict_key}
         </code>
       ),
@@ -113,7 +113,7 @@ export function createDictColumns({
         />
       ),
       cell: ({ row }) => (
-        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-[11px] text-primary">
+        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-xs text-primary">
           {row.original.dict_value}
         </code>
       ),
@@ -163,7 +163,7 @@ export function createDictColumns({
         />
       ),
       cell: ({ row }) => (
-        <span className="line-clamp-2 text-[13px] leading-5 text-muted-foreground">
+        <span className="line-clamp-2 text-sm leading-5 text-muted-foreground">
           {row.original.description || t("common.misc.none")}
         </span>
       ),

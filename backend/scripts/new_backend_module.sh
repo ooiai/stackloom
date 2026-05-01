@@ -13,6 +13,7 @@ Usage:
   sh backend/scripts/new_backend_module.sh p=base table=users
   sh backend/scripts/new_backend_module.sh p=base table=roles migration=basemigrate
   sh backend/scripts/new_backend_module.sh p=web table=articles migration=webmigrate
+  sh backend/scripts/new_backend_module.sh p=base table=users api-http=false
 
 Parameters:
   p=...              module group / crate suffix, for example: base or web
@@ -21,20 +22,25 @@ Parameters:
   Entity=...         singular PascalCase name, optional
   migration=...      migration directory name, optional
   m=...              alias of migration
+  api-http=...       whether to generate api-http scaffold, optional
+  api_http=...       alias of api-http
+  http=...           alias of api-http
 
 Defaults:
   - p=base => migration=basemigrate
   - p=web  => migration=webmigrate
+  - api-http=true
 
 Behavior:
   - reads backend/migrations/<migration>/*create_<table>.sql
   - parses the CREATE TABLE schema
-  - creates domain / infra / api-http scaffold files from schema fields
+  - creates domain / infra scaffold files from schema fields
+  - optionally creates api-http scaffold files from schema fields
   - updates crates/domain-<p>/src/lib.rs
   - updates crates/infra-<p>/src/lib.rs
 
 Notes:
-  - api-http parent mod wiring and app wiring are still manual
+  - api-http parent mod wiring and app wiring are still manual when api-http is generated
   - generated validation is intentionally minimal and schema-driven
 EOF
 }
@@ -48,6 +54,26 @@ require_value() {
     usage >&2
     exit 1
   fi
+}
+
+parse_bool_flag() {
+  key="$1"
+  value="$2"
+  normalized="$(printf '%s' "$value" | tr '[:upper:]' '[:lower:]')"
+
+  case "$normalized" in
+    1|true|yes|y|on)
+      printf '%s' "true"
+      ;;
+    0|false|no|n|off)
+      printf '%s' "false"
+      ;;
+    *)
+      echo "[error] invalid boolean parameter: $key=$value" >&2
+      echo "[hint] use true/false, yes/no, on/off, or 1/0" >&2
+      exit 1
+      ;;
+  esac
 }
 
 to_pascal_case() {
@@ -96,6 +122,7 @@ table=""
 entity=""
 Entity=""
 migration=""
+generate_api_http="true"
 
 for arg in "$@"; do
   case "$arg" in
@@ -120,6 +147,15 @@ for arg in "$@"; do
       ;;
     m=*)
       migration="${arg#m=}"
+      ;;
+    api-http=*)
+      generate_api_http="${arg#api-http=}"
+      ;;
+    api_http=*)
+      generate_api_http="${arg#api_http=}"
+      ;;
+    http=*)
+      generate_api_http="${arg#http=}"
       ;;
     *)
       echo "[error] unknown argument: $arg" >&2
@@ -161,11 +197,14 @@ if ! command -v node >/dev/null 2>&1; then
   exit 1
 fi
 
-node - "$BACKEND_DIR" "$p" "$table" "$entity" "$Entity" "$migration" <<'NODE'
+generate_api_http="$(parse_bool_flag "api-http" "$generate_api_http")"
+
+node - "$BACKEND_DIR" "$p" "$table" "$entity" "$Entity" "$migration" "$generate_api_http" <<'NODE'
 const fs = require("fs");
 const path = require("path");
 
-const [backendDir, p, table, entity, Entity, migration] = process.argv.slice(2);
+const [backendDir, p, table, entity, Entity, migration, generateApiHttpArg] = process.argv.slice(2);
+const shouldGenerateApiHttp = parseBoolean(generateApiHttpArg);
 const Tables = toPascalCase(table);
 
 const domainCrateDir = path.join(backendDir, "crates", `domain-${p}`);
@@ -182,6 +221,25 @@ const infraDir = path.join(infraCrateDir, "src", entity);
 function fail(message) {
   console.error(`[error] ${message}`);
   process.exit(1);
+}
+
+function parseBoolean(value) {
+  switch (String(value).toLowerCase()) {
+    case "1":
+    case "true":
+    case "yes":
+    case "y":
+    case "on":
+      return true;
+    case "0":
+    case "false":
+    case "no":
+    case "n":
+    case "off":
+      return false;
+    default:
+      fail(`invalid boolean value for api-http: ${value}`);
+  }
 }
 
 function toPascalCase(value) {
@@ -522,11 +580,15 @@ if (!fs.existsSync(infraCrateDir)) {
 
 ensurePathAbsent(domainDir);
 ensurePathAbsent(infraDir);
-ensurePathAbsent(apiModuleDir);
+if (shouldGenerateApiHttp) {
+  ensurePathAbsent(apiModuleDir);
+}
 
 fs.mkdirSync(domainDir, { recursive: true });
 fs.mkdirSync(infraDir, { recursive: true });
-fs.mkdirSync(apiModuleDir, { recursive: true });
+if (shouldGenerateApiHttp) {
+  fs.mkdirSync(apiModuleDir, { recursive: true });
+}
 
 const migrationFile = readMigrationFile();
 const migrationSql = fs.readFileSync(migrationFile, "utf8");
@@ -1402,10 +1464,12 @@ fs.writeFileSync(path.join(infraDir, "mod.rs"), infraMod);
 fs.writeFileSync(path.join(infraDir, "repo.rs"), infraRepo);
 fs.writeFileSync(path.join(infraDir, "service.rs"), infraService);
 
-fs.writeFileSync(path.join(apiModuleDir, "mod.rs"), apiMod);
-fs.writeFileSync(path.join(apiModuleDir, "req.rs"), reqFile);
-fs.writeFileSync(path.join(apiModuleDir, "resp.rs"), respFile);
-fs.writeFileSync(path.join(apiModuleDir, "handlers.rs"), handlersFile);
+if (shouldGenerateApiHttp) {
+  fs.writeFileSync(path.join(apiModuleDir, "mod.rs"), apiMod);
+  fs.writeFileSync(path.join(apiModuleDir, "req.rs"), reqFile);
+  fs.writeFileSync(path.join(apiModuleDir, "resp.rs"), respFile);
+  fs.writeFileSync(path.join(apiModuleDir, "handlers.rs"), handlersFile);
+}
 
 appendUniqueLine(domainLib, `pub mod ${entity};`);
 appendUniqueLine(domainLib, `pub use ${entity}::repo::${Entity}Repository;`);
@@ -1423,8 +1487,14 @@ appendUniqueLine(infraLib, `pub use ${entity}::service::${Entity}ServiceImpl;`);
 console.log("[done] created backend scaffold:");
 console.log(`  - ${domainDir}`);
 console.log(`  - ${infraDir}`);
-console.log(`  - ${apiModuleDir}`);
+if (shouldGenerateApiHttp) {
+  console.log(`  - ${apiModuleDir}`);
+}
 console.log("");
+if (!shouldGenerateApiHttp) {
+  console.log("[skip] api-http scaffold generation disabled.");
+  console.log("");
+}
 console.log("[done] migration source:");
 console.log(`  - ${migrationFile}`);
 console.log("");
@@ -1432,15 +1502,20 @@ console.log("[done] updated exports:");
 console.log(`  - ${domainLib}`);
 console.log(`  - ${infraLib}`);
 console.log("");
-console.log("[next] manual wiring still required:");
-console.log(`  - ${path.join(backendDir, "crates", "api-http", "src", p, "mod.rs")}`);
-console.log(`    add: pub mod ${table};`);
-console.log(`    add state field: pub ${entity}_service: Arc<dyn ${Entity}Service>,`);
-console.log(`    nest router: .nest("/${table}", ${table}::router(state.clone()))`);
-console.log(`  - ${path.join(backendDir, "crates", "api-http", "src", "lib.rs")}`);
-console.log(`    optionally re-export router alias and DTOs for ${table}`);
-console.log(`  - ${path.join(backendDir, "crates", "app", "src", "lib.rs")}`);
-console.log(`    add: ${entity}_service: Arc::new(${Entity}ServiceImpl::new(base_pool.clone())),`);
+if (shouldGenerateApiHttp) {
+  console.log("[next] manual wiring still required:");
+  console.log(`  - ${path.join(backendDir, "crates", "api-http", "src", p, "mod.rs")}`);
+  console.log(`    add: pub mod ${table};`);
+  console.log(`    add state field: pub ${entity}_service: Arc<dyn ${Entity}Service>,`);
+  console.log(`    nest router: .nest("/${table}", ${table}::router(state.clone()))`);
+  console.log(`  - ${path.join(backendDir, "crates", "api-http", "src", "lib.rs")}`);
+  console.log(`    optionally re-export router alias and DTOs for ${table}`);
+  console.log(`  - ${path.join(backendDir, "crates", "app", "src", "lib.rs")}`);
+  console.log(`    add: ${entity}_service: Arc::new(${Entity}ServiceImpl::new(base_pool.clone())),`);
+} else {
+  console.log("[next] api-http scaffold generation skipped.");
+  console.log("  - no api-http/app wiring reminders are required.");
+}
 console.log("");
 console.log("[hint] generated fields come from migration schema.");
 console.log(`  - parsed columns: ${columns.map((column) => column.name).join(", ")}`);

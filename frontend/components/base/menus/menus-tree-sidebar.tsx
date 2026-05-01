@@ -255,7 +255,7 @@ export function MenusTreeSidebar({
             <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
               <LayoutPanelTopIcon className="size-8 text-muted-foreground/50" />
               <div className="space-y-1">
-                <p className="text-md font-medium text-foreground">
+                <p className="text-sm font-medium text-foreground">
                   {treeSearch.trim()
                     ? t("menus.sidebar.emptySearchTitle")
                     : t("menus.sidebar.emptyDefaultTitle")}

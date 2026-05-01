@@ -95,7 +95,7 @@ export function createMenuColumns({
         />
       ),
       cell: ({ row }) => (
-        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-[11px] text-primary">
+        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-xs text-primary">
           {row.original.code || t("common.misc.none")}
         </code>
       ),
@@ -113,7 +113,7 @@ export function createMenuColumns({
         />
       ),
       cell: ({ row }) => (
-        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-[11px] text-primary">
+        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-xs text-primary">
           {row.original.path || t("common.misc.none")}
         </code>
       ),
@@ -131,7 +131,7 @@ export function createMenuColumns({
         />
       ),
       cell: ({ row }) => (
-        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-[11px] text-primary">
+        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-xs text-primary">
           {row.original.sort}
         </code>
       ),
@@ -149,7 +149,7 @@ export function createMenuColumns({
         />
       ),
       cell: ({ row }) => (
-        <span className="line-clamp-2 text-[13px] leading-5 text-muted-foreground">
+        <span className="line-clamp-2 text-sm leading-5 text-muted-foreground">
           {row.original.component || t("common.misc.none")}
         </span>
       ),

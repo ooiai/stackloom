@@ -57,12 +57,12 @@ export function TenantsDetailPanel({
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
         <Button
           type="button"
           variant="ghost"
           size="sm"
-          className="h-auto rounded-md px-1.5 py-1 text-xs text-muted-foreground hover:text-foreground"
+          className="h-auto rounded-md px-1.5 py-1 text-sm text-muted-foreground hover:text-foreground"
           onClick={() => onSelectNode(null)}
         >
           <HomeIcon className="size-3.5" />
@@ -70,13 +70,13 @@ export function TenantsDetailPanel({
         </Button>
         {breadcrumb.map((item, index) => (
           <div key={item.id} className="flex items-center gap-1">
-            <ChevronRightIcon className="size-3 text-muted-foreground/60" />
+            <ChevronRightIcon className="size-3.5 text-muted-foreground/60" />
             <Button
               type="button"
               variant="ghost"
               size="sm"
               className={cn(
-                "h-auto rounded-md px-1.5 py-1 text-xs transition hover:text-foreground",
+                "h-auto rounded-md px-1.5 py-1 text-sm transition hover:text-foreground",
                 index === breadcrumb.length - 1 && "font-medium text-foreground"
               )}
               onClick={() => onSelectNode(item.id)}
@@ -124,7 +124,7 @@ export function TenantsDetailPanel({
                 value={selectedNode.expired_at || t("common.misc.none")}
               />
             </div>
-            <p className="max-w-3xl text-[13px] leading-6 text-muted-foreground">
+            <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
               {selectedNode.description || t("tenants.detail.noDescription")}
             </p>
           </div>
