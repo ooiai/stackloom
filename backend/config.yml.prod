@@ -41,11 +41,11 @@ aws-cos:
   aliyun_bucket: your_bucket
   aliyun_base_url: https://your_bucket.oss-cn-hangzhou.aliyuncs.com
   # RustFS
-  rustfs_accesskey_id: Co5uIm6v2NFV7ha4fqWy
-  # rustfs_accesskey_id: esNzh261XTMSQrJa9lBf
-  rustfs_accesskey_secret: 9zlavMPNcIBTXxV08hwHYdKrtsZ2gUmuWQAJbSO5
-  # rustfs_accesskey_secret: 3TNhx1c5brVpvlSKOk0P4H7L92GAsiaZtwdqmoRF
-  rustfs_endpoint: http://fs.dev.topedu.school
+  rustfs_accesskey_id: xxxxxxxxxx
+  # rustfs_accesskey_id: xxxxxxxxxxxxxxxx
+  rustfs_accesskey_secret: xxxxxxxxxxxxxx
+  # rustfs_accesskey_secret: xxxxxxxxxxxxx
+  rustfs_endpoint: http://xx.xx.xx.xx
   rustfs_region_id: us-east-1
   rustfs_bucket: topedu
   rustfs_expiration: 3600
@@ -53,11 +53,11 @@ aws-cos:
   # MinIO
   minio_accesskey_id: your_access_key_id
   minio_accesskey_secret: your_access_key_secret
-  minio_endpoint: http://dev.topedu.school/rustfs/upload
+  minio_endpoint: http://xx.xx.xx/rustfs/upload
   minio_region_id: us-east-1
   minio_bucket: your_bucket
   minio_expiration: 3600
-  minio_base_url: http://dev.topedu.school/rustfs/upload/your_bucket
+  minio_base_url: http://xx.xx.xxx/rustfs/upload/your_bucket
 
 sms:
   debug: true
@@ -82,11 +82,11 @@ auth:
   refresh_expires_at: 1296000
 
 auth-basics:
-  # topedu::basic
+  # stackloom::basic
   - ZEc5d1pXUjFPanBoZFhSbw==
-  # topedu::basic
+  # stackloom::basic
   - ZEc5d1pXUjFPanBpWVhOcFl3PT0=
-  # topedu::refresh_token
+  # stackloom::refresh_token
   - ZEc5d1pXUjFPanB5WldaeVpYTm9YM1J2YTJWdQ==
 
 # Ignore urls no Basic token and Bearer token
