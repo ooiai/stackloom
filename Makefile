@@ -23,6 +23,7 @@ endif
 MIGRATE_SOURCE := .$(subst ./backend,,$(MIGRATE_PATH))
 
 .PHONY: help git-run git-commit clean add install web-dev server check \
+	nbm be-module new-backend-module new_backend_module \
 	migrate-check migrate-add migrate-run migrate-revert migrate-info
 
 help:
@@ -37,6 +38,9 @@ help:
 	@echo "  web-dev                                Start frontend development server"
 	@echo "  server                                 Start backend server"
 	@echo "  check                                  Run cargo check in backend"
+	@echo "  nbm p=base table=users [entity=user] [Entity=User] [migration=basemigrate] [api_http=true|false]"
+	@echo "                                         Generate backend module scaffold via backend/scripts/new_backend_module.sh"
+	@echo "  be-module / new-backend-module / new_backend_module Compatible aliases of nbm"
 	@echo ""
 	@echo "SQLx migration commands:"
 	@echo "  migrate-add MIGRATE_TARGET=base|web name=create_users"
@@ -115,6 +119,25 @@ server:
 check:
 	@echo "Checking backend run server in $(BACKEND_PATH)..."
 	$(CD) $(BACKEND_PATH) && $(CARGO) check
+
+# Backend module scaffold generator
+# Usage: make nbm p=base table=users [entity=user] [Entity=User] [migration=basemigrate] [api_http=true|false]
+nbm be-module new-backend-module new_backend_module:
+	@if [ -z "$(p)" ] || [ -z "$(table)" ]; then \
+		echo "Usage: make nbm p=base table=users [entity=user] [Entity=User] [migration=basemigrate|webmigrate] [api_http=true|false]"; \
+		exit 1; \
+	fi
+	@set -- p=$(p) table=$(table); \
+	api_http_value="$(API_HTTP)"; \
+	if [ -z "$$api_http_value" ]; then api_http_value="$(api_http)"; fi; \
+	if [ -n "$(entity)" ]; then set -- "$$@" entity=$(entity); fi; \
+	if [ -n "$(Entity)" ]; then set -- "$$@" Entity=$(Entity); fi; \
+	if [ -n "$(migration)" ]; then set -- "$$@" migration=$(migration); fi; \
+	if [ -n "$$api_http_value" ]; then set -- "$$@" api-http=$$api_http_value; fi; \
+	printf 'Running backend scaffold: sh backend/scripts/new_backend_module.sh'; \
+	for arg in "$$@"; do printf ' %s' "$$arg"; done; \
+	printf '\n'; \
+	sh backend/scripts/new_backend_module.sh "$$@"
 
 # SQLx migration helpers
 migrate-check:
