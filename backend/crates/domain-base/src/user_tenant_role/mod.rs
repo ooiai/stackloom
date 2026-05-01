@@ -6,7 +6,7 @@ pub use service::UserTenantRoleService;
 
 use chrono::{DateTime, Utc};
 
-use neocrates::response::error::{AppError, AppResult};
+use neocrates::response::error::AppResult;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UserTenantRole {
@@ -27,8 +27,6 @@ impl UserTenantRole {
             user_tenant_id: cmd.user_tenant_id,
             role_id: cmd.role_id,
             created_at: now,
-
-
         })
     }
 
@@ -42,7 +40,6 @@ impl UserTenantRole {
         if let Some(role_id) = cmd.role_id {
             self.role_id = role_id;
         }
-
 
         Ok(())
     }

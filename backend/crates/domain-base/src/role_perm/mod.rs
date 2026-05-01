@@ -6,7 +6,7 @@ pub use service::RolePermService;
 
 use chrono::{DateTime, Utc};
 
-use neocrates::response::error::{AppError, AppResult};
+use neocrates::response::error::AppResult;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RolePerm {
@@ -27,8 +27,6 @@ impl RolePerm {
             role_id: cmd.role_id,
             perm_id: cmd.perm_id,
             created_at: now,
-
-
         })
     }
 
@@ -42,7 +40,6 @@ impl RolePerm {
         if let Some(perm_id) = cmd.perm_id {
             self.perm_id = perm_id;
         }
-
 
         Ok(())
     }

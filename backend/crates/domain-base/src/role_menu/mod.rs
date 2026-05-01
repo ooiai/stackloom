@@ -6,7 +6,7 @@ pub use service::RoleMenuService;
 
 use chrono::{DateTime, Utc};
 
-use neocrates::response::error::{AppError, AppResult};
+use neocrates::response::error::AppResult;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RoleMenu {
@@ -27,8 +27,6 @@ impl RoleMenu {
             role_id: cmd.role_id,
             menu_id: cmd.menu_id,
             created_at: now,
-
-
         })
     }
 
@@ -42,7 +40,6 @@ impl RoleMenu {
         if let Some(menu_id) = cmd.menu_id {
             self.menu_id = menu_id;
         }
-
 
         Ok(())
     }
