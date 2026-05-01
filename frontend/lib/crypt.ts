@@ -161,12 +161,9 @@ class CryptUtil {
   }
 
   // Bcrypt Hashing with dynamic import to avoid `require()` and satisfy ESM/linters
-  bcryptHash = async (password: string, saltRounds: number = 10) => {
-    // Use dynamic import to avoid `require()` and satisfy ESM/linters
-    const bcryptMod = await import("bcryptjs")
-    // bcryptjs may export as default or named; support both
-    const bcrypt: any = (bcryptMod as any).default ?? bcryptMod
-    return await bcrypt.hash(password, saltRounds)
+  md5Double = (password: string) => {
+    const first = CryptoJS.MD5(password).toString()
+    return CryptoJS.MD5(first).toString()
   }
 
   // AES encryption

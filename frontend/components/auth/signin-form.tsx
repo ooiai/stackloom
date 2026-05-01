@@ -143,7 +143,7 @@ export function SigninForm({
   }
 
   const handleVerifySuccess = async (verifyData: VerifyParam) => {
-    const hashedPassword = await CryptUtil.bcryptHash(values.password || "", 10)
+    const hashedPassword = CryptUtil.md5Double(values.password || "")
 
     const payload: SliderCaptcha = {
       account: values.account,

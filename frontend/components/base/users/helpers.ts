@@ -236,7 +236,7 @@ export async function buildCreateUserParam(
     username: parsed.username,
     email: parsed.email,
     phone: parsed.phone,
-    password_hash: await CryptUtil.bcryptHash(parsed.password, 10),
+    password_hash: CryptUtil.md5Double(parsed.password),
     nickname: parsed.nickname,
     avatar_url: parsed.avatar_url,
     gender: parsed.gender,

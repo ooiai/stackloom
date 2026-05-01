@@ -68,3 +68,4 @@ output/**
 .playwright-cli/**
 **/**.pdf
 backend/config.yml
+spec
