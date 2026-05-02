@@ -49,7 +49,7 @@ impl UserRepository for SqlxUserRepository {
                 deleted_at
             )
             VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12::inet, $13, $14, $15
             )
             RETURNING
                 id,
@@ -63,7 +63,7 @@ impl UserRepository for SqlxUserRepository {
                 status,
                 bio,
                 last_login_at,
-                last_login_ip,
+                last_login_ip::text AS last_login_ip,
                 created_at,
                 updated_at,
                 deleted_at
@@ -106,7 +106,7 @@ impl UserRepository for SqlxUserRepository {
                 status,
                 bio,
                 last_login_at,
-                last_login_ip,
+                last_login_ip::text AS last_login_ip,
                 created_at,
                 updated_at,
                 deleted_at
@@ -138,7 +138,7 @@ impl UserRepository for SqlxUserRepository {
                 status,
                 bio,
                 last_login_at,
-                last_login_ip,
+                last_login_ip::text AS last_login_ip,
                 created_at,
                 updated_at,
                 deleted_at
@@ -202,7 +202,7 @@ impl UserRepository for SqlxUserRepository {
                 status,
                 bio,
                 last_login_at,
-                last_login_ip,
+                last_login_ip::text AS last_login_ip,
                 created_at,
                 updated_at,
                 deleted_at
@@ -277,7 +277,7 @@ impl UserRepository for SqlxUserRepository {
                 status,
                 bio,
                 last_login_at,
-                last_login_ip,
+                last_login_ip::text AS last_login_ip,
                 created_at,
                 updated_at,
                 deleted_at

@@ -6,6 +6,7 @@ use domain_base::{
 };
 use neocrates::{
     async_trait::async_trait,
+    crypto::core::Crypto,
     helper::core::snowflake::generate_sonyflake_id,
     response::error::{AppError, AppResult},
     sqlxhelper::pool::SqlxPool,
@@ -60,6 +61,8 @@ where
         }
 
         cmd.id = generate_sonyflake_id() as i64;
+        cmd.password_hash = Crypto::hash_password(&cmd.password_hash)
+            .map_err(|err| AppError::data_here(format!("failed to hash user password: {err}")))?;
 
         let user = User::new(cmd).map_err(|err| AppError::ValidationError(err.to_string()))?;
         self.repository.create(&user).await
