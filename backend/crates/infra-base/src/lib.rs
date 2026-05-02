@@ -35,3 +35,7 @@ pub mod role_perm;
 pub use role_perm::RolePermRow;
 pub use role_perm::repo::SqlxRolePermRepository;
 pub use role_perm::service::RolePermServiceImpl;
+pub mod role;
+pub use role::RoleRow;
+pub use role::repo::SqlxRoleRepository;
+pub use role::service::RoleServiceImpl;
