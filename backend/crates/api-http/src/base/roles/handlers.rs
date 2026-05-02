@@ -5,15 +5,17 @@ use super::{
     },
     resp::{PaginateRoleResp, RoleChildrenResp, RoleResp, RoleTreeNodeResp, RoleTreeResp},
 };
-use crate::base::BaseHttpState;
+use crate::base::{BaseHttpState, logging};
 use domain_base::{
     CreateRoleCmd, PageRoleCmd, UpdateRoleCmd,
     role::{ChildrenRoleCmd, RemoveCascadeRoleCmd, TreeRoleCmd},
 };
 use neocrates::{
-    axum::{Json, extract::State},
+    axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
+    middlewares::RequestTraceContext,
     response::error::{AppError, AppResult},
+    serde_json::json,
     tracing,
 };
 use validator::Validate;
@@ -22,6 +24,7 @@ pub type RolesState = BaseHttpState;
 
 pub async fn create(
     State(state): State<RolesState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreateRoleReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Create Role Req: {:?}...", req);
@@ -30,7 +33,22 @@ pub async fn create(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let cmd: CreateRoleCmd = req.into();
-    state.role_service.create(cmd).await?;
+    let role = state.role_service.create(cmd).await?;
+    let role_id = role.id;
+    let snapshot = logging::serialize_snapshot(RoleResp::from(role));
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "roles",
+        "role",
+        Some(role_id),
+        role_id.to_string(),
+        "create",
+        "create role".to_string(),
+        None,
+        Some(snapshot),
+    )
+    .await;
 
     Ok(Json(()))
 }
@@ -98,6 +116,7 @@ pub async fn children(
 
 pub async fn update(
     State(state): State<RolesState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdateRoleReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Update Role Req: {:?}...", req);
@@ -106,14 +125,31 @@ pub async fn update(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let id = req.id;
+    let before_snapshot =
+        logging::serialize_snapshot(RoleResp::from(state.role_service.get(id).await?));
     let cmd: UpdateRoleCmd = req.into();
-    state.role_service.update(id, cmd).await?;
+    let role = state.role_service.update(id, cmd).await?;
+    let after_snapshot = logging::serialize_snapshot(RoleResp::from(role));
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "roles",
+        "role",
+        Some(id),
+        id.to_string(),
+        "update",
+        "update role".to_string(),
+        Some(before_snapshot),
+        Some(after_snapshot),
+    )
+    .await;
 
     Ok(Json(()))
 }
 
 pub async fn delete(
     State(state): State<RolesState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<DeleteRoleReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Delete Role Req: {:?}...", req);
@@ -121,13 +157,38 @@ pub async fn delete(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
-    state.role_service.delete(req.ids).await?;
+    let ids = req.ids.clone();
+    let before_snapshot = if ids.len() == 1 {
+        Some(logging::serialize_snapshot(RoleResp::from(
+            state.role_service.get(ids[0]).await?,
+        )))
+    } else {
+        Some(json!({ "ids": ids.clone() }))
+    };
+    state.role_service.delete(ids.clone()).await?;
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "roles",
+        "role",
+        (ids.len() == 1).then_some(ids[0]),
+        ids.iter()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>()
+            .join(","),
+        "delete",
+        "delete role".to_string(),
+        before_snapshot,
+        Some(json!({ "ids": ids })),
+    )
+    .await;
 
     Ok(Json(()))
 }
 
 pub async fn remove_cascade(
     State(state): State<RolesState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<RemoveCascadeRoleReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Remove Cascade Role Req: {:?}...", req);
@@ -135,8 +196,24 @@ pub async fn remove_cascade(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
+    let id = req.id;
+    let before_snapshot =
+        logging::serialize_snapshot(RoleResp::from(state.role_service.get(id).await?));
     let cmd: RemoveCascadeRoleCmd = req.into();
     state.role_service.remove_cascade(cmd).await?;
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "roles",
+        "role",
+        Some(id),
+        id.to_string(),
+        "remove_cascade",
+        "remove cascade role".to_string(),
+        Some(before_snapshot),
+        Some(json!({ "id": id, "cascade": true })),
+    )
+    .await;
 
     Ok(Json(()))
 }

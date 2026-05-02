@@ -300,7 +300,12 @@ impl Menu {
 
         self.code.to_lowercase().contains(&keyword)
             || self.name.to_lowercase().contains(&keyword)
-            || self.path.as_deref().unwrap_or_default().to_lowercase().contains(&keyword)
+            || self
+                .path
+                .as_deref()
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains(&keyword)
             || self
                 .component
                 .as_deref()
@@ -313,6 +318,11 @@ impl Menu {
                 .unwrap_or_default()
                 .to_lowercase()
                 .contains(&keyword)
-            || self.icon.as_deref().unwrap_or_default().to_lowercase().contains(&keyword)
+            || self
+                .icon
+                .as_deref()
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains(&keyword)
     }
 }

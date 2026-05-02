@@ -11,3 +11,4 @@ edition.workspace = true
 neocrates = { workspace = true, features = ["logger", "aws"] }
 chrono = { workspace = true, features = ["serde"] }
 bon.workspace = true
+serde_json.workspace = true

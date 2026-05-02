@@ -502,9 +502,7 @@ impl MenuRepository for SqlxMenuRepository {
 
         let now = Utc::now();
 
-        let mut builder = QueryBuilder::new(
-            "UPDATE menus SET deleted_at = "
-        );
+        let mut builder = QueryBuilder::new("UPDATE menus SET deleted_at = ");
         builder.push_bind(now);
         builder.push(", updated_at = ");
         builder.push_bind(now);

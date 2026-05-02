@@ -1,14 +1,7 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+pub mod operation_log;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub use operation_log::repo::OperationLogRepository;
+pub use operation_log::service::OperationLogService;
+pub use operation_log::{
+    CreateOperationLogCmd, ListOperationLogCmd, OperationLog, PageOperationLogCmd,
+};

@@ -5,14 +5,16 @@ use super::{
     },
     resp::{DictChildrenResp, DictResp, DictTreeNodeResp, DictTreeResp, PaginateDictResp},
 };
-use crate::base::BaseHttpState;
+use crate::base::{BaseHttpState, logging};
 use domain_base::{
     ChildrenDictCmd, CreateDictCmd, PageDictCmd, RemoveCascadeDictCmd, TreeDictCmd, UpdateDictCmd,
 };
 use neocrates::{
-    axum::{Json, extract::State},
+    axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
+    middlewares::RequestTraceContext,
     response::error::{AppError, AppResult},
+    serde_json::json,
     tracing,
 };
 use validator::Validate;
@@ -29,6 +31,7 @@ pub type DictsState = BaseHttpState;
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn create(
     State(state): State<DictsState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreateDictReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Create Dict Req: {:?}...", req);
@@ -36,7 +39,22 @@ pub async fn create(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let cmd: CreateDictCmd = req.into();
-    state.dict_service.create(cmd).await?;
+    let dict = state.dict_service.create(cmd).await?;
+    let dict_id = dict.id;
+    let snapshot = logging::serialize_snapshot(DictResp::from(dict));
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "dicts",
+        "dict",
+        Some(dict_id),
+        dict_id.to_string(),
+        "create",
+        "create dict".to_string(),
+        None,
+        Some(snapshot),
+    )
+    .await;
 
     Ok(Json(()))
 }
@@ -148,6 +166,7 @@ pub async fn children(
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn update(
     State(state): State<DictsState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdateDictReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Update Dict Req: {:?}...", req);
@@ -156,8 +175,24 @@ pub async fn update(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let id = req.id;
+    let before_snapshot =
+        logging::serialize_snapshot(DictResp::from(state.dict_service.get(id).await?));
     let cmd: UpdateDictCmd = req.into();
-    state.dict_service.update(id, cmd).await?;
+    let dict = state.dict_service.update(id, cmd).await?;
+    let after_snapshot = logging::serialize_snapshot(DictResp::from(dict));
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "dicts",
+        "dict",
+        Some(id),
+        id.to_string(),
+        "update",
+        "update dict".to_string(),
+        Some(before_snapshot),
+        Some(after_snapshot),
+    )
+    .await;
 
     Ok(Json(()))
 }
@@ -172,6 +207,7 @@ pub async fn update(
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn delete(
     State(state): State<DictsState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<DeleteDictReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Delete Dict Req: {:?}...", req);
@@ -179,7 +215,31 @@ pub async fn delete(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
-    state.dict_service.delete(req.ids).await?;
+    let ids = req.ids.clone();
+    let before_snapshot = if ids.len() == 1 {
+        Some(logging::serialize_snapshot(DictResp::from(
+            state.dict_service.get(ids[0]).await?,
+        )))
+    } else {
+        Some(json!({ "ids": ids.clone() }))
+    };
+    state.dict_service.delete(ids.clone()).await?;
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "dicts",
+        "dict",
+        (ids.len() == 1).then_some(ids[0]),
+        ids.iter()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>()
+            .join(","),
+        "delete",
+        "delete dict".to_string(),
+        before_snapshot,
+        Some(json!({ "ids": ids })),
+    )
+    .await;
 
     Ok(Json(()))
 }
@@ -194,6 +254,7 @@ pub async fn delete(
 /// * `AppResult<Json<()>>` - The result of the cascade delete operation.
 pub async fn remove_cascade(
     State(state): State<DictsState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<RemoveCascadeDictReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Remove Cascade Dict Req: {:?}...", req);
@@ -201,8 +262,24 @@ pub async fn remove_cascade(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
+    let id = req.id;
+    let before_snapshot =
+        logging::serialize_snapshot(DictResp::from(state.dict_service.get(id).await?));
     let cmd: RemoveCascadeDictCmd = req.into();
     state.dict_service.remove_cascade(cmd).await?;
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "dicts",
+        "dict",
+        Some(id),
+        id.to_string(),
+        "remove_cascade",
+        "remove cascade dict".to_string(),
+        Some(before_snapshot),
+        Some(json!({ "id": id, "cascade": true })),
+    )
+    .await;
 
     Ok(Json(()))
 }

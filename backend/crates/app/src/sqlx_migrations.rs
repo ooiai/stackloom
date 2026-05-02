@@ -21,9 +21,14 @@ impl SqlxMigrations {
         // `SqlxPool::new(...)` in neocrates already ensures the target database
         // exists before connecting, so migration init only needs to run the
         // configured migrator against the provided pool.
-        let base_migrator = sqlx::migrate!("../../migrations/basemigrate");
+        let mut base_migrator = sqlx::migrate!("../../migrations/basemigrate");
+        base_migrator.set_ignore_missing(true);
         Self::migrate(pool, &base_migrator).await;
 
-        tracing::info!("Sqlx base migrations initialized successfully");
+        let mut web_migrator = sqlx::migrate!("../../migrations/webmigrate");
+        web_migrator.set_ignore_missing(true);
+        Self::migrate(pool, &web_migrator).await;
+
+        tracing::info!("Sqlx base/web migrations initialized successfully");
     }
 }

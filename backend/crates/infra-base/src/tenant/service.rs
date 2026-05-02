@@ -57,13 +57,14 @@ where
             self.repository
                 .find_by_id(parent_id)
                 .await?
-                .ok_or_else(|| AppError::not_found_here(format!("tenant parent not found: {parent_id}")))?;
+                .ok_or_else(|| {
+                    AppError::not_found_here(format!("tenant parent not found: {parent_id}"))
+                })?;
         }
 
         cmd.id = generate_sonyflake_id() as i64;
 
-        let tenant =
-            Tenant::new(cmd).map_err(|err| AppError::ValidationError(err.to_string()))?;
+        let tenant = Tenant::new(cmd).map_err(|err| AppError::ValidationError(err.to_string()))?;
 
         self.repository.create(&tenant).await
     }
@@ -148,7 +149,9 @@ where
             self.repository
                 .find_by_id(parent_id)
                 .await?
-                .ok_or_else(|| AppError::not_found_here(format!("tenant parent not found: {parent_id}")))?;
+                .ok_or_else(|| {
+                    AppError::not_found_here(format!("tenant parent not found: {parent_id}"))
+                })?;
 
             let descendants = self.repository.find_descendant_ids(id).await?;
             if descendants.contains(&parent_id) {

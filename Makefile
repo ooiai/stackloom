@@ -155,14 +155,14 @@ migrate-add: migrate-check
 # Usage: make migrate-run MIGRATE_TARGET=base|web
 migrate-run: migrate-check
 	@echo "Running migrations for $(MIGRATE_TARGET) from $(MIGRATE_PATH)..."
-	$(CD) $(BACKEND_PATH) && sqlx migrate run --source "$(MIGRATE_SOURCE)"
+	$(CD) $(BACKEND_PATH) && sqlx migrate run --ignore-missing --source "$(MIGRATE_SOURCE)"
 
 # Usage: make migrate-revert MIGRATE_TARGET=base|web
 migrate-revert: migrate-check
 	@echo "Reverting last migration for $(MIGRATE_TARGET) from $(MIGRATE_PATH)..."
-	$(CD) $(BACKEND_PATH) && sqlx migrate revert --source "$(MIGRATE_SOURCE)"
+	$(CD) $(BACKEND_PATH) && sqlx migrate revert --ignore-missing --source "$(MIGRATE_SOURCE)"
 
 # Usage: make migrate-info MIGRATE_TARGET=base|web
 migrate-info: migrate-check
 	@echo "Showing migration info for $(MIGRATE_TARGET) from $(MIGRATE_PATH)..."
-	$(CD) $(BACKEND_PATH) && sqlx migrate info --source "$(MIGRATE_SOURCE)"
+	$(CD) $(BACKEND_PATH) && sqlx migrate info --ignore-missing --source "$(MIGRATE_SOURCE)"

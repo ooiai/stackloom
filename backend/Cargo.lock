@@ -1909,6 +1909,7 @@ dependencies = [
  "bon",
  "chrono",
  "neocrates",
+ "serde_json",
 ]
 
 [[package]]
@@ -1918,6 +1919,7 @@ dependencies = [
  "bon",
  "chrono",
  "neocrates",
+ "serde_json",
 ]
 
 [[package]]
@@ -1928,6 +1930,7 @@ dependencies = [
  "chrono",
  "neocrates",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -3172,6 +3175,8 @@ dependencies = [
  "common",
  "domain-system",
  "neocrates",
+ "serde_json",
+ "sqlx",
 ]
 
 [[package]]
@@ -3192,6 +3197,7 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "sqlx",
  "toml 1.1.2+spec-1.1.0",
 ]
 
@@ -3740,9 +3746,7 @@ dependencies = [
 
 [[package]]
 name = "neocrates"
-version = "0.1.47"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "805894596529f9410ad2b5228435b5b001adc193c5aa1918ad5c59b50d19c507"
+version = "0.1.48"
 dependencies = [
  "anyhow",
  "argon2",

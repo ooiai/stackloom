@@ -1,13 +1,8 @@
 use std::sync::Arc;
 
 use domain_base::{
-    RoleMenu,
-    RoleMenuRepository,
-    RoleMenuService,
-    CreateRoleMenuCmd,
-    PageRoleMenuCmd,
-    UpdateRoleMenuCmd,
-    role_menu::RoleMenuPageQuery,
+    CreateRoleMenuCmd, PageRoleMenuCmd, RoleMenu, RoleMenuRepository, RoleMenuService,
+    UpdateRoleMenuCmd, role_menu::RoleMenuPageQuery,
 };
 use neocrates::{
     async_trait::async_trait,
@@ -54,8 +49,8 @@ where
 
         cmd.id = generate_sonyflake_id() as i64;
 
-        let role_menu = RoleMenu::new(cmd)
-            .map_err(|err| AppError::ValidationError(err.to_string()))?;
+        let role_menu =
+            RoleMenu::new(cmd).map_err(|err| AppError::ValidationError(err.to_string()))?;
 
         self.repository.create(&role_menu).await
     }

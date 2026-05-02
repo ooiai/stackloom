@@ -1,13 +1,8 @@
 use std::sync::Arc;
 
 use domain_base::{
-    RolePerm,
-    RolePermRepository,
-    RolePermService,
-    CreateRolePermCmd,
-    PageRolePermCmd,
-    UpdateRolePermCmd,
-    role_perm::RolePermPageQuery,
+    CreateRolePermCmd, PageRolePermCmd, RolePerm, RolePermRepository, RolePermService,
+    UpdateRolePermCmd, role_perm::RolePermPageQuery,
 };
 use neocrates::{
     async_trait::async_trait,
@@ -54,8 +49,8 @@ where
 
         cmd.id = generate_sonyflake_id() as i64;
 
-        let role_perm = RolePerm::new(cmd)
-            .map_err(|err| AppError::ValidationError(err.to_string()))?;
+        let role_perm =
+            RolePerm::new(cmd).map_err(|err| AppError::ValidationError(err.to_string()))?;
 
         self.repository.create(&role_perm).await
     }

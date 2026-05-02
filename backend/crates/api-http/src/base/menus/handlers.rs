@@ -5,15 +5,17 @@ use super::{
     },
     resp::{MenuChildrenResp, MenuResp, MenuTreeNodeResp, MenuTreeResp, PaginateMenuResp},
 };
-use crate::base::BaseHttpState;
+use crate::base::{BaseHttpState, logging};
 use domain_base::{
     CreateMenuCmd, PageMenuCmd, UpdateMenuCmd,
     menu::{ChildrenMenuCmd, RemoveCascadeMenuCmd, TreeMenuCmd},
 };
 use neocrates::{
-    axum::{Json, extract::State},
+    axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
+    middlewares::RequestTraceContext,
     response::error::{AppError, AppResult},
+    serde_json::json,
     tracing,
 };
 use validator::Validate;
@@ -30,6 +32,7 @@ pub type MenusState = BaseHttpState;
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn create(
     State(state): State<MenusState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreateMenuReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Create Menu Req: {:?}...", req);
@@ -38,7 +41,22 @@ pub async fn create(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let cmd: CreateMenuCmd = req.into();
-    state.menu_service.create(cmd).await?;
+    let menu = state.menu_service.create(cmd).await?;
+    let menu_id = menu.id;
+    let snapshot = logging::serialize_snapshot(MenuResp::from(menu));
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "menus",
+        "menu",
+        Some(menu_id),
+        menu_id.to_string(),
+        "create",
+        "create menu".to_string(),
+        None,
+        Some(snapshot),
+    )
+    .await;
 
     Ok(Json(()))
 }
@@ -150,6 +168,7 @@ pub async fn children(
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn update(
     State(state): State<MenusState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdateMenuReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Update Menu Req: {:?}...", req);
@@ -158,8 +177,24 @@ pub async fn update(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let id = req.id;
+    let before_snapshot =
+        logging::serialize_snapshot(MenuResp::from(state.menu_service.get(id).await?));
     let cmd: UpdateMenuCmd = req.into();
-    state.menu_service.update(id, cmd).await?;
+    let menu = state.menu_service.update(id, cmd).await?;
+    let after_snapshot = logging::serialize_snapshot(MenuResp::from(menu));
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "menus",
+        "menu",
+        Some(id),
+        id.to_string(),
+        "update",
+        "update menu".to_string(),
+        Some(before_snapshot),
+        Some(after_snapshot),
+    )
+    .await;
 
     Ok(Json(()))
 }
@@ -174,6 +209,7 @@ pub async fn update(
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn delete(
     State(state): State<MenusState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<DeleteMenuReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Delete Menu Req: {:?}...", req);
@@ -181,7 +217,31 @@ pub async fn delete(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
-    state.menu_service.delete(req.ids).await?;
+    let ids = req.ids.clone();
+    let before_snapshot = if ids.len() == 1 {
+        Some(logging::serialize_snapshot(MenuResp::from(
+            state.menu_service.get(ids[0]).await?,
+        )))
+    } else {
+        Some(json!({ "ids": ids.clone() }))
+    };
+    state.menu_service.delete(ids.clone()).await?;
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "menus",
+        "menu",
+        (ids.len() == 1).then_some(ids[0]),
+        ids.iter()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>()
+            .join(","),
+        "delete",
+        "delete menu".to_string(),
+        before_snapshot,
+        Some(json!({ "ids": ids })),
+    )
+    .await;
 
     Ok(Json(()))
 }
@@ -196,6 +256,7 @@ pub async fn delete(
 /// * `AppResult<Json<()>>` - The result of the cascade delete operation.
 pub async fn remove_cascade(
     State(state): State<MenusState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<RemoveCascadeMenuReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Remove Cascade Menu Req: {:?}...", req);
@@ -203,8 +264,24 @@ pub async fn remove_cascade(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
+    let id = req.id;
+    let before_snapshot =
+        logging::serialize_snapshot(MenuResp::from(state.menu_service.get(id).await?));
     let cmd: RemoveCascadeMenuCmd = req.into();
     state.menu_service.remove_cascade(cmd).await?;
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "menus",
+        "menu",
+        Some(id),
+        id.to_string(),
+        "remove_cascade",
+        "remove cascade menu".to_string(),
+        Some(before_snapshot),
+        Some(json!({ "id": id, "cascade": true })),
+    )
+    .await;
 
     Ok(Json(()))
 }

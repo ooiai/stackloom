@@ -75,11 +75,10 @@ where
 
         let parent_id = cmd.parent_id;
         if let Some(id) = parent_id {
-            let parent = self
-                .repository
-                .find_by_id(id)
-                .await?
-                .ok_or_else(|| AppError::not_found_here(format!("dict parent not found: {id}")))?;
+            let parent =
+                self.repository.find_by_id(id).await?.ok_or_else(|| {
+                    AppError::not_found_here(format!("dict parent not found: {id}"))
+                })?;
 
             cmd.dict_type = parent.dict_type;
         }

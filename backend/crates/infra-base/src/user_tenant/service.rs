@@ -1,13 +1,8 @@
 use std::sync::Arc;
 
 use domain_base::{
-    UserTenant,
-    UserTenantRepository,
-    UserTenantService,
-    CreateUserTenantCmd,
-    PageUserTenantCmd,
-    UpdateUserTenantCmd,
-    user_tenant::UserTenantPageQuery,
+    CreateUserTenantCmd, PageUserTenantCmd, UpdateUserTenantCmd, UserTenant, UserTenantRepository,
+    UserTenantService, user_tenant::UserTenantPageQuery,
 };
 use neocrates::{
     async_trait::async_trait,
@@ -54,8 +49,8 @@ where
 
         cmd.id = generate_sonyflake_id() as i64;
 
-        let user_tenant = UserTenant::new(cmd)
-            .map_err(|err| AppError::ValidationError(err.to_string()))?;
+        let user_tenant =
+            UserTenant::new(cmd).map_err(|err| AppError::ValidationError(err.to_string()))?;
 
         self.repository.create(&user_tenant).await
     }

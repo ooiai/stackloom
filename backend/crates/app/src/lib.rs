@@ -23,7 +23,8 @@ use infra_base::{
     DictServiceImpl, MenuServiceImpl, PermServiceImpl, RoleServiceImpl, TenantServiceImpl,
     UserServiceImpl,
 };
-use infra_system::SysModule;
+use infra_system::{AuditLogServiceImpl, SysModule, SystemLogServiceImpl};
+use infra_web::OperationLogServiceImpl;
 
 mod diesel_init;
 mod diesel_migrations;
@@ -79,6 +80,9 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     let trace_layer = ServiceBuilder::new().layer(TraceLayer::new_for_http());
     // SMS Config initialization
     let sms_config = SmsInit::init(cfg.clone());
+    let system_log_service = Arc::new(SystemLogServiceImpl::new(base_pool.clone()));
+    let audit_log_service = Arc::new(AuditLogServiceImpl::new(base_pool.clone()));
+    let operation_log_service = Arc::new(OperationLogServiceImpl::new(base_pool.clone()));
 
     // build base http state
     let base_http_state = BaseHttpState {
@@ -89,6 +93,9 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         menu_service: Arc::new(MenuServiceImpl::new(base_pool.clone())),
         role_service: Arc::new(RoleServiceImpl::new(base_pool.clone())),
         perm_service: Arc::new(PermServiceImpl::new(base_pool.clone())),
+        system_log_service: system_log_service.clone(),
+        audit_log_service: audit_log_service.clone(),
+        operation_log_service: operation_log_service.clone(),
     };
 
     let sys = SysModule::new(cfg.as_ref().clone(), redis_pool.as_ref().clone());
@@ -98,6 +105,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         aws_sts_service: sys.aws_sts_service.clone(),
         object_storage_service: sys.object_storage_service.clone(),
         sms_config,
+        system_log_service,
+        audit_log_service,
     };
 
     let router = Router::new()

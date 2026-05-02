@@ -12,3 +12,4 @@ neocrates = { workspace = true, features = ["logger", "web", "crypto"] }
 chrono = { workspace = true, features = ["serde"] }
 bon.workspace = true
 serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true

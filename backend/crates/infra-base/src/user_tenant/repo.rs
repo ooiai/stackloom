@@ -269,9 +269,7 @@ impl UserTenantRepository for SqlxUserTenantRepository {
 
         let now = Utc::now();
 
-        let mut builder = QueryBuilder::new(
-            "UPDATE user_tenants SET deleted_at = "
-        );
+        let mut builder = QueryBuilder::new("UPDATE user_tenants SET deleted_at = ");
         builder.push_bind(now);
         builder.push(", updated_at = ");
         builder.push_bind(now);

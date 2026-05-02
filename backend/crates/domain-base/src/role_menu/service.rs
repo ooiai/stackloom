@@ -1,6 +1,6 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{CreateRoleMenuCmd, PageRoleMenuCmd, UpdateRoleMenuCmd, RoleMenu};
+use crate::{CreateRoleMenuCmd, PageRoleMenuCmd, RoleMenu, UpdateRoleMenuCmd};
 
 #[async_trait]
 pub trait RoleMenuService: Send + Sync {

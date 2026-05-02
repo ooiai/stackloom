@@ -5,12 +5,10 @@ pub mod resp;
 use super::BaseHttpState;
 pub use handlers::{RolesState, children, create, delete, get, page, remove_cascade, tree, update};
 pub use req::{
-    ChildrenRoleReq, CreateRoleReq, DeleteRoleReq, GetRoleReq, PageRoleReq,
-    RemoveCascadeRoleReq, TreeRoleReq, UpdateRoleReq,
+    ChildrenRoleReq, CreateRoleReq, DeleteRoleReq, GetRoleReq, PageRoleReq, RemoveCascadeRoleReq,
+    TreeRoleReq, UpdateRoleReq,
 };
-pub use resp::{
-    DeleteRoleResp, PaginateRoleResp, RoleChildrenResp, RoleResp, RoleTreeResp,
-};
+pub use resp::{DeleteRoleResp, PaginateRoleResp, RoleChildrenResp, RoleResp, RoleTreeResp};
 
 use neocrates::axum::{Router, routing::post};
 

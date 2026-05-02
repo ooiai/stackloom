@@ -41,7 +41,10 @@ impl MenuTreeNodeResp {
     pub fn from_flat(items: Vec<Menu>) -> Vec<Self> {
         let mut items_by_parent = HashMap::<Option<i64>, Vec<Menu>>::new();
         for item in items {
-            items_by_parent.entry(item.parent_id).or_default().push(item);
+            items_by_parent
+                .entry(item.parent_id)
+                .or_default()
+                .push(item);
         }
 
         fn build_branch(

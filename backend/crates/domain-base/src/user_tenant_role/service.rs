@@ -1,6 +1,8 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{CreateUserTenantRoleCmd, PageUserTenantRoleCmd, UpdateUserTenantRoleCmd, UserTenantRole};
+use crate::{
+    CreateUserTenantRoleCmd, PageUserTenantRoleCmd, UpdateUserTenantRoleCmd, UserTenantRole,
+};
 
 #[async_trait]
 pub trait UserTenantRoleService: Send + Sync {

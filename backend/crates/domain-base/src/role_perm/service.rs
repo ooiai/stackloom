@@ -1,6 +1,6 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{CreateRolePermCmd, PageRolePermCmd, UpdateRolePermCmd, RolePerm};
+use crate::{CreateRolePermCmd, PageRolePermCmd, RolePerm, UpdateRolePermCmd};
 
 #[async_trait]
 pub trait RolePermService: Send + Sync {

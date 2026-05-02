@@ -1,13 +1,8 @@
 use std::sync::Arc;
 
 use domain_base::{
-    UserTenantRole,
-    UserTenantRoleRepository,
-    UserTenantRoleService,
-    CreateUserTenantRoleCmd,
-    PageUserTenantRoleCmd,
-    UpdateUserTenantRoleCmd,
-    user_tenant_role::UserTenantRolePageQuery,
+    CreateUserTenantRoleCmd, PageUserTenantRoleCmd, UpdateUserTenantRoleCmd, UserTenantRole,
+    UserTenantRoleRepository, UserTenantRoleService, user_tenant_role::UserTenantRolePageQuery,
 };
 use neocrates::{
     async_trait::async_trait,
@@ -54,8 +49,8 @@ where
 
         cmd.id = generate_sonyflake_id() as i64;
 
-        let user_tenant_role = UserTenantRole::new(cmd)
-            .map_err(|err| AppError::ValidationError(err.to_string()))?;
+        let user_tenant_role =
+            UserTenantRole::new(cmd).map_err(|err| AppError::ValidationError(err.to_string()))?;
 
         self.repository.create(&user_tenant_role).await
     }
@@ -81,11 +76,10 @@ where
         cmd.validate()
             .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
-        let mut user_tenant_role = self
-            .repository
-            .find_by_id(id)
-            .await?
-            .ok_or_else(|| AppError::not_found_here(format!("user_tenant_role not found: {id}")))?;
+        let mut user_tenant_role =
+            self.repository.find_by_id(id).await?.ok_or_else(|| {
+                AppError::not_found_here(format!("user_tenant_role not found: {id}"))
+            })?;
 
         user_tenant_role
             .apply_update(cmd)
@@ -96,10 +90,9 @@ where
 
     async fn delete(&self, ids: Vec<i64>) -> AppResult<()> {
         for id in &ids {
-            self.repository
-                .find_by_id(*id)
-                .await?
-                .ok_or_else(|| AppError::not_found_here(format!("user_tenant_role not found: {id}")))?;
+            self.repository.find_by_id(*id).await?.ok_or_else(|| {
+                AppError::not_found_here(format!("user_tenant_role not found: {id}"))
+            })?;
         }
 
         self.repository.hard_delete_batch(&ids).await

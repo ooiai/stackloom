@@ -7,15 +7,17 @@ use super::{
         PaginateTenantResp, TenantChildrenResp, TenantResp, TenantTreeNodeResp, TenantTreeResp,
     },
 };
-use crate::base::BaseHttpState;
+use crate::base::{BaseHttpState, logging};
 use domain_base::{
     CreateTenantCmd, PageTenantCmd, UpdateTenantCmd,
     tenant::{ChildrenTenantCmd, RemoveCascadeTenantCmd, TreeTenantCmd},
 };
 use neocrates::{
-    axum::{Json, extract::State},
+    axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
+    middlewares::RequestTraceContext,
     response::error::{AppError, AppResult},
+    serde_json::json,
     tracing,
 };
 use validator::Validate;
@@ -32,6 +34,7 @@ pub type TenantsState = BaseHttpState;
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn create(
     State(state): State<TenantsState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreateTenantReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Create Tenant Req: {:?}...", req);
@@ -40,7 +43,22 @@ pub async fn create(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let cmd: CreateTenantCmd = req.into();
-    state.tenant_service.create(cmd).await?;
+    let tenant = state.tenant_service.create(cmd).await?;
+    let tenant_id = tenant.id;
+    let snapshot = logging::serialize_snapshot(TenantResp::from(tenant));
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "tenants",
+        "tenant",
+        Some(tenant_id),
+        tenant_id.to_string(),
+        "create",
+        "create tenant".to_string(),
+        None,
+        Some(snapshot),
+    )
+    .await;
 
     Ok(Json(()))
 }
@@ -140,7 +158,10 @@ pub async fn children(
 
     let cmd: ChildrenTenantCmd = req.into();
     let tenants = state.tenant_service.children(cmd).await?;
-    let items = tenants.into_iter().map(TenantResp::from).collect::<Vec<_>>();
+    let items = tenants
+        .into_iter()
+        .map(TenantResp::from)
+        .collect::<Vec<_>>();
 
     Ok(Json(TenantChildrenResp::new(items)))
 }
@@ -155,6 +176,7 @@ pub async fn children(
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn update(
     State(state): State<TenantsState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdateTenantReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Update Tenant Req: {:?}...", req);
@@ -163,8 +185,24 @@ pub async fn update(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let id = req.id;
+    let before_snapshot =
+        logging::serialize_snapshot(TenantResp::from(state.tenant_service.get(id).await?));
     let cmd: UpdateTenantCmd = req.into();
-    state.tenant_service.update(id, cmd).await?;
+    let tenant = state.tenant_service.update(id, cmd).await?;
+    let after_snapshot = logging::serialize_snapshot(TenantResp::from(tenant));
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "tenants",
+        "tenant",
+        Some(id),
+        id.to_string(),
+        "update",
+        "update tenant".to_string(),
+        Some(before_snapshot),
+        Some(after_snapshot),
+    )
+    .await;
 
     Ok(Json(()))
 }
@@ -179,6 +217,7 @@ pub async fn update(
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn delete(
     State(state): State<TenantsState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<DeleteTenantReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Delete Tenant Req: {:?}...", req);
@@ -186,7 +225,31 @@ pub async fn delete(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
-    state.tenant_service.delete(req.ids).await?;
+    let ids = req.ids.clone();
+    let before_snapshot = if ids.len() == 1 {
+        Some(logging::serialize_snapshot(TenantResp::from(
+            state.tenant_service.get(ids[0]).await?,
+        )))
+    } else {
+        Some(json!({ "ids": ids.clone() }))
+    };
+    state.tenant_service.delete(ids.clone()).await?;
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "tenants",
+        "tenant",
+        (ids.len() == 1).then_some(ids[0]),
+        ids.iter()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>()
+            .join(","),
+        "delete",
+        "delete tenant".to_string(),
+        before_snapshot,
+        Some(json!({ "ids": ids })),
+    )
+    .await;
 
     Ok(Json(()))
 }
@@ -201,6 +264,7 @@ pub async fn delete(
 /// * `AppResult<Json<()>>` - The result of the cascade delete operation.
 pub async fn remove_cascade(
     State(state): State<TenantsState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<RemoveCascadeTenantReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Remove Cascade Tenant Req: {:?}...", req);
@@ -208,8 +272,24 @@ pub async fn remove_cascade(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
+    let id = req.id;
+    let before_snapshot =
+        logging::serialize_snapshot(TenantResp::from(state.tenant_service.get(id).await?));
     let cmd: RemoveCascadeTenantCmd = req.into();
     state.tenant_service.remove_cascade(cmd).await?;
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "tenants",
+        "tenant",
+        Some(id),
+        id.to_string(),
+        "remove_cascade",
+        "remove cascade tenant".to_string(),
+        Some(before_snapshot),
+        Some(json!({ "id": id, "cascade": true })),
+    )
+    .await;
 
     Ok(Json(()))
 }

@@ -2,6 +2,16 @@ use common::config::env_config::EnvConfig;
 use neocrates::rediscache::RedisPool;
 use std::sync::Arc;
 
+pub mod audit_log;
+pub mod system_log;
+
+pub use audit_log::AuditLogRow;
+pub use audit_log::repo::SqlxAuditLogRepository;
+pub use audit_log::service::AuditLogServiceImpl;
+pub use system_log::SystemLogRow;
+pub use system_log::repo::SqlxSystemLogRepository;
+pub use system_log::service::SystemLogServiceImpl;
+
 #[cfg(any(feature = "aws", feature = "full"))]
 use domain_system::aws::{AwsStsService, ObjectStorageService};
 

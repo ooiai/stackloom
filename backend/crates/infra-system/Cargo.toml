@@ -9,11 +9,12 @@ edition.workspace = true
 common.workspace = true
 domain-system.workspace = true
 
-
 # dependencies
-neocrates = { workspace = true, features = ["logger"] }
+neocrates = { workspace = true, features = ["logger", "sqlx"] }
 chrono = { workspace = true, features = ["serde"] }
 bon.workspace = true
+serde_json.workspace = true
+sqlx = { version = "0.8", features = ["postgres", "runtime-tokio", "chrono", "json"] }
 
 [features]
 default = ["full"]

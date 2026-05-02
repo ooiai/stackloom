@@ -17,11 +17,11 @@ pub use dict::{
 pub mod menu;
 pub use menu::repo::MenuRepository;
 pub use menu::service::MenuService;
-pub use menu::{CreateMenuCmd, PageMenuCmd, UpdateMenuCmd, Menu};
+pub use menu::{CreateMenuCmd, Menu, PageMenuCmd, UpdateMenuCmd};
 pub mod perm;
 pub use perm::repo::PermRepository;
 pub use perm::service::PermService;
-pub use perm::{CreatePermCmd, PagePermCmd, UpdatePermCmd, Perm};
+pub use perm::{CreatePermCmd, PagePermCmd, Perm, UpdatePermCmd};
 pub mod user_tenant;
 pub use user_tenant::repo::UserTenantRepository;
 pub use user_tenant::service::UserTenantService;
@@ -29,16 +29,18 @@ pub use user_tenant::{CreateUserTenantCmd, PageUserTenantCmd, UpdateUserTenantCm
 pub mod user_tenant_role;
 pub use user_tenant_role::repo::UserTenantRoleRepository;
 pub use user_tenant_role::service::UserTenantRoleService;
-pub use user_tenant_role::{CreateUserTenantRoleCmd, PageUserTenantRoleCmd, UpdateUserTenantRoleCmd, UserTenantRole};
+pub use user_tenant_role::{
+    CreateUserTenantRoleCmd, PageUserTenantRoleCmd, UpdateUserTenantRoleCmd, UserTenantRole,
+};
 pub mod role_menu;
 pub use role_menu::repo::RoleMenuRepository;
 pub use role_menu::service::RoleMenuService;
-pub use role_menu::{CreateRoleMenuCmd, PageRoleMenuCmd, UpdateRoleMenuCmd, RoleMenu};
+pub use role_menu::{CreateRoleMenuCmd, PageRoleMenuCmd, RoleMenu, UpdateRoleMenuCmd};
 pub mod role_perm;
 pub use role_perm::repo::RolePermRepository;
 pub use role_perm::service::RolePermService;
-pub use role_perm::{CreateRolePermCmd, PageRolePermCmd, UpdateRolePermCmd, RolePerm};
+pub use role_perm::{CreateRolePermCmd, PageRolePermCmd, RolePerm, UpdateRolePermCmd};
 pub mod role;
 pub use role::repo::RoleRepository;
 pub use role::service::RoleService;
-pub use role::{CreateRoleCmd, PageRoleCmd, UpdateRoleCmd, Role};
+pub use role::{CreateRoleCmd, PageRoleCmd, Role, UpdateRoleCmd};

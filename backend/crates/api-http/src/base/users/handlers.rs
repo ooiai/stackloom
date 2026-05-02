@@ -2,12 +2,14 @@ use super::{
     req::{CreateUserReq, DeleteUserReq, GetUserReq, PageUserReq, UpdateUserReq},
     resp::{PaginateUserResp, UserResp},
 };
-use crate::base::BaseHttpState;
+use crate::base::{BaseHttpState, logging};
 use domain_base::{CreateUserCmd, PageUserCmd, UpdateUserCmd};
 use neocrates::{
-    axum::{Json, extract::State},
+    axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
+    middlewares::RequestTraceContext,
     response::error::{AppError, AppResult},
+    serde_json::json,
     tracing,
 };
 use validator::Validate;
@@ -31,7 +33,7 @@ pub type UsersState = BaseHttpState;
 /// - `response 200`: `JSON`
 pub async fn create(
     State(state): State<UsersState>,
-    // Extension(_auth_user): Extension<AuthModel>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreateUserReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Create User Req: {:?}...", req);
@@ -40,7 +42,22 @@ pub async fn create(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let cmd: CreateUserCmd = req.into();
-    state.user_service.create(cmd).await?;
+    let user = state.user_service.create(cmd).await?;
+    let user_id = user.id;
+    let snapshot = logging::serialize_snapshot(UserResp::from(user));
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "users",
+        "user",
+        Some(user_id),
+        user_id.to_string(),
+        "create",
+        "create user".to_string(),
+        None,
+        Some(snapshot),
+    )
+    .await;
 
     Ok(Json(()))
 }
@@ -56,7 +73,6 @@ pub async fn create(
 /// * `AppResult<Json<UserResp>>` - The user response.
 pub async fn get(
     State(state): State<UsersState>,
-    // Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<GetUserReq>,
 ) -> AppResult<Json<UserResp>> {
     tracing::info!("...Get User Req: {:?}...", req);
@@ -87,7 +103,6 @@ pub async fn get(
 /// - `response 200`: `JSON`
 pub async fn page(
     State(state): State<UsersState>,
-    // Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<PageUserReq>,
 ) -> AppResult<Json<PaginateUserResp>> {
     tracing::info!("...Paginate User Req: {:?}...", req);
@@ -121,7 +136,7 @@ pub async fn page(
 /// - `response 200`: `JSON`
 pub async fn update(
     State(state): State<UsersState>,
-    // Extension(_auth_user): Extension<AuthModel>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdateUserReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Update User Req: {:?}...", req);
@@ -130,8 +145,24 @@ pub async fn update(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let id = req.id;
+    let before_snapshot =
+        logging::serialize_snapshot(UserResp::from(state.user_service.get(id).await?));
     let cmd: UpdateUserCmd = req.into();
-    state.user_service.update(id, cmd).await?;
+    let user = state.user_service.update(id, cmd).await?;
+    let after_snapshot = logging::serialize_snapshot(UserResp::from(user));
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "users",
+        "user",
+        Some(id),
+        id.to_string(),
+        "update",
+        "update user".to_string(),
+        Some(before_snapshot),
+        Some(after_snapshot),
+    )
+    .await;
 
     Ok(Json(()))
 }
@@ -153,7 +184,7 @@ pub async fn update(
 /// - `response 200`: `JSON`
 pub async fn delete(
     State(state): State<UsersState>,
-    // Extension(_auth_user): Extension<AuthModel>,
+    Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<DeleteUserReq>,
 ) -> AppResult<Json<()>> {
     tracing::info!("...Delete User Req: {:?}...", req);
@@ -161,7 +192,31 @@ pub async fn delete(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
-    state.user_service.delete(req.ids).await?;
+    let ids = req.ids.clone();
+    let before_snapshot = if ids.len() == 1 {
+        Some(logging::serialize_snapshot(UserResp::from(
+            state.user_service.get(ids[0]).await?,
+        )))
+    } else {
+        Some(json!({ "ids": ids.clone() }))
+    };
+    state.user_service.delete(ids.clone()).await?;
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "users",
+        "user",
+        (ids.len() == 1).then_some(ids[0]),
+        ids.iter()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>()
+            .join(","),
+        "delete",
+        "delete user".to_string(),
+        before_snapshot,
+        Some(json!({ "ids": ids })),
+    )
+    .await;
 
     Ok(Json(()))
 }
