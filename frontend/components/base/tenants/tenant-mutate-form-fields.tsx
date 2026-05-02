@@ -1,12 +1,18 @@
 "use client"
 
+import { useState } from "react"
+import { enUS, zhCN } from "react-day-picker/locale"
+
 import {
   TenantMutateBasicSection,
   TenantMutateSupplementSection,
 } from "@/components/base/tenants/tenant-mutate-sheet-sections"
 import { Textarea } from "@/components/reui/textarea"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/reui/popover"
 import { generateTenantCode } from "@/lib/generateCode"
 import { LabelField } from "@/components/topui/label-field"
+import { Calendar } from "@/components/ui/calendar"
+import { Button } from "@/components/ui/button"
 import {
   Field,
   FieldContent,
@@ -22,7 +28,132 @@ import {
   SelectValue,
 } from "@/components/reui/select"
 import type { TenantMutateFormApi } from "@/components/base/tenants/hooks/use-tenant-mutate-form"
+import type { AppLocale } from "@/lib/i18n"
+import { cn } from "@/lib/utils"
 import { useI18n } from "@/providers/i18n-provider"
+import { CalendarIcon, XIcon } from "lucide-react"
+
+const calendarLocales = {
+  "en-US": enUS,
+  "zh-CN": zhCN,
+} as const
+
+function getDateInputValue(value: string) {
+  if (!value) {
+    return ""
+  }
+
+  const matched = value.match(/\d{4}-\d{2}-\d{2}/)
+
+  return matched?.[0] ?? value
+}
+
+function parseDateValue(value: string) {
+  const dateValue = getDateInputValue(value)
+
+  if (!dateValue) {
+    return undefined
+  }
+
+  const [year, month, day] = dateValue.split("-").map(Number)
+
+  if (!year || !month || !day) {
+    return undefined
+  }
+
+  const date = new Date(year, month - 1, day)
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return undefined
+  }
+
+  return date
+}
+
+function formatDateValue(date: Date) {
+  const year = String(date.getFullYear())
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
+
+  return `${year}-${month}-${day}`
+}
+
+function TenantExpiredAtDatePicker({
+  id,
+  value,
+  placeholder,
+  clearLabel,
+  locale,
+  onBlur,
+  onChange,
+}: {
+  id: string
+  value: string
+  placeholder: string
+  clearLabel: string
+  locale: AppLocale
+  onBlur: () => void
+  onChange: (value: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const selectedDate = parseDateValue(value)
+  const displayValue = selectedDate ? formatDateValue(selectedDate) : ""
+
+  return (
+    <div className="flex items-center gap-2">
+      <Popover open={open} onOpenChange={(nextOpen) => setOpen(nextOpen)}>
+        <PopoverTrigger
+          render={
+            <Button
+              id={id}
+              type="button"
+              variant="outline"
+              className={cn(
+                "h-8 w-full justify-start text-left font-normal",
+                !displayValue && "text-muted-foreground"
+              )}
+              onBlur={() => onBlur()}
+            />
+          }
+        >
+          <CalendarIcon />
+          <span className="truncate">{displayValue || placeholder}</span>
+        </PopoverTrigger>
+        <PopoverContent align="start" className="w-auto p-2">
+          <Calendar
+            mode="single"
+            selected={selectedDate}
+            defaultMonth={selectedDate}
+            locale={calendarLocales[locale]}
+            onSelect={(date) => {
+              onChange(date ? formatDateValue(date) : "")
+              setOpen(false)
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+
+      {displayValue ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          aria-label={clearLabel}
+          onClick={() => {
+            onChange("")
+            onBlur()
+          }}
+        >
+          <XIcon />
+        </Button>
+      ) : null}
+    </div>
+  )
+}
 
 export function TenantMutateFormFields({
   form,
@@ -31,7 +162,7 @@ export function TenantMutateFormFields({
   form: TenantMutateFormApi
   parentLabel: string
 }) {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
   const tenantStatusLabelMap: Record<0 | 1 | 2, string> = {
     0: t("tenants.status.disabled.label"),
     1: t("tenants.status.active.label"),
@@ -190,12 +321,14 @@ export function TenantMutateFormFields({
               label={t("tenants.form.expired_at.label")}
               htmlFor={field.name}
             >
-              <Input
+              <TenantExpiredAtDatePicker
                 id={field.name}
                 value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(event) => field.handleChange(event.target.value)}
                 placeholder={t("tenants.form.expired_at.placeholder")}
+                clearLabel={t("common.actions.clear")}
+                locale={locale}
+                onBlur={field.handleBlur}
+                onChange={field.handleChange}
               />
             </LabelField>
           )}
