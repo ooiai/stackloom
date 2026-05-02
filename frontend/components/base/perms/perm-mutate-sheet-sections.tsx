@@ -28,11 +28,7 @@ function SectionHeader({
   )
 }
 
-export function PermMutateBasicSection({
-  children,
-}: {
-  children: ReactNode
-}) {
+export function PermMutateBasicSection({ children }: { children: ReactNode }) {
   const { t } = useI18n()
 
   return (
@@ -41,16 +37,12 @@ export function PermMutateBasicSection({
         title={t("perms.sections.basic.title")}
         description={t("perms.sections.basic.description")}
       />
-      <div className="grid gap-x-4 gap-y-4 sm:grid-cols-2">{children}</div>
+      <div className="flex flex-col gap-4">{children}</div>
     </section>
   )
 }
 
-export function PermMutateRouteSection({
-  children,
-}: {
-  children: ReactNode
-}) {
+export function PermMutateRouteSection({ children }: { children: ReactNode }) {
   const { t } = useI18n()
 
   return (

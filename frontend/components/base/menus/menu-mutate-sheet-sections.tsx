@@ -28,11 +28,7 @@ function SectionHeader({
   )
 }
 
-export function MenuMutateBasicSection({
-  children,
-}: {
-  children: ReactNode
-}) {
+export function MenuMutateBasicSection({ children }: { children: ReactNode }) {
   const { t } = useI18n()
 
   return (
@@ -41,16 +37,12 @@ export function MenuMutateBasicSection({
         title={t("menus.sections.basic.title")}
         description={t("menus.sections.basic.description")}
       />
-      <div className="grid gap-x-4 gap-y-4 sm:grid-cols-2">{children}</div>
+      <div className="flex flex-col gap-4">{children}</div>
     </section>
   )
 }
 
-export function MenuMutateRouteSection({
-  children,
-}: {
-  children: ReactNode
-}) {
+export function MenuMutateRouteSection({ children }: { children: ReactNode }) {
   const { t } = useI18n()
 
   return (
