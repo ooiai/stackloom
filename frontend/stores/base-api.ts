@@ -1,17 +1,25 @@
 import { post } from "@/lib/http/axios"
 import { BASE_CURRENT_MENU_ITEMS } from "@/lib/base-navigation"
 import type {
+  ChildrenPermParam,
+  ChildrenRoleParam,
   ChildrenMenuParam,
   ChildrenTenantParam,
   ChildrenDictParam,
+  CreatePermParam,
+  CreateRoleParam,
   CreateMenuParam,
   CreateTenantParam,
   CreateDictParam,
   CreateUserParam,
+  DeletePermParam,
+  DeleteRoleParam,
   DeleteMenuParam,
   DeleteTenantParam,
   DeleteDictParam,
   DeleteUserParam,
+  GetPermParam,
+  GetRoleParam,
   GetMenuParam,
   GetTenantParam,
   DictChildrenResp,
@@ -20,8 +28,12 @@ import type {
   MenuChildrenResp,
   MenuData,
   MenuTreeResp,
+  PaginatePerm,
+  PaginateRole,
   GetUserParam,
   GetDictParam,
+  PagePermParam,
+  PageRoleParam,
   PageMenuParam,
   PageTenantParam,
   PageDictParam,
@@ -30,11 +42,21 @@ import type {
   PaginateTenant,
   PageUserParam,
   PaginateUser,
+  PermChildrenResp,
+  PermData,
+  PermTreeResp,
+  RoleChildrenResp,
+  RoleData,
+  RoleTreeResp,
   TenantChildrenResp,
   TenantData,
   TenantTreeResp,
+  TreePermParam,
+  TreeRoleParam,
   TreeMenuParam,
   TreeTenantParam,
+  UpdatePermParam,
+  UpdateRoleParam,
   UpdateMenuParam,
   UpdateTenantParam,
   TreeDictParam,
@@ -47,6 +69,8 @@ const BASE_USER_API_PREFIX = "/apiv1/base/users"
 const BASE_TENANT_API_PREFIX = "/apiv1/base/tenants"
 const BASE_MENU_API_PREFIX = "/apiv1/base/menus"
 const BASE_DICT_API_PREFIX = "/apiv1/base/dicts"
+const BASE_ROLE_API_PREFIX = "/apiv1/base/roles"
+const BASE_PERM_API_PREFIX = "/apiv1/base/perms"
 
 export const userSharedApi = {
   listCurrentMenus: async () => {
@@ -156,5 +180,61 @@ export const menuApi = {
   },
   removeCascade: async (id: string): Promise<void> => {
     return post(`${BASE_MENU_API_PREFIX}/remove_cascade`, { id })
+  },
+}
+
+export const roleApi = {
+  create: async (params: CreateRoleParam): Promise<void> => {
+    return post(`${BASE_ROLE_API_PREFIX}/create`, params)
+  },
+  get: async (params: GetRoleParam): Promise<RoleData> => {
+    return post(`${BASE_ROLE_API_PREFIX}/get`, params)
+  },
+  page: async (params: PageRoleParam): Promise<PaginateRole> => {
+    return post(`${BASE_ROLE_API_PREFIX}/page`, params)
+  },
+  tree: async (params: TreeRoleParam): Promise<RoleTreeResp> => {
+    return post(`${BASE_ROLE_API_PREFIX}/tree`, params)
+  },
+  children: async (params: ChildrenRoleParam): Promise<RoleChildrenResp> => {
+    return post(`${BASE_ROLE_API_PREFIX}/children`, params)
+  },
+  update: async (params: UpdateRoleParam): Promise<void> => {
+    return post(`${BASE_ROLE_API_PREFIX}/update`, params)
+  },
+  remove: async (ids: string[]): Promise<void> => {
+    const params: DeleteRoleParam = { ids }
+    return post(`${BASE_ROLE_API_PREFIX}/remove`, params)
+  },
+  removeCascade: async (id: string): Promise<void> => {
+    return post(`${BASE_ROLE_API_PREFIX}/remove_cascade`, { id })
+  },
+}
+
+export const permApi = {
+  create: async (params: CreatePermParam): Promise<void> => {
+    return post(`${BASE_PERM_API_PREFIX}/create`, params)
+  },
+  get: async (params: GetPermParam): Promise<PermData> => {
+    return post(`${BASE_PERM_API_PREFIX}/get`, params)
+  },
+  page: async (params: PagePermParam): Promise<PaginatePerm> => {
+    return post(`${BASE_PERM_API_PREFIX}/page`, params)
+  },
+  tree: async (params: TreePermParam): Promise<PermTreeResp> => {
+    return post(`${BASE_PERM_API_PREFIX}/tree`, params)
+  },
+  children: async (params: ChildrenPermParam): Promise<PermChildrenResp> => {
+    return post(`${BASE_PERM_API_PREFIX}/children`, params)
+  },
+  update: async (params: UpdatePermParam): Promise<void> => {
+    return post(`${BASE_PERM_API_PREFIX}/update`, params)
+  },
+  remove: async (ids: string[]): Promise<void> => {
+    const params: DeletePermParam = { ids }
+    return post(`${BASE_PERM_API_PREFIX}/remove`, params)
+  },
+  removeCascade: async (id: string): Promise<void> => {
+    return post(`${BASE_PERM_API_PREFIX}/remove_cascade`, { id })
   },
 }

@@ -38,5 +38,6 @@ COMMENT ON COLUMN user_tenants.deleted_at IS '软删除时间';
 
 CREATE INDEX idx_user_tenants_user_id ON user_tenants (user_id);
 CREATE INDEX idx_user_tenants_tenant_id ON user_tenants (tenant_id);
+CREATE INDEX idx_user_tenants_invited_by ON user_tenants (invited_by);
 CREATE INDEX idx_user_tenants_status ON user_tenants (status);
 CREATE INDEX idx_user_tenants_deleted_at ON user_tenants (deleted_at);

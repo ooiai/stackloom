@@ -43,6 +43,14 @@
     "name": "菜单管理",
     "remark": "维护导航菜单、路由配置与层级结构"
   },
+  "upms-roles": {
+    "name": "角色管理",
+    "remark": "维护角色树、角色描述与层级结构"
+  },
+  "upms-perms": {
+    "name": "权限管理",
+    "remark": "维护权限树、资源动作与层级结构"
+  },
   "user": {
     "name": "Admin",
     "role": "系统管理员"

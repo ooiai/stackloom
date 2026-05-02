@@ -3,15 +3,14 @@ pub mod req;
 pub mod resp;
 
 use super::BaseHttpState;
-pub use handlers::{PermsState, create, delete, get, page, update};
+pub use handlers::{PermsState, children, create, delete, get, page, remove_cascade, tree, update};
 pub use req::{
-    CreatePermReq,
-    DeletePermReq,
-    GetPermReq,
-    PagePermReq,
-    UpdatePermReq,
+    ChildrenPermReq, CreatePermReq, DeletePermReq, GetPermReq, PagePermReq,
+    RemoveCascadePermReq, TreePermReq, UpdatePermReq,
 };
-pub use resp::{DeletePermResp, PaginatePermResp, PermResp};
+pub use resp::{
+    DeletePermResp, PaginatePermResp, PermChildrenResp, PermResp, PermTreeResp,
+};
 
 use neocrates::axum::{Router, routing::post};
 
@@ -21,6 +20,9 @@ pub fn router(state: BaseHttpState) -> Router {
         .route("/get", post(get))
         .route("/update", post(update))
         .route("/page", post(page))
+        .route("/tree", post(tree))
+        .route("/children", post(children))
         .route("/remove", post(delete))
+        .route("/remove_cascade", post(remove_cascade))
         .with_state(state)
 }

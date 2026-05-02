@@ -9,6 +9,8 @@ CREATE TABLE perms (
     action VARCHAR(100),
     description TEXT,
     status SMALLINT NOT NULL DEFAULT 1,
+    parent_id BIGINT,
+    sort INT NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMPTZ,
@@ -25,6 +27,8 @@ COMMENT ON COLUMN perms.resource IS '资源标识，如 user';
 COMMENT ON COLUMN perms.action IS '动作标识，如 create';
 COMMENT ON COLUMN perms.description IS '权限描述';
 COMMENT ON COLUMN perms.status IS '权限状态：0禁用，1正常';
+COMMENT ON COLUMN perms.parent_id IS '父权限ID，NULL 表示根权限';
+COMMENT ON COLUMN perms.sort IS '排序值';
 COMMENT ON COLUMN perms.created_at IS '创建时间';
 COMMENT ON COLUMN perms.updated_at IS '更新时间';
 COMMENT ON COLUMN perms.deleted_at IS '软删除时间';
@@ -38,5 +42,6 @@ CREATE UNIQUE INDEX uq_perms_system_code
     WHERE tenant_id IS NULL;
 
 CREATE INDEX idx_perms_tenant_id ON perms (tenant_id);
+CREATE INDEX idx_perms_parent_id ON perms (parent_id);
 CREATE INDEX idx_perms_status ON perms (status);
 CREATE INDEX idx_perms_deleted_at ON perms (deleted_at);

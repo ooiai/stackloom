@@ -19,7 +19,10 @@ use std::sync::Arc;
 use crate::{
     redis_init::RedisInit, sms_init::SmsInit, sqlx_init::SqlxInit, sqlx_migrations::SqlxMigrations,
 };
-use infra_base::{DictServiceImpl, MenuServiceImpl, TenantServiceImpl, UserServiceImpl};
+use infra_base::{
+    DictServiceImpl, MenuServiceImpl, PermServiceImpl, RoleServiceImpl, TenantServiceImpl,
+    UserServiceImpl,
+};
 use infra_system::SysModule;
 
 mod diesel_init;
@@ -84,6 +87,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         dict_service: Arc::new(DictServiceImpl::new(base_pool.clone())),
         tenant_service: Arc::new(TenantServiceImpl::new(base_pool.clone())),
         menu_service: Arc::new(MenuServiceImpl::new(base_pool.clone())),
+        role_service: Arc::new(RoleServiceImpl::new(base_pool.clone())),
+        perm_service: Arc::new(PermServiceImpl::new(base_pool.clone())),
     };
 
     let sys = SysModule::new(cfg.as_ref().clone(), redis_pool.as_ref().clone());

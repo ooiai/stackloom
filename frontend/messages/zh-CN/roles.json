@@ -1,0 +1,128 @@
+{
+  "page": {
+    "title": "角色管理",
+    "subtitle": "维护角色树、角色说明与内置标记",
+    "addRoot": "添加根角色"
+  },
+  "toast": {
+    "created": "角色已创建",
+    "updated": "角色已更新",
+    "deleted": "角色已删除"
+  },
+  "dialog": {
+    "deleteTitle": "删除角色",
+    "deleteLeafDescription": "确定删除“{name}”吗？此操作无法撤销。",
+    "deleteBranchDescription": "确定删除“{name}”以及其全部子级吗？此操作无法撤销。"
+  },
+  "sheet": {
+    "create": {
+      "title": "新增角色",
+      "description": "维护角色标识、说明与层级关系",
+      "submit": "创建角色"
+    },
+    "update": {
+      "title": "编辑角色",
+      "description": "更新当前角色信息与树形位置",
+      "submit": "保存更新"
+    }
+  },
+  "sections": {
+    "basic": {
+      "title": "基础信息",
+      "description": "先确定父节点、角色编码与角色名称"
+    },
+    "route": {
+      "title": "角色说明",
+      "description": "补充角色职责、适用范围等说明信息"
+    },
+    "display": {
+      "title": "状态与排序",
+      "description": "控制启用状态、排序值与内置标记"
+    }
+  },
+  "form": {
+    "parent": {
+      "label": "所属节点"
+    },
+    "code": {
+      "label": "角色编码",
+      "placeholder": "例如：UPMS::ROLE::ADMIN",
+      "validation": {
+        "required": "请输入角色编码",
+        "max": "角色编码长度不能超过 100 个字符",
+        "duplicate": "角色编码已存在"
+      }
+    },
+    "name": {
+      "label": "角色名称",
+      "placeholder": "例如：平台管理员",
+      "validation": {
+        "required": "请输入角色名称",
+        "max": "角色名称长度不能超过 100 个字符"
+      }
+    },
+    "description": {
+      "label": "角色说明",
+      "placeholder": "说明该角色的职责、授权范围或使用场景",
+      "validation": {
+        "max": "角色说明长度不能超过 500 个字符"
+      }
+    },
+    "sort": {
+      "label": "排序值",
+      "validation": {
+        "int": "排序值必须是整数",
+        "min": "排序值不能小于 0",
+        "max": "排序值不能超过 9999"
+      }
+    },
+    "status": {
+      "label": "状态"
+    },
+    "isBuiltin": {
+      "label": "内置角色"
+    }
+  },
+  "status": {
+    "disabled": {
+      "label": "禁用"
+    },
+    "active": {
+      "label": "正常"
+    }
+  },
+  "sidebar": {
+    "title": "角色树",
+    "subtitle": "浏览层级并切换当前角色节点",
+    "addRoot": "添加根角色",
+    "searchPlaceholder": "搜索角色名称或角色编码",
+    "emptySearchTitle": "没有匹配的角色",
+    "emptyDefaultTitle": "暂无角色",
+    "emptySearchDescription": "换个关键词，或清空搜索",
+    "emptyDefaultDescription": "先创建根角色，再继续补充子级",
+    "create": "创建角色"
+  },
+  "detail": {
+    "emptyTitle": "选择角色节点",
+    "emptyDescription": "选择左侧节点后查看详情和子级",
+    "code": "角色编码",
+    "description": "角色说明",
+    "builtin": "内置角色",
+    "builtinOn": "是",
+    "builtinOff": "否",
+    "sort": "排序",
+    "emptyChildrenTitle": "当前角色下暂无子级",
+    "emptyChildrenDescription": "可继续添加子角色",
+    "directChildrenTitle": "直属子角色"
+  },
+  "table": {
+    "name": "角色名称",
+    "code": "角色编码",
+    "description": "角色说明",
+    "builtin": "内置",
+    "sort": "排序",
+    "status": "状态",
+    "updatedAt": "更新时间",
+    "childCount": "{count} 子项"
+  }
+}

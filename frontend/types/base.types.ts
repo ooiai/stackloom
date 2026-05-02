@@ -9,6 +9,10 @@ export type MenuMutateMode = "create" | "update"
 export type DictStatus = 0 | 1
 export type DictValueType = "string" | "number" | "boolean" | "json"
 export type DictMutateMode = "create" | "update"
+export type RoleStatus = 0 | 1
+export type RoleMutateMode = "create" | "update"
+export type PermStatus = 0 | 1
+export type PermMutateMode = "create" | "update"
 
 export interface UserData {
   id: string
@@ -75,6 +79,43 @@ export interface MenuData {
 
 export interface MenuTreeNodeData extends MenuData {
   children: MenuTreeNodeData[]
+}
+
+export interface RoleData {
+  id: string
+  tenant_id: string | null
+  parent_id: string | null
+  code: string
+  name: string
+  description: string | null
+  status: RoleStatus
+  is_builtin: boolean
+  sort: number
+  created_at: string
+  updated_at: string
+}
+
+export interface RoleTreeNodeData extends RoleData {
+  children: RoleTreeNodeData[]
+}
+
+export interface PermData {
+  id: string
+  tenant_id: string | null
+  parent_id: string | null
+  code: string
+  name: string
+  resource: string | null
+  action: string | null
+  description: string | null
+  status: PermStatus
+  sort: number
+  created_at: string
+  updated_at: string
+}
+
+export interface PermTreeNodeData extends PermData {
+  children: PermTreeNodeData[]
 }
 
 export interface TenantData {
@@ -241,6 +282,106 @@ export interface DeleteMenuParam {
   ids: string[]
 }
 
+export interface GetRoleParam {
+  id: string
+}
+
+export interface PageRoleParam {
+  keyword?: string
+  status?: RoleStatus
+  limit?: number
+  offset?: number
+}
+
+export interface TreeRoleParam {
+  keyword?: string
+  status?: RoleStatus
+}
+
+export interface ChildrenRoleParam {
+  parent_id?: string | null
+  keyword?: string
+  status?: RoleStatus
+}
+
+export interface CreateRoleParam {
+  tenant_id?: string | null
+  parent_id?: string | null
+  code: string
+  name: string
+  description?: string
+  status: RoleStatus
+  is_builtin: boolean
+  sort: number
+}
+
+export interface UpdateRoleParam {
+  id: string
+  tenant_id?: string | null
+  parent_id?: string | null
+  code?: string
+  name?: string
+  description?: string
+  status?: RoleStatus
+  is_builtin?: boolean
+  sort?: number
+}
+
+export interface DeleteRoleParam {
+  ids: string[]
+}
+
+export interface GetPermParam {
+  id: string
+}
+
+export interface PagePermParam {
+  keyword?: string
+  status?: PermStatus
+  limit?: number
+  offset?: number
+}
+
+export interface TreePermParam {
+  keyword?: string
+  status?: PermStatus
+}
+
+export interface ChildrenPermParam {
+  parent_id?: string | null
+  keyword?: string
+  status?: PermStatus
+}
+
+export interface CreatePermParam {
+  tenant_id?: string | null
+  parent_id?: string | null
+  code: string
+  name: string
+  resource?: string
+  action?: string
+  description?: string
+  status: PermStatus
+  sort: number
+}
+
+export interface UpdatePermParam {
+  id: string
+  tenant_id?: string | null
+  parent_id?: string | null
+  code?: string
+  name?: string
+  resource?: string
+  action?: string
+  description?: string
+  status?: PermStatus
+  sort?: number
+}
+
+export interface DeletePermParam {
+  ids: string[]
+}
+
 export interface GetDictParam {
   id: string
 }
@@ -336,16 +477,45 @@ export interface MenuFormValues {
   status: MenuStatus
 }
 
+export interface RoleFormValues {
+  tenant_id?: string | null
+  parent_id?: string | null
+  code: string
+  name: string
+  description: string
+  status: RoleStatus
+  is_builtin: boolean
+  sort: number
+}
+
+export interface PermFormValues {
+  tenant_id?: string | null
+  parent_id?: string | null
+  code: string
+  name: string
+  resource: string
+  action: string
+  description: string
+  status: PermStatus
+  sort: number
+}
+
 export type PaginateUser = PaginateResp<UserData>
 export type PaginateTenant = PaginateResp<TenantData>
 export type PaginateMenu = PaginateResp<MenuData>
 export type PaginateDict = PaginateResp<DictData>
+export type PaginateRole = PaginateResp<RoleData>
+export type PaginatePerm = PaginateResp<PermData>
 export type TenantTreeResp = { items: TenantTreeNodeData[] }
 export type TenantChildrenResp = { items: TenantData[] }
 export type MenuTreeResp = { items: MenuTreeNodeData[] }
 export type MenuChildrenResp = { items: MenuData[] }
 export type DictTreeResp = { items: DictTreeNodeData[] }
 export type DictChildrenResp = { items: DictData[] }
+export type RoleTreeResp = { items: RoleTreeNodeData[] }
+export type RoleChildrenResp = { items: RoleData[] }
+export type PermTreeResp = { items: PermTreeNodeData[] }
+export type PermChildrenResp = { items: PermData[] }
 
 export interface DictFormValues {
   dict_type: string

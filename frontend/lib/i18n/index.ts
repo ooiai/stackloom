@@ -10,6 +10,8 @@ export const LOCALE_MESSAGE_MODULES = [
   "users",
   "dicts",
   "menus",
+  "roles",
+  "perms",
   "tenants",
 ] as const
 
@@ -55,6 +57,8 @@ const MESSAGE_MODULE_LOADERS: Record<
     users: async () => (await import("@/messages/en-US/users.json")).default,
     dicts: async () => (await import("@/messages/en-US/dicts.json")).default,
     menus: async () => (await import("@/messages/en-US/menus.json")).default,
+    roles: async () => (await import("@/messages/en-US/roles.json")).default,
+    perms: async () => (await import("@/messages/en-US/perms.json")).default,
     tenants: async () => (await import("@/messages/en-US/tenants.json")).default,
   },
   "zh-CN": {
@@ -68,6 +72,8 @@ const MESSAGE_MODULE_LOADERS: Record<
     users: async () => (await import("@/messages/zh-CN/users.json")).default,
     dicts: async () => (await import("@/messages/zh-CN/dicts.json")).default,
     menus: async () => (await import("@/messages/zh-CN/menus.json")).default,
+    roles: async () => (await import("@/messages/zh-CN/roles.json")).default,
+    perms: async () => (await import("@/messages/zh-CN/perms.json")).default,
     tenants: async () => (await import("@/messages/zh-CN/tenants.json")).default,
   },
 }

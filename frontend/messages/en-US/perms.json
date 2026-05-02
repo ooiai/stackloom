@@ -1,0 +1,138 @@
+{
+  "page": {
+    "title": "Permissions",
+    "subtitle": "Manage permission hierarchy, resources, and actions",
+    "addRoot": "Add root permission"
+  },
+  "toast": {
+    "created": "Permission created",
+    "updated": "Permission updated",
+    "deleted": "Permission deleted"
+  },
+  "dialog": {
+    "deleteTitle": "Delete permission",
+    "deleteLeafDescription": "Delete \"{name}\"? This action cannot be undone.",
+    "deleteBranchDescription": "Delete \"{name}\" and all of its children? This action cannot be undone."
+  },
+  "sheet": {
+    "create": {
+      "title": "Create permission",
+      "description": "Maintain permission identity, resource, action, and hierarchy",
+      "submit": "Create permission"
+    },
+    "update": {
+      "title": "Edit permission",
+      "description": "Update the current permission details and hierarchy position",
+      "submit": "Save changes"
+    }
+  },
+  "sections": {
+    "basic": {
+      "title": "Basic information",
+      "description": "Define the parent node, code, and display name"
+    },
+    "route": {
+      "title": "Resource mapping",
+      "description": "Describe the resource, action, and usage notes for this permission"
+    },
+    "display": {
+      "title": "Status and ordering",
+      "description": "Control status and sort order"
+    }
+  },
+  "form": {
+    "parent": {
+      "label": "Parent node"
+    },
+    "code": {
+      "label": "Permission code",
+      "placeholder": "Example: UPMS::USER::CREATE",
+      "validation": {
+        "required": "Enter a permission code",
+        "max": "Permission code must be 100 characters or fewer",
+        "duplicate": "Permission code already exists"
+      }
+    },
+    "name": {
+      "label": "Permission name",
+      "placeholder": "Example: Create user",
+      "validation": {
+        "required": "Enter a permission name",
+        "max": "Permission name must be 100 characters or fewer"
+      }
+    },
+    "resource": {
+      "label": "Resource",
+      "placeholder": "Example: user",
+      "validation": {
+        "max": "Resource must be 255 characters or fewer"
+      }
+    },
+    "action": {
+      "label": "Action",
+      "placeholder": "Example: create",
+      "validation": {
+        "max": "Action must be 100 characters or fewer"
+      }
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Explain the business meaning of this permission",
+      "validation": {
+        "max": "Description must be 500 characters or fewer"
+      }
+    },
+    "sort": {
+      "label": "Sort order",
+      "validation": {
+        "int": "Sort order must be an integer",
+        "min": "Sort order cannot be less than 0",
+        "max": "Sort order cannot exceed 9999"
+      }
+    },
+    "status": {
+      "label": "Status"
+    }
+  },
+  "status": {
+    "disabled": {
+      "label": "Disabled"
+    },
+    "active": {
+      "label": "Active"
+    }
+  },
+  "sidebar": {
+    "title": "Permission tree",
+    "subtitle": "Browse the hierarchy and switch the current permission",
+    "addRoot": "Add root permission",
+    "searchPlaceholder": "Search by name or code",
+    "emptySearchTitle": "No matching permissions",
+    "emptyDefaultTitle": "No permissions yet",
+    "emptySearchDescription": "Try another keyword or clear the search",
+    "emptyDefaultDescription": "Create a root permission first, then add child items",
+    "create": "Create permission"
+  },
+  "detail": {
+    "emptyTitle": "Choose a permission node",
+    "emptyDescription": "Select a node on the left to view details and children",
+    "code": "Permission code",
+    "resource": "Resource",
+    "action": "Action",
+    "description": "Description",
+    "sort": "Sort",
+    "emptyChildrenTitle": "No child permissions under this node",
+    "emptyChildrenDescription": "You can continue by adding child permissions",
+    "directChildrenTitle": "Child permissions"
+  },
+  "table": {
+    "name": "Permission name",
+    "code": "Permission code",
+    "resource": "Resource",
+    "action": "Action",
+    "sort": "Sort",
+    "status": "Status",
+    "updatedAt": "Updated at",
+    "childCount": "{count} children"
+  }
+}

@@ -1,13 +1,16 @@
 use std::sync::Arc;
 
 use chrono::Utc;
-use domain_base::{Perm, PermRepository, perm::PermPageQuery};
+use domain_base::{
+    Perm, PermRepository,
+    perm::{PermChildrenQuery, PermPageQuery, PermTreeQuery},
+};
 use neocrates::{
     async_trait::async_trait,
     response::error::{AppError, AppResult},
     sqlxhelper::pool::SqlxPool,
 };
-use sqlx::QueryBuilder;
+use sqlx::{Error as SqlxError, QueryBuilder};
 
 use super::PermRow;
 
@@ -21,7 +24,18 @@ impl SqlxPermRepository {
         Self { pool }
     }
 
-    fn map_sqlx_error(err: sqlx::Error) -> AppError {
+    fn map_sqlx_error(err: SqlxError) -> AppError {
+        if let SqlxError::Database(db_err) = &err {
+            if db_err.code().as_deref() == Some("23505")
+                && matches!(
+                    db_err.constraint(),
+                    Some("uq_perms_system_code") | Some("uq_perms_tenant_code")
+                )
+            {
+                return AppError::Conflict("perm code already exists".to_string());
+            }
+        }
+
         AppError::data_here(err.to_string())
     }
 }
@@ -34,26 +48,30 @@ impl PermRepository for SqlxPermRepository {
             INSERT INTO perms (
                 id,
                 tenant_id,
+                parent_id,
                 code,
                 name,
                 resource,
                 action,
                 description,
                 status,
+                sort,
                 created_at,
                 updated_at,
                 deleted_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
             RETURNING
                 id,
                 tenant_id,
+                parent_id,
                 code,
                 name,
                 resource,
                 action,
                 description,
                 status,
+                sort,
                 created_at,
                 updated_at,
                 deleted_at
@@ -61,12 +79,14 @@ impl PermRepository for SqlxPermRepository {
         )
         .bind(&perm.id)
         .bind(&perm.tenant_id)
+        .bind(&perm.parent_id)
         .bind(&perm.code)
         .bind(&perm.name)
         .bind(&perm.resource)
         .bind(&perm.action)
         .bind(&perm.description)
         .bind(&perm.status)
+        .bind(&perm.sort)
         .bind(&perm.created_at)
         .bind(&perm.updated_at)
         .bind(&perm.deleted_at)
@@ -83,12 +103,14 @@ impl PermRepository for SqlxPermRepository {
             SELECT
                 id,
                 tenant_id,
+                parent_id,
                 code,
                 name,
                 resource,
                 action,
                 description,
                 status,
+                sort,
                 created_at,
                 updated_at,
                 deleted_at
@@ -98,6 +120,37 @@ impl PermRepository for SqlxPermRepository {
             "#,
         )
         .bind(id)
+        .fetch_optional(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(row.map(Into::into))
+    }
+
+    async fn find_by_code(&self, code: &str) -> AppResult<Option<Perm>> {
+        let row = sqlx::query_as::<_, PermRow>(
+            r#"
+            SELECT
+                id,
+                tenant_id,
+                parent_id,
+                code,
+                name,
+                resource,
+                action,
+                description,
+                status,
+                sort,
+                created_at,
+                updated_at,
+                deleted_at
+            FROM perms
+            WHERE code = $1
+              AND deleted_at IS NULL
+            LIMIT 1
+            "#,
+        )
+        .bind(code)
         .fetch_optional(self.pool.pool())
         .await
         .map_err(Self::map_sqlx_error)?;
@@ -146,12 +199,14 @@ impl PermRepository for SqlxPermRepository {
             SELECT
                 id,
                 tenant_id,
+                parent_id,
                 code,
                 name,
                 resource,
                 action,
                 description,
                 status,
+                sort,
                 created_at,
                 updated_at,
                 deleted_at
@@ -202,29 +257,174 @@ impl PermRepository for SqlxPermRepository {
         Ok((rows.into_iter().map(Into::into).collect(), total))
     }
 
-    async fn update(&self, perm: &Perm) -> AppResult<Perm> {
-        let row = sqlx::query_as::<_, PermRow>(
+    async fn list_for_tree(&self, query: &PermTreeQuery) -> AppResult<Vec<Perm>> {
+        let mut builder = QueryBuilder::new(
             r#"
-            UPDATE perms
-            SET
-                tenant_id = $2,
-                code = $3,
-                name = $4,
-                resource = $5,
-                action = $6,
-                description = $7,
-                status = $8,
-                updated_at = $9
-            WHERE id = $1
-            RETURNING
+            SELECT
                 id,
                 tenant_id,
+                parent_id,
                 code,
                 name,
                 resource,
                 action,
                 description,
                 status,
+                sort,
+                created_at,
+                updated_at,
+                deleted_at
+            FROM perms
+            WHERE deleted_at IS NULL
+            "#,
+        );
+
+        if let Some(status) = query.status {
+            builder.push(" AND status = ");
+            builder.push_bind(status);
+        }
+
+        builder.push(" ORDER BY sort ASC, name ASC, created_at ASC");
+
+        let rows: Vec<PermRow> = builder
+            .build_query_as()
+            .fetch_all(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows.into_iter().map(Into::into).collect())
+    }
+
+    async fn list_by_parent(&self, query: &PermChildrenQuery) -> AppResult<Vec<Perm>> {
+        let mut builder = QueryBuilder::new(
+            r#"
+            SELECT
+                id,
+                tenant_id,
+                parent_id,
+                code,
+                name,
+                resource,
+                action,
+                description,
+                status,
+                sort,
+                created_at,
+                updated_at,
+                deleted_at
+            FROM perms
+            WHERE deleted_at IS NULL
+            "#,
+        );
+
+        if let Some(parent_id) = query.parent_id {
+            builder.push(" AND parent_id = ");
+            builder.push_bind(parent_id);
+        } else {
+            builder.push(" AND parent_id IS NULL");
+        }
+
+        if let Some(status) = query.status {
+            builder.push(" AND status = ");
+            builder.push_bind(status);
+        }
+
+        if let Some(keyword) = query.keyword.as_ref() {
+            let pattern = format!("%{}%", keyword.trim());
+            builder.push(" AND (code ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR name ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR resource ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR action ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR description ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(")");
+        }
+
+        builder.push(" ORDER BY sort ASC, name ASC, created_at ASC");
+
+        let rows: Vec<PermRow> = builder
+            .build_query_as()
+            .fetch_all(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows.into_iter().map(Into::into).collect())
+    }
+
+    async fn count_by_parent_id(&self, parent_id: i64) -> AppResult<i64> {
+        let total = sqlx::query_scalar::<_, i64>(
+            r#"
+            SELECT COUNT(*) AS total
+            FROM perms
+            WHERE parent_id = $1
+              AND deleted_at IS NULL
+            "#,
+        )
+        .bind(parent_id)
+        .fetch_one(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(total)
+    }
+
+    async fn find_descendant_ids(&self, id: i64) -> AppResult<Vec<i64>> {
+        let ids = sqlx::query_scalar::<_, i64>(
+            r#"
+            WITH RECURSIVE perm_tree AS (
+                SELECT id, parent_id
+                FROM perms
+                WHERE id = $1
+                  AND deleted_at IS NULL
+                UNION ALL
+                SELECT child.id, child.parent_id
+                FROM perms child
+                INNER JOIN perm_tree parent ON child.parent_id = parent.id
+                WHERE child.deleted_at IS NULL
+            )
+            SELECT id
+            FROM perm_tree
+            "#,
+        )
+        .bind(id)
+        .fetch_all(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(ids)
+    }
+
+    async fn update(&self, perm: &Perm) -> AppResult<Perm> {
+        let row = sqlx::query_as::<_, PermRow>(
+            r#"
+            UPDATE perms
+            SET
+                tenant_id = $2,
+                parent_id = $3,
+                code = $4,
+                name = $5,
+                resource = $6,
+                action = $7,
+                description = $8,
+                status = $9,
+                sort = $10,
+                updated_at = $11
+            WHERE id = $1
+            RETURNING
+                id,
+                tenant_id,
+                parent_id,
+                code,
+                name,
+                resource,
+                action,
+                description,
+                status,
+                sort,
                 created_at,
                 updated_at,
                 deleted_at
@@ -232,12 +432,14 @@ impl PermRepository for SqlxPermRepository {
         )
         .bind(perm.id)
         .bind(&perm.tenant_id)
+        .bind(&perm.parent_id)
         .bind(&perm.code)
         .bind(&perm.name)
         .bind(&perm.resource)
         .bind(&perm.action)
         .bind(&perm.description)
         .bind(&perm.status)
+        .bind(&perm.sort)
         .bind(&perm.updated_at)
         .fetch_one(self.pool.pool())
         .await
@@ -253,9 +455,7 @@ impl PermRepository for SqlxPermRepository {
 
         let now = Utc::now();
 
-        let mut builder = QueryBuilder::new(
-            "UPDATE perms SET deleted_at = "
-        );
+        let mut builder = QueryBuilder::new("UPDATE perms SET deleted_at = ");
         builder.push_bind(now);
         builder.push(", updated_at = ");
         builder.push_bind(now);
@@ -283,15 +483,27 @@ impl PermRepository for SqlxPermRepository {
             return Ok(());
         }
 
-        let mut builder = QueryBuilder::new("DELETE FROM perms WHERE id IN (");
+        let mut cleanup_builder = QueryBuilder::new("DELETE FROM role_perms WHERE perm_id IN (");
+        {
+            let mut separated = cleanup_builder.separated(", ");
+            for id in ids {
+                separated.push_bind(id);
+            }
+        }
+        cleanup_builder.push(")");
+        cleanup_builder
+            .build()
+            .execute(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
 
+        let mut builder = QueryBuilder::new("DELETE FROM perms WHERE id IN (");
         {
             let mut separated = builder.separated(", ");
             for id in ids {
                 separated.push_bind(id);
             }
         }
-
         builder.push(")");
         builder
             .build()

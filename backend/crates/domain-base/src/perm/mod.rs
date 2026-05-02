@@ -12,12 +12,14 @@ use neocrates::response::error::{AppError, AppResult};
 pub struct Perm {
     pub id: i64,
     pub tenant_id: Option<i64>,
+    pub parent_id: Option<i64>,
     pub code: String,
     pub name: String,
     pub resource: Option<String>,
     pub action: Option<String>,
     pub description: Option<String>,
     pub status: i16,
+    pub sort: i32,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,
@@ -32,12 +34,14 @@ impl Perm {
         Ok(Self {
             id: cmd.id,
             tenant_id: cmd.tenant_id,
+            parent_id: cmd.parent_id,
             code: cmd.code,
             name: cmd.name,
             resource: cmd.resource,
             action: cmd.action,
             description: cmd.description,
             status: cmd.status,
+            sort: cmd.sort,
             created_at: now,
             updated_at: now,
             deleted_at: None,
@@ -49,6 +53,10 @@ impl Perm {
 
         if let Some(tenant_id) = cmd.tenant_id {
             self.tenant_id = Some(tenant_id);
+        }
+
+        if let Some(parent_id) = cmd.parent_id {
+            self.parent_id = Some(parent_id);
         }
 
         if let Some(code) = cmd.code {
@@ -73,6 +81,10 @@ impl Perm {
 
         if let Some(status) = cmd.status {
             self.status = status;
+        }
+
+        if let Some(sort) = cmd.sort {
+            self.sort = sort;
         }
 
         self.updated_at = Utc::now();
@@ -106,12 +118,14 @@ impl Perm {
 pub struct CreatePermCmd {
     pub id: i64,
     pub tenant_id: Option<i64>,
+    pub parent_id: Option<i64>,
     pub code: String,
     pub name: String,
     pub resource: Option<String>,
     pub action: Option<String>,
     pub description: Option<String>,
     pub status: i16,
+    pub sort: i32,
 }
 
 impl CreatePermCmd {
@@ -135,12 +149,14 @@ impl CreatePermCmd {
 #[derive(Debug, Clone, Default)]
 pub struct UpdatePermCmd {
     pub tenant_id: Option<i64>,
+    pub parent_id: Option<i64>,
     pub code: Option<String>,
     pub name: Option<String>,
     pub resource: Option<String>,
     pub action: Option<String>,
     pub description: Option<String>,
     pub status: Option<i16>,
+    pub sort: Option<i32>,
 }
 
 impl UpdatePermCmd {
@@ -198,9 +214,69 @@ pub struct PagePermCmd {
 }
 
 #[derive(Debug, Clone, Default)]
+pub struct TreePermCmd {
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ChildrenPermCmd {
+    pub parent_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone)]
+pub struct RemoveCascadePermCmd {
+    pub id: i64,
+}
+
+#[derive(Debug, Clone, Default)]
 pub struct PermPageQuery {
     pub keyword: Option<String>,
     pub status: Option<i16>,
     pub limit: Option<i64>,
     pub offset: Option<i64>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct PermTreeQuery {
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct PermChildrenQuery {
+    pub parent_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+impl Perm {
+    pub fn matches_keyword(&self, keyword: &str) -> bool {
+        let keyword = keyword.trim().to_lowercase();
+        if keyword.is_empty() {
+            return true;
+        }
+
+        self.code.to_lowercase().contains(&keyword)
+            || self.name.to_lowercase().contains(&keyword)
+            || self
+                .resource
+                .as_deref()
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains(&keyword)
+            || self
+                .action
+                .as_deref()
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains(&keyword)
+            || self
+                .description
+                .as_deref()
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains(&keyword)
+    }
 }

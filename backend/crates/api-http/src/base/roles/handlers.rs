@@ -1,15 +1,15 @@
 use super::{
     req::{
-        CreateRoleReq,
-        DeleteRoleReq,
-        GetRoleReq,
-        PageRoleReq,
-        UpdateRoleReq,
+        ChildrenRoleReq, CreateRoleReq, DeleteRoleReq, GetRoleReq, PageRoleReq,
+        RemoveCascadeRoleReq, TreeRoleReq, UpdateRoleReq,
     },
-    resp::{RoleResp, PaginateRoleResp},
+    resp::{PaginateRoleResp, RoleChildrenResp, RoleResp, RoleTreeNodeResp, RoleTreeResp},
 };
 use crate::base::BaseHttpState;
-use domain_base::{CreateRoleCmd, PageRoleCmd, UpdateRoleCmd};
+use domain_base::{
+    CreateRoleCmd, PageRoleCmd, UpdateRoleCmd,
+    role::{ChildrenRoleCmd, RemoveCascadeRoleCmd, TreeRoleCmd},
+};
 use neocrates::{
     axum::{Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
@@ -20,14 +20,6 @@ use validator::Validate;
 
 pub type RolesState = BaseHttpState;
 
-/// Create a new role.
-///
-/// # Arguments
-/// * `state` - The base HTTP state.
-/// * `req` - The request body.
-///
-/// # Returns
-/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn create(
     State(state): State<RolesState>,
     DetailedJson(req): DetailedJson<CreateRoleReq>,
@@ -43,14 +35,6 @@ pub async fn create(
     Ok(Json(()))
 }
 
-/// Get a role by id.
-///
-/// # Arguments
-/// * `state` - The base HTTP state.
-/// * `req` - The request body.
-///
-/// # Returns
-/// * `AppResult<Json<RoleResp>>` - The role response.
 pub async fn get(
     State(state): State<RolesState>,
     DetailedJson(req): DetailedJson<GetRoleReq>,
@@ -61,19 +45,9 @@ pub async fn get(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let role = state.role_service.get(req.id).await?;
-    let resp: RoleResp = role.into();
-
-    Ok(Json(resp))
+    Ok(Json(role.into()))
 }
 
-/// Page roles.
-///
-/// # Arguments
-/// * `state` - The base HTTP state.
-/// * `req` - The request body.
-///
-/// # Returns
-/// * `AppResult<Json<PaginateRoleResp>>` - The paginated response.
 pub async fn page(
     State(state): State<RolesState>,
     DetailedJson(req): DetailedJson<PageRoleReq>,
@@ -85,21 +59,43 @@ pub async fn page(
 
     let cmd: PageRoleCmd = req.into();
     let (roles, total) = state.role_service.page(cmd).await?;
-
     let items = roles.into_iter().map(RoleResp::from).collect::<Vec<_>>();
-    let resp = PaginateRoleResp::new(items, total as usize);
 
-    Ok(Json(resp))
+    Ok(Json(PaginateRoleResp::new(items, total as usize)))
 }
 
-/// Update an existing role.
-///
-/// # Arguments
-/// * `state` - The base HTTP state.
-/// * `req` - Update request body.
-///
-/// # Returns
-/// * `AppResult<Json<()>>` - The result of the operation.
+pub async fn tree(
+    State(state): State<RolesState>,
+    DetailedJson(req): DetailedJson<TreeRoleReq>,
+) -> AppResult<Json<RoleTreeResp>> {
+    tracing::info!("...Tree Role Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: TreeRoleCmd = req.into();
+    let roles = state.role_service.tree(cmd).await?;
+    let items = RoleTreeNodeResp::from_flat(roles);
+
+    Ok(Json(RoleTreeResp::new(items)))
+}
+
+pub async fn children(
+    State(state): State<RolesState>,
+    DetailedJson(req): DetailedJson<ChildrenRoleReq>,
+) -> AppResult<Json<RoleChildrenResp>> {
+    tracing::info!("...Children Role Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: ChildrenRoleCmd = req.into();
+    let roles = state.role_service.children(cmd).await?;
+    let items = roles.into_iter().map(RoleResp::from).collect::<Vec<_>>();
+
+    Ok(Json(RoleChildrenResp::new(items)))
+}
+
 pub async fn update(
     State(state): State<RolesState>,
     DetailedJson(req): DetailedJson<UpdateRoleReq>,
@@ -116,14 +112,6 @@ pub async fn update(
     Ok(Json(()))
 }
 
-/// Delete roles.
-///
-/// # Arguments
-/// * `state` - The base HTTP state.
-/// * `req` - The request body.
-///
-/// # Returns
-/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn delete(
     State(state): State<RolesState>,
     DetailedJson(req): DetailedJson<DeleteRoleReq>,
@@ -134,6 +122,21 @@ pub async fn delete(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     state.role_service.delete(req.ids).await?;
+
+    Ok(Json(()))
+}
+
+pub async fn remove_cascade(
+    State(state): State<RolesState>,
+    DetailedJson(req): DetailedJson<RemoveCascadeRoleReq>,
+) -> AppResult<Json<()>> {
+    tracing::info!("...Remove Cascade Role Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: RemoveCascadeRoleCmd = req.into();
+    state.role_service.remove_cascade(cmd).await?;
 
     Ok(Json(()))
 }

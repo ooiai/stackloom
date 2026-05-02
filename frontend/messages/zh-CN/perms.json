@@ -1,0 +1,138 @@
+{
+  "page": {
+    "title": "权限管理",
+    "subtitle": "维护权限树、资源标识与动作定义",
+    "addRoot": "添加根权限"
+  },
+  "toast": {
+    "created": "权限已创建",
+    "updated": "权限已更新",
+    "deleted": "权限已删除"
+  },
+  "dialog": {
+    "deleteTitle": "删除权限",
+    "deleteLeafDescription": "确定删除“{name}”吗？此操作无法撤销。",
+    "deleteBranchDescription": "确定删除“{name}”以及其全部子级吗？此操作无法撤销。"
+  },
+  "sheet": {
+    "create": {
+      "title": "新增权限",
+      "description": "维护权限编码、资源动作与层级关系",
+      "submit": "创建权限"
+    },
+    "update": {
+      "title": "编辑权限",
+      "description": "更新当前权限信息与树形位置",
+      "submit": "保存更新"
+    }
+  },
+  "sections": {
+    "basic": {
+      "title": "基础信息",
+      "description": "先确定父节点、权限编码与权限名称"
+    },
+    "route": {
+      "title": "资源映射",
+      "description": "描述资源、动作以及该权限的业务说明"
+    },
+    "display": {
+      "title": "状态与排序",
+      "description": "控制启用状态与排序值"
+    }
+  },
+  "form": {
+    "parent": {
+      "label": "所属节点"
+    },
+    "code": {
+      "label": "权限编码",
+      "placeholder": "例如：UPMS::USER::CREATE",
+      "validation": {
+        "required": "请输入权限编码",
+        "max": "权限编码长度不能超过 100 个字符",
+        "duplicate": "权限编码已存在"
+      }
+    },
+    "name": {
+      "label": "权限名称",
+      "placeholder": "例如：创建用户",
+      "validation": {
+        "required": "请输入权限名称",
+        "max": "权限名称长度不能超过 100 个字符"
+      }
+    },
+    "resource": {
+      "label": "资源标识",
+      "placeholder": "例如：user",
+      "validation": {
+        "max": "资源标识长度不能超过 255 个字符"
+      }
+    },
+    "action": {
+      "label": "动作标识",
+      "placeholder": "例如：create",
+      "validation": {
+        "max": "动作标识长度不能超过 100 个字符"
+      }
+    },
+    "description": {
+      "label": "权限说明",
+      "placeholder": "说明该权限适用的业务动作或授权场景",
+      "validation": {
+        "max": "权限说明长度不能超过 500 个字符"
+      }
+    },
+    "sort": {
+      "label": "排序值",
+      "validation": {
+        "int": "排序值必须是整数",
+        "min": "排序值不能小于 0",
+        "max": "排序值不能超过 9999"
+      }
+    },
+    "status": {
+      "label": "状态"
+    }
+  },
+  "status": {
+    "disabled": {
+      "label": "禁用"
+    },
+    "active": {
+      "label": "正常"
+    }
+  },
+  "sidebar": {
+    "title": "权限树",
+    "subtitle": "浏览层级并切换当前权限节点",
+    "addRoot": "添加根权限",
+    "searchPlaceholder": "搜索权限名称或权限编码",
+    "emptySearchTitle": "没有匹配的权限",
+    "emptyDefaultTitle": "暂无权限",
+    "emptySearchDescription": "换个关键词，或清空搜索",
+    "emptyDefaultDescription": "先创建根权限，再继续补充子级",
+    "create": "创建权限"
+  },
+  "detail": {
+    "emptyTitle": "选择权限节点",
+    "emptyDescription": "选择左侧节点后查看详情和子级",
+    "code": "权限编码",
+    "resource": "资源标识",
+    "action": "动作标识",
+    "description": "权限说明",
+    "sort": "排序",
+    "emptyChildrenTitle": "当前权限下暂无子级",
+    "emptyChildrenDescription": "可继续添加子权限",
+    "directChildrenTitle": "直属子权限"
+  },
+  "table": {
+    "name": "权限名称",
+    "code": "权限编码",
+    "resource": "资源标识",
+    "action": "动作标识",
+    "sort": "排序",
+    "status": "状态",
+    "updatedAt": "更新时间",
+    "childCount": "{count} 子项"
+  }
+}

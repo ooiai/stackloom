@@ -1,0 +1,128 @@
+{
+  "page": {
+    "title": "Roles",
+    "subtitle": "Manage role hierarchy, descriptions, and built-in markers",
+    "addRoot": "Add root role"
+  },
+  "toast": {
+    "created": "Role created",
+    "updated": "Role updated",
+    "deleted": "Role deleted"
+  },
+  "dialog": {
+    "deleteTitle": "Delete role",
+    "deleteLeafDescription": "Delete \"{name}\"? This action cannot be undone.",
+    "deleteBranchDescription": "Delete \"{name}\" and all of its children? This action cannot be undone."
+  },
+  "sheet": {
+    "create": {
+      "title": "Create role",
+      "description": "Maintain role identity, description, and hierarchy",
+      "submit": "Create role"
+    },
+    "update": {
+      "title": "Edit role",
+      "description": "Update the current role details and hierarchy position",
+      "submit": "Save changes"
+    }
+  },
+  "sections": {
+    "basic": {
+      "title": "Basic information",
+      "description": "Define the parent node, code, and display name"
+    },
+    "route": {
+      "title": "Description",
+      "description": "Add notes that help explain the role intent and scope"
+    },
+    "display": {
+      "title": "Status and ordering",
+      "description": "Control status, sort order, and built-in marker"
+    }
+  },
+  "form": {
+    "parent": {
+      "label": "Parent node"
+    },
+    "code": {
+      "label": "Role code",
+      "placeholder": "Example: UPMS::ROLE::ADMIN",
+      "validation": {
+        "required": "Enter a role code",
+        "max": "Role code must be 100 characters or fewer",
+        "duplicate": "Role code already exists"
+      }
+    },
+    "name": {
+      "label": "Role name",
+      "placeholder": "Example: Platform administrator",
+      "validation": {
+        "required": "Enter a role name",
+        "max": "Role name must be 100 characters or fewer"
+      }
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Explain the responsibility or scope of this role",
+      "validation": {
+        "max": "Description must be 500 characters or fewer"
+      }
+    },
+    "sort": {
+      "label": "Sort order",
+      "validation": {
+        "int": "Sort order must be an integer",
+        "min": "Sort order cannot be less than 0",
+        "max": "Sort order cannot exceed 9999"
+      }
+    },
+    "status": {
+      "label": "Status"
+    },
+    "isBuiltin": {
+      "label": "Built-in role"
+    }
+  },
+  "status": {
+    "disabled": {
+      "label": "Disabled"
+    },
+    "active": {
+      "label": "Active"
+    }
+  },
+  "sidebar": {
+    "title": "Role tree",
+    "subtitle": "Browse the hierarchy and switch the current role",
+    "addRoot": "Add root role",
+    "searchPlaceholder": "Search by name or code",
+    "emptySearchTitle": "No matching roles",
+    "emptyDefaultTitle": "No roles yet",
+    "emptySearchDescription": "Try another keyword or clear the search",
+    "emptyDefaultDescription": "Create a root role first, then add child items",
+    "create": "Create role"
+  },
+  "detail": {
+    "emptyTitle": "Choose a role node",
+    "emptyDescription": "Select a node on the left to view details and children",
+    "code": "Role code",
+    "description": "Description",
+    "builtin": "Built-in",
+    "builtinOn": "Yes",
+    "builtinOff": "No",
+    "sort": "Sort",
+    "emptyChildrenTitle": "No child roles under this node",
+    "emptyChildrenDescription": "You can continue by adding child roles",
+    "directChildrenTitle": "Child roles"
+  },
+  "table": {
+    "name": "Role name",
+    "code": "Role code",
+    "description": "Description",
+    "builtin": "Built-in",
+    "sort": "Sort",
+    "status": "Status",
+    "updatedAt": "Updated at",
+    "childCount": "{count} children"
+  }
+}

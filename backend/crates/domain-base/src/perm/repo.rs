@@ -1,6 +1,9 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{Perm, perm::PermPageQuery};
+use crate::{
+    Perm,
+    perm::{PermChildrenQuery, PermPageQuery, PermTreeQuery},
+};
 
 #[async_trait]
 pub trait PermRepository: Send + Sync {
@@ -30,6 +33,21 @@ pub trait PermRepository: Send + Sync {
     /// # Returns
     /// * `AppResult<(Vec<Perm>, i64)>` - Paged perms and total count
     async fn page(&self, query: &PermPageQuery) -> AppResult<(Vec<Perm>, i64)>;
+
+    /// Find a Perm by code.
+    async fn find_by_code(&self, code: &str) -> AppResult<Option<Perm>>;
+
+    /// Load perm items for tree building.
+    async fn list_for_tree(&self, query: &PermTreeQuery) -> AppResult<Vec<Perm>>;
+
+    /// Load direct perm children by parent id.
+    async fn list_by_parent(&self, query: &PermChildrenQuery) -> AppResult<Vec<Perm>>;
+
+    /// Count direct perm children by parent id.
+    async fn count_by_parent_id(&self, parent_id: i64) -> AppResult<i64>;
+
+    /// Find a perm and all descendant ids.
+    async fn find_descendant_ids(&self, id: i64) -> AppResult<Vec<i64>>;
 
     /// Update an existing Perm.
     ///

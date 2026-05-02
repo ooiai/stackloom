@@ -1,15 +1,15 @@
 use super::{
     req::{
-        CreatePermReq,
-        DeletePermReq,
-        GetPermReq,
-        PagePermReq,
-        UpdatePermReq,
+        ChildrenPermReq, CreatePermReq, DeletePermReq, GetPermReq, PagePermReq,
+        RemoveCascadePermReq, TreePermReq, UpdatePermReq,
     },
-    resp::{PermResp, PaginatePermResp},
+    resp::{PaginatePermResp, PermChildrenResp, PermResp, PermTreeNodeResp, PermTreeResp},
 };
 use crate::base::BaseHttpState;
-use domain_base::{CreatePermCmd, PagePermCmd, UpdatePermCmd};
+use domain_base::{
+    CreatePermCmd, PagePermCmd, UpdatePermCmd,
+    perm::{ChildrenPermCmd, RemoveCascadePermCmd, TreePermCmd},
+};
 use neocrates::{
     axum::{Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
@@ -20,14 +20,6 @@ use validator::Validate;
 
 pub type PermsState = BaseHttpState;
 
-/// Create a new perm.
-///
-/// # Arguments
-/// * `state` - The base HTTP state.
-/// * `req` - The request body.
-///
-/// # Returns
-/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn create(
     State(state): State<PermsState>,
     DetailedJson(req): DetailedJson<CreatePermReq>,
@@ -43,14 +35,6 @@ pub async fn create(
     Ok(Json(()))
 }
 
-/// Get a perm by id.
-///
-/// # Arguments
-/// * `state` - The base HTTP state.
-/// * `req` - The request body.
-///
-/// # Returns
-/// * `AppResult<Json<PermResp>>` - The perm response.
 pub async fn get(
     State(state): State<PermsState>,
     DetailedJson(req): DetailedJson<GetPermReq>,
@@ -61,19 +45,9 @@ pub async fn get(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let perm = state.perm_service.get(req.id).await?;
-    let resp: PermResp = perm.into();
-
-    Ok(Json(resp))
+    Ok(Json(perm.into()))
 }
 
-/// Page perms.
-///
-/// # Arguments
-/// * `state` - The base HTTP state.
-/// * `req` - The request body.
-///
-/// # Returns
-/// * `AppResult<Json<PaginatePermResp>>` - The paginated response.
 pub async fn page(
     State(state): State<PermsState>,
     DetailedJson(req): DetailedJson<PagePermReq>,
@@ -85,21 +59,43 @@ pub async fn page(
 
     let cmd: PagePermCmd = req.into();
     let (perms, total) = state.perm_service.page(cmd).await?;
-
     let items = perms.into_iter().map(PermResp::from).collect::<Vec<_>>();
-    let resp = PaginatePermResp::new(items, total as usize);
 
-    Ok(Json(resp))
+    Ok(Json(PaginatePermResp::new(items, total as usize)))
 }
 
-/// Update an existing perm.
-///
-/// # Arguments
-/// * `state` - The base HTTP state.
-/// * `req` - Update request body.
-///
-/// # Returns
-/// * `AppResult<Json<()>>` - The result of the operation.
+pub async fn tree(
+    State(state): State<PermsState>,
+    DetailedJson(req): DetailedJson<TreePermReq>,
+) -> AppResult<Json<PermTreeResp>> {
+    tracing::info!("...Tree Perm Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: TreePermCmd = req.into();
+    let perms = state.perm_service.tree(cmd).await?;
+    let items = PermTreeNodeResp::from_flat(perms);
+
+    Ok(Json(PermTreeResp::new(items)))
+}
+
+pub async fn children(
+    State(state): State<PermsState>,
+    DetailedJson(req): DetailedJson<ChildrenPermReq>,
+) -> AppResult<Json<PermChildrenResp>> {
+    tracing::info!("...Children Perm Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: ChildrenPermCmd = req.into();
+    let perms = state.perm_service.children(cmd).await?;
+    let items = perms.into_iter().map(PermResp::from).collect::<Vec<_>>();
+
+    Ok(Json(PermChildrenResp::new(items)))
+}
+
 pub async fn update(
     State(state): State<PermsState>,
     DetailedJson(req): DetailedJson<UpdatePermReq>,
@@ -116,14 +112,6 @@ pub async fn update(
     Ok(Json(()))
 }
 
-/// Delete perms.
-///
-/// # Arguments
-/// * `state` - The base HTTP state.
-/// * `req` - The request body.
-///
-/// # Returns
-/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn delete(
     State(state): State<PermsState>,
     DetailedJson(req): DetailedJson<DeletePermReq>,
@@ -134,6 +122,21 @@ pub async fn delete(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     state.perm_service.delete(req.ids).await?;
+
+    Ok(Json(()))
+}
+
+pub async fn remove_cascade(
+    State(state): State<PermsState>,
+    DetailedJson(req): DetailedJson<RemoveCascadePermReq>,
+) -> AppResult<Json<()>> {
+    tracing::info!("...Remove Cascade Perm Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: RemoveCascadePermCmd = req.into();
+    state.perm_service.remove_cascade(cmd).await?;
 
     Ok(Json(()))
 }

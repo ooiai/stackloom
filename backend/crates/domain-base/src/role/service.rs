@@ -1,6 +1,9 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{CreateRoleCmd, PageRoleCmd, UpdateRoleCmd, Role};
+use crate::{
+    CreateRoleCmd, PageRoleCmd, Role, UpdateRoleCmd,
+    role::{ChildrenRoleCmd, RemoveCascadeRoleCmd, TreeRoleCmd},
+};
 
 #[async_trait]
 pub trait RoleService: Send + Sync {
@@ -31,6 +34,12 @@ pub trait RoleService: Send + Sync {
     /// * `AppResult<(Vec<Role>, i64)>` - The result of the page operation.
     async fn page(&self, cmd: PageRoleCmd) -> AppResult<(Vec<Role>, i64)>;
 
+    /// Load the role tree.
+    async fn tree(&self, cmd: TreeRoleCmd) -> AppResult<Vec<Role>>;
+
+    /// Load direct role children by parent.
+    async fn children(&self, cmd: ChildrenRoleCmd) -> AppResult<Vec<Role>>;
+
     /// Update an existing role.
     ///
     /// # Arguments
@@ -49,4 +58,7 @@ pub trait RoleService: Send + Sync {
     /// # Returns
     /// * `AppResult<()>` - The result of the delete operation.
     async fn delete(&self, ids: Vec<i64>) -> AppResult<()>;
+
+    /// Delete a role and all descendants.
+    async fn remove_cascade(&self, cmd: RemoveCascadeRoleCmd) -> AppResult<()>;
 }

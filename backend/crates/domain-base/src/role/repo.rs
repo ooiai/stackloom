@@ -1,6 +1,9 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{Role, role::RolePageQuery};
+use crate::{
+    Role,
+    role::{RoleChildrenQuery, RolePageQuery, RoleTreeQuery},
+};
 
 #[async_trait]
 pub trait RoleRepository: Send + Sync {
@@ -30,6 +33,21 @@ pub trait RoleRepository: Send + Sync {
     /// # Returns
     /// * `AppResult<(Vec<Role>, i64)>` - Paged roles and total count
     async fn page(&self, query: &RolePageQuery) -> AppResult<(Vec<Role>, i64)>;
+
+    /// Find a Role by code.
+    async fn find_by_code(&self, code: &str) -> AppResult<Option<Role>>;
+
+    /// Load role items for tree building.
+    async fn list_for_tree(&self, query: &RoleTreeQuery) -> AppResult<Vec<Role>>;
+
+    /// Load direct role children by parent id.
+    async fn list_by_parent(&self, query: &RoleChildrenQuery) -> AppResult<Vec<Role>>;
+
+    /// Count direct role children by parent id.
+    async fn count_by_parent_id(&self, parent_id: i64) -> AppResult<i64>;
+
+    /// Find a role and all descendant ids.
+    async fn find_descendant_ids(&self, id: i64) -> AppResult<Vec<i64>>;
 
     /// Update an existing Role.
     ///

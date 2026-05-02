@@ -43,6 +43,14 @@
     "name": "Menus",
     "remark": "Manage navigation menus, routes, and tree structure"
   },
+  "upms-roles": {
+    "name": "Roles",
+    "remark": "Manage the role tree, descriptions, and hierarchy"
+  },
+  "upms-perms": {
+    "name": "Permissions",
+    "remark": "Manage the permission tree, resources, actions, and hierarchy"
+  },
   "user": {
     "name": "Admin",
     "role": "System administrator"

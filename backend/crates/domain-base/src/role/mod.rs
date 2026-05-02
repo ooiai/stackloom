@@ -12,6 +12,7 @@ use neocrates::response::error::{AppError, AppResult};
 pub struct Role {
     pub id: i64,
     pub tenant_id: Option<i64>,
+    pub parent_id: Option<i64>,
     pub code: String,
     pub name: String,
     pub description: Option<String>,
@@ -32,6 +33,7 @@ impl Role {
         Ok(Self {
             id: cmd.id,
             tenant_id: cmd.tenant_id,
+            parent_id: cmd.parent_id,
             code: cmd.code,
             name: cmd.name,
             description: cmd.description,
@@ -49,6 +51,10 @@ impl Role {
 
         if let Some(tenant_id) = cmd.tenant_id {
             self.tenant_id = Some(tenant_id);
+        }
+
+        if let Some(parent_id) = cmd.parent_id {
+            self.parent_id = Some(parent_id);
         }
 
         if let Some(code) = cmd.code {
@@ -106,6 +112,7 @@ impl Role {
 pub struct CreateRoleCmd {
     pub id: i64,
     pub tenant_id: Option<i64>,
+    pub parent_id: Option<i64>,
     pub code: String,
     pub name: String,
     pub description: Option<String>,
@@ -135,6 +142,7 @@ impl CreateRoleCmd {
 #[derive(Debug, Clone, Default)]
 pub struct UpdateRoleCmd {
     pub tenant_id: Option<i64>,
+    pub parent_id: Option<i64>,
     pub code: Option<String>,
     pub name: Option<String>,
     pub description: Option<String>,
@@ -182,9 +190,57 @@ pub struct PageRoleCmd {
 }
 
 #[derive(Debug, Clone, Default)]
+pub struct TreeRoleCmd {
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ChildrenRoleCmd {
+    pub parent_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone)]
+pub struct RemoveCascadeRoleCmd {
+    pub id: i64,
+}
+
+#[derive(Debug, Clone, Default)]
 pub struct RolePageQuery {
     pub keyword: Option<String>,
     pub status: Option<i16>,
     pub limit: Option<i64>,
     pub offset: Option<i64>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct RoleTreeQuery {
+    pub status: Option<i16>,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct RoleChildrenQuery {
+    pub parent_id: Option<i64>,
+    pub keyword: Option<String>,
+    pub status: Option<i16>,
+}
+
+impl Role {
+    pub fn matches_keyword(&self, keyword: &str) -> bool {
+        let keyword = keyword.trim().to_lowercase();
+        if keyword.is_empty() {
+            return true;
+        }
+
+        self.code.to_lowercase().contains(&keyword)
+            || self.name.to_lowercase().contains(&keyword)
+            || self
+                .description
+                .as_deref()
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains(&keyword)
+    }
 }

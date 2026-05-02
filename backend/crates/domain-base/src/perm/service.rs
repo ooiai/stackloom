@@ -1,6 +1,9 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{CreatePermCmd, PagePermCmd, UpdatePermCmd, Perm};
+use crate::{
+    CreatePermCmd, PagePermCmd, Perm, UpdatePermCmd,
+    perm::{ChildrenPermCmd, RemoveCascadePermCmd, TreePermCmd},
+};
 
 #[async_trait]
 pub trait PermService: Send + Sync {
@@ -31,6 +34,12 @@ pub trait PermService: Send + Sync {
     /// * `AppResult<(Vec<Perm>, i64)>` - The result of the page operation.
     async fn page(&self, cmd: PagePermCmd) -> AppResult<(Vec<Perm>, i64)>;
 
+    /// Load the perm tree.
+    async fn tree(&self, cmd: TreePermCmd) -> AppResult<Vec<Perm>>;
+
+    /// Load direct perm children by parent.
+    async fn children(&self, cmd: ChildrenPermCmd) -> AppResult<Vec<Perm>>;
+
     /// Update an existing perm.
     ///
     /// # Arguments
@@ -49,4 +58,7 @@ pub trait PermService: Send + Sync {
     /// # Returns
     /// * `AppResult<()>` - The result of the delete operation.
     async fn delete(&self, ids: Vec<i64>) -> AppResult<()>;
+
+    /// Delete a perm and all descendants.
+    async fn remove_cascade(&self, cmd: RemoveCascadePermCmd) -> AppResult<()>;
 }

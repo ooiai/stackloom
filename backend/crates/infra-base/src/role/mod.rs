@@ -12,6 +12,7 @@ use sqlx::FromRow;
 pub struct RoleRow {
     pub id: i64,
     pub tenant_id: Option<i64>,
+    pub parent_id: Option<i64>,
     pub code: String,
     pub name: String,
     pub description: Option<String>,
@@ -28,6 +29,7 @@ impl From<RoleRow> for Role {
         Self {
             id: row.id,
             tenant_id: row.tenant_id,
+            parent_id: row.parent_id,
             code: row.code,
             name: row.name,
             description: row.description,
