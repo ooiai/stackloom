@@ -46,7 +46,7 @@ export function createUserColumns({
           avatarFallback={getUserAvatarFallback(row.original)}
           avatarSrc={row.original.avatar_url ?? undefined}
           title={getUserDisplayName(row.original)}
-          description={row.original.email || row.original.username}
+          description={row.original.username || row.original.email || ""}
         />
       ),
       size: 240,
