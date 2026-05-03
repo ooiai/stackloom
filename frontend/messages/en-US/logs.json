@@ -1,0 +1,172 @@
+{
+  "common": {
+    "actions": {
+      "viewDetail": "View details"
+    },
+    "result": {
+      "success": "Success",
+      "failure": "Failure"
+    },
+    "fields": {
+      "id": "Log ID",
+      "traceId": "Trace ID",
+      "requestId": "Request ID",
+      "tenantId": "Tenant ID",
+      "operatorId": "Operator ID",
+      "method": "Method",
+      "path": "Path",
+      "module": "Module",
+      "action": "Action",
+      "statusCode": "Status code",
+      "latency": "Latency",
+      "ip": "IP",
+      "userAgent": "User-Agent",
+      "errorCode": "Error code",
+      "errorMessage": "Error message",
+      "createdAt": "Created at",
+      "targetType": "Target type",
+      "targetId": "Target ID",
+      "reason": "Reason",
+      "bizType": "Business type",
+      "bizId": "Business ID",
+      "operation": "Operation",
+      "summary": "Summary",
+      "result": "Result"
+    },
+    "sections": {
+      "extra": "Extra context",
+      "beforeData": "Before data",
+      "afterData": "After data",
+      "beforeSnapshot": "Before snapshot",
+      "afterSnapshot": "After snapshot"
+    }
+  },
+  "filters": {
+    "addField": "Add filter",
+    "searchFields": "Search filter fields",
+    "operator": {
+      "is": "is",
+      "contains": "contains"
+    }
+  },
+  "system": {
+    "page": {
+      "title": "System logs",
+      "subtitle": "Inspect trace IDs, status codes, paths, and performance summaries by request.",
+      "emptyTitle": "No system logs yet",
+      "emptyDescription": "Adjust the filters or trigger new requests and check again."
+    },
+    "metrics": {
+      "totalLabel": "Matched total",
+      "totalHint": "Total records matching the current filters",
+      "failureLabel": "Failures on this page",
+      "failureHint": "4xx / 5xx requests in the current page",
+      "latencyLabel": "Average latency on this page",
+      "latencyHint": "Average latency derived from the current page"
+    },
+    "filters": {
+      "traceIdLabel": "Trace ID",
+      "traceIdPlaceholder": "Enter a trace id",
+      "requestIdLabel": "Request ID",
+      "requestIdPlaceholder": "Enter a request id",
+      "methodLabel": "Method",
+      "resultLabel": "Result",
+      "pathLabel": "Path",
+      "pathPlaceholder": "For example /apiv1/base/users/page",
+      "statusCodeLabel": "Status code",
+      "statusCodePlaceholder": "For example 500"
+    },
+    "table": {
+      "method": "Method",
+      "request": "Request",
+      "statusCode": "Status code",
+      "result": "Result",
+      "traceId": "Trace ID",
+      "createdAt": "Created at"
+    },
+    "detail": {
+      "title": "System log details",
+      "description": "Review request context, performance summaries, and error clues."
+    }
+  },
+  "audit": {
+    "page": {
+      "title": "Audit logs",
+      "subtitle": "Query sensitive operation trails, audit results, and before/after payloads.",
+      "emptyTitle": "No audit logs yet",
+      "emptyDescription": "Trigger a sensitive user, role, or permission change and check again."
+    },
+    "metrics": {
+      "totalLabel": "Matched total",
+      "totalHint": "Audit records matching the current filters",
+      "failureLabel": "Failures on this page",
+      "failureHint": "Audit records marked as failure on the current page",
+      "targetLabel": "Targets on this page",
+      "targetHint": "Distinct target objects in the current page"
+    },
+    "filters": {
+      "traceIdLabel": "Trace ID",
+      "traceIdPlaceholder": "Enter a trace id",
+      "targetTypeLabel": "Target type",
+      "targetTypePlaceholder": "For example role",
+      "targetIdLabel": "Target ID",
+      "targetIdPlaceholder": "Enter a target id",
+      "actionLabel": "Action",
+      "actionPlaceholder": "For example remove_cascade",
+      "resultLabel": "Result"
+    },
+    "table": {
+      "target": "Target",
+      "action": "Action",
+      "result": "Result",
+      "traceId": "Trace ID",
+      "reason": "Reason",
+      "createdAt": "Created at"
+    },
+    "detail": {
+      "title": "Audit log details",
+      "description": "Inspect the security trail, reason, and redacted before/after data."
+    }
+  },
+  "operation": {
+    "page": {
+      "title": "Operation logs",
+      "subtitle": "Query admin business actions, summaries, and linked traces.",
+      "emptyTitle": "No operation logs yet",
+      "emptyDescription": "Trigger backend CRUD or relation changes and check again."
+    },
+    "metrics": {
+      "totalLabel": "Matched total",
+      "totalHint": "Business operation records matching the current filters",
+      "successLabel": "Successes on this page",
+      "successHint": "Successful operations on the current page",
+      "moduleLabel": "Modules on this page",
+      "moduleHint": "Distinct business modules in the current page"
+    },
+    "filters": {
+      "keywordLabel": "Keyword",
+      "keywordPlaceholder": "Search summary, module, or business object",
+      "moduleLabel": "Module",
+      "modulePlaceholder": "For example roles",
+      "bizTypeLabel": "Business type",
+      "bizTypePlaceholder": "For example role",
+      "operationLabel": "Operation",
+      "operationPlaceholder": "For example update",
+      "resultLabel": "Result",
+      "traceIdLabel": "Trace ID",
+      "traceIdPlaceholder": "Enter a trace id"
+    },
+    "table": {
+      "module": "Module",
+      "summary": "Summary",
+      "result": "Result",
+      "traceId": "Trace ID",
+      "bizId": "Business ID",
+      "createdAt": "Created at"
+    },
+    "detail": {
+      "title": "Operation log details",
+      "description": "Inspect the business summary and before/after snapshots."
+    }
+  }
+}

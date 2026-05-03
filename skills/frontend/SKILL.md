@@ -265,6 +265,7 @@ Read these files when relevant:
 - `skills/frontend/rules/i18n.md`
 - `skills/frontend/rules/reui.md`
 - `skills/frontend/rules/shadcn.md`
+- `skills/frontend/rules/logging-pages.md`
 - `skills/frontend/rules/signin.md`
 - `skills/frontend/rules/stores.md`
 - `skills/frontend/rules/types.md`

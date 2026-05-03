@@ -162,6 +162,8 @@
   },
   "table": {
     "name": "Menu name",
+    "code": "Menu code",
+    "sort": "Sort",
     "path": "Route path",
     "component": "Component path",
     "status": "Status",

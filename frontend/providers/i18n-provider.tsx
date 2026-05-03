@@ -5,6 +5,7 @@ import { createContext, useCallback, useContext, useMemo } from "react"
 import { LOCALE_COOKIE_NAME } from "@/lib/config/constants"
 import {
   type AppLocale,
+  DEFAULT_TIME_ZONE,
   type TranslateFn,
 } from "@/lib/i18n"
 import {
@@ -43,7 +44,11 @@ export function I18nProvider({
   messages: Record<string, unknown>
 }) {
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
+    <NextIntlClientProvider
+      locale={locale}
+      messages={messages}
+      timeZone={DEFAULT_TIME_ZONE}
+    >
       <I18nContextBridge>{children}</I18nContextBridge>
     </NextIntlClientProvider>
   )

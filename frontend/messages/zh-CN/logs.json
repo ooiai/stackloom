@@ -1,0 +1,172 @@
+{
+  "common": {
+    "actions": {
+      "viewDetail": "查看详情"
+    },
+    "result": {
+      "success": "成功",
+      "failure": "失败"
+    },
+    "fields": {
+      "id": "日志 ID",
+      "traceId": "Trace ID",
+      "requestId": "Request ID",
+      "tenantId": "租户 ID",
+      "operatorId": "操作人 ID",
+      "method": "请求方法",
+      "path": "请求路径",
+      "module": "模块",
+      "action": "动作",
+      "statusCode": "状态码",
+      "latency": "耗时",
+      "ip": "IP",
+      "userAgent": "User-Agent",
+      "errorCode": "错误码",
+      "errorMessage": "错误信息",
+      "createdAt": "创建时间",
+      "targetType": "目标类型",
+      "targetId": "目标 ID",
+      "reason": "原因",
+      "bizType": "业务类型",
+      "bizId": "业务 ID",
+      "operation": "操作",
+      "summary": "摘要",
+      "result": "结果"
+    },
+    "sections": {
+      "extra": "扩展上下文",
+      "beforeData": "变更前数据",
+      "afterData": "变更后数据",
+      "beforeSnapshot": "操作前快照",
+      "afterSnapshot": "操作后快照"
+    }
+  },
+  "filters": {
+    "addField": "添加筛选",
+    "searchFields": "搜索筛选字段",
+    "operator": {
+      "is": "等于",
+      "contains": "包含"
+    }
+  },
+  "system": {
+    "page": {
+      "title": "系统日志",
+      "subtitle": "按请求维度查看 trace、状态码、路径和性能摘要。",
+      "emptyTitle": "暂无系统日志",
+      "emptyDescription": "调整筛选条件或触发请求后再回来查看。"
+    },
+    "metrics": {
+      "totalLabel": "当前命中总数",
+      "totalHint": "基于当前筛选条件的分页总记录数",
+      "failureLabel": "当前页失败请求",
+      "failureHint": "当前页中 4xx / 5xx 请求数量",
+      "latencyLabel": "当前页平均耗时",
+      "latencyHint": "基于当前页日志的平均延迟"
+    },
+    "filters": {
+      "traceIdLabel": "Trace ID",
+      "traceIdPlaceholder": "输入 trace id",
+      "requestIdLabel": "Request ID",
+      "requestIdPlaceholder": "输入 request id",
+      "methodLabel": "请求方法",
+      "resultLabel": "请求结果",
+      "pathLabel": "请求路径",
+      "pathPlaceholder": "例如 /apiv1/base/users/page",
+      "statusCodeLabel": "状态码",
+      "statusCodePlaceholder": "例如 500"
+    },
+    "table": {
+      "method": "方法",
+      "request": "请求",
+      "statusCode": "状态码",
+      "result": "结果",
+      "traceId": "Trace ID",
+      "createdAt": "时间"
+    },
+    "detail": {
+      "title": "系统日志详情",
+      "description": "查看请求上下文、性能摘要与错误线索。"
+    }
+  },
+  "audit": {
+    "page": {
+      "title": "审计日志",
+      "subtitle": "查询敏感操作留痕、审计结果和变更前后快照。",
+      "emptyTitle": "暂无审计日志",
+      "emptyDescription": "触发用户、角色、权限等关键操作后再查看。"
+    },
+    "metrics": {
+      "totalLabel": "当前命中总数",
+      "totalHint": "符合筛选条件的审计记录数",
+      "failureLabel": "当前页失败审计",
+      "failureHint": "当前页中结果为失败的记录数",
+      "targetLabel": "当前页目标数",
+      "targetHint": "当前页去重后的目标对象数量"
+    },
+    "filters": {
+      "traceIdLabel": "Trace ID",
+      "traceIdPlaceholder": "输入 trace id",
+      "targetTypeLabel": "目标类型",
+      "targetTypePlaceholder": "例如 role",
+      "targetIdLabel": "目标 ID",
+      "targetIdPlaceholder": "输入目标 id",
+      "actionLabel": "审计动作",
+      "actionPlaceholder": "例如 remove_cascade",
+      "resultLabel": "审计结果"
+    },
+    "table": {
+      "target": "目标对象",
+      "action": "动作",
+      "result": "结果",
+      "traceId": "Trace ID",
+      "reason": "原因",
+      "createdAt": "时间"
+    },
+    "detail": {
+      "title": "审计日志详情",
+      "description": "查看安全留痕、变更原因和脱敏后的前后数据。"
+    }
+  },
+  "operation": {
+    "page": {
+      "title": "操作日志",
+      "subtitle": "查询后台业务操作、变更摘要和关联 trace。",
+      "emptyTitle": "暂无操作日志",
+      "emptyDescription": "触发后台 CRUD 或关系变更后再查看。"
+    },
+    "metrics": {
+      "totalLabel": "当前命中总数",
+      "totalHint": "符合筛选条件的业务操作记录数",
+      "successLabel": "当前页成功操作",
+      "successHint": "当前页中结果为成功的操作数",
+      "moduleLabel": "当前页涉及模块",
+      "moduleHint": "当前页去重后的业务模块数量"
+    },
+    "filters": {
+      "keywordLabel": "关键字",
+      "keywordPlaceholder": "搜索摘要、模块或业务对象",
+      "moduleLabel": "模块",
+      "modulePlaceholder": "例如 roles",
+      "bizTypeLabel": "业务类型",
+      "bizTypePlaceholder": "例如 role",
+      "operationLabel": "操作",
+      "operationPlaceholder": "例如 update",
+      "resultLabel": "结果",
+      "traceIdLabel": "Trace ID",
+      "traceIdPlaceholder": "输入 trace id"
+    },
+    "table": {
+      "module": "模块",
+      "summary": "操作摘要",
+      "result": "结果",
+      "traceId": "Trace ID",
+      "bizId": "业务 ID",
+      "createdAt": "时间"
+    },
+    "detail": {
+      "title": "操作日志详情",
+      "description": "查看业务操作摘要与前后快照。"
+    }
+  }
+}

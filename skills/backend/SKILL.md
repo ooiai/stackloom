@@ -127,6 +127,12 @@ When a task is primarily about one backend layer or concern, read the matching r
     - bigint `i64` HTTP serde rules
     - transport boundary serialization conventions
 
+- `rules/logging.md`
+    - tracing / audit / operation log boundaries
+    - log write-path ownership
+    - redaction and payload rules
+    - log query API placement
+
 - `rules/scaffold.md`
     - backend module scaffold expectations
     - naming derivation
@@ -153,6 +159,7 @@ Use these quick selection rules when deciding which backend rule file to open fi
 - If you are editing **SQL queries, row mapping, pagination queries, soft delete behavior, or migrations**, start with `rules/sqlx.md`.
 - If you are wiring **services, pools, migrations, router merges, or server startup**, start with `rules/app.md`.
 - If you are handling **validation errors, conflict/not-found behavior, or bigint `i64` request/response serialization**, start with `rules/error-serde.md`.
+- If you are editing **request tracing, audit logging, operation logging, or log redaction rules**, start with `rules/logging.md`.
 - If you are generating or extending **module scaffold behavior**, start with `rules/scaffold.md`.
 
 ### Frontend-style usage mindset

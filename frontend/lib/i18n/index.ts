@@ -1,4 +1,5 @@
 export const SUPPORTED_LOCALES = ["zh-CN", "en-US"] as const
+export const DEFAULT_TIME_ZONE = "Asia/Shanghai"
 
 export type AppLocale = (typeof SUPPORTED_LOCALES)[number]
 export const LOCALE_MESSAGE_MODULES = [
@@ -13,6 +14,7 @@ export const LOCALE_MESSAGE_MODULES = [
   "roles",
   "perms",
   "tenants",
+  "logs",
 ] as const
 
 export type LocaleMessageModule = (typeof LOCALE_MESSAGE_MODULES)[number]
@@ -60,6 +62,7 @@ const MESSAGE_MODULE_LOADERS: Record<
     roles: async () => (await import("@/messages/en-US/roles.json")).default,
     perms: async () => (await import("@/messages/en-US/perms.json")).default,
     tenants: async () => (await import("@/messages/en-US/tenants.json")).default,
+    logs: async () => (await import("@/messages/en-US/logs.json")).default,
   },
   "zh-CN": {
     common: async () => (await import("@/messages/zh-CN/common.json")).default,
@@ -75,6 +78,7 @@ const MESSAGE_MODULE_LOADERS: Record<
     roles: async () => (await import("@/messages/zh-CN/roles.json")).default,
     perms: async () => (await import("@/messages/zh-CN/perms.json")).default,
     tenants: async () => (await import("@/messages/zh-CN/tenants.json")).default,
+    logs: async () => (await import("@/messages/zh-CN/logs.json")).default,
   },
 }
 

@@ -23,6 +23,18 @@
     "name": "Dictionaries",
     "remark": "Manage tree dictionaries, values, and extensions"
   },
+  "tools-system-logs": {
+    "name": "System logs",
+    "remark": "Inspect request traces, status codes, and latency summaries"
+  },
+  "tools-audit-logs": {
+    "name": "Audit logs",
+    "remark": "Query sensitive operations and security audit trails"
+  },
+  "tools-operation-logs": {
+    "name": "Operation logs",
+    "remark": "Trace admin business actions and change snapshots"
+  },
   "tools-group": {
     "name": "Tools",
     "remark": "Configure shared capabilities and dictionaries"

@@ -23,6 +23,18 @@
     "name": "字典管理",
     "remark": "维护树形字典项、键值和扩展配置"
   },
+  "tools-system-logs": {
+    "name": "系统日志",
+    "remark": "查看请求链路、状态码与耗时摘要"
+  },
+  "tools-audit-logs": {
+    "name": "审计日志",
+    "remark": "查询敏感操作与安全审计留痕"
+  },
+  "tools-operation-logs": {
+    "name": "操作日志",
+    "remark": "追踪后台业务操作与变更快照"
+  },
   "tools-group": {
     "name": "系统工具",
     "remark": "配置业务基础能力和通用字典"
