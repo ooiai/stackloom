@@ -1,0 +1,117 @@
+"use client"
+
+import PasswordStrengthInput from "@/components/topui/password-strength-input"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { useI18n } from "@/providers/i18n-provider"
+import type { SignupFormErrors, SignupFormValues } from "./helpers"
+
+interface SignupFormFieldsProps {
+  values: SignupFormValues
+  errors: SignupFormErrors
+  isLoading: boolean
+  onValueChange: (key: keyof SignupFormValues, value: string) => void
+}
+
+export function SignupFormFields({
+  values,
+  errors,
+  isLoading,
+  onValueChange,
+}: SignupFormFieldsProps) {
+  const { t } = useI18n()
+
+  return (
+    <>
+      <Field data-invalid={!!errors.account}>
+        <FieldLabel htmlFor="form-signup-account">
+          {t("auth.signup.accountLabel")}
+        </FieldLabel>
+        <Input
+          id="form-signup-account"
+          type="text"
+          placeholder={t("auth.signup.accountPlaceholder")}
+          autoComplete="username"
+          disabled={isLoading}
+          value={values.account}
+          onChange={(event) => onValueChange("account", event.target.value)}
+        />
+        <FieldDescription>{t("auth.signup.accountHint")}</FieldDescription>
+        {errors.account ? <FieldError>{errors.account}</FieldError> : null}
+      </Field>
+
+      <Field data-invalid={!!errors.nickname}>
+        <FieldLabel htmlFor="form-signup-nickname">
+          {t("auth.signup.nicknameLabel")}
+        </FieldLabel>
+        <Input
+          id="form-signup-nickname"
+          type="text"
+          placeholder={t("auth.signup.nicknamePlaceholder")}
+          autoComplete="nickname"
+          disabled={isLoading}
+          value={values.nickname}
+          onChange={(event) => onValueChange("nickname", event.target.value)}
+        />
+        {errors.nickname ? <FieldError>{errors.nickname}</FieldError> : null}
+      </Field>
+
+      <Field data-invalid={!!errors.tenant_name}>
+        <FieldLabel htmlFor="form-signup-tenant">
+          {t("auth.signup.tenantLabel")}
+        </FieldLabel>
+        <Input
+          id="form-signup-tenant"
+          type="text"
+          placeholder={t("auth.signup.tenantPlaceholder")}
+          disabled={isLoading}
+          value={values.tenant_name}
+          onChange={(event) => onValueChange("tenant_name", event.target.value)}
+        />
+        <FieldDescription>{t("auth.signup.tenantHint")}</FieldDescription>
+        {errors.tenant_name ? <FieldError>{errors.tenant_name}</FieldError> : null}
+      </Field>
+
+      <Field data-invalid={!!errors.password}>
+        <FieldLabel htmlFor="form-signup-password">
+          {t("auth.signup.passwordLabel")}
+        </FieldLabel>
+        <PasswordStrengthInput
+          id="form-signup-password"
+          placeholder={t("auth.signup.passwordPlaceholder")}
+          autoComplete="new-password"
+          disabled={isLoading}
+          value={values.password}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            onValueChange("password", event.target.value)
+          }
+        />
+        {errors.password ? <FieldError>{errors.password}</FieldError> : null}
+      </Field>
+
+      <Field data-invalid={!!errors.confirmPassword}>
+        <FieldLabel htmlFor="form-signup-confirm-password">
+          {t("auth.signup.confirmPasswordLabel")}
+        </FieldLabel>
+        <PasswordStrengthInput
+          id="form-signup-confirm-password"
+          placeholder={t("auth.signup.confirmPasswordPlaceholder")}
+          autoComplete="new-password"
+          disabled={isLoading}
+          value={values.confirmPassword}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            onValueChange("confirmPassword", event.target.value)
+          }
+        />
+        {errors.confirmPassword ? (
+          <FieldError>{errors.confirmPassword}</FieldError>
+        ) : null}
+      </Field>
+    </>
+  )
+}

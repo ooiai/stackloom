@@ -6,8 +6,9 @@ edition.workspace = true
 
 [dependencies]
 # crate workspace members
+domain-base.workspace = true
 
 # dependencies
-neocrates = { workspace = true, features = ["logger"] }
+neocrates = { workspace = true, features = ["logger", "web", "auth"] }
 chrono = { workspace = true, features = ["serde"] }
 bon.workspace = true

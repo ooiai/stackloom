@@ -1,6 +1,7 @@
 # feature architecture
 
-Use the existing `users` and `dicts` modules as the reference architecture for new admin features.
+Use the existing `users`, `menus`, `dicts`, and `tenants` modules as the reference architecture for new admin features.  
+For auth flows, apply the same route/controller/view/helper split under `components/auth/**`.
 
 ## Route layer
 
@@ -11,6 +12,11 @@ It should usually:
 - call one feature controller hook
 - render one page view component
 - mount one sheet/dialog component
+
+This is true for both:
+
+- admin pages such as `users` and `menus`
+- auth flow pages such as `signin` and `signup`
 
 ## Feature layer
 
@@ -31,6 +37,52 @@ components/base/<feature>/
 └── helpers.ts
 ```
 
+Auth flows should use the same split, adapted to dialog/form pages:
+
+```text
+components/auth/
+├── auth-page-shell.tsx
+├── captcha-slider.tsx
+├── signin/
+│   ├── hooks/
+│   │   └── use-signin-controller.ts
+│   ├── helpers.ts
+│   ├── signin-form-fields.tsx
+│   ├── signin-page-view.tsx
+│   └── signin-tenant-dialog.tsx
+└── signup/
+    ├── hooks/
+    │   └── use-signup-controller.ts
+    ├── helpers.ts
+    ├── signup-form-fields.tsx
+    ├── signup-page-view.tsx
+    └── signup-success-state.tsx
+```
+
+## Reference shapes
+
+### CRUD list page: `users`
+
+- `page.tsx` calls `useUsersController()`
+- `users-page-container.tsx` assembles header, filters, grid, empty state
+- `user-mutate-sheet.tsx` mounts separately from the page view
+- `helpers.ts` builds payloads and schemas
+
+### Tree/detail page: `menus`
+
+- `page.tsx` calls `useMenusController()`
+- `menus-page-container.tsx` assembles tree sidebar + detail panel
+- controller owns selected node, expansion state, and CRUD orchestration
+- tree helpers live in `helpers.ts`
+
+### Auth flow page: `signin` / `signup`
+
+- `page.tsx` calls one auth controller hook
+- `*-page-view.tsx` renders the branded auth shell and presentation blocks
+- controller owns local form state, captcha flow, mutations, redirects, and success-state switching
+- field layout, dialogs, and success cards stay in dedicated presentational components
+- `captcha-slider.tsx` can stay shared, but feature-specific dialogs belong under the feature folder
+
 ## Responsibility split
 
 ### `page.tsx`
@@ -39,6 +91,7 @@ components/base/<feature>/
 - no table columns
 - no form schema
 - no mutation orchestration
+- no inline auth flow state machines
 
 ### `use-*-controller.ts`
 
@@ -47,12 +100,15 @@ components/base/<feature>/
 - URL sync
 - dialog/sheet state
 - selected row/node state
+- auth flow orchestration when the feature is under `components/auth/**`
 
 ### `*-page-container.tsx`
 
 - page composition only
 - receives normalized view props
 - assembles header, filters, grid, empty state
+
+For auth flows, the equivalent file is usually `*-page-view.tsx` instead of `*-page-container.tsx`.
 
 ### `*-page-columns.tsx`
 
@@ -78,10 +134,12 @@ components/base/<feature>/
 - option builders
 - payload builders
 - tree/table helper functions
+- auth redirect and captcha payload helpers when relevant
 
 ## Placement rules
 
 - Put feature-private hooks in `components/base/<feature>/hooks`.
+- Put auth feature-private hooks in `components/auth/<feature>/hooks`.
 - Put feature-private helper logic next to the feature.
 - Use `frontend/lib/**` only for cross-feature utilities.
 - Use `frontend/stores/*-api.ts` for HTTP calls.
@@ -93,3 +151,4 @@ components/base/<feature>/
 - Do not leave feature-private hooks in global `frontend/hooks`.
 - Do not put feature-only helper functions in `frontend/lib`.
 - Do not mix controller logic into presentation components.
+- Do not keep auth flow orchestration in a single giant `signin-form.tsx` or `signup-form.tsx`.

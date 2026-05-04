@@ -1,4 +1,4 @@
-use api_http::{BaseHttpState, SysHttpState, base_router, system_router};
+use api_http::{AuthHttpState, BaseHttpState, SysHttpState, auth_router, base_router, system_router};
 use common::config::env_config::EnvConfig;
 
 use neocrates::{
@@ -19,10 +19,8 @@ use std::sync::Arc;
 use crate::{
     redis_init::RedisInit, sms_init::SmsInit, sqlx_init::SqlxInit, sqlx_migrations::SqlxMigrations,
 };
-use infra_base::{
-    DictServiceImpl, MenuServiceImpl, PermServiceImpl, RoleServiceImpl, TenantServiceImpl,
-    UserServiceImpl,
-};
+use infra_auth::AuthServiceImpl;
+use infra_base::{DictServiceImpl, MenuServiceImpl, PermServiceImpl, RoleServiceImpl, TenantServiceImpl, UserServiceImpl};
 use infra_system::{AuditLogServiceImpl, SysModule, SystemLogServiceImpl};
 use infra_web::OperationLogServiceImpl;
 
@@ -83,6 +81,13 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     let system_log_service = Arc::new(SystemLogServiceImpl::new(base_pool.clone()));
     let audit_log_service = Arc::new(AuditLogServiceImpl::new(base_pool.clone()));
     let operation_log_service = Arc::new(OperationLogServiceImpl::new(base_pool.clone()));
+    let auth_service = Arc::new(AuthServiceImpl::new(
+        base_pool.clone(),
+        redis_pool.clone(),
+        cfg.server.prefix.clone(),
+        cfg.auth.expires_at,
+        cfg.auth.refresh_expires_at,
+    ));
 
     // build base http state
     let base_http_state = BaseHttpState {
@@ -96,6 +101,10 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         system_log_service: system_log_service.clone(),
         audit_log_service: audit_log_service.clone(),
         operation_log_service: operation_log_service.clone(),
+    };
+    let auth_http_state = AuthHttpState {
+        auth_service,
+        system_log_service: system_log_service.clone(),
     };
 
     let sys = SysModule::new(cfg.as_ref().clone(), redis_pool.as_ref().clone());
@@ -111,6 +120,10 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
 
     let router = Router::new()
         .route("/ping", get(ping))
+        .nest(
+            "/auth",
+            auth_router(auth_http_state, middleware_config.clone()),
+        )
         .nest(
             "/sys",
             system_router(sys_http_state, middleware_config.clone()),

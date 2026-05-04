@@ -1899,6 +1899,7 @@ version = "0.1.0"
 dependencies = [
  "bon",
  "chrono",
+ "domain-base",
  "neocrates",
 ]
 
@@ -3151,6 +3152,7 @@ dependencies = [
  "domain-base",
  "infra-base",
  "neocrates",
+ "sqlx",
 ]
 
 [[package]]

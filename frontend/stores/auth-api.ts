@@ -3,29 +3,42 @@ import CryptUtil from "@/lib/crypt"
 import { AuthTokenResult, post } from "@/lib/http/axios"
 import type {
   AccountAuthParam,
-  ListSelectOrgunit,
-  QueryOrgUnitsParam,
+  QuerySigninTenantsParam,
+  SigninTenantOption,
+  SignupAccountParam,
+  SignupAccountResult,
 } from "@/types/auth.types"
 
 const BASIC_AUTH_HEADER = {
   Authorization: `Basic ${CryptUtil.encodeBase64Double(HTTP_REQUEST_ENUM.BASIC_AUTH)}`,
 }
 
+const AUTH_SIGNIN_API_PREFIX = "/apiv1/auth/signin"
+const AUTH_SIGNUP_API_PREFIX = "/apiv1/auth/signup"
+
 export const signinApi = {
-  queryOrgUnits: async (
-    params: QueryOrgUnitsParam
-  ): Promise<ListSelectOrgunit[]> => {
-    return post("/apiv1/auth/signin/org_units", params, {
+  queryTenants: async (
+    params: QuerySigninTenantsParam
+  ): Promise<SigninTenantOption[]> => {
+    return post(`${AUTH_SIGNIN_API_PREFIX}/org_units`, params, {
       headers: BASIC_AUTH_HEADER,
     })
   },
   accountAuth: async (params: AccountAuthParam): Promise<AuthTokenResult> => {
-    return post("/apiv1/auth/signin/account", params, {
+    return post(`${AUTH_SIGNIN_API_PREFIX}/account`, params, {
       headers: BASIC_AUTH_HEADER,
     })
   },
   logout: async (): Promise<void> => {
-    await post("/apiv1/auth/signin/logout", {})
+    await post(`${AUTH_SIGNIN_API_PREFIX}/logout`, {})
+  },
+}
+
+export const signupApi = {
+  account: async (params: SignupAccountParam): Promise<SignupAccountResult> => {
+    return post(`${AUTH_SIGNUP_API_PREFIX}/account`, params, {
+      headers: BASIC_AUTH_HEADER,
+    })
   },
 }
 

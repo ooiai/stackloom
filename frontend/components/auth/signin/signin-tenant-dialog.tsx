@@ -6,44 +6,47 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import { Building2Icon, CheckCircle2Icon } from "lucide-react"
 import Image from "next/image"
 
-import { useI18n } from "@/providers/i18n-provider"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
-import type { ListSelectOrgunit } from "@/types/auth.types"
+import { useI18n } from "@/providers/i18n-provider"
+import type { SigninTenantOption } from "@/types/auth.types"
 
-const isTenantSelectable = (tenant: ListSelectOrgunit) => tenant.status === 0
+const isTenantSelectable = (tenant: SigninTenantOption) => tenant.status === 1
 
-const getDefaultSelectedOuid = (tenants: ListSelectOrgunit[]) => {
-  return tenants.find(isTenantSelectable)?.ouid || tenants[0]?.ouid || ""
+const getDefaultSelectedMembershipId = (tenants: SigninTenantOption[]) => {
+  return (
+    tenants.find(isTenantSelectable)?.membership_id || tenants[0]?.membership_id || ""
+  )
 }
 
-interface SelectTenantDialogProps {
+interface SigninTenantDialogProps {
   open: boolean
-  tenants: ListSelectOrgunit[]
+  tenants: SigninTenantOption[]
   loading?: boolean
   onOpenChange?: (open: boolean) => void
-  onSubmit?: (tenant: ListSelectOrgunit) => void | Promise<void>
+  onSubmit?: (tenant: SigninTenantOption) => void | Promise<void>
 }
 
-export function SelectTenantDialog({
+export function SigninTenantDialog({
   open,
   tenants,
   loading = false,
   onOpenChange,
   onSubmit,
-}: SelectTenantDialogProps) {
+}: SigninTenantDialogProps) {
   const { locale, t } = useI18n()
-  const [selectedOuid, setSelectedOuid] = useState("")
-  const resolvedSelectedOuid = tenants.some(
-    (tenant) => tenant.ouid === selectedOuid
+  const [selectedMembershipId, setSelectedMembershipId] = useState("")
+  const resolvedSelectedMembershipId = tenants.some(
+    (tenant) => tenant.membership_id === selectedMembershipId
   )
-    ? selectedOuid
-    : getDefaultSelectedOuid(tenants)
+    ? selectedMembershipId
+    : getDefaultSelectedMembershipId(tenants)
 
   const selectedTenant = useMemo(
-    () => tenants.find((tenant) => tenant.ouid === resolvedSelectedOuid),
-    [resolvedSelectedOuid, tenants]
+    () =>
+      tenants.find((tenant) => tenant.membership_id === resolvedSelectedMembershipId),
+    [resolvedSelectedMembershipId, tenants]
   )
 
   return (
@@ -74,15 +77,17 @@ export function SelectTenantDialog({
           <div className="space-y-3">
             {tenants.map((tenant) => {
               const selectable = isTenantSelectable(tenant)
-              const active = resolvedSelectedOuid === tenant.ouid
+              const active = resolvedSelectedMembershipId === tenant.membership_id
+              const userLabel =
+                tenant.display_name || tenant.nickname || tenant.username
 
               return (
                 <Button
-                  key={tenant.ouid}
+                  key={tenant.membership_id}
                   type="button"
                   variant="ghost"
                   disabled={!selectable || loading}
-                  onClick={() => setSelectedOuid(tenant.ouid)}
+                  onClick={() => setSelectedMembershipId(tenant.membership_id)}
                   className={cn(
                     "h-auto w-full justify-start gap-3 rounded-2xl border px-4 py-3 text-left whitespace-normal transition-colors",
                     active
@@ -100,11 +105,11 @@ export function SelectTenantDialog({
                   </div>
                   <div className="min-w-0 space-y-1">
                     <p className="truncate text-sm font-medium text-foreground">
-                      {tenant.ouname} ({tenant.tname})
+                      {tenant.tenant_name}
                     </p>
                     <p className="text-xs leading-5 text-muted-foreground">
-                      {(tenant.dname || tenant.nname || tenant.uname) ?? "-"} ·{" "}
-                      {tenant.rnames.join(
+                      {userLabel || "-"} ·{" "}
+                      {tenant.role_names.join(
                         locale === "zh-CN" ? "、" : ", "
                       ) || t("auth.tenantDialog.unassignedRoles")}
                     </p>

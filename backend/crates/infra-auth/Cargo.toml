@@ -19,6 +19,8 @@ neocrates = { workspace = true, features = [
   "crypto",
   "auth",
   "captcha",
+  "sqlx",
 ] }
 chrono = { workspace = true, features = ["serde"] }
 bon.workspace = true
+sqlx = { workspace = true, features = ["postgres", "runtime-tokio", "chrono", "json"] }

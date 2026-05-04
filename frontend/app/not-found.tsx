@@ -1,19 +1,23 @@
-"use client"
-
 import "./globals.css"
 import Error from "@/components/topui/error"
-import { useI18n } from "@/providers/i18n-provider"
+import { getLocaleMessages, getMessageValue } from "@/lib/i18n"
+import { getRequestLocale } from "@/lib/i18n/server"
 
-export default function NotFound() {
-  const { t } = useI18n()
+export default async function NotFound() {
+  const locale = await getRequestLocale()
+  const messages = await getLocaleMessages(locale)
 
   return (
     <Error
       src="/svg/404.svg"
-      alt={t("errors.notFound.alt")}
-      title={t("errors.notFound.title")}
-      description={t("errors.notFound.description")}
-      buttonText={t("errors.notFound.button")}
+      alt={getMessageValue(messages, "errors.notFound.alt", "404")}
+      title={getMessageValue(messages, "errors.notFound.title", "页面丢失了")}
+      description={getMessageValue(
+        messages,
+        "errors.notFound.description",
+        "抱歉，您访问的页面不存在或已被移除。"
+      )}
+      buttonText={getMessageValue(messages, "errors.notFound.button", "返回首页")}
       herf="/"
     />
   )

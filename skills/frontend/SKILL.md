@@ -58,7 +58,8 @@ frontend/app/
 
 ## Feature module structure
 
-Follow the existing `users` and `dicts` pattern.
+Follow the existing `users`, `menus`, `dicts`, and `tenants` patterns for admin features.  
+For auth flows, use the same responsibility split under `frontend/components/auth/**` instead of collapsing everything into one `*-form.tsx`.
 
 ```text
 frontend/components/base/users/
@@ -95,24 +96,44 @@ frontend/components/base/tenants/
 ├── tenant-mutate-*.tsx
 ├── tenants-*.tsx
 └── tenant-status-badge.tsx
+
+frontend/components/auth/
+├── auth-page-shell.tsx
+├── captcha-slider.tsx
+├── signin/
+│   ├── hooks/
+│   │   └── use-signin-controller.ts
+│   ├── helpers.ts
+│   ├── signin-form-fields.tsx
+│   ├── signin-page-view.tsx
+│   └── signin-tenant-dialog.tsx
+└── signup/
+    ├── hooks/
+    │   └── use-signup-controller.ts
+    ├── helpers.ts
+    ├── signup-form-fields.tsx
+    ├── signup-page-view.tsx
+    └── signup-success-state.tsx
 ```
 
 Use the same layering for new features:
 
 1. `app/.../page.tsx`
-   Keep it minimal. Compose the feature page and modal/sheet only.
-2. `components/base/<feature>/hooks/use-*-controller.ts`
+   Keep it minimal. Compose the feature page and modal/sheet or dialog only.
+2. `components/base/<feature>/hooks/use-*-controller.ts` or `components/auth/<feature>/hooks/use-*-controller.ts`
    Own React Query, URL sync, dialog/sheet state, mutations, and page orchestration.
-3. `components/base/<feature>/*-page-container.tsx`
+3. `components/base/<feature>/*-page-container.tsx` or `components/auth/<feature>/*-page-view.tsx`
    Pure page view composition.
 4. `components/base/<feature>/*-page-columns.tsx`
-   Table column factories.
+   Table column factories for grid/list pages only.
 5. `components/base/<feature>/*-mutate-sheet.tsx`
    Thin sheet shell and submit wiring.
 6. `components/base/<feature>/hooks/use-*-mutate-form.ts`
-   Form initialization and validation wiring.
-7. `components/base/<feature>/helpers.ts`
+   Form initialization and validation wiring for TanStack Form flows.
+7. `components/base/<feature>/helpers.ts` or `components/auth/<feature>/helpers.ts`
    Feature-local helpers, schemas, option builders, tree helpers, and payload builders.
+8. `components/auth/<feature>/*-form-fields.tsx`, `*-dialog.tsx`, `*-success-state.tsx`
+   Keep auth field layout, confirmation dialogs, and success states as thin presentation pieces.
 
 Tree-backed admin features such as `dicts`, `menus`, and hierarchical `tenants` should follow the same pattern:
 
@@ -130,6 +151,7 @@ These rules are strict:
 - Prefer creating or changing feature components under `frontend/components/base/**`, `frontend/components/auth/**`, or `frontend/components/topui/**`.
 - Keep feature-private hooks inside the feature directory, not in `frontend/hooks`.
 - Keep feature-private helpers inside the feature directory, not in `frontend/lib`.
+- Keep auth shared primitives in `frontend/components/auth/**`, but keep auth flow orchestration in the feature-local controller hook.
 - Use `frontend/lib/**` only for true cross-feature utilities.
 - In feature/business code, do not use raw `<button>` when the shared `@/components/ui/button` primitive fits.
 - Raw `<button>` is acceptable inside `frontend/components/ui/**` or `frontend/components/reui/**` when implementing a shared primitive/wrapper and the low-level DOM element is intentional.
@@ -208,11 +230,12 @@ Two form styles currently exist:
 1. **TanStack Form**
    Used in `users` and `dicts` mutate flows.
 2. **Local state + Zod**
-   Used in `signin-form.tsx`.
+   Used in auth flow pages such as `signin` and `signup`.
 
 Preferred rule:
 
 - For new admin feature forms, follow the `users` / `dicts` pattern with TanStack Form.
+- For auth flow pages, keep local state in the feature controller hook rather than a monolithic form component.
 - Keep form initialization in feature-local hooks.
 - Keep schema and payload shaping in feature-local helpers.
 - Keep visible field layout in dedicated `*-form-fields.tsx`.
@@ -240,6 +263,21 @@ The current sign-in page is not a minimal demo form. It includes:
 - redirect after sign-in
 
 When changing auth pages, preserve that richer flow instead of collapsing it into generic sample markup.
+
+Auth pages should follow the same thin-route rule as `users` / `menus`:
+
+1. `app/(auth)/<feature>/page.tsx`
+   - call one auth controller hook
+   - render one auth page view
+   - mount one auth dialog when needed
+2. `components/auth/<feature>/hooks/use-*-controller.ts`
+   - own local form state, mutations, captcha flow, redirects, and success-state switching
+3. `components/auth/<feature>/*-page-view.tsx`
+   - compose the branded auth shell and presentation pieces only
+4. `components/auth/<feature>/helpers.ts`
+   - own auth schema and payload shaping
+5. `components/auth/<feature>/*-form-fields.tsx` / `*-dialog.tsx` / `*-success-state.tsx`
+   - keep them presentational
 
 ## Preferred implementation checklist
 

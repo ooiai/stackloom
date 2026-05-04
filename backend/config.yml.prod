@@ -99,5 +99,6 @@ pms-ignore-urls:
   - /signin/refresh_token
   - /signin/account
   - /signin/org_units
+  - /signup/account
   - /sms/signin
   - /captcha/slider

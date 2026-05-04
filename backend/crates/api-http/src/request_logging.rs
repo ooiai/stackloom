@@ -12,7 +12,7 @@ use neocrates::{
     tracing,
 };
 
-use crate::{base::BaseHttpState, system::SysHttpState};
+use crate::{auth::AuthHttpState, base::BaseHttpState, system::SysHttpState};
 
 pub async fn base_request_trace_middleware(
     State(state): State<BaseHttpState>,
@@ -24,6 +24,14 @@ pub async fn base_request_trace_middleware(
 
 pub async fn sys_request_trace_middleware(
     State(state): State<SysHttpState>,
+    request: Request,
+    next: Next,
+) -> Response {
+    request_trace_middleware_impl(state.system_log_service.clone(), request, next).await
+}
+
+pub async fn auth_request_trace_middleware(
+    State(state): State<AuthHttpState>,
     request: Request,
     next: Next,
 ) -> Response {
