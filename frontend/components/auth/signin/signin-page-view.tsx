@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import type { VerifyParam } from "rc-slider-captcha"
 
 import { AuthPageShell } from "@/components/auth/auth-page-shell"
@@ -79,23 +80,19 @@ export function SigninPageView({
 
           <div className="text-center text-xs text-balance text-muted-foreground">
             {t("auth.signin.agreementPrefix")}{" "}
-            <a
+            <Link
               className="text-primary underline underline-offset-4"
-              target="_blank"
-              rel="noreferrer"
-              href="#"
+              href="/terms"
             >
               {t("auth.signin.userAgreement")}
-            </a>{" "}
+            </Link>{" "}
             {t("auth.signin.and")}{" "}
-            <a
+            <Link
               className="text-primary underline underline-offset-4"
-              target="_blank"
-              rel="noreferrer"
-              href="#"
+              href="/privacy"
             >
               {t("auth.signin.privacyPolicy")}
-            </a>
+            </Link>
           </div>
 
           <FieldSeparator>{t("auth.signin.continueWith")}</FieldSeparator>

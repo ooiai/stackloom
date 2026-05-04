@@ -1,9 +1,9 @@
 "use client"
 
+import { LabelField } from "@/components/topui/label-field"
 import PasswordStrengthInput from "@/components/topui/password-strength-input"
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldLabel,
 } from "@/components/ui/field"
@@ -28,10 +28,13 @@ export function SignupFormFields({
 
   return (
     <>
-      <Field data-invalid={!!errors.account}>
-        <FieldLabel htmlFor="form-signup-account">
-          {t("auth.signup.accountLabel")}
-        </FieldLabel>
+      <LabelField
+        label={t("auth.signup.accountLabel")}
+        htmlFor="form-signup-account"
+        invalid={!!errors.account}
+        error={errors.account}
+        tooltip={{ content: t("auth.signup.accountHint") }}
+      >
         <Input
           id="form-signup-account"
           type="text"
@@ -41,9 +44,7 @@ export function SignupFormFields({
           value={values.account}
           onChange={(event) => onValueChange("account", event.target.value)}
         />
-        <FieldDescription>{t("auth.signup.accountHint")}</FieldDescription>
-        {errors.account ? <FieldError>{errors.account}</FieldError> : null}
-      </Field>
+      </LabelField>
 
       <Field data-invalid={!!errors.nickname}>
         <FieldLabel htmlFor="form-signup-nickname">
@@ -61,10 +62,13 @@ export function SignupFormFields({
         {errors.nickname ? <FieldError>{errors.nickname}</FieldError> : null}
       </Field>
 
-      <Field data-invalid={!!errors.tenant_name}>
-        <FieldLabel htmlFor="form-signup-tenant">
-          {t("auth.signup.tenantLabel")}
-        </FieldLabel>
+      <LabelField
+        label={t("auth.signup.tenantLabel")}
+        htmlFor="form-signup-tenant"
+        invalid={!!errors.tenant_name}
+        error={errors.tenant_name}
+        tooltip={{ content: t("auth.signup.tenantHint") }}
+      >
         <Input
           id="form-signup-tenant"
           type="text"
@@ -73,9 +77,7 @@ export function SignupFormFields({
           value={values.tenant_name}
           onChange={(event) => onValueChange("tenant_name", event.target.value)}
         />
-        <FieldDescription>{t("auth.signup.tenantHint")}</FieldDescription>
-        {errors.tenant_name ? <FieldError>{errors.tenant_name}</FieldError> : null}
-      </Field>
+      </LabelField>
 
       <Field data-invalid={!!errors.password}>
         <FieldLabel htmlFor="form-signup-password">

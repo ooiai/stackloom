@@ -1,0 +1,175 @@
+{
+  "shared": {
+    "eyebrow": "Stackloom Legal",
+    "effectiveDate": "Effective date",
+    "backHome": "Back to home",
+    "backSignin": "Go to sign in",
+    "viewTerms": "View Terms of Service",
+    "viewPrivacy": "View Privacy Policy",
+    "notice": "The following content is a general legal draft for the current Stackloom product version and may be updated later based on formal legal review or regulatory requirements."
+  },
+  "terms": {
+    "meta": {
+      "title": "Stackloom Terms of Service",
+      "description": "Learn the terms, responsibilities, and usage rules that apply when using Stackloom."
+    },
+    "title": "Terms of Service",
+    "description": "These Terms of Service apply when you access, register for, or use the websites, products, APIs, and related services provided by Stackloom. By continuing to use the service, you agree to be bound by these terms.",
+    "effectiveDate": "2026-05-04",
+    "sections": {
+      "acceptance": {
+        "title": "1. Scope and acceptance",
+        "paragraphs": {
+          "p1": "When you access, register for, or use Stackloom, you confirm that you have read, understood, and agreed to these Terms of Service and any applicable related policies.",
+          "p2": "If you use the service on behalf of an organization, team, or other entity, you represent that you have the authority to accept these terms on that entity's behalf."
+        }
+      },
+      "eligibility": {
+        "title": "2. Account eligibility and security",
+        "paragraphs": {
+          "p1": "You must provide accurate, complete, and reasonably up-to-date registration information, and you are responsible for safeguarding your account, password, captcha state, and other related access credentials.",
+          "p2": "You are responsible for risks, losses, or liabilities caused by poor credential management, sharing your account with others, or failing to promptly report suspicious access."
+        }
+      },
+      "acceptableUse": {
+        "title": "3. Acceptable use",
+        "paragraphs": {
+          "p1": "You may not use Stackloom in a way that is unlawful, infringing, harmful to platform stability, or disruptive to other users."
+        },
+        "items": {
+          "i1": "Do not upload, publish, or transmit unlawful, fraudulent, abusive, infringing, malicious, or otherwise improper content",
+          "i2": "Do not attempt to bypass authentication or scan, attack, stress-test, or damage the platform, APIs, or related infrastructure",
+          "i3": "Do not scrape, copy, resell, rent, or sublicense platform content, accounts, or access rights without authorization"
+        }
+      },
+      "customerData": {
+        "title": "4. Customer data and content",
+        "paragraphs": {
+          "p1": "You retain your lawful rights in the content you upload, submit, or generate, and you are responsible for ensuring that its source, handling, and use comply with applicable law and your obligations to third parties.",
+          "p2": "To provide, maintain, secure, and improve the service, Stackloom may host, transmit, back up, process, or display that data to the extent necessary."
+        }
+      },
+      "serviceChanges": {
+        "title": "5. Service changes, suspension, and termination",
+        "paragraphs": {
+          "p1": "We may adjust service features, APIs, capacity limits, access methods, or availability for operational, security, compliance, partnership, or product-evolution reasons.",
+          "p2": "We may suspend or terminate all or part of the service if you materially breach these terms, if continuing service would create security or compliance risks, or if applicable law requires restriction."
+        }
+      },
+      "fees": {
+        "title": "6. Fees and trials",
+        "paragraphs": {
+          "p1": "If specific features later become subject to fees, trials, subscriptions, or usage quotas, the applicable pricing, billing cycle, renewal terms, and expiration rules will be described in the relevant page, order, or separate commercial agreement."
+        }
+      },
+      "ip": {
+        "title": "7. Intellectual property",
+        "paragraphs": {
+          "p1": "Except for content lawfully owned by users, the Stackloom service itself, including its interface, code, documentation, trademarks, branding, and related materials, is owned by Stackloom or its licensors.",
+          "p2": "Without written permission, you may not copy, adapt, reverse engineer, sublicense, publicly distribute, or use the service beyond what these terms allow."
+        }
+      },
+      "disclaimer": {
+        "title": "8. Disclaimer and limitation of liability",
+        "paragraphs": {
+          "p1": "To the extent permitted by law, the service is provided on an \"as is\" and \"as available\" basis. We use reasonable efforts to maintain service stability and security, but we do not guarantee uninterrupted availability, error-free operation, or fitness for a particular business outcome.",
+          "p2": "To the extent permitted by law, Stackloom is not liable beyond the necessary legal minimum for indirect losses, lost profits, data loss, or business interruption caused by third-party services, network failures, force majeure, malicious attacks, regulatory changes, or your own misuse."
+        }
+      },
+      "contact": {
+        "title": "9. Contact us",
+        "paragraphs": {
+          "p1": "If you have any questions, suggestions, or complaints about these Terms of Service, contact Stackloom at support@stackloom.local."
+        }
+      }
+    }
+  },
+  "privacy": {
+    "meta": {
+      "title": "Stackloom Privacy Policy",
+      "description": "Learn how Stackloom collects, uses, stores, shares, and protects personal information and related business data."
+    },
+    "title": "Privacy Policy",
+    "description": "This Privacy Policy explains how Stackloom collects, uses, shares, stores, and protects information when you access, register for, sign in to, or use the service.",
+    "effectiveDate": "2026-05-04",
+    "sections": {
+      "overview": {
+        "title": "1. Policy scope",
+        "paragraphs": {
+          "p1": "This policy applies to the handling of personal information and related business data that arises when you interact with Stackloom through the website, product interfaces, APIs, support channels, or other related methods.",
+          "p2": "Different product modules, enterprise deployment models, or specific features may come with additional notices. If a conflict exists, the more specific notice or supplemental agreement will control."
+        }
+      },
+      "collection": {
+        "title": "2. Information we collect",
+        "paragraphs": {
+          "p1": "Depending on the features and scenarios you use, Stackloom may collect the following categories of information:"
+        },
+        "items": {
+          "i1": "Registration and account information, such as phone number, account name, nickname, tenant name, login credentials, and related hashed credential results",
+          "i2": "Identity and security information, such as captcha verification results, device identifiers, request identifiers, IP addresses, sign-in logs, and anti-abuse signals",
+          "i3": "Business and configuration data, such as content, settings, edits, uploads, sync operations, and collaboration records created within your tenant workspace",
+          "i4": "Technical and usage information, such as access time, error logs, page interactions, browser type, operating system, and API call behavior"
+        }
+      },
+      "usage": {
+        "title": "3. How we use information",
+        "paragraphs": {
+          "p1": "We use information only as necessary to provide the service or as otherwise permitted by law, including to:"
+        },
+        "items": {
+          "i1": "Create and maintain accounts, tenants, authentication sessions, and access permissions",
+          "i2": "Provide, operate, monitor, maintain, optimize, and troubleshoot product features and technical issues",
+          "i3": "Perform security protection, anomaly detection, anti-abuse controls, audit logging, and compliance handling",
+          "i4": "Send service-related notices, change summaries, important security alerts, or support responses"
+        }
+      },
+      "sharing": {
+        "title": "4. Sharing and disclosure",
+        "paragraphs": {
+          "p1": "Except in the cases described here, Stackloom does not sell your personal information and does not share it beyond what is described in this policy.",
+          "p2": "We may share necessary information with service providers bound by confidentiality and data-protection obligations when required to provide infrastructure, captcha, security auditing, messaging, or support services. We may also disclose information when required by law, regulation, legal process, or significant security events."
+        }
+      },
+      "retention": {
+        "title": "5. Retention",
+        "paragraphs": {
+          "p1": "We retain information for as long as reasonably necessary to fulfill the purposes described in this policy, unless a longer retention period is required by applicable law.",
+          "p2": "When retention is no longer necessary, we delete, anonymize, or technically restrict access to the relevant information as appropriate."
+        }
+      },
+      "security": {
+        "title": "6. Security measures",
+        "paragraphs": {
+          "p1": "Stackloom uses access controls, credential protection, audit logging, backups, encryption in transit, and other reasonable technical and organizational safeguards to protect your information.",
+          "p2": "However, no method of network transmission or electronic storage is absolutely secure. If we identify an incident that may materially affect your rights or interests, we will respond and notify as required by law."
+        }
+      },
+      "rights": {
+        "title": "7. Your rights and choices",
+        "paragraphs": {
+          "p1": "Subject to applicable law, you may have the following rights:"
+        },
+        "items": {
+          "i1": "Access, correct, update, or supplement your account and personal information",
+          "i2": "Request deletion, restriction, or export of certain data, provided the request does not conflict with our contractual, compliance, or security obligations",
+          "i3": "Object to certain processing activities or withdraw consent where processing is based on consent",
+          "i4": "Submit privacy-related questions, complaints, or rights requests through your tenant administrator or directly to Stackloom"
+        }
+      },
+      "children": {
+        "title": "8. Children's information",
+        "paragraphs": {
+          "p1": "Unless a specific product scenario expressly states otherwise, Stackloom is intended for users or organizational administrators with appropriate legal capacity. If you believe we collected information from a child by mistake, contact us promptly."
+        }
+      },
+      "updatesContact": {
+        "title": "9. Policy updates and contact",
+        "paragraphs": {
+          "p1": "We may update this Privacy Policy because of product changes, business adjustments, or legal requirements, and we will publish the updated version in an appropriate location. Material changes will be highlighted through the page, notices, or other reasonable means.",
+          "p2": "If you have questions about this policy, our data practices, or how to exercise your rights, contact Stackloom at support@stackloom.local."
+        }
+      }
+    }
+  }
+}

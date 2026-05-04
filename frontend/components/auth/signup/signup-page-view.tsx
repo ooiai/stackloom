@@ -89,23 +89,19 @@ export function SignupPageView({
 
             <div className="text-center text-xs text-balance text-muted-foreground">
               {t("auth.signup.agreementPrefix")}{" "}
-              <a
+              <Link
                 className="text-primary underline underline-offset-4"
-                target="_blank"
-                rel="noreferrer"
-                href="#"
+                href="/terms"
               >
                 {t("auth.signup.terms")}
-              </a>{" "}
+              </Link>{" "}
               {t("auth.signup.and")}{" "}
-              <a
+              <Link
                 className="text-primary underline underline-offset-4"
-                target="_blank"
-                rel="noreferrer"
-                href="#"
+                href="/privacy"
               >
                 {t("auth.signup.privacy")}
-              </a>
+              </Link>
             </div>
           </FieldGroup>
         </form>
