@@ -6,10 +6,10 @@ import { CheckCircle2Icon } from "lucide-react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { useI18n } from "@/providers/i18n-provider"
-import type { SignupAccountResult } from "@/types/auth.types"
+import type { AccountSignupResult } from "@/types/auth.types"
 
 interface SignupSuccessStateProps {
-  result: SignupAccountResult
+  result: AccountSignupResult
 }
 
 export function SignupSuccessState({ result }: SignupSuccessStateProps) {

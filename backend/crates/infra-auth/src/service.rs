@@ -2,8 +2,8 @@ use std::sync::Arc;
 
 use chrono::Utc;
 use domain_auth::{
-    AccountSigninCmd, AuthRepository, AuthService, AuthToken, QuerySigninTenantsCmd, RefreshAuthCmd,
-    SignupBundle, SignupCmd, SignupResult,
+    AccountSigninCmd, AccountSignupBundle, AccountSignupCmd, AccountSignupResult, AuthRepository,
+    AuthService, AuthToken, QuerySigninTenantsCmd, RefreshAuthCmd,
 };
 use domain_base::{
     CreateRoleCmd, CreateTenantCmd, CreateUserCmd, CreateUserTenantCmd, CreateUserTenantRoleCmd,
@@ -23,9 +23,15 @@ use neocrates::{
 
 use super::repo::SqlxAuthRepository;
 
+/// Default role code assigned to the tenant created during self-service signup.
 const DEFAULT_GUEST_ROLE_CODE: &str = "WEB::GUEST";
+/// Default role name assigned to the tenant created during self-service signup.
 const DEFAULT_GUEST_ROLE_NAME: &str = "Web Guest";
 
+/// Infra implementation of the auth domain service.
+///
+/// It coordinates captcha validation, credential checks, token issuing,
+/// tenant conflict detection, and transactional signup persistence.
 #[derive(Clone)]
 pub struct AuthServiceImpl<R>
 where
@@ -39,6 +45,7 @@ where
 }
 
 impl AuthServiceImpl<SqlxAuthRepository> {
+    /// Build the default auth service backed by the SQL repository.
     pub fn new(
         pool: Arc<SqlxPool>,
         redis_pool: Arc<RedisPool>,
@@ -60,6 +67,7 @@ impl<R> AuthServiceImpl<R>
 where
     R: AuthRepository,
 {
+    /// Build the service with a caller-provided repository, mainly for tests or composition.
     pub fn with_repository(
         repository: Arc<R>,
         redis_pool: Arc<RedisPool>,
@@ -76,6 +84,10 @@ where
         }
     }
 
+    /// Validate the slider captcha bound to the account.
+    ///
+    /// The `delete` flag controls whether the captcha proof should be consumed
+    /// immediately after verification.
     async fn validate_slider_captcha(
         &self,
         account: &str,
@@ -86,6 +98,7 @@ where
             .await
     }
 
+    /// Load one user by account and verify that the password and status are valid.
     async fn load_enabled_user(
         &self,
         account: &str,
@@ -108,6 +121,7 @@ where
         Ok(user)
     }
 
+    /// Derive username/phone values from the signup account input.
     fn build_signup_identity(account: &str) -> (String, Option<String>) {
         let normalized = account.trim().to_string();
         if Self::looks_like_phone(&normalized) {
@@ -117,10 +131,12 @@ where
         }
     }
 
+    /// Determine whether the raw account should be treated as a phone number.
     fn looks_like_phone(value: &str) -> bool {
         value.len() == 11 && value.chars().all(|ch| ch.is_ascii_digit())
     }
 
+    /// Normalize free-form text into a slug-friendly seed.
     fn sanitize_slug_seed(value: &str) -> String {
         let mut slug = String::new();
         let mut previous_dash = false;
@@ -152,6 +168,7 @@ where
         slug.trim_matches('-').to_string()
     }
 
+    /// Generate a unique tenant slug for self-service signup.
     async fn generate_auto_tenant_slug(&self, seed: &str, account: &str) -> AppResult<String> {
         let sanitized_seed = Self::sanitize_slug_seed(seed);
         let sanitized_account = Self::sanitize_slug_seed(account);
@@ -188,6 +205,7 @@ impl<R> AuthService for AuthServiceImpl<R>
 where
     R: AuthRepository,
 {
+    /// Validate credentials and captcha, then return selectable tenant memberships.
     async fn query_signin_tenants(
         &self,
         cmd: QuerySigninTenantsCmd,
@@ -200,6 +218,7 @@ where
         self.repository.list_signin_tenants(user.id).await
     }
 
+    /// Complete signin for the selected membership and issue the auth token pair.
     async fn account_signin(&self, cmd: AccountSigninCmd) -> AppResult<AuthToken> {
         cmd.validate()?;
         self.validate_slider_captcha(&cmd.account, &cmd.code, true)
@@ -246,6 +265,7 @@ where
         Ok(token.into())
     }
 
+    /// Rotate the current access token and refresh token pair.
     async fn refresh_token(&self, cmd: RefreshAuthCmd) -> AppResult<AuthToken> {
         cmd.validate()?;
         let token = AuthHelper::refresh_auth(
@@ -261,7 +281,8 @@ where
         Ok(token.into())
     }
 
-    async fn signup(&self, cmd: SignupCmd) -> AppResult<SignupResult> {
+    /// Create the full self-service signup aggregate and return the created identity.
+    async fn account_signup(&self, cmd: AccountSignupCmd) -> AppResult<AccountSignupResult> {
         cmd.validate()?;
         self.validate_slider_captcha(&cmd.account, &cmd.code, true)
             .await?;
@@ -273,9 +294,12 @@ where
             .await?
             .is_some()
         {
-            return Err(AppError::conflict_here("account already exists".to_string()));
+            return Err(AppError::conflict_here(
+                "account already exists".to_string(),
+            ));
         }
 
+        // Use the provided tenant name when available, otherwise fall back to the account.
         let tenant_name = cmd
             .tenant_name
             .as_ref()
@@ -283,6 +307,7 @@ where
             .filter(|value| !value.is_empty())
             .unwrap_or_else(|| normalized_account.clone());
 
+        // Prefer a deterministic slug from the tenant name, and fall back to auto generation.
         let tenant_slug = if cmd
             .tenant_name
             .as_ref()
@@ -314,6 +339,7 @@ where
                 .await?
         };
 
+        // Build the records that will be stored transactionally by the repository.
         let password_hash = Crypto::hash_password(&cmd.password)
             .map_err(|err| AppError::data_here(format!("failed to hash signup password: {err}")))?;
         let nickname = cmd
@@ -321,7 +347,9 @@ where
             .as_ref()
             .map(|value| value.trim().to_string())
             .filter(|value| !value.is_empty());
-        let display_name = nickname.clone().or_else(|| Some(normalized_account.clone()));
+        let display_name = nickname
+            .clone()
+            .or_else(|| Some(normalized_account.clone()));
 
         let (username, phone) = Self::build_signup_identity(&normalized_account);
 
@@ -388,7 +416,7 @@ where
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
         self.repository
-            .create_signup_bundle(&SignupBundle {
+            .create_account_signup_bundle(&AccountSignupBundle {
                 user,
                 tenant,
                 role,
@@ -397,7 +425,7 @@ where
             })
             .await?;
 
-        Ok(SignupResult {
+        Ok(AccountSignupResult {
             account: normalized_account,
             username,
             tenant_name,
@@ -405,6 +433,7 @@ where
         })
     }
 
+    /// Delete the current user's cached tokens from the auth store.
     async fn logout(&self, uid: i64) -> AppResult<()> {
         AuthHelper::delete_token(&self.redis_pool, &self.prefix, uid).await
     }

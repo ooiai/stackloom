@@ -7,6 +7,10 @@ pub use service::AuthService;
 use domain_base::{Role, Tenant, User, UserTenant, UserTenantRole};
 use neocrates::response::error::{AppError, AppResult};
 
+/// Domain projection for an auth-capable user account.
+///
+/// It is used by signin and signup flows to validate account identity,
+/// password hashes, and availability status.
 #[derive(Debug, Clone)]
 pub struct AuthUserAccount {
     pub id: i64,
@@ -17,6 +21,7 @@ pub struct AuthUserAccount {
     pub status: i16,
 }
 
+/// Lightweight tenant projection used to detect signup conflicts.
 #[derive(Debug, Clone)]
 pub struct AuthTenantConflict {
     pub id: i64,
@@ -24,6 +29,10 @@ pub struct AuthTenantConflict {
     pub name: String,
 }
 
+/// Tenant membership option returned by the first signin step.
+///
+/// One user may belong to multiple tenants, so the API first returns a list
+/// of selectable memberships and roles before issuing the final auth token.
 #[derive(Debug, Clone, Default)]
 pub struct SigninTenantOption {
     pub membership_id: i64,
@@ -39,6 +48,10 @@ pub struct SigninTenantOption {
     pub role_codes: Vec<String>,
 }
 
+/// Domain command for the signin preflight step.
+///
+/// The service validates the account credentials and captcha, then loads the
+/// tenant memberships that can be used for final signin.
 #[derive(Debug, Clone)]
 pub struct QuerySigninTenantsCmd {
     pub account: String,
@@ -47,6 +60,7 @@ pub struct QuerySigninTenantsCmd {
 }
 
 impl QuerySigninTenantsCmd {
+    /// Validate the command before it enters the domain service.
     pub fn validate(&self) -> AppResult<()> {
         if self.account.trim().is_empty() {
             return Err(AppError::ValidationError(
@@ -59,12 +73,18 @@ impl QuerySigninTenantsCmd {
             ));
         }
         if self.code.trim().is_empty() {
-            return Err(AppError::ValidationError("code cannot be empty".to_string()));
+            return Err(AppError::ValidationError(
+                "code cannot be empty".to_string(),
+            ));
         }
         Ok(())
     }
 }
 
+/// Domain command for the final signin step.
+///
+/// Besides account credentials and captcha data, it also carries the selected
+/// membership and tenant ids chosen by the user during the preflight step.
 #[derive(Debug, Clone)]
 pub struct AccountSigninCmd {
     pub account: String,
@@ -75,6 +95,7 @@ pub struct AccountSigninCmd {
 }
 
 impl AccountSigninCmd {
+    /// Validate the final signin payload, including membership selection.
     pub fn validate(&self) -> AppResult<()> {
         QuerySigninTenantsCmd {
             account: self.account.clone(),
@@ -97,6 +118,7 @@ impl AccountSigninCmd {
     }
 }
 
+/// Domain command for access token refresh.
 #[derive(Debug, Clone)]
 pub struct RefreshAuthCmd {
     pub access_token: String,
@@ -104,6 +126,7 @@ pub struct RefreshAuthCmd {
 }
 
 impl RefreshAuthCmd {
+    /// Validate the refresh payload.
     pub fn validate(&self) -> AppResult<()> {
         if self.access_token.trim().is_empty() {
             return Err(AppError::ValidationError(
@@ -119,8 +142,12 @@ impl RefreshAuthCmd {
     }
 }
 
+/// Domain command for self-service signup.
+///
+/// The signup flow creates a user, tenant, default role, and initial
+/// membership in one coordinated operation.
 #[derive(Debug, Clone)]
-pub struct SignupCmd {
+pub struct AccountSignupCmd {
     pub account: String,
     pub password: String,
     pub code: String,
@@ -128,7 +155,8 @@ pub struct SignupCmd {
     pub tenant_name: Option<String>,
 }
 
-impl SignupCmd {
+impl AccountSignupCmd {
+    /// Validate the signup payload before persistence and token-related work.
     pub fn validate(&self) -> AppResult<()> {
         if self.account.trim().is_empty() {
             return Err(AppError::ValidationError(
@@ -141,7 +169,9 @@ impl SignupCmd {
             ));
         }
         if self.code.trim().is_empty() {
-            return Err(AppError::ValidationError("code cannot be empty".to_string()));
+            return Err(AppError::ValidationError(
+                "code cannot be empty".to_string(),
+            ));
         }
 
         if let Some(nickname) = self.nickname.as_ref() {
@@ -164,14 +194,16 @@ impl SignupCmd {
     }
 }
 
+/// Result returned when self-service signup succeeds.
 #[derive(Debug, Clone)]
-pub struct SignupResult {
+pub struct AccountSignupResult {
     pub account: String,
     pub username: String,
     pub tenant_name: String,
     pub tenant_slug: String,
 }
 
+/// Auth token pair used by signin and refresh flows.
 #[derive(Debug, Clone)]
 pub struct AuthToken {
     pub access_token: String,
@@ -180,6 +212,7 @@ pub struct AuthToken {
     pub refresh_expires_at: u64,
 }
 
+/// Convert the middleware-layer token payload into the domain token model.
 impl From<neocrates::middlewares::models::AuthTokenResult> for AuthToken {
     fn from(value: neocrates::middlewares::models::AuthTokenResult) -> Self {
         Self {
@@ -191,8 +224,12 @@ impl From<neocrates::middlewares::models::AuthTokenResult> for AuthToken {
     }
 }
 
+/// Aggregate persisted during self-service signup.
+///
+/// Infra stores all of these records in one database transaction so the signup
+/// flow either succeeds as a whole or fails without partial side effects.
 #[derive(Debug, Clone)]
-pub struct SignupBundle {
+pub struct AccountSignupBundle {
     pub user: User,
     pub tenant: Tenant,
     pub role: Role,

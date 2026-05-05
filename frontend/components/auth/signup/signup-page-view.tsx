@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Spinner } from "@/components/ui/spinner"
 import { useI18n } from "@/providers/i18n-provider"
-import type { SignupAccountResult } from "@/types/auth.types"
+import type { AccountSignupResult } from "@/types/auth.types"
 import type { SignupFormErrors, SignupFormValues } from "./helpers"
 import { SignupFormFields } from "./signup-form-fields"
 import { SignupSuccessState } from "./signup-success-state"
@@ -20,7 +20,7 @@ interface SignupPageViewProps {
   errors: SignupFormErrors
   showSlider: boolean
   isLoading: boolean
-  signupResult: SignupAccountResult | null
+  signupResult: AccountSignupResult | null
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
   onFieldChange: (key: keyof SignupFormValues, value: string) => void
   onVerifySuccess: (data: VerifyParam) => Promise<void> | void

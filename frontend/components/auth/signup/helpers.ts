@@ -1,8 +1,8 @@
 import type { TranslateFn } from "@/lib/i18n"
 import CryptUtil from "@/lib/crypt"
 import type {
-  SignupAccountParam,
-  SignupAccountResult,
+  AccountSignupParam,
+  AccountSignupResult,
 } from "@/types/auth.types"
 import type { SliderCaptcha } from "@/types/system.types"
 import { z } from "zod"
@@ -74,10 +74,10 @@ export function buildSignupCaptchaPayload(
   }
 }
 
-export function buildSignupAccountParam(
+export function buildAccountSignupParam(
   values: SignupFormValues,
   verifyData: { x: number; y: number }
-): SignupAccountParam {
+): AccountSignupParam {
   const payload = buildSignupCaptchaPayload(values, verifyData)
 
   return {
@@ -85,12 +85,13 @@ export function buildSignupAccountParam(
     password: payload.password ?? "",
     code: payload.code,
     nickname: values.nickname.trim() || undefined,
+    // Let the backend auto-generate the tenant when the signup form leaves this blank.
     tenant_name: values.tenant_name.trim() || undefined,
   }
 }
 
 export function hasSignupResult(
-  result: SignupAccountResult | null
-): result is SignupAccountResult {
+  result: AccountSignupResult | null
+): result is AccountSignupResult {
   return result !== null
 }

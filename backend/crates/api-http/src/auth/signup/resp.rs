@@ -1,8 +1,12 @@
-use domain_auth::SignupResult;
+use domain_auth::AccountSignupResult;
 use neocrates::serde::Serialize;
 
+/// HTTP response returned after self-service signup succeeds.
+///
+/// The response echoes the created account identity together with the tenant
+/// information the frontend can use to guide the user into the signin page.
 #[derive(Debug, Clone, Serialize)]
-pub struct SignupAccountResp {
+pub struct AccountSignupResp {
     pub account: String,
     pub username: String,
     #[serde(rename = "tenantName")]
@@ -13,8 +17,9 @@ pub struct SignupAccountResp {
     pub signin_path: String,
 }
 
-impl From<SignupResult> for SignupAccountResp {
-    fn from(value: SignupResult) -> Self {
+/// Map the domain signup result into the public HTTP response contract.
+impl From<AccountSignupResult> for AccountSignupResp {
+    fn from(value: AccountSignupResult) -> Self {
         Self {
             account: value.account,
             username: value.username,

@@ -2,11 +2,11 @@ import { HTTP_REQUEST_ENUM } from "@/lib/config/enums"
 import CryptUtil from "@/lib/crypt"
 import { AuthTokenResult, post } from "@/lib/http/axios"
 import type {
-  AccountAuthParam,
+  AccountSigninParam,
+  AccountSignupParam,
+  AccountSignupResult,
   QuerySigninTenantsParam,
   SigninTenantOption,
-  SignupAccountParam,
-  SignupAccountResult,
 } from "@/types/auth.types"
 
 const BASIC_AUTH_HEADER = {
@@ -20,11 +20,11 @@ export const signinApi = {
   queryTenants: async (
     params: QuerySigninTenantsParam
   ): Promise<SigninTenantOption[]> => {
-    return post(`${AUTH_SIGNIN_API_PREFIX}/org_units`, params, {
+    return post(`${AUTH_SIGNIN_API_PREFIX}/tenants`, params, {
       headers: BASIC_AUTH_HEADER,
     })
   },
-  accountAuth: async (params: AccountAuthParam): Promise<AuthTokenResult> => {
+  accountSignin: async (params: AccountSigninParam): Promise<AuthTokenResult> => {
     return post(`${AUTH_SIGNIN_API_PREFIX}/account`, params, {
       headers: BASIC_AUTH_HEADER,
     })
@@ -35,7 +35,9 @@ export const signinApi = {
 }
 
 export const signupApi = {
-  account: async (params: SignupAccountParam): Promise<SignupAccountResult> => {
+  accountSignup: async (
+    params: AccountSignupParam
+  ): Promise<AccountSignupResult> => {
     return post(`${AUTH_SIGNUP_API_PREFIX}/account`, params, {
       headers: BASIC_AUTH_HEADER,
     })

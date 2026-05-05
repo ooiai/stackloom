@@ -13,9 +13,18 @@ use neocrates::{
 };
 use validator::Validate;
 
+/// Shared state used by all signin HTTP handlers.
 pub type SigninState = AuthHttpState;
 
-pub async fn query_org_units(
+/// Query the tenant options available to the current account before signin.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `req` - The signin request with account, password, and captcha payload.
+///
+/// # Returns
+/// A JSON array of tenant options for the final signin step.
+pub async fn query_tenants(
     State(state): State<SigninState>,
     DetailedJson(req): DetailedJson<QuerySigninTenantsReq>,
 ) -> AppResult<Json<Vec<SigninTenantOptionResp>>> {
@@ -36,7 +45,15 @@ pub async fn query_org_units(
     Ok(Json(items))
 }
 
-pub async fn account(
+/// Perform the final signin with the tenant membership selected in the tenant query step.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `req` - The signin request with account, password, captcha, membership, and tenant ids.
+///
+/// # Returns
+/// A JSON auth token payload for the selected tenant membership.
+pub async fn account_signin(
     State(state): State<SigninState>,
     DetailedJson(req): DetailedJson<AccountSigninReq>,
 ) -> AppResult<Json<AuthTokenResp>> {
@@ -51,6 +68,14 @@ pub async fn account(
     Ok(Json(AuthTokenResp::from(token)))
 }
 
+/// Refresh the current auth token.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `req` - The refresh request with access and refresh tokens.
+///
+/// # Returns
+/// A JSON auth token payload with refreshed credentials.
 pub async fn refresh_token(
     State(state): State<SigninState>,
     DetailedJson(req): DetailedJson<RefreshTokenReq>,
@@ -66,6 +91,14 @@ pub async fn refresh_token(
     Ok(Json(AuthTokenResp::from(token)))
 }
 
+/// Logout the current authenticated user.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `auth_user` - The current authenticated user context.
+///
+/// # Returns
+/// An empty JSON payload after token deletion succeeds.
 pub async fn logout(
     State(state): State<SigninState>,
     Extension(auth_user): Extension<AuthModel>,

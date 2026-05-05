@@ -1,9 +1,14 @@
 use domain_auth::{AuthToken, SigninTenantOption};
 use neocrates::{helper::core::serde_helpers, serde::Serialize};
 
+/// HTTP response item that describes one available tenant membership
+/// during the signin preflight step.
 #[derive(Debug, Clone, Serialize)]
 pub struct SigninTenantOptionResp {
-    #[serde(rename = "membershipId", serialize_with = "serde_helpers::serialize_i64")]
+    #[serde(
+        rename = "membershipId",
+        serialize_with = "serde_helpers::serialize_i64"
+    )]
     pub membership_id: i64,
     #[serde(rename = "tenantId", serialize_with = "serde_helpers::serialize_i64")]
     pub tenant_id: i64,
@@ -16,7 +21,10 @@ pub struct SigninTenantOptionResp {
     pub user_id: i64,
     pub username: String,
     pub nickname: Option<String>,
-    #[serde(rename = "roleIds", serialize_with = "serde_helpers::serialize_vec_i64")]
+    #[serde(
+        rename = "roleIds",
+        serialize_with = "serde_helpers::serialize_vec_i64"
+    )]
     pub role_ids: Vec<i64>,
     #[serde(rename = "roleNames")]
     pub role_names: Vec<String>,
@@ -24,6 +32,7 @@ pub struct SigninTenantOptionResp {
     pub role_codes: Vec<String>,
 }
 
+/// Map the domain projection returned by the auth service into the HTTP DTO.
 impl From<SigninTenantOption> for SigninTenantOptionResp {
     fn from(value: SigninTenantOption) -> Self {
         Self {
@@ -42,6 +51,7 @@ impl From<SigninTenantOption> for SigninTenantOptionResp {
     }
 }
 
+/// HTTP response returned after signin or token refresh succeeds.
 #[derive(Debug, Clone, Serialize)]
 pub struct AuthTokenResp {
     #[serde(rename = "accessToken")]
@@ -54,6 +64,7 @@ pub struct AuthTokenResp {
     pub refresh_expires_at: u64,
 }
 
+/// Map the domain auth token into the response contract expected by the client.
 impl From<AuthToken> for AuthTokenResp {
     fn from(value: AuthToken) -> Self {
         Self {

@@ -18,7 +18,7 @@ export interface SigninTenantOption {
   role_codes: string[]
 }
 
-export interface AccountAuthParam {
+export interface AccountSigninParam {
   account: string
   password: string
   code: string
@@ -26,7 +26,7 @@ export interface AccountAuthParam {
   tenant_id: string
 }
 
-export interface SignupAccountParam {
+export interface AccountSignupParam {
   account: string
   password: string
   code: string
@@ -34,7 +34,7 @@ export interface SignupAccountParam {
   tenant_name?: string
 }
 
-export interface SignupAccountResult {
+export interface AccountSignupResult {
   account: string
   username: string
   tenantName: string

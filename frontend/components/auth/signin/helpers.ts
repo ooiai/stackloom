@@ -51,6 +51,7 @@ export function buildSigninCaptchaPayload(
 }
 
 export function resolveSigninRoute(tenant: SigninTenantOption) {
+  // Guest users stay on the website entry flow; elevated roles land in the dashboard.
   return tenant.role_codes.includes("WEB::GUEST")
     ? WEB_HOME_ROUTE
     : DASHBOARD_ROUTE

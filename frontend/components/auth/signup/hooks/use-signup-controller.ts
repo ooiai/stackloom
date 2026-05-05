@@ -8,9 +8,9 @@ import { toast } from "sonner"
 
 import { useI18n } from "@/providers/i18n-provider"
 import { signupApi } from "@/stores/auth-api"
-import type { SignupAccountResult } from "@/types/auth.types"
+import type { AccountSignupResult } from "@/types/auth.types"
 import {
-  buildSignupAccountParam,
+  buildAccountSignupParam,
   createSignupFormSchema,
   DEFAULT_SIGNUP_VALUES,
   getSignupFormErrors,
@@ -23,13 +23,13 @@ export function useSignupController() {
   const [values, setValues] = useState<SignupFormValues>(DEFAULT_SIGNUP_VALUES)
   const [errors, setErrors] = useState<SignupFormErrors>({})
   const [showSlider, setShowSlider] = useState(false)
-  const [signupResult, setSignupResult] = useState<SignupAccountResult | null>(
+  const [signupResult, setSignupResult] = useState<AccountSignupResult | null>(
     null
   )
   const formSchema = useMemo(() => createSignupFormSchema(t), [t])
 
-  const signupMutation = useMutation({
-    mutationFn: signupApi.account,
+  const accountSignupMutation = useMutation({
+    mutationFn: signupApi.accountSignup,
     onError: () => {
       setShowSlider(false)
     },
@@ -76,15 +76,16 @@ export function useSignupController() {
 
   const handleVerifySuccess = useCallback(
     async (verifyData: VerifyParam) => {
-      const result = await signupMutation.mutateAsync(
-        buildSignupAccountParam(values, verifyData)
+      const result = await accountSignupMutation.mutateAsync(
+        buildAccountSignupParam(values, verifyData)
       )
 
       setShowSlider(false)
+      // Switching to `signupResult` renders the post-signup success state instead of the form.
       setSignupResult(result)
       toast.success(t("auth.signup.toast.success"))
     },
-    [signupMutation, t, values]
+    [accountSignupMutation, t, values]
   )
 
   const handleVerifyError = useCallback(() => {
@@ -96,7 +97,7 @@ export function useSignupController() {
       values,
       errors,
       showSlider,
-      isLoading: signupMutation.isPending,
+      isLoading: accountSignupMutation.isPending,
       signupResult,
       onSubmit: handleSubmit,
       onFieldChange: handleFieldChange,

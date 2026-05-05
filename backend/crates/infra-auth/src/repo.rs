@@ -1,6 +1,6 @@
 use std::{collections::HashMap, sync::Arc};
 
-use domain_auth::{AuthRepository, SigninTenantOption, SignupBundle};
+use domain_auth::{AccountSignupBundle, AuthRepository, SigninTenantOption};
 use neocrates::{
     async_trait::async_trait,
     response::error::{AppError, AppResult},
@@ -10,21 +10,26 @@ use neocrates::{
 
 use super::{AuthTenantConflictRow, AuthUserAccountRow, SigninTenantMembershipRow};
 
+/// SQLx-backed repository for signin/signup reads and writes.
 #[derive(Debug, Clone)]
 pub struct SqlxAuthRepository {
     pool: Arc<SqlxPool>,
 }
 
 impl SqlxAuthRepository {
+    /// Create a repository bound to the shared SQLx pool.
     pub fn new(pool: Arc<SqlxPool>) -> Self {
         Self { pool }
     }
 
+    /// Normalize low-level SQL errors into business-facing auth errors.
     fn map_sqlx_error(err: SqlxError) -> AppError {
         if let SqlxError::Database(db_err) = &err {
             if db_err.code().as_deref() == Some("23505") {
                 return match db_err.constraint() {
-                    Some("uq_users_username") | Some("users_phone_key") | Some("users_email_key") => {
+                    Some("uq_users_username")
+                    | Some("users_phone_key")
+                    | Some("users_email_key") => {
                         AppError::conflict_here("account already exists".to_string())
                     }
                     Some("uq_tenants_slug") => {
@@ -50,6 +55,7 @@ impl SqlxAuthRepository {
 
 #[async_trait]
 impl AuthRepository for SqlxAuthRepository {
+    /// Load one enabled auth account candidate by username or phone.
     async fn find_user_by_account(
         &self,
         account: &str,
@@ -77,6 +83,7 @@ impl AuthRepository for SqlxAuthRepository {
         Ok(row.map(Into::into))
     }
 
+    /// Check whether a tenant slug already exists before signup persists data.
     async fn find_tenant_by_slug(
         &self,
         slug: &str,
@@ -98,6 +105,7 @@ impl AuthRepository for SqlxAuthRepository {
         Ok(row.map(Into::into))
     }
 
+    /// Check whether the requested tenant name or slug conflicts with existing data.
     async fn find_tenant_by_name_or_slug(
         &self,
         name: &str,
@@ -121,6 +129,7 @@ impl AuthRepository for SqlxAuthRepository {
         Ok(row.map(Into::into))
     }
 
+    /// Load all tenant memberships available to the specified user for signin.
     async fn list_signin_tenants(&self, user_id: i64) -> AppResult<Vec<SigninTenantOption>> {
         let rows = sqlx::query_as::<_, SigninTenantMembershipRow>(
             r#"
@@ -162,6 +171,7 @@ impl AuthRepository for SqlxAuthRepository {
         .await
         .map_err(Self::map_sqlx_error)?;
 
+        // One membership may join multiple role rows, so fold them into one option.
         let mut options_by_membership = HashMap::<i64, SigninTenantOption>::new();
 
         for row in rows {
@@ -203,7 +213,8 @@ impl AuthRepository for SqlxAuthRepository {
         Ok(options_by_membership.into_values().collect())
     }
 
-    async fn create_signup_bundle(&self, bundle: &SignupBundle) -> AppResult<()> {
+    /// Persist the full signup aggregate in one transaction to avoid partial writes.
+    async fn create_account_signup_bundle(&self, bundle: &AccountSignupBundle) -> AppResult<()> {
         let mut tx = self
             .pool
             .pool()

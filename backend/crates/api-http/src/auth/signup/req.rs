@@ -1,9 +1,13 @@
-use domain_auth::SignupCmd;
+use domain_auth::AccountSignupCmd;
 use neocrates::serde::Deserialize;
 use validator::Validate;
 
+/// Request body for self-service account signup.
+///
+/// In addition to account credentials and captcha data, the caller may provide
+/// an optional nickname and tenant name used to initialize the first tenant.
 #[derive(Debug, Clone, Deserialize, Validate)]
-pub struct SignupAccountReq {
+pub struct AccountSignupReq {
     #[validate(length(min = 1, max = 50))]
     pub account: String,
     #[validate(length(min = 1))]
@@ -16,8 +20,9 @@ pub struct SignupAccountReq {
     pub tenant_name: Option<String>,
 }
 
-impl From<SignupAccountReq> for SignupCmd {
-    fn from(req: SignupAccountReq) -> Self {
+/// Convert the signup HTTP DTO into the domain command handled by auth.
+impl From<AccountSignupReq> for AccountSignupCmd {
+    fn from(req: AccountSignupReq) -> Self {
         Self {
             account: req.account,
             password: req.password,

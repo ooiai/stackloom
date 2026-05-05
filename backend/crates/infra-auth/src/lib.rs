@@ -7,6 +7,7 @@ pub use service::AuthServiceImpl;
 use domain_auth::{AuthTenantConflict, AuthUserAccount};
 use neocrates::sqlx::FromRow;
 
+/// Database row used to hydrate the domain auth account projection.
 #[derive(Debug, Clone, FromRow)]
 pub struct AuthUserAccountRow {
     pub id: i64,
@@ -17,6 +18,7 @@ pub struct AuthUserAccountRow {
     pub status: i16,
 }
 
+/// Convert the SQL row into the domain model used by signin/signup services.
 impl From<AuthUserAccountRow> for AuthUserAccount {
     fn from(value: AuthUserAccountRow) -> Self {
         Self {
@@ -30,6 +32,7 @@ impl From<AuthUserAccountRow> for AuthUserAccount {
     }
 }
 
+/// Database row used to detect tenant slug or name conflicts during signup.
 #[derive(Debug, Clone, FromRow)]
 pub struct AuthTenantConflictRow {
     pub id: i64,
@@ -37,6 +40,7 @@ pub struct AuthTenantConflictRow {
     pub name: String,
 }
 
+/// Convert the SQL row into the domain conflict projection.
 impl From<AuthTenantConflictRow> for AuthTenantConflict {
     fn from(value: AuthTenantConflictRow) -> Self {
         Self {
@@ -47,6 +51,10 @@ impl From<AuthTenantConflictRow> for AuthTenantConflict {
     }
 }
 
+/// Flat SQL row representing one signin membership and an optional role.
+///
+/// Repository code folds multiple rows with the same membership id into a single
+/// `SigninTenantOption` containing deduplicated role ids, names, and codes.
 #[derive(Debug, Clone, FromRow)]
 pub struct SigninTenantMembershipRow {
     pub membership_id: i64,

@@ -5,6 +5,11 @@ use neocrates::{
 };
 use validator::Validate;
 
+/// Request body for the first signin step.
+///
+/// The client provides account credentials and the slider captcha code,
+/// and the backend responds with the tenant memberships that can be used
+/// for the final signin step.
 #[derive(Debug, Clone, Deserialize, Validate)]
 pub struct QuerySigninTenantsReq {
     #[validate(length(min = 1, max = 50))]
@@ -15,6 +20,7 @@ pub struct QuerySigninTenantsReq {
     pub code: String,
 }
 
+/// Convert the HTTP DTO into the domain command consumed by the auth service.
 impl From<QuerySigninTenantsReq> for QuerySigninTenantsCmd {
     fn from(req: QuerySigninTenantsReq) -> Self {
         Self {
@@ -25,6 +31,11 @@ impl From<QuerySigninTenantsReq> for QuerySigninTenantsCmd {
     }
 }
 
+/// Request body for the final signin step.
+///
+/// After the frontend chooses one tenant membership from the preflight query,
+/// it sends the selected membership and tenant ids together with the same
+/// credentials and captcha payload.
 #[derive(Debug, Clone, Deserialize, Validate)]
 pub struct AccountSigninReq {
     #[validate(length(min = 1, max = 50))]
@@ -39,6 +50,7 @@ pub struct AccountSigninReq {
     pub tenant_id: i64,
 }
 
+/// Convert the final signin request into the corresponding domain command.
 impl From<AccountSigninReq> for AccountSigninCmd {
     fn from(req: AccountSigninReq) -> Self {
         Self {
@@ -51,6 +63,10 @@ impl From<AccountSigninReq> for AccountSigninCmd {
     }
 }
 
+/// Request body for token refresh.
+///
+/// The caller must provide the currently issued access token and refresh token
+/// so the domain service can rotate them together.
 #[derive(Debug, Clone, Deserialize, Validate)]
 pub struct RefreshTokenReq {
     #[serde(alias = "accessToken")]
@@ -61,6 +77,7 @@ pub struct RefreshTokenReq {
     pub refresh_token: String,
 }
 
+/// Convert the refresh request into the domain refresh command.
 impl From<RefreshTokenReq> for RefreshAuthCmd {
     fn from(req: RefreshTokenReq) -> Self {
         Self {

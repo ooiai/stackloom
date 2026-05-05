@@ -12,7 +12,7 @@ import { STORAGE_ENUM } from "@/lib/config/enums"
 import { useI18n } from "@/providers/i18n-provider"
 import { signinApi } from "@/stores/auth-api"
 import type {
-  AccountAuthParam,
+  AccountSigninParam,
   QuerySigninTenantsParam,
   SigninTenantOption,
 } from "@/types/auth.types"
@@ -34,6 +34,7 @@ export function useSigninController() {
   const [errors, setErrors] = useState<SigninFormErrors>({})
   const [showSlider, setShowSlider] = useState(false)
   const [showTenantDialog, setShowTenantDialog] = useState(false)
+  // Keep the captcha-verified payload so the final signin can reuse it after tenant selection.
   const [captchaFormData, setCaptchaFormData] = useState<SliderCaptcha | null>(
     null
   )
@@ -41,21 +42,22 @@ export function useSigninController() {
   const formSchema = useMemo(() => createSigninFormSchema(t), [t])
 
   const queryTenantsMutation = useMutation({
+    // Signin is intentionally two-step: verify captcha first, then load available memberships.
     mutationFn: (params: QuerySigninTenantsParam) => signinApi.queryTenants(params),
     onError: () => {
       setShowSlider(false)
     },
   })
 
-  const accountAuthMutation = useMutation({
-    mutationFn: (params: AccountAuthParam) => signinApi.accountAuth(params),
+  const accountSigninMutation = useMutation({
+    mutationFn: (params: AccountSigninParam) => signinApi.accountSignin(params),
     onError: () => {
       setShowSlider(false)
       setShowTenantDialog(false)
     },
   })
 
-  const isLoading = queryTenantsMutation.isPending || accountAuthMutation.isPending
+  const isLoading = queryTenantsMutation.isPending || accountSigninMutation.isPending
 
   const handleFieldChange = useCallback(
     (key: keyof SigninFormValues, value: string) => {
@@ -137,7 +139,8 @@ export function useSigninController() {
         return
       }
 
-      const data = await accountAuthMutation.mutateAsync({
+      // The backend issues tokens against the exact `membership_id + tenant_id` pair.
+      const data = await accountSigninMutation.mutateAsync({
         account: captchaFormData.account,
         password: captchaFormData.password ?? "",
         code: captchaFormData.code,
@@ -153,7 +156,7 @@ export function useSigninController() {
       toast.success(t("auth.signin.toast.success"))
       router.replace(resolveSigninRoute(tenant))
     },
-    [accountAuthMutation, captchaFormData, router, t]
+    [accountSigninMutation, captchaFormData, router, t]
   )
 
   return {
@@ -170,7 +173,7 @@ export function useSigninController() {
     dialog: {
       open: showTenantDialog,
       tenants,
-      loading: accountAuthMutation.isPending,
+      loading: accountSigninMutation.isPending,
       onOpenChange: handleTenantDialogOpenChange,
       onSubmit: handleTenantSubmit,
     },
