@@ -13,7 +13,7 @@ export interface ErrorResponse {
   code: BizErrorCode
   message: string
   data: any
-  errorKey?: string // Stable i18n key returned by backend DataError variants
+  error_key?: string // Stable i18n key returned by backend DataError variants
 }
 
 // Utility functions that don't depend on translations
@@ -54,8 +54,8 @@ export function useAxiosErrorHandler() {
   // 处理业务错误码
   const handleBizError = (error: ErrorResponse) => {
     // Prefer stable string key returned by backend DataError
-    if (error.errorKey) {
-      toast.warning(t(error.errorKey))
+    if (error.error_key) {
+      toast.warning(t(error.error_key))
       return Promise.reject(error)
     }
 
