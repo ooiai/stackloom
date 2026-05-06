@@ -22,6 +22,12 @@ interface UserRoleTreeNode extends UserRoleItemData {
   children: UserRoleTreeNode[]
 }
 
+const HIDDEN_SYSTEM_ROLE_CODES = new Set(["TENANT"])
+
+function shouldHideAssignableRole(role: UserRoleItemData) {
+  return role.tenant_id === null && HIDDEN_SYSTEM_ROLE_CODES.has(role.code)
+}
+
 function buildAssignRoleTree(items: UserRoleItemData[]): UserRoleTreeNode[] {
   const sorted = [...items].sort(
     (a, b) => a.sort - b.sort || a.name.localeCompare(b.name, "zh-CN")
@@ -43,6 +49,22 @@ function buildAssignRoleTree(items: UserRoleItemData[]): UserRoleTreeNode[] {
   }
 
   return roots
+}
+
+function hasSelectedDescendant(
+  node: UserRoleTreeNode,
+  selectedIds: Set<string>
+): boolean {
+  for (const child of node.children) {
+    if (
+      selectedIds.has(child.id) ||
+      hasSelectedDescendant(child, selectedIds)
+    ) {
+      return true
+    }
+  }
+
+  return false
 }
 
 function buildDialogResetKey(
@@ -127,24 +149,30 @@ function UserAssignRolesDialogContent({
 }: UserAssignRolesDialogContentProps) {
   const { t } = useI18n()
 
-  const { systemTree, tenantTree, initialExpandedIds, initialSelectedIds } =
-    useMemo(() => {
-      const systemTree = buildAssignRoleTree(
-        roles.filter((role) => role.tenant_id === null)
-      )
-      const tenantTree = buildAssignRoleTree(
-        roles.filter((role) => role.tenant_id !== null)
-      )
+  const {
+    systemTree,
+    tenantTree,
+    visibleRoleCount,
+    initialExpandedIds,
+    initialSelectedIds,
+  } = useMemo(() => {
+    const visibleSystemRoles = roles.filter(
+      (role) => role.tenant_id === null && !shouldHideAssignableRole(role)
+    )
+    const visibleTenantRoles = roles.filter((role) => role.tenant_id !== null)
+    const systemTree = buildAssignRoleTree(visibleSystemRoles)
+    const tenantTree = buildAssignRoleTree(visibleTenantRoles)
 
-      return {
-        systemTree,
-        tenantTree,
-        initialSelectedIds: new Set(
-          roles.filter((role) => role.is_assigned).map((role) => role.id)
-        ),
-        initialExpandedIds: new Set<string>(),
-      }
-    }, [roles])
+    return {
+      systemTree,
+      tenantTree,
+      visibleRoleCount: visibleSystemRoles.length + visibleTenantRoles.length,
+      initialSelectedIds: new Set(
+        roles.filter((role) => role.is_assigned).map((role) => role.id)
+      ),
+      initialExpandedIds: new Set<string>(),
+    }
+  }, [roles])
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(
     () => new Set(initialSelectedIds)
@@ -208,7 +236,7 @@ function UserAssignRolesDialogContent({
           <div className="flex items-center justify-center py-10">
             <Spinner className="size-5 text-muted-foreground" />
           </div>
-        ) : roles.length === 0 ? (
+        ) : visibleRoleCount === 0 ? (
           <p className="py-6 text-center text-sm text-muted-foreground">
             {t("users.assignRoles.empty")}
           </p>
@@ -316,6 +344,8 @@ function RoleCheckboxTreeNode({
   onToggleExpand,
 }: RoleCheckboxTreeNodeProps) {
   const isSelected = selectedIds.has(node.id)
+  const isIndeterminate =
+    !isSelected && hasSelectedDescendant(node, selectedIds)
   const isExpanded = expandedIds.has(node.id)
   const hasChildren = node.children.length > 0
 
@@ -345,13 +375,14 @@ function RoleCheckboxTreeNode({
         <label
           className={cn(
             "flex flex-1 cursor-pointer items-center gap-2.5 rounded-lg border px-2.5 py-2 transition-colors",
-            isSelected
+            isSelected || isIndeterminate
               ? "border-primary/40 bg-primary/5"
               : "border-border/50 bg-background hover:bg-muted/30"
           )}
         >
           <Checkbox
             checked={isSelected}
+            indeterminate={isIndeterminate}
             onCheckedChange={() => onToggle(node.id)}
             className="shrink-0"
           />
