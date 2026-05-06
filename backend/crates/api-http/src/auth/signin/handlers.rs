@@ -23,7 +23,7 @@ pub type SigninState = AuthHttpState;
 /// * `req` - The signin request with account, password, and captcha payload.
 ///
 /// # Returns
-/// A JSON array of tenant options for the final signin step.
+/// * `AppResult<Json<Vec<SigninTenantOptionResp>>>` - The list of selectable tenant memberships.
 pub async fn query_tenants(
     State(state): State<SigninState>,
     DetailedJson(req): DetailedJson<QuerySigninTenantsReq>,
@@ -52,7 +52,7 @@ pub async fn query_tenants(
 /// * `req` - The signin request with account, password, captcha, membership, and tenant ids.
 ///
 /// # Returns
-/// A JSON auth token payload for the selected tenant membership.
+/// * `AppResult<Json<AuthTokenResp>>` - The auth token payload for the selected membership.
 pub async fn account_signin(
     State(state): State<SigninState>,
     DetailedJson(req): DetailedJson<AccountSigninReq>,
@@ -75,7 +75,7 @@ pub async fn account_signin(
 /// * `req` - The refresh request with access and refresh tokens.
 ///
 /// # Returns
-/// A JSON auth token payload with refreshed credentials.
+/// * `AppResult<Json<AuthTokenResp>>` - The refreshed auth token payload.
 pub async fn refresh_token(
     State(state): State<SigninState>,
     DetailedJson(req): DetailedJson<RefreshTokenReq>,
@@ -98,7 +98,7 @@ pub async fn refresh_token(
 /// * `auth_user` - The current authenticated user context.
 ///
 /// # Returns
-/// An empty JSON payload after token deletion succeeds.
+/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn logout(
     State(state): State<SigninState>,
     Extension(auth_user): Extension<AuthModel>,

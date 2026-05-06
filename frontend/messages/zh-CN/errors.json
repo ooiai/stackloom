@@ -39,7 +39,10 @@
       "defaultTenantRoleExists": "默认租户角色已存在，请联系管理员处理",
       "tenantMembershipExists": "该账号已绑定此租户，请直接登录",
       "tenantMembershipRoleExists": "该租户角色已分配，请勿重复操作",
-      "resourceExists": "相关资源已存在，请勿重复操作"
+      "resourceExists": "相关资源已存在，请勿重复操作",
+      "accountNotFound": "账号不存在，请检查后重试或前往注册",
+      "accountDisabled": "账号已被禁用，请联系管理员",
+      "credentialInvalid": "密码错误，请重新输入"
     },
     "users": {
       "usernameExists": "该用户名已被使用，请更换后重试",

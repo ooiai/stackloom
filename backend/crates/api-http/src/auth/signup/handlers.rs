@@ -19,7 +19,7 @@ pub type SignupState = AuthHttpState;
 /// * `req` - The signup request with account, password, captcha, nickname, and tenant name.
 ///
 /// # Returns
-/// A JSON payload that summarizes the created signup account and tenant.
+/// * `AppResult<Json<AccountSignupResp>>` - The created account and tenant summary.
 pub async fn account_signup(
     State(state): State<SignupState>,
     DetailedJson(req): DetailedJson<AccountSignupReq>,

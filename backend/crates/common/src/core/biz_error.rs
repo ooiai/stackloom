@@ -14,6 +14,12 @@ pub const AUTH_DEFAULT_TENANT_ROLE_EXISTS: &str = "errors.biz.auth.defaultTenant
 pub const AUTH_TENANT_MEMBERSHIP_EXISTS: &str = "errors.biz.auth.tenantMembershipExists";
 pub const AUTH_TENANT_MEMBERSHIP_ROLE_EXISTS: &str = "errors.biz.auth.tenantMembershipRoleExists";
 pub const AUTH_RESOURCE_EXISTS: &str = "errors.biz.auth.resourceExists";
+/// `errors.biz.auth.accountNotFound`  — account lookup returned no row
+pub const AUTH_ACCOUNT_NOT_FOUND: &str = "errors.biz.auth.accountNotFound";
+/// `errors.biz.auth.accountDisabled`  — account exists but status != 1
+pub const AUTH_ACCOUNT_DISABLED: &str = "errors.biz.auth.accountDisabled";
+/// `errors.biz.auth.credentialInvalid` — password verification failed
+pub const AUTH_CREDENTIAL_INVALID: &str = "errors.biz.auth.credentialInvalid";
 
 // 412xxx: users
 pub const USER_USERNAME_EXISTS: &str = "errors.biz.users.usernameExists";

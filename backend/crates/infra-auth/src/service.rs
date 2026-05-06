@@ -2,7 +2,10 @@ use std::sync::Arc;
 
 use chrono::Utc;
 use common::core::{
-    biz_error::{AUTH_ACCOUNT_EXISTS, AUTH_TENANT_EXISTS},
+    biz_error::{
+        AUTH_ACCOUNT_DISABLED, AUTH_ACCOUNT_EXISTS, AUTH_ACCOUNT_NOT_FOUND,
+        AUTH_CREDENTIAL_INVALID, AUTH_TENANT_EXISTS,
+    },
     constants::SIGNUP_ADMIN_CODE,
 };
 use domain_auth::{
@@ -23,6 +26,7 @@ use neocrates::{
     rediscache::RedisPool,
     response::error::{AppError, AppResult},
     sqlxhelper::pool::SqlxPool,
+    tracing,
 };
 
 use super::repo::SqlxAuthRepository;
@@ -110,18 +114,40 @@ where
         account: &str,
         password: &str,
     ) -> AppResult<domain_auth::AuthUserAccount> {
-        let user = self
-            .repository
-            .find_user_by_account(account)
-            .await?
-            .ok_or(AppError::Unauthorized)?;
+        let user = match self.repository.find_user_by_account(account).await? {
+            Some(u) => u,
+            None => {
+                tracing::warn!(account = %account, "signin failed: account not found");
+                return Err(AppError::DataError(
+                    AUTH_ACCOUNT_NOT_FOUND,
+                    "account not found".to_string(),
+                ));
+            }
+        };
 
         if user.status != 1 {
-            return Err(AppError::Unauthorized);
+            tracing::warn!(
+                account = %account,
+                user_id = %user.id,
+                status = %user.status,
+                "signin failed: account status not active"
+            );
+            return Err(AppError::DataError(
+                AUTH_ACCOUNT_DISABLED,
+                "account is disabled".to_string(),
+            ));
         }
 
         if !Crypto::verify_password(password, &user.password_hash) {
-            return Err(AppError::Unauthorized);
+            tracing::warn!(
+                account = %account,
+                user_id = %user.id,
+                "signin failed: password mismatch"
+            );
+            return Err(AppError::DataError(
+                AUTH_CREDENTIAL_INVALID,
+                "invalid credentials".to_string(),
+            ));
         }
 
         Ok(user)
