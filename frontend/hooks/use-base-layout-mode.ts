@@ -14,7 +14,7 @@ function isLayoutWidthMode(value: unknown): value is LayoutWidthMode {
 
 function getStoredLayoutMode(): LayoutWidthMode {
   const storedMode = getStorageItem(STORAGE_KEY)
-  return isLayoutWidthMode(storedMode) ? storedMode : "contained"
+  return isLayoutWidthMode(storedMode) ? storedMode : "full"
 }
 
 function subscribeLayoutMode(onStoreChange: () => void) {
@@ -45,7 +45,7 @@ export function useBaseLayoutMode() {
   const mode: LayoutWidthMode = useSyncExternalStore(
     subscribeLayoutMode,
     getStoredLayoutMode,
-    () => "contained"
+    () => "full"
   )
 
   const updateMode = (nextMode: LayoutWidthMode) => {
