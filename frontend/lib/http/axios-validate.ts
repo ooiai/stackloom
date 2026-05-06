@@ -3,6 +3,7 @@
 
 import { toast } from "sonner"
 import { AxiosError } from "axios"
+import { useI18n } from "@/providers/i18n-provider"
 import { ROUTER_ENUM, STORAGE_ENUM } from "../config/enums"
 import { removeStorageItem } from "@/hooks/use-persisted-state"
 import { BizErrorCode, HttpStatusCode } from "./status"
@@ -12,17 +13,7 @@ export interface ErrorResponse {
   code: BizErrorCode
   message: string
   data: any
-}
-
-const stripFrameworkPrefix = (message?: string): string => {
-  if (!message) {
-    return ""
-  }
-
-  return message
-    .replace(/^[A-Za-z ]+:\s*/, "")
-    .replace(/^.*?:\d+\s+/, "")
-    .trim()
+  errorKey?: string // Stable i18n key returned by backend DataError variants
 }
 
 // Utility functions that don't depend on translations
@@ -56,137 +47,119 @@ export const isRateLimitError = (error: AxiosError<ErrorResponse>): boolean => {
   )
 }
 
-// Check if error code is in the data error range (410000-41999)
-export const isDataError = (code: BizErrorCode): boolean => {
-  return code >= 410000 && code <= 419999
-}
-
 // Custom hook for error handling with translations
 export function useAxiosErrorHandler() {
+  const { t } = useI18n()
+
   // 处理业务错误码
   const handleBizError = (error: ErrorResponse) => {
-    const friendlyMessage = stripFrameworkPrefix(error.message)
+    // Prefer stable string key returned by backend DataError
+    if (error.errorKey) {
+      toast.warning(t(error.errorKey))
+      return Promise.reject(error)
+    }
 
-    // If error code is 400007
-    if (error.code === BizErrorCode.BIZ_DATA_ERROR) {
-      toast.warning(friendlyMessage || "Data conflict")
-      return Promise.reject(error)
-    }
-    // If error code is in 410000-41999 range, don't show toast message
-    if (isDataError(error.code)) {
-      return Promise.reject(error)
-    }
+    // Generic fallback handling by numeric code
     switch (error.code) {
       // 4xx Client Error
       case BizErrorCode.VALIDATION_ERROR:
-        toast.warning("Parameter validation failed")
+        toast.warning(t("errors.http.validation"))
         break
       case BizErrorCode.UNAUTHORIZED:
-        toast.warning("Please log in again (not logged in or login expired)")
+        toast.warning(t("errors.http.unauthorized"))
         removeStorageItem(STORAGE_ENUM.TOKEN)
         window.location.href = ROUTER_ENUM.SIGNIN
         break
       case BizErrorCode.FORBIDDEN:
-        toast.warning("Permission denied")
+        toast.warning(t("errors.http.forbidden"))
         break
       case BizErrorCode.NOT_FOUND:
-        toast.warning("Resource does not exist")
+        toast.warning(t("errors.http.notFound"))
         break
       case BizErrorCode.TOKEN_EXPIRED:
-        toast.warning("Authorization expired, please log in again")
+        toast.warning(t("errors.http.tokenExpired"))
         break
       case BizErrorCode.CONFLICT:
-        toast.warning(friendlyMessage || "Resource conflict")
+        toast.warning(t("errors.http.conflict"))
         break
       case BizErrorCode.BIZ_CLIENT_ERROR:
-        toast.warning(
-          friendlyMessage || "Client error: An unexpected error occurred"
-        )
+        toast.warning(t("errors.http.clientError"))
+        break
+      case BizErrorCode.BIZ_DATA_ERROR:
+        toast.warning(t("errors.http.dataConflict"))
         break
       case BizErrorCode.UNPROCESSABLE_ENTITY:
-        toast.warning(friendlyMessage || "Business rule validation failed")
+        toast.warning(t("errors.http.unprocessableEntity"))
         break
       case BizErrorCode.RATE_LIMIT:
-        toast.warning("Request frequency exceeded limit")
+        toast.warning(t("errors.http.rateLimit"))
         break
       case BizErrorCode.EASTER_EGG:
-        toast.warning("🫖 Fun easter egg")
+        toast.warning(t("errors.http.easterEgg"))
         break
 
       // 5xx Server Error
       case BizErrorCode.DB_ERROR:
-        toast.error("Database service exception")
+        toast.error(t("errors.http.database"))
         break
       case BizErrorCode.REDIS_ERROR:
-        toast.error("Cache service exception")
+        toast.error(t("errors.http.redis"))
         break
       case BizErrorCode.MQ_ERROR:
-        toast.error("Message queue service exception")
+        toast.error(t("errors.http.messageQueue"))
         break
       case BizErrorCode.EXTERNAL_ERROR:
-        toast.error("External service call failed")
+        toast.error(t("errors.http.external"))
         break
       case BizErrorCode.INTERNAL_ERROR:
-        toast.error("Internal system error")
+        toast.error(t("errors.http.internal"))
         break
       default:
-        toast.error("Unknown error: An unexpected error occurred")
+        toast.error(t("errors.http.unknown"))
     }
+    return Promise.reject(error)
   }
 
   // 处理 HTTP 状态码
   const handleHttpError = (error: AxiosError<ErrorResponse>) => {
     const { status } = error
+
     switch (status) {
       case HttpStatusCode.BAD_REQUEST:
-        toast.error(
-          stripFrameworkPrefix(error.response?.data?.message) ||
-            "Request error: Incorrect request parameter format"
-        )
+        toast.error(t("errors.http.badRequest"))
         break
       case HttpStatusCode.UNAUTHORIZED:
-        toast.error("Unauthorized access: Please log in again")
+        toast.error(t("errors.http.unauthorized"))
         console.log(error)
         removeStorageItem(STORAGE_ENUM.TOKEN)
         window.location.href = ROUTER_ENUM.SIGNIN
         break
       case HttpStatusCode.FORBIDDEN:
-        toast.error(
-          "Access restricted: You don't have permission to access this resource"
-        )
+        toast.error(t("errors.http.forbidden"))
         break
       case HttpStatusCode.NOT_FOUND:
-        toast.error("Resource not found: The requested resource does not exist")
+        toast.error(t("errors.http.notFound"))
         break
       case HttpStatusCode.CONFLICT:
-        toast.error(
-          stripFrameworkPrefix(error.response?.data?.message) ||
-            "Operation conflict: Resource state conflict"
-        )
+        toast.error(t("errors.http.conflict"))
         break
       case HttpStatusCode.EXPECTATION_FAILED:
-        toast.error(
-          stripFrameworkPrefix(error.response?.data?.message) ||
-            "Operation failed: Please check the request parameters and try again"
-        )
+        toast.error(t("errors.http.clientError"))
         break
       case HttpStatusCode.UNPROCESSABLE_ENTITY:
-        toast.error(
-          stripFrameworkPrefix(error.response?.data?.message) ||
-            "Data validation failed: Request data validation failed"
-        )
+        toast.error(t("errors.http.unprocessableEntity"))
         break
       case HttpStatusCode.TOO_MANY_REQUESTS:
-        toast.error("Too many requests: Please try again later")
+        toast.error(t("errors.http.rateLimit"))
         break
       case HttpStatusCode.IM_A_TEAPOT:
-        toast.error("🫖: I'm a teapot")
+        toast.error(t("errors.http.easterEgg"))
         break
       case HttpStatusCode.INTERNAL_SERVER_ERROR:
-        toast.error("Server error: The server failed to process the request")
+        toast.error(t("errors.http.internal"))
         break
       default:
-        toast.error("Network error: Failed to connect to the server")
+        toast.error(t("errors.http.network"))
     }
   }
 
@@ -207,9 +180,7 @@ export function useAxiosErrorHandler() {
         method: error.config?.method,
       })
     } else if (error.request) {
-      toast.error(
-        "Network connection failed: Failed to establish a connection with the server"
-      )
+      toast.error(t("errors.http.network"))
       console.error("Network Error:", error.request)
     } else {
       console.error("Request Config Error:", error)

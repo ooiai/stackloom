@@ -1,3 +1,7 @@
+use common::core::biz_error::{
+    AUTH_ACCOUNT_EXISTS, AUTH_DEFAULT_TENANT_ROLE_EXISTS, AUTH_RESOURCE_EXISTS, AUTH_TENANT_EXISTS,
+    AUTH_TENANT_MEMBERSHIP_EXISTS, AUTH_TENANT_MEMBERSHIP_ROLE_EXISTS,
+};
 use std::{collections::HashMap, sync::Arc};
 
 use domain_auth::{AccountSignupBundle, AuthRepository, SigninTenantOption};
@@ -29,22 +33,31 @@ impl SqlxAuthRepository {
                 return match db_err.constraint() {
                     Some("uq_users_username")
                     | Some("users_phone_key")
-                    | Some("users_email_key") => {
-                        AppError::conflict_here("account already exists".to_string())
-                    }
+                    | Some("users_email_key") => AppError::DataError(
+                        AUTH_ACCOUNT_EXISTS,
+                        "account already exists".to_string(),
+                    ),
                     Some("uq_tenants_slug") => {
-                        AppError::conflict_here("tenant already exists".to_string())
+                        AppError::DataError(AUTH_TENANT_EXISTS, "tenant already exists".to_string())
                     }
                     Some("uq_roles_system_code") | Some("uq_roles_tenant_code") => {
-                        AppError::conflict_here("default tenant role already exists".to_string())
+                        AppError::DataError(
+                            AUTH_DEFAULT_TENANT_ROLE_EXISTS,
+                            "default tenant role already exists".to_string(),
+                        )
                     }
-                    Some("uq_user_tenants_user_tenant") => {
-                        AppError::conflict_here("tenant membership already exists".to_string())
-                    }
-                    Some("uq_user_tenant_roles") => {
-                        AppError::conflict_here("tenant membership role already exists".to_string())
-                    }
-                    _ => AppError::conflict_here("resource already exists".to_string()),
+                    Some("uq_user_tenants_user_tenant") => AppError::DataError(
+                        AUTH_TENANT_MEMBERSHIP_EXISTS,
+                        "tenant membership already exists".to_string(),
+                    ),
+                    Some("uq_user_tenant_roles") => AppError::DataError(
+                        AUTH_TENANT_MEMBERSHIP_ROLE_EXISTS,
+                        "tenant membership role already exists".to_string(),
+                    ),
+                    _ => AppError::DataError(
+                        AUTH_RESOURCE_EXISTS,
+                        "resource already exists".to_string(),
+                    ),
                 };
             }
         }

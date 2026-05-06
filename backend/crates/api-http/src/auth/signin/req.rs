@@ -1,8 +1,5 @@
 use domain_auth::{AccountSigninCmd, QuerySigninTenantsCmd, RefreshAuthCmd};
-use neocrates::{
-    helper::core::serde_helpers,
-    serde::Deserialize,
-};
+use neocrates::{helper::core::serde_helpers, serde::Deserialize};
 use validator::Validate;
 
 /// Request body for the first signin step.

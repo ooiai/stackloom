@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use common::core::biz_error::USER_USERNAME_EXISTS;
 use domain_base::{
     CreateUserCmd, PageUserCmd, UpdateUserCmd, User, UserRepository, UserService,
     user::UserPageQuery,
@@ -54,10 +55,10 @@ where
             .await?
             .is_some()
         {
-            return Err(AppError::conflict_here(format!(
-                "username '{}' already exists",
-                cmd.username
-            )));
+            return Err(AppError::DataError(
+                USER_USERNAME_EXISTS,
+                "username already exists".to_string(),
+            ));
         }
 
         cmd.id = generate_sonyflake_id() as i64;

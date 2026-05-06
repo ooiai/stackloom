@@ -10,5 +10,50 @@
     "title": "Access denied, the permission officer is on duty 👮",
     "description": "Permissions blocked the way. Try another account or contact an administrator for access.",
     "button": "Retreat to home 🧭"
+  },
+  "http": {
+    "badRequest": "The request parameters are invalid. Please review them and try again.",
+    "validation": "Request validation failed.",
+    "unauthorized": "Your session is no longer valid. Please sign in again.",
+    "tokenExpired": "Authorization expired. Please sign in again.",
+    "forbidden": "You do not have permission to perform this action.",
+    "notFound": "The requested resource does not exist or has been removed.",
+    "conflict": "The request conflicts with the current resource state. Please try again.",
+    "dataConflict": "Data conflict detected. Refresh and try again.",
+    "unprocessableEntity": "Business rule validation failed. Please review the request and try again.",
+    "rateLimit": "Too many requests. Please try again later.",
+    "clientError": "The request could not be completed. Please try again.",
+    "database": "The database service is unavailable right now. Please try again.",
+    "redis": "The cache service is unavailable right now. Please try again.",
+    "messageQueue": "The message queue service is unavailable right now. Please try again.",
+    "external": "An external service call failed. Please try again.",
+    "internal": "An internal system error occurred. Please try again.",
+    "network": "Network connection failed. Please check your connection and try again.",
+    "unknown": "An unexpected error occurred. Please try again later.",
+    "easterEgg": "🫖 Easter egg triggered"
+  },
+  "biz": {
+    "auth": {
+      "accountExists": "This account already exists. Please sign in or use a different account.",
+      "tenantExists": "This tenant name is already taken. Please choose a different name.",
+      "defaultTenantRoleExists": "Default tenant role already exists. Please contact an administrator.",
+      "tenantMembershipExists": "This account is already linked to the tenant. Please sign in directly.",
+      "tenantMembershipRoleExists": "This role has already been assigned. No duplicate assignment allowed.",
+      "resourceExists": "The related resource already exists. No duplicate operation allowed."
+    },
+    "users": {
+      "usernameExists": "This username is already taken. Please choose a different one.",
+      "emailExists": "This email is already registered. Please use a different one or sign in.",
+      "phoneExists": "This phone number is already registered. Please use a different one or sign in."
+    },
+    "menus": {
+      "codeExists": "This menu code already exists. Please use a different code."
+    },
+    "roles": {
+      "codeExists": "This role code already exists. Please use a different code."
+    },
+    "perms": {
+      "codeExists": "This permission code already exists. Please use a different code."
+    }
   }
 }

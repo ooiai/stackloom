@@ -1,13 +1,14 @@
 use std::sync::Arc;
 
 use chrono::Utc;
+use common::core::biz_error::{AUTH_ACCOUNT_EXISTS, AUTH_TENANT_EXISTS};
 use domain_auth::{
     AccountSigninCmd, AccountSignupBundle, AccountSignupCmd, AccountSignupResult, AuthRepository,
     AuthService, AuthToken, QuerySigninTenantsCmd, RefreshAuthCmd,
 };
 use domain_base::{
     CreateRoleCmd, CreateTenantCmd, CreateUserCmd, CreateUserTenantCmd, CreateUserTenantRoleCmd,
-    Role, Tenant, User, UserTenant, UserTenantRole,
+    Role, RoleRepository, Tenant, User, UserTenant, UserTenantRole,
 };
 use neocrates::{
     async_trait::async_trait,
@@ -22,30 +23,31 @@ use neocrates::{
 };
 
 use super::repo::SqlxAuthRepository;
+use infra_base::SqlxRoleRepository;
 
-/// Default role code assigned to the tenant created during self-service signup.
-const DEFAULT_GUEST_ROLE_CODE: &str = "WEB::GUEST";
-/// Default role name assigned to the tenant created during self-service signup.
-const DEFAULT_GUEST_ROLE_NAME: &str = "Web Guest";
+/// System role template code used to create the tenant-scoped guest role on signup.
+const SIGNUP_GUEST_ROLE_TEMPLATE_CODE: &str = "WEB::GUEST";
 
 /// Infra implementation of the auth domain service.
 ///
 /// It coordinates captcha validation, credential checks, token issuing,
 /// tenant conflict detection, and transactional signup persistence.
 #[derive(Clone)]
-pub struct AuthServiceImpl<R>
+pub struct AuthServiceImpl<R, Rr>
 where
     R: AuthRepository,
+    Rr: RoleRepository,
 {
     repository: Arc<R>,
+    role_repository: Arc<Rr>,
     redis_pool: Arc<RedisPool>,
     prefix: String,
     expires_at: u64,
     refresh_expires_at: u64,
 }
 
-impl AuthServiceImpl<SqlxAuthRepository> {
-    /// Build the default auth service backed by the SQL repository.
+impl AuthServiceImpl<SqlxAuthRepository, SqlxRoleRepository> {
+    /// Build the default auth service backed by the SQL repositories.
     pub fn new(
         pool: Arc<SqlxPool>,
         redis_pool: Arc<RedisPool>,
@@ -54,7 +56,8 @@ impl AuthServiceImpl<SqlxAuthRepository> {
         refresh_expires_at: u64,
     ) -> Self {
         Self {
-            repository: Arc::new(SqlxAuthRepository::new(pool)),
+            repository: Arc::new(SqlxAuthRepository::new(pool.clone())),
+            role_repository: Arc::new(SqlxRoleRepository::new(pool)),
             redis_pool,
             prefix,
             expires_at,
@@ -63,13 +66,15 @@ impl AuthServiceImpl<SqlxAuthRepository> {
     }
 }
 
-impl<R> AuthServiceImpl<R>
+impl<R, Rr> AuthServiceImpl<R, Rr>
 where
     R: AuthRepository,
+    Rr: RoleRepository,
 {
-    /// Build the service with a caller-provided repository, mainly for tests or composition.
+    /// Build the service with caller-provided repositories, mainly for tests or composition.
     pub fn with_repository(
         repository: Arc<R>,
+        role_repository: Arc<Rr>,
         redis_pool: Arc<RedisPool>,
         prefix: String,
         expires_at: u64,
@@ -77,6 +82,7 @@ where
     ) -> Self {
         Self {
             repository,
+            role_repository,
             redis_pool,
             prefix,
             expires_at,
@@ -198,12 +204,25 @@ where
 
         Ok(format!("{base}-{}", generate_sonyflake_id()))
     }
+
+    /// Load the system-level signup role template from the roles table.
+    async fn load_signup_role_template(&self) -> AppResult<Role> {
+        self.role_repository
+            .find_system_role_by_code(SIGNUP_GUEST_ROLE_TEMPLATE_CODE)
+            .await?
+            .ok_or_else(|| {
+                AppError::not_found_here(format!(
+                    "signup role template not found: {SIGNUP_GUEST_ROLE_TEMPLATE_CODE}"
+                ))
+            })
+    }
 }
 
 #[async_trait]
-impl<R> AuthService for AuthServiceImpl<R>
+impl<R, Rr> AuthService for AuthServiceImpl<R, Rr>
 where
     R: AuthRepository,
+    Rr: RoleRepository,
 {
     /// Validate credentials and captcha, then return selectable tenant memberships.
     async fn query_signin_tenants(
@@ -294,7 +313,8 @@ where
             .await?
             .is_some()
         {
-            return Err(AppError::conflict_here(
+            return Err(AppError::DataError(
+                AUTH_ACCOUNT_EXISTS,
                 "account already exists".to_string(),
             ));
         }
@@ -330,7 +350,10 @@ where
                 .await?
                 .is_some()
             {
-                return Err(AppError::conflict_here("tenant already exists".to_string()));
+                return Err(AppError::DataError(
+                    AUTH_TENANT_EXISTS,
+                    "tenant already exists".to_string(),
+                ));
             }
 
             slug
@@ -352,6 +375,7 @@ where
             .or_else(|| Some(normalized_account.clone()));
 
         let (username, phone) = Self::build_signup_identity(&normalized_account);
+        let role_template = self.load_signup_role_template().await?;
 
         let user = User::new(CreateUserCmd {
             id: generate_sonyflake_id() as i64,
@@ -384,12 +408,12 @@ where
             id: generate_sonyflake_id() as i64,
             tenant_id: Some(tenant.id),
             parent_id: None,
-            code: DEFAULT_GUEST_ROLE_CODE.to_string(),
-            name: DEFAULT_GUEST_ROLE_NAME.to_string(),
-            description: Some("Default guest role for self-service signup tenant".to_string()),
-            status: 1,
-            is_builtin: true,
-            sort: 0,
+            code: role_template.code,
+            name: role_template.name,
+            description: role_template.description,
+            status: role_template.status,
+            is_builtin: role_template.is_builtin,
+            sort: role_template.sort,
         })
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
 

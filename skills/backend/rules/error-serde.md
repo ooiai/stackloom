@@ -382,7 +382,58 @@ Services should not:
 
 ---
 
-## 12. Serde Boundary Rule
+## 12. Business Error Key Rule
+
+When the frontend must distinguish between multiple business conflicts under the same HTTP status, backend code should return a **stable string error key** via `AppError::DataError`, not rely on the frontend inspecting English messages.
+
+### Contract
+
+`AppError::DataError(key, debug_message)` where:
+- `key`: a stable `&'static str` constant of the form `"errors.biz.<module>.<camelCaseName>"` — frontend uses this directly as an i18n lookup path
+- `debug_message`: an English string kept for server-side logging only
+
+The response body becomes:
+```json
+{"code": 400007, "errorKey": "errors.biz.auth.accountExists", "message": "account already exists", "data": null}
+```
+
+### Key naming convention
+
+Format: `errors.biz.<module>.<camelCaseName>`
+
+This maps directly to `frontend/messages/{locale}/errors.json` → `biz.<module>.<camelCaseName>`.
+
+Examples:
+- `"errors.biz.auth.accountExists"` — auth module, duplicate account
+- `"errors.biz.users.usernameExists"` — users module, duplicate username
+- `"errors.biz.menus.codeExists"` — menus module, duplicate code
+
+### Where to define keys
+
+Application-specific error key constants live in `backend/crates/common/src/core/biz_error.rs`:
+
+```rust
+pub const AUTH_ACCOUNT_EXISTS: &str = "errors.biz.auth.accountExists";
+pub const USER_USERNAME_EXISTS: &str = "errors.biz.users.usernameExists";
+```
+
+### Use this pattern for
+
+- duplicate signup account vs duplicate tenant
+- duplicate username / email / phone
+- duplicate menu / role / perm codes
+- any conflict where the frontend must show different i18n copy
+
+### Avoid
+
+- matching on backend English `message` in the frontend
+- using **numeric** range codes (411000-415000 style) just to disambiguate conflicts — string keys achieve this more clearly and without a parallel enum
+- storing app-specific error keys inside generic transport crates like `neocrates`
+- collapsing multiple business conflicts into a single generic `400005` when the UI needs to distinguish them
+
+---
+
+## 13. Serde Boundary Rule
 
 Serde customization belongs at the HTTP boundary.
 
@@ -407,7 +458,7 @@ This keeps concerns separated:
 
 ---
 
-## 13. bigint `i64` Rule
+## 14. bigint `i64` Rule
 
 All backend bigint-style ids exposed over HTTP should follow the established serde conventions.
 
@@ -421,7 +472,7 @@ Do not assume default JSON numeric behavior is always acceptable.
 
 ---
 
-## 14. Request-Side Single `id` Rule
+## 15. Request-Side Single `id` Rule
 
 When a request DTO contains a single `id: i64`, use the established deserialize helper.
 

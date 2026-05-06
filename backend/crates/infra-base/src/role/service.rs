@@ -3,6 +3,7 @@ use std::{
     sync::Arc,
 };
 
+use common::core::biz_error::ROLE_CODE_EXISTS;
 use domain_base::{
     CreateRoleCmd, PageRoleCmd, Role, RoleRepository, RoleService, UpdateRoleCmd,
     role::{
@@ -54,7 +55,10 @@ where
             .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
         if self.repository.find_by_code(&cmd.code).await?.is_some() {
-            return Err(AppError::Conflict("role code already exists".to_string()));
+            return Err(AppError::DataError(
+                ROLE_CODE_EXISTS,
+                "role code already exists".to_string(),
+            ));
         }
 
         if let Some(parent_id) = cmd.parent_id {
@@ -146,7 +150,10 @@ where
         if let Some(code) = cmd.code.as_ref() {
             if let Some(existing) = self.repository.find_by_code(code).await? {
                 if existing.id != id {
-                    return Err(AppError::Conflict("role code already exists".to_string()));
+                    return Err(AppError::DataError(
+                        ROLE_CODE_EXISTS,
+                        "role code already exists".to_string(),
+                    ));
                 }
             }
         }

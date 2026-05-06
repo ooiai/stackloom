@@ -18,14 +18,6 @@ export const enum BizErrorCode {
   UNPROCESSABLE_ENTITY = 400100, // Business validation errors
   RATE_LIMIT = 400101, // Rate limiting errors
   EASTER_EGG = 400102, // Easter egg responses
-
-  // Data existence errors (410000-410099)
-  DATA_EXISTS = 410000, // Data already exists
-  DATA_DUPLICATE = 410001, // Duplicate entry found
-  DATA_NOT_FOUND = 410002, // Data not found/doesn't exist
-  DATA_DELETED = 410003, // Data has been deleted
-  DATA_ARCHIVED = 410004, // Data is archived
-  DATA_OUTDATED = 410005, // Data version is outdated
 }
 
 export const enum HttpStatusCode {

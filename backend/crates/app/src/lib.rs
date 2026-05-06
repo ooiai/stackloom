@@ -1,4 +1,6 @@
-use api_http::{AuthHttpState, BaseHttpState, SysHttpState, auth_router, base_router, system_router};
+use api_http::{
+    AuthHttpState, BaseHttpState, SysHttpState, auth_router, base_router, system_router,
+};
 use common::config::env_config::EnvConfig;
 
 use neocrates::{
@@ -20,7 +22,10 @@ use crate::{
     redis_init::RedisInit, sms_init::SmsInit, sqlx_init::SqlxInit, sqlx_migrations::SqlxMigrations,
 };
 use infra_auth::AuthServiceImpl;
-use infra_base::{DictServiceImpl, MenuServiceImpl, PermServiceImpl, RoleServiceImpl, TenantServiceImpl, UserServiceImpl};
+use infra_base::{
+    DictServiceImpl, MenuServiceImpl, PermServiceImpl, RoleServiceImpl, TenantServiceImpl,
+    UserServiceImpl,
+};
 use infra_system::{AuditLogServiceImpl, SysModule, SystemLogServiceImpl};
 use infra_web::OperationLogServiceImpl;
 

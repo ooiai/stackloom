@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use chrono::Utc;
+use common::core::biz_error::MENU_CODE_EXISTS;
 use domain_base::{
     Menu, MenuRepository,
     menu::{MenuChildrenQuery, MenuPageQuery, MenuTreeQuery},
@@ -27,9 +28,15 @@ impl SqlxMenuRepository {
     fn map_sqlx_error(err: SqlxError) -> AppError {
         if let SqlxError::Database(db_err) = &err {
             if db_err.code().as_deref() == Some("23505")
-                && db_err.constraint() == Some("uq_menus_system_code")
+                && matches!(
+                    db_err.constraint(),
+                    Some("uq_menus_system_code") | Some("uq_menus_tenant_code")
+                )
             {
-                return AppError::Conflict("menu code already exists".to_string());
+                return AppError::DataError(
+                    MENU_CODE_EXISTS,
+                    "menu code already exists".to_string(),
+                );
             }
         }
 

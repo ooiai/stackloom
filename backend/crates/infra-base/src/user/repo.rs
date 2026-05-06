@@ -1,13 +1,14 @@
 use std::sync::Arc;
 
 use chrono::Utc;
+use common::core::biz_error::{USER_EMAIL_EXISTS, USER_PHONE_EXISTS, USER_USERNAME_EXISTS};
 use domain_base::{User, UserRepository, user::UserPageQuery};
 use neocrates::{
     async_trait::async_trait,
     response::error::{AppError, AppResult},
     sqlxhelper::pool::SqlxPool,
 };
-use sqlx::QueryBuilder;
+use sqlx::{Error as SqlxError, QueryBuilder};
 
 use super::UserRow;
 
@@ -21,7 +22,25 @@ impl SqlxUserRepository {
         Self { pool }
     }
 
-    fn map_sqlx_error(err: sqlx::Error) -> AppError {
+    fn map_sqlx_error(err: SqlxError) -> AppError {
+        if let SqlxError::Database(db_err) = &err {
+            if db_err.code().as_deref() == Some("23505") {
+                return match db_err.constraint() {
+                    Some("uq_users_username") => AppError::DataError(
+                        USER_USERNAME_EXISTS,
+                        "username already exists".to_string(),
+                    ),
+                    Some("users_email_key") => {
+                        AppError::DataError(USER_EMAIL_EXISTS, "email already exists".to_string())
+                    }
+                    Some("users_phone_key") => {
+                        AppError::DataError(USER_PHONE_EXISTS, "phone already exists".to_string())
+                    }
+                    _ => AppError::data_here(err.to_string()),
+                };
+            }
+        }
+
         AppError::data_here(err.to_string())
     }
 }

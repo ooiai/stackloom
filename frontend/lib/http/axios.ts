@@ -29,7 +29,7 @@ import axios, {
 } from "axios"
 import { isEmpty } from "lodash-es"
 import { defaultHandleAxiosError } from "./axios-validate"
-import { BizErrorCode, HttpStatusCode } from "./status"
+import { BizErrorCode } from "./status"
 
 export interface AuthTokenResult {
   // 对应序列化后的 camelCase JSON 字段：
@@ -338,29 +338,14 @@ instance.interceptors.response.use(
 
     const resultData = decryptResData(error.response)
     if (IS_DEV) {
-      console.error("error message:", resultData)
+      console.debug("http error response:", resultData)
     }
+
+    if (error.response && resultData) {
+      error.response.data = resultData
+    }
+
     const code = resultData?.code || error.response?.status
-    // Client / Conflict biz errors — toast with the actual backend message
-    if (
-      code === BizErrorCode.BIZ_CLIENT_ERROR ||
-      code === BizErrorCode.BIZ_DATA_ERROR ||
-      code === BizErrorCode.CONFLICT ||
-      code === HttpStatusCode.CONFLICT ||
-      code === HttpStatusCode.UNPROCESSABLE_ENTITY ||
-      code === HttpStatusCode.EXPECTATION_FAILED
-    ) {
-      // Strip e.g. "Request conflict: " / "Validation error: " prefixes added by neocrates
-      const msg =
-        (resultData?.message || "")
-          .replace(/^[A-Za-z ]+:\s*/, "")
-          .replace(/^.*?:\d+\s+/, "") ||
-        resultData?.message
-      toast.error(msg)
-      // Reject with the decrypted biz-error object so callers can read .message
-      return Promise.reject(resultData)
-    }
-    // const code = error.response?.data?.code;
 
     const originalRequest = error.config
 

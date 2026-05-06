@@ -6,6 +6,7 @@ edition.workspace = true
 
 [dependencies]
 # crate workspace members
+common.workspace = true
 domain-base.workspace = true
 
 # dependencies

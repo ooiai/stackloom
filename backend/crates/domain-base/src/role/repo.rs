@@ -37,6 +37,12 @@ pub trait RoleRepository: Send + Sync {
     /// Find a Role by code.
     async fn find_by_code(&self, code: &str) -> AppResult<Option<Role>>;
 
+    /// Find a system-level role (tenant_id IS NULL) by code.
+    ///
+    /// Used by the signup flow to load a template that defines the default
+    /// tenant-scoped role copied for each newly created tenant.
+    async fn find_system_role_by_code(&self, code: &str) -> AppResult<Option<Role>>;
+
     /// Load role items for tree building.
     async fn list_for_tree(&self, query: &RoleTreeQuery) -> AppResult<Vec<Role>>;
 

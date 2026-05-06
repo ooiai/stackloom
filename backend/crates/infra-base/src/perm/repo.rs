@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use chrono::Utc;
+use common::core::biz_error::PERM_CODE_EXISTS;
 use domain_base::{
     Perm, PermRepository,
     perm::{PermChildrenQuery, PermPageQuery, PermTreeQuery},
@@ -32,7 +33,10 @@ impl SqlxPermRepository {
                     Some("uq_perms_system_code") | Some("uq_perms_tenant_code")
                 )
             {
-                return AppError::Conflict("perm code already exists".to_string());
+                return AppError::DataError(
+                    PERM_CODE_EXISTS,
+                    "perm code already exists".to_string(),
+                );
             }
         }
 

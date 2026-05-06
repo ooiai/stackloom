@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use chrono::Utc;
+use common::core::biz_error::ROLE_CODE_EXISTS;
 use domain_base::{
     Role, RoleRepository,
     role::{RoleChildrenQuery, RolePageQuery, RoleTreeQuery},
@@ -32,7 +33,10 @@ impl SqlxRoleRepository {
                     Some("uq_roles_system_code") | Some("uq_roles_tenant_code")
                 )
             {
-                return AppError::Conflict("role code already exists".to_string());
+                return AppError::DataError(
+                    ROLE_CODE_EXISTS,
+                    "role code already exists".to_string(),
+                );
             }
         }
 
@@ -141,6 +145,37 @@ impl RoleRepository for SqlxRoleRepository {
                 deleted_at
             FROM roles
             WHERE code = $1
+              AND deleted_at IS NULL
+            LIMIT 1
+            "#,
+        )
+        .bind(code)
+        .fetch_optional(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(row.map(Into::into))
+    }
+
+    async fn find_system_role_by_code(&self, code: &str) -> AppResult<Option<Role>> {
+        let row = sqlx::query_as::<_, RoleRow>(
+            r#"
+            SELECT
+                id,
+                tenant_id,
+                parent_id,
+                code,
+                name,
+                description,
+                status,
+                is_builtin,
+                sort,
+                created_at,
+                updated_at,
+                deleted_at
+            FROM roles
+            WHERE tenant_id IS NULL
+              AND code = $1
               AND deleted_at IS NULL
             LIMIT 1
             "#,

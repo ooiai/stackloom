@@ -54,7 +54,7 @@ monolith = { path = "bin/monolith" }
 #
 # dependencies
 #
-neocrates = "0.1.48"
+neocrates = "0.1.49"
 axum = "0.8"
 regex = "1"
 reqwest = { version = "0.13", default-features = false, features = [
@@ -96,3 +96,6 @@ image = { version = "0.25", default-features = false, features = [
   "tiff",
   "webp",
 ] }
+
+[patch.crates-io]
+neocrates = { path = "../../neocrates" }

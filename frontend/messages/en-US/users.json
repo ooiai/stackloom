@@ -70,7 +70,8 @@
       "placeholder": "Enter username",
       "validation": {
         "required": "Enter a username",
-        "max": "Username must be 50 characters or fewer"
+        "max": "Username must be 50 characters or fewer",
+        "duplicate": "Username already exists"
       }
     },
     "nickname": {
@@ -84,14 +85,16 @@
       "label": "Email",
       "validation": {
         "invalid": "Enter a valid email address",
-        "max": "Email must be 255 characters or fewer"
+        "max": "Email must be 255 characters or fewer",
+        "duplicate": "Email already exists"
       }
     },
     "phone": {
       "label": "Phone",
       "placeholder": "Enter phone number",
       "validation": {
-        "max": "Phone number must be 20 characters or fewer"
+        "max": "Phone number must be 20 characters or fewer",
+        "duplicate": "Phone number already exists"
       }
     },
     "password": {

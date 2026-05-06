@@ -3161,6 +3161,7 @@ version = "0.1.0"
 dependencies = [
  "bon",
  "chrono",
+ "common",
  "domain-base",
  "neocrates",
  "serde",
@@ -3748,9 +3749,7 @@ dependencies = [
 
 [[package]]
 name = "neocrates"
-version = "0.1.48"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ff4f79deb4794910bfd4c9d2077f7fe40c74ea18621ed965fbd10c34f1716b26"
+version = "0.1.49"
 dependencies = [
  "anyhow",
  "argon2",

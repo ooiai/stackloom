@@ -70,7 +70,8 @@
       "placeholder": "请输入用户名",
       "validation": {
         "required": "请输入用户名",
-        "max": "用户名长度不能超过 50 个字符"
+        "max": "用户名长度不能超过 50 个字符",
+        "duplicate": "用户名已存在"
       }
     },
     "nickname": {
@@ -84,14 +85,16 @@
       "label": "邮箱",
       "validation": {
         "invalid": "请输入有效的邮箱地址",
-        "max": "邮箱长度不能超过 255 个字符"
+        "max": "邮箱长度不能超过 255 个字符",
+        "duplicate": "邮箱已存在"
       }
     },
     "phone": {
       "label": "手机号",
       "placeholder": "请输入手机号",
       "validation": {
-        "max": "手机号长度不能超过 20 个字符"
+        "max": "手机号长度不能超过 20 个字符",
+        "duplicate": "手机号已存在"
       }
     },
     "password": {
