@@ -326,11 +326,34 @@ Response DTOs should:
 - use response-side bigint serialization helpers
 - convert from domain entities via `From` implementations
 
+### JSON field naming
+
+All response DTO fields must use **snake_case** — this is the Rust/serde default and the project-wide convention.
+
+- Do **not** add `#[serde(rename = "camelCase")]` or any per-field `#[serde(rename = "...")]` that converts to camelCase.
+- Do **not** add a struct-level `#[serde(rename_all = "camelCase")]`.
+- The frontend must consume snake_case field names from all API responses.
+
+```rust
+// CORRECT
+pub struct AuthTokenResp {
+    pub access_token: String,
+    pub expires_at: i64,
+}
+
+// WRONG — do not do this
+#[serde(rename_all = "camelCase")]
+pub struct AuthTokenResp {
+    pub access_token: String,  // would serialize as "accessToken"
+}
+```
+
 ### Response DTOs should not
 
 - expose SQL row structs
 - leak internal persistence fields unless intentionally needed
 - implement business logic
+- rename fields to camelCase via serde attributes
 
 ---
 

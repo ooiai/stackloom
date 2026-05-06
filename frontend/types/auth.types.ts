@@ -37,7 +37,7 @@ export interface AccountSignupParam {
 export interface AccountSignupResult {
   account: string
   username: string
-  tenantName: string
-  tenantSlug: string
-  signinPath: string
+  tenant_name: string
+  tenant_slug: string
+  signin_path: string
 }

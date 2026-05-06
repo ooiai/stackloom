@@ -42,7 +42,7 @@ export function AuthPageShell({
       <div className="relative hidden bg-[#f5f7f9] lg:block">
         <div className="flex h-full w-auto flex-col items-center justify-center">
           <Image
-            src="/svg/auth.svg"
+            src="/svg/signup.svg"
             alt={heroAlt}
             width={0}
             height={0}

@@ -36,6 +36,29 @@ These are strict:
 - Do not parse id strings with `Number`, `parseInt`, or `parseFloat`.
 - Keep fields such as `id`, `parent_id`, `tenant_id`, `user_id`, `dict_id` as `string` or `string | null` on the frontend.
 
+## API field naming rules
+
+All API-facing type fields must use **snake_case** to match backend JSON serialization.
+
+- Do **not** use camelCase field names in request param types or response result types.
+- When a backend response field is `access_token`, the TypeScript interface must be `access_token: string`, not `accessToken`.
+- Exception: third-party SDK types (e.g. AWS SDK) may use their own conventions — do not rename those.
+
+```typescript
+// CORRECT — matches backend snake_case output
+interface AuthTokenResult {
+  access_token: string
+  expires_at: number
+  refresh_token: string
+  refresh_expires_at: number
+}
+
+// WRONG — do not do this for internal API types
+interface AuthTokenResult {
+  accessToken: string  // mismatches backend JSON key "access_token"
+}
+```
+
 ## Form/value rules
 
 - Form value types should match frontend interaction needs, not backend internal storage.

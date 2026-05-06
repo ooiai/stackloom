@@ -8,13 +8,6 @@ export type AwsSts = Record<string, never>
 
 export type SmsSignin = Record<string, never>
 
-// pub access_key_id: String,
-// pub access_key_secret: String,
-// pub security_token: String,
-// pub expiration: String,
-// pub endpoint: String,
-// pub region: String,
-// pub bucket: String,
 export interface AwsStsResp {
   access_key_id?: string
   accessKeyId?: string

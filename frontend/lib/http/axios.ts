@@ -32,14 +32,10 @@ import { defaultHandleAxiosError } from "./axios-validate"
 import { BizErrorCode } from "./status"
 
 export interface AuthTokenResult {
-  // 对应序列化后的 camelCase JSON 字段：
-  accessToken: string
-  // seconds since epoch (number)
-  expiresAt: number
-  // refresh token
-  refreshToken: string
-  // seconds since epoch (number)
-  refreshExpiresAt: number
+  access_token: string
+  expires_at: number
+  refresh_token: string
+  refresh_expires_at: number
 }
 
 const secretKey = process.env.NEXT_PUBLIC_SIGIN || ""
@@ -67,12 +63,12 @@ export async function refreshToken(): Promise<string | null> {
   if (!refreshTokenPromise) {
     const storeToken = getStoreToken()
     // console.log("refreshToken storeToken:", storeToken);
-    const accessToken = storeToken?.accessToken
-    const refreshToken = storeToken?.refreshToken
-    if (!refreshToken) return null
+    const access_token = storeToken?.access_token
+    const refresh_token = storeToken?.refresh_token
+    if (!refresh_token) return null
     refreshTokenPromise = post(
       API_ENUM.REFRESH_TOKEN,
-      { refreshToken, accessToken },
+      { refresh_token, access_token },
       {
         headers: {
           Authorization: `Basic ${CryptUtil.encodeBase64Double(HTTP_REQUEST_ENUM.BASIC_REFRESH_TOKEN)}`,
@@ -80,15 +76,15 @@ export async function refreshToken(): Promise<string | null> {
       }
     )
       .then((res) => {
-        const { accessToken, refreshToken, expiresAt, refreshExpiresAt } = res
-        if (accessToken && refreshToken) {
+        const { access_token, refresh_token, refresh_expires_at } = res
+        if (access_token && refresh_token) {
           setStorageItem(
             STORAGE_ENUM.TOKEN,
-            JSON.stringify({ accessToken, refreshToken }),
-            refreshExpiresAt
+            JSON.stringify({ access_token, refresh_token }),
+            refresh_expires_at
           )
         }
-        return accessToken
+        return access_token
       })
       .catch(() => null)
       .finally(() => {
@@ -289,11 +285,11 @@ instance.interceptors.request.use(
     const storeToken = getStoreToken()
     if (storeToken && !config.headers?.Authorization) {
       // config.headers = config.headers || {};
-      // config.headers.Authorization = `Bearer ${storeToken?.accessToken}`;
-      addAuthHeaders(config, storeToken.accessToken)
+      // config.headers.Authorization = `Bearer ${storeToken?.access_token}`;
+      addAuthHeaders(config, storeToken.access_token)
     }
     // Add the extension headers
-    addExtensionHeaders(config, storeToken?.accessToken, requestToken)
+    addExtensionHeaders(config, storeToken?.access_token, requestToken)
     const skipEncrypt =
       config.headers?.["X-Skip-Encrypt"] === "1" ||
       config.headers?.["x-skip-encrypt"] === "1"
@@ -303,7 +299,7 @@ instance.interceptors.request.use(
     }
     // Encrypt request data
     if (!skipEncrypt) {
-      encryptReqData(config, storeToken?.accessToken || requestToken)
+      encryptReqData(config, storeToken?.access_token || requestToken)
     }
     return config
   },
@@ -559,7 +555,7 @@ export const sse = (
 
   const connect = async () => {
     const storeToken = getStoreToken()
-    const accessToken = storeToken?.accessToken
+    const accessToken = storeToken?.access_token
     const urlObj = new URL(url, window.location.origin)
     if (accessToken) urlObj.searchParams.set("accessToken", accessToken)
 
@@ -640,7 +636,7 @@ export const createSSE = (
     notifyStatus("connecting")
 
     const storeToken = getStoreToken()
-    const accessToken = storeToken?.accessToken
+    const accessToken = storeToken?.access_token
     const urlObj = new URL(url, window.location.origin)
     if (accessToken) urlObj.searchParams.set("accessToken", accessToken)
 

@@ -9,11 +9,8 @@ use neocrates::serde::Serialize;
 pub struct AccountSignupResp {
     pub account: String,
     pub username: String,
-    #[serde(rename = "tenantName")]
     pub tenant_name: String,
-    #[serde(rename = "tenantSlug")]
     pub tenant_slug: String,
-    #[serde(rename = "signinPath")]
     pub signin_path: String,
 }
 

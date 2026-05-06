@@ -38,19 +38,19 @@ export function SignupSuccessState({ result }: SignupSuccessStateProps) {
           <span className="text-muted-foreground">
             {t("auth.signup.success.tenantLabel")}
           </span>
-          <span className="font-medium">{result.tenantName}</span>
+          <span className="font-medium">{result.tenant_name}</span>
         </div>
         <div className="flex items-center justify-between gap-4 text-sm">
           <span className="text-muted-foreground">
             {t("auth.signup.success.slugLabel")}
           </span>
-          <span className="font-mono text-xs">{result.tenantSlug}</span>
+          <span className="font-mono text-xs">{result.tenant_slug}</span>
         </div>
       </div>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         <Link
-          href={result.signinPath}
+          href={result.signin_path}
           className={buttonVariants({ variant: "default", size: "lg" })}
         >
           {t("auth.signup.success.goSignin")}

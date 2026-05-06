@@ -151,7 +151,7 @@ export function useSigninController() {
       setStorageItem(
         STORAGE_ENUM.TOKEN,
         JSON.stringify(data),
-        data.refreshExpiresAt
+        data.refresh_expires_at
       )
       toast.success(t("auth.signin.toast.success"))
       router.replace(resolveSigninRoute(tenant))
