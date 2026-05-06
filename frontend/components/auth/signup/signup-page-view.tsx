@@ -43,6 +43,7 @@ export function SignupPageView({
   return (
     <AuthPageShell
       logoAlt={t("auth.signup.logoAlt")}
+      hero="/svg/signup.svg"
       heroAlt={t("auth.signup.heroAlt")}
       heroTitle={t("auth.signup.heroTitle")}
       heroDescription={t("auth.signup.heroDescription")}

@@ -4,15 +4,20 @@ import Image from "next/image"
 import Link from "next/link"
 
 interface AuthPageShellProps {
+  logo?: string
   logoAlt: string
+  hero?: string
   heroAlt: string
   heroTitle: string
   heroDescription: string
+
   children: React.ReactNode
 }
 
 export function AuthPageShell({
+  logo = "/svg/logo.svg",
   logoAlt,
+  hero = "/svg/auth.svg",
   heroAlt,
   heroTitle,
   heroDescription,
@@ -24,7 +29,7 @@ export function AuthPageShell({
         <div className="flex justify-center gap-2 md:justify-start">
           <Link href="/" className="flex items-center gap-2 font-medium">
             <Image
-              src="/svg/logo.svg"
+              src={logo}
               alt={logoAlt}
               width={0}
               height={0}
@@ -42,7 +47,7 @@ export function AuthPageShell({
       <div className="relative hidden bg-[#f5f7f9] lg:block">
         <div className="flex h-full w-auto flex-col items-center justify-center">
           <Image
-            src="/svg/signup.svg"
+            src={hero}
             alt={heroAlt}
             width={0}
             height={0}

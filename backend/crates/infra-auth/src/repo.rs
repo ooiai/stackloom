@@ -154,7 +154,7 @@ impl AuthRepository for SqlxAuthRepository {
                 CASE
                     WHEN ut.status = 1 AND t.status = 1 THEN 1
                     ELSE 0
-                END AS status,
+                END::SMALLINT AS status,
                 u.id AS user_id,
                 u.username,
                 u.nickname,
