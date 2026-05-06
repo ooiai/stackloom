@@ -132,7 +132,7 @@ impl SystemLogRepository for SqlxSystemLogRepository {
                 $12,
                 $13,
                 $14,
-                CAST($15 AS inet),
+                $15,
                 $16,
                 $17,
                 $18
