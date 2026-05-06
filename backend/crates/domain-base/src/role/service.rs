@@ -2,7 +2,9 @@ use neocrates::{async_trait::async_trait, response::error::AppResult};
 
 use crate::{
     CreateRoleCmd, PageRoleCmd, Role, UpdateRoleCmd,
-    role::{ChildrenRoleCmd, RemoveCascadeRoleCmd, TreeRoleCmd},
+    role::{
+        AssignRoleMenusCmd, AssignRolePermsCmd, ChildrenRoleCmd, RemoveCascadeRoleCmd, TreeRoleCmd,
+    },
 };
 
 #[async_trait]
@@ -71,4 +73,16 @@ pub trait RoleService: Send + Sync {
     /// # Returns
     /// * `AppResult<Vec<Role>>` - System and tenant-scoped active roles ordered by sort.
     async fn list_for_tenant(&self, tenant_id: i64) -> AppResult<Vec<Role>>;
+
+    /// Get assigned menu IDs for a role.
+    async fn get_role_menus(&self, role_id: i64) -> AppResult<Vec<i64>>;
+
+    /// Assign menus to a role.
+    async fn assign_menus(&self, cmd: AssignRoleMenusCmd) -> AppResult<()>;
+
+    /// Get assigned perm IDs for a role.
+    async fn get_role_perms(&self, role_id: i64) -> AppResult<Vec<i64>>;
+
+    /// Assign perms to a role.
+    async fn assign_perms(&self, cmd: AssignRolePermsCmd) -> AppResult<()>;
 }

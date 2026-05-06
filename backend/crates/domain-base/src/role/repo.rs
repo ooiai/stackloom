@@ -92,4 +92,16 @@ pub trait RoleRepository: Send + Sync {
     /// # Returns
     /// * `AppResult<Vec<Role>>` - System and tenant-scoped active roles, ordered by sort
     async fn list_for_tenant(&self, tenant_id: i64) -> AppResult<Vec<Role>>;
+
+    /// Get menu IDs assigned to a role.
+    async fn get_role_menus(&self, role_id: i64) -> AppResult<Vec<i64>>;
+
+    /// Replace all menus for a role.
+    async fn replace_role_menus(&self, role_id: i64, menu_ids: &[i64]) -> AppResult<()>;
+
+    /// Get perm IDs assigned to a role.
+    async fn get_role_perms(&self, role_id: i64) -> AppResult<Vec<i64>>;
+
+    /// Replace all perms for a role.
+    async fn replace_role_perms(&self, role_id: i64, perm_ids: &[i64]) -> AppResult<()>;
 }

@@ -209,6 +209,28 @@ pub struct RemoveCascadeRoleCmd {
     pub id: i64,
 }
 
+pub struct AssignRoleMenusCmd {
+    pub role_id: i64,
+    pub menu_ids: Vec<i64>,
+}
+
+impl AssignRoleMenusCmd {
+    pub fn validate(&self) -> AppResult<()> {
+        Ok(())
+    }
+}
+
+pub struct AssignRolePermsCmd {
+    pub role_id: i64,
+    pub perm_ids: Vec<i64>,
+}
+
+impl AssignRolePermsCmd {
+    pub fn validate(&self) -> AppResult<()> {
+        Ok(())
+    }
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct RolePageQuery {
     pub keyword: Option<String>,

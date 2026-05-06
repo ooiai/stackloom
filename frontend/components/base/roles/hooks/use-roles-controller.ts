@@ -25,6 +25,9 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 
+import { useRoleAssignMenus } from "./use-role-assign-menus"
+import { useRoleAssignPerms } from "./use-role-assign-perms"
+
 interface RoleSheetState {
   mode: RoleMutateMode
   open: boolean
@@ -48,6 +51,11 @@ export function useRolesController() {
   const dialog = useAlertDialog()
   const queryClient = useQueryClient()
 
+  const [sheet, setSheet] = useState<RoleSheetState>(DEFAULT_SHEET_STATE)
+
+  const { assignMenusDialog } = useRoleAssignMenus()
+  const { assignPermsDialog } = useRoleAssignPerms()
+
   const [rawSelectedNodeId, setRawSelectedNodeId] = useState<string | null>(
     searchParams.get("node")
   )
@@ -56,7 +64,6 @@ export function useRolesController() {
   const [manualExpandedIds, setManualExpandedIds] = useState<Set<string>>(
     new Set()
   )
-  const [sheet, setSheet] = useState<RoleSheetState>(DEFAULT_SHEET_STATE)
 
   const treeQuery = useQuery({
     queryKey: ["base", "roles", "tree", treeSearch.trim(), showNonBuiltin],
@@ -68,7 +75,10 @@ export function useRolesController() {
     placeholderData: keepPreviousData,
   })
 
-  const tree = useMemo(() => treeQuery.data?.items ?? [], [treeQuery.data?.items])
+  const tree = useMemo(
+    () => treeQuery.data?.items ?? [],
+    [treeQuery.data?.items]
+  )
   const selectedNode = useMemo(
     () => (rawSelectedNodeId ? findRoleNode(tree, rawSelectedNodeId) : null),
     [rawSelectedNodeId, tree]
@@ -267,6 +277,8 @@ export function useRolesController() {
   )
 
   return {
+    assignMenusDialog,
+    assignPermsDialog,
     view: {
       treeSearch,
       tree,
@@ -292,6 +304,8 @@ export function useRolesController() {
       onOpenAddChild: openAddChild,
       onOpenEdit: openEdit,
       onDelete: removeRole,
+      onOpenAssignMenus: assignMenusDialog.onOpen,
+      onOpenAssignPerms: assignPermsDialog.onOpen,
     },
     sheet: {
       ...sheet,

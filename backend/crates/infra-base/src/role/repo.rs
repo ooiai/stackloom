@@ -568,4 +568,96 @@ impl RoleRepository for SqlxRoleRepository {
 
         Ok(rows.into_iter().map(Into::into).collect())
     }
+
+    async fn get_role_menus(&self, role_id: i64) -> AppResult<Vec<i64>> {
+        let rows =
+            sqlx::query_scalar::<_, i64>("SELECT menu_id FROM role_menus WHERE role_id = $1")
+                .bind(role_id)
+                .fetch_all(self.pool.pool())
+                .await
+                .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows)
+    }
+
+    async fn replace_role_menus(&self, role_id: i64, menu_ids: &[i64]) -> AppResult<()> {
+        let mut tx = self
+            .pool
+            .pool()
+            .begin()
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        sqlx::query("DELETE FROM role_menus WHERE role_id = $1")
+            .bind(role_id)
+            .execute(&mut *tx)
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        let now = chrono::Utc::now();
+        for &menu_id in menu_ids {
+            sqlx::query(
+                r#"
+                INSERT INTO role_menus (id, role_id, menu_id, created_at)
+                VALUES ($1, $2, $3, $4)
+                "#,
+            )
+            .bind(neocrates::helper::core::snowflake::generate_sonyflake_id() as i64)
+            .bind(role_id)
+            .bind(menu_id)
+            .bind(now)
+            .execute(&mut *tx)
+            .await
+            .map_err(Self::map_sqlx_error)?;
+        }
+
+        tx.commit().await.map_err(Self::map_sqlx_error)?;
+        Ok(())
+    }
+
+    async fn get_role_perms(&self, role_id: i64) -> AppResult<Vec<i64>> {
+        let rows =
+            sqlx::query_scalar::<_, i64>("SELECT perm_id FROM role_perms WHERE role_id = $1")
+                .bind(role_id)
+                .fetch_all(self.pool.pool())
+                .await
+                .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows)
+    }
+
+    async fn replace_role_perms(&self, role_id: i64, perm_ids: &[i64]) -> AppResult<()> {
+        let mut tx = self
+            .pool
+            .pool()
+            .begin()
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        sqlx::query("DELETE FROM role_perms WHERE role_id = $1")
+            .bind(role_id)
+            .execute(&mut *tx)
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        let now = chrono::Utc::now();
+        for &perm_id in perm_ids {
+            sqlx::query(
+                r#"
+                INSERT INTO role_perms (id, role_id, perm_id, created_at)
+                VALUES ($1, $2, $3, $4)
+                "#,
+            )
+            .bind(neocrates::helper::core::snowflake::generate_sonyflake_id() as i64)
+            .bind(role_id)
+            .bind(perm_id)
+            .bind(now)
+            .execute(&mut *tx)
+            .await
+            .map_err(Self::map_sqlx_error)?;
+        }
+
+        tx.commit().await.map_err(Self::map_sqlx_error)?;
+        Ok(())
+    }
 }

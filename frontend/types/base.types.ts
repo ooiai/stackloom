@@ -195,6 +195,24 @@ export interface AssignUserRolesParam {
   role_ids: string[]
 }
 
+export interface GetRoleMenusParam {
+  role_id: string
+}
+
+export interface AssignRoleMenusParam {
+  role_id: string
+  menu_ids: string[]
+}
+
+export interface GetRolePermsParam {
+  role_id: string
+}
+
+export interface AssignRolePermsParam {
+  role_id: string
+  perm_ids: string[]
+}
+
 export interface UserRolesResp {
   items: UserRoleItemData[]
 }

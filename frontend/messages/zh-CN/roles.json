@@ -41,6 +41,24 @@
       "description": "控制启用状态、排序值与内置标记"
     }
   },
+  "assignMenus": {
+    "action": "分配菜单",
+    "title": "分配菜单",
+    "description": "为角色“{roleName}”分配可访问的菜单页面",
+    "empty": "系统暂无菜单可用",
+    "toast": {
+      "success": "菜单已分配成功"
+    }
+  },
+  "assignPerms": {
+    "action": "分配权限",
+    "title": "分配权限",
+    "description": "为角色“{roleName}”分配后端接口和资源权限",
+    "empty": "系统暂无权限可用",
+    "toast": {
+      "success": "权限已分配成功"
+    }
+  },
   "form": {
     "parent": {
       "label": "所属节点"

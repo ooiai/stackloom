@@ -1,6 +1,8 @@
 use domain_base::{
     CreateRoleCmd, PageRoleCmd, UpdateRoleCmd,
-    role::{ChildrenRoleCmd, RemoveCascadeRoleCmd, TreeRoleCmd},
+    role::{
+        AssignRoleMenusCmd, AssignRolePermsCmd, ChildrenRoleCmd, RemoveCascadeRoleCmd, TreeRoleCmd,
+    },
 };
 use neocrates::{
     helper::core::{serde_helpers, snowflake::generate_sonyflake_id},
@@ -147,5 +149,51 @@ pub struct RemoveCascadeRoleReq {
 impl From<RemoveCascadeRoleReq> for RemoveCascadeRoleCmd {
     fn from(req: RemoveCascadeRoleReq) -> Self {
         Self { id: req.id }
+    }
+}
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct GetRoleMenusReq {
+    #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
+    pub role_id: i64,
+}
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct AssignRoleMenusReq {
+    #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
+    pub role_id: i64,
+    #[serde(deserialize_with = "serde_helpers::deserialize_vec_i64")]
+    pub menu_ids: Vec<i64>,
+}
+
+impl From<AssignRoleMenusReq> for AssignRoleMenusCmd {
+    fn from(req: AssignRoleMenusReq) -> Self {
+        Self {
+            role_id: req.role_id,
+            menu_ids: req.menu_ids,
+        }
+    }
+}
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct GetRolePermsReq {
+    #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
+    pub role_id: i64,
+}
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct AssignRolePermsReq {
+    #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
+    pub role_id: i64,
+    #[serde(deserialize_with = "serde_helpers::deserialize_vec_i64")]
+    pub perm_ids: Vec<i64>,
+}
+
+impl From<AssignRolePermsReq> for AssignRolePermsCmd {
+    fn from(req: AssignRolePermsReq) -> Self {
+        Self {
+            role_id: req.role_id,
+            perm_ids: req.perm_ids,
+        }
     }
 }

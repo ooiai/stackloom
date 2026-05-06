@@ -27,6 +27,8 @@ import {
   SearchIcon,
   ShieldIcon,
   Trash2Icon,
+  LayoutGridIcon,
+  KeyIcon,
 } from "lucide-react"
 
 interface RolesTreeSidebarProps {
@@ -42,6 +44,8 @@ interface RolesTreeSidebarProps {
   onOpenAddChild: (parentId: string) => void
   onOpenEdit: (role: RoleData) => void
   onDelete: (role: RoleData) => void
+  onOpenAssignMenus: (role: RoleData) => void
+  onOpenAssignPerms: (role: RoleData) => void
 }
 
 function RoleTreeNodeItem({
@@ -53,6 +57,8 @@ function RoleTreeNodeItem({
   onOpenAddChild,
   onOpenEdit,
   onDelete,
+  onOpenAssignMenus,
+  onOpenAssignPerms,
   depth = 0,
 }: {
   node: RoleTreeNode
@@ -63,7 +69,9 @@ function RoleTreeNodeItem({
   onOpenAddChild: (parentId: string) => void
   onOpenEdit: (role: RoleData) => void
   onDelete: (role: RoleData) => void
-  depth?: number
+  onOpenAssignMenus: (role: RoleData) => void
+  onOpenAssignPerms: (role: RoleData) => void
+  depth: number
 }) {
   const { t } = useI18n()
   const isSelected = selectedNodeId === node.id
@@ -160,6 +168,15 @@ function RoleTreeNodeItem({
                 {t("common.actions.edit")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => onOpenAssignMenus(node)}>
+                <LayoutGridIcon />
+                {t("roles.assignMenus.action")}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onOpenAssignPerms(node)}>
+                <KeyIcon />
+                {t("roles.assignPerms.action")}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"
                 onClick={() => onDelete(node)}
@@ -185,6 +202,8 @@ function RoleTreeNodeItem({
               onOpenAddChild={onOpenAddChild}
               onOpenEdit={onOpenEdit}
               onDelete={onDelete}
+              onOpenAssignMenus={onOpenAssignMenus}
+              onOpenAssignPerms={onOpenAssignPerms}
               depth={depth + 1}
             />
           ))}
@@ -207,6 +226,8 @@ export function RolesTreeSidebar({
   onOpenAddChild,
   onOpenEdit,
   onDelete,
+  onOpenAssignMenus,
+  onOpenAssignPerms,
 }: RolesTreeSidebarProps) {
   const { t } = useI18n()
 
@@ -278,6 +299,7 @@ export function RolesTreeSidebar({
               <RoleTreeNodeItem
                 key={node.id}
                 node={node}
+                depth={0}
                 selectedNodeId={selectedNodeId}
                 expandedIds={expandedIds}
                 onToggleExpand={onToggleExpand}
@@ -285,6 +307,8 @@ export function RolesTreeSidebar({
                 onOpenAddChild={onOpenAddChild}
                 onOpenEdit={onOpenEdit}
                 onDelete={onDelete}
+                onOpenAssignMenus={onOpenAssignMenus}
+                onOpenAssignPerms={onOpenAssignPerms}
               />
             ))
           )}

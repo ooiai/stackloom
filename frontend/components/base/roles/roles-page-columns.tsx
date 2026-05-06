@@ -23,6 +23,8 @@ import {
   PlusIcon,
   ShieldIcon,
   Trash2Icon,
+  LayoutGridIcon,
+  KeyIcon,
 } from "lucide-react"
 
 export function createRoleColumns({
@@ -32,6 +34,8 @@ export function createRoleColumns({
   onOpenAddChild,
   onOpenEdit,
   onDelete,
+  onOpenAssignMenus,
+  onOpenAssignPerms,
 }: {
   t: TranslateFn
   tree: RoleTreeNode[]
@@ -39,6 +43,8 @@ export function createRoleColumns({
   onOpenAddChild: (parentId: string) => void
   onOpenEdit: (role: RoleData) => void
   onDelete: (role: RoleData) => void
+  onOpenAssignMenus: (role: RoleData) => void
+  onOpenAssignPerms: (role: RoleData) => void
 }): ColumnDef<RoleData>[] {
   return [
     {
@@ -213,6 +219,15 @@ export function createRoleColumns({
             <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
               <Edit3Icon />
               {t("common.actions.edit")}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => onOpenAssignMenus(row.original)}>
+              <LayoutGridIcon />
+              {t("roles.assignMenus.action")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onOpenAssignPerms(row.original)}>
+              <KeyIcon />
+              {t("roles.assignPerms.action")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

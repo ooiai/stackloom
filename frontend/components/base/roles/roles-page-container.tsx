@@ -31,6 +31,8 @@ interface RolesPageViewProps {
   onOpenAddChild: (parentId: string) => void
   onOpenEdit: (role: RoleData) => void
   onDelete: (role: RoleData) => void
+  onOpenAssignMenus: (role: RoleData) => void
+  onOpenAssignPerms: (role: RoleData) => void
 }
 
 export function RolesPageView({
@@ -53,6 +55,8 @@ export function RolesPageView({
   onOpenAddChild,
   onOpenEdit,
   onDelete,
+  onOpenAssignMenus,
+  onOpenAssignPerms,
 }: RolesPageViewProps) {
   const { t } = useI18n()
   const columns = useMemo(
@@ -64,8 +68,19 @@ export function RolesPageView({
         onOpenAddChild,
         onOpenEdit,
         onDelete,
+        onOpenAssignMenus,
+        onOpenAssignPerms,
       }),
-    [onDelete, onOpenAddChild, onOpenEdit, onSelectNode, t, tree]
+    [
+      t,
+      tree,
+      onSelectNode,
+      onOpenAddChild,
+      onOpenEdit,
+      onDelete,
+      onOpenAssignMenus,
+      onOpenAssignPerms,
+    ]
   )
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -100,6 +115,8 @@ export function RolesPageView({
           onOpenAddChild={onOpenAddChild}
           onOpenEdit={onOpenEdit}
           onDelete={onDelete}
+          onOpenAssignMenus={onOpenAssignMenus}
+          onOpenAssignPerms={onOpenAssignPerms}
         />
 
         <RolesDetailPanel

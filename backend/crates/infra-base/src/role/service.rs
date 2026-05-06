@@ -7,8 +7,8 @@ use common::core::biz_error::ROLE_CODE_EXISTS;
 use domain_base::{
     CreateRoleCmd, PageRoleCmd, Role, RoleRepository, RoleService, UpdateRoleCmd,
     role::{
-        ChildrenRoleCmd, RemoveCascadeRoleCmd, RoleChildrenQuery, RolePageQuery, RoleTreeQuery,
-        TreeRoleCmd,
+        AssignRoleMenusCmd, AssignRolePermsCmd, ChildrenRoleCmd, RemoveCascadeRoleCmd,
+        RoleChildrenQuery, RolePageQuery, RoleTreeQuery, TreeRoleCmd,
     },
 };
 use neocrates::{
@@ -234,5 +234,27 @@ where
 
     async fn list_for_tenant(&self, tenant_id: i64) -> AppResult<Vec<Role>> {
         self.repository.list_for_tenant(tenant_id).await
+    }
+
+    async fn get_role_menus(&self, role_id: i64) -> AppResult<Vec<i64>> {
+        self.repository.get_role_menus(role_id).await
+    }
+
+    async fn assign_menus(&self, cmd: AssignRoleMenusCmd) -> AppResult<()> {
+        cmd.validate()?;
+        self.repository
+            .replace_role_menus(cmd.role_id, &cmd.menu_ids)
+            .await
+    }
+
+    async fn get_role_perms(&self, role_id: i64) -> AppResult<Vec<i64>> {
+        self.repository.get_role_perms(role_id).await
+    }
+
+    async fn assign_perms(&self, cmd: AssignRolePermsCmd) -> AppResult<()> {
+        cmd.validate()?;
+        self.repository
+            .replace_role_perms(cmd.role_id, &cmd.perm_ids)
+            .await
     }
 }

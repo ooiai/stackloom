@@ -1,6 +1,10 @@
 import { post } from "@/lib/http/axios"
 import { BASE_CURRENT_MENU_ITEMS } from "@/lib/base-navigation"
 import type {
+  GetRoleMenusParam,
+  AssignRoleMenusParam,
+  GetRolePermsParam,
+  AssignRolePermsParam,
   AssignUserRolesParam,
   ChildrenPermParam,
   ChildrenRoleParam,
@@ -217,6 +221,18 @@ export const roleApi = {
   },
   removeCascade: async (id: string): Promise<void> => {
     return post(`${BASE_ROLE_API_PREFIX}/remove_cascade`, { id })
+  },
+  getMenus: async (params: GetRoleMenusParam): Promise<{ items: string[] }> => {
+    return post(`${BASE_ROLE_API_PREFIX}/get_menus`, params)
+  },
+  assignMenus: async (params: AssignRoleMenusParam): Promise<void> => {
+    return post(`${BASE_ROLE_API_PREFIX}/assign_menus`, params)
+  },
+  getPerms: async (params: GetRolePermsParam): Promise<{ items: string[] }> => {
+    return post(`${BASE_ROLE_API_PREFIX}/get_perms`, params)
+  },
+  assignPerms: async (params: AssignRolePermsParam): Promise<void> => {
+    return post(`${BASE_ROLE_API_PREFIX}/assign_perms`, params)
   },
 }
 

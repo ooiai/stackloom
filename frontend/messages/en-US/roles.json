@@ -41,6 +41,24 @@
       "description": "Control status, sort order, and built-in marker"
     }
   },
+  "assignMenus": {
+    "action": "Assign menus",
+    "title": "Assign menus",
+    "description": "Assign accessible menu pages to role \"{roleName}\"",
+    "empty": "No menus available",
+    "toast": {
+      "success": "Menus assigned successfully"
+    }
+  },
+  "assignPerms": {
+    "action": "Assign permissions",
+    "title": "Assign permissions",
+    "description": "Assign backend API and resource permissions to role \"{roleName}\"",
+    "empty": "No permissions available",
+    "toast": {
+      "success": "Permissions assigned successfully"
+    }
+  },
   "form": {
     "parent": {
       "label": "Parent node"
