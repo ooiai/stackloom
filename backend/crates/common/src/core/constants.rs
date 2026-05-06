@@ -22,3 +22,7 @@ pub const DICT_ALL_CACHE_KEY: &str = "base:dict:all";
 pub const DICT_ALL_NO_ROOT_CACHE_KEY: &str = "base:dict:all:no_root";
 /// Cache TTL for dict: 10 minutes
 pub const DICT_CACHE_TTL: u64 = 600;
+
+/// System role template code used to create the tenant-scoped guest role on signup.
+pub const SIGNUP_GUEST_CODE: &str = "WEB::GUEST";
+pub const SIGNUP_ADMIN_CODE: &str = "WEB::ADMIN";

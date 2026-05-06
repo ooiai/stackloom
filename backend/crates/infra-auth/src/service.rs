@@ -1,14 +1,17 @@
 use std::sync::Arc;
 
 use chrono::Utc;
-use common::core::biz_error::{AUTH_ACCOUNT_EXISTS, AUTH_TENANT_EXISTS};
+use common::core::{
+    biz_error::{AUTH_ACCOUNT_EXISTS, AUTH_TENANT_EXISTS},
+    constants::SIGNUP_ADMIN_CODE,
+};
 use domain_auth::{
     AccountSigninCmd, AccountSignupBundle, AccountSignupCmd, AccountSignupResult, AuthRepository,
     AuthService, AuthToken, QuerySigninTenantsCmd, RefreshAuthCmd,
 };
 use domain_base::{
-    CreateRoleCmd, CreateTenantCmd, CreateUserCmd, CreateUserTenantCmd, CreateUserTenantRoleCmd,
-    Role, RoleRepository, Tenant, User, UserTenant, UserTenantRole,
+    CreateTenantCmd, CreateUserCmd, CreateUserTenantCmd, CreateUserTenantRoleCmd, Role,
+    RoleRepository, Tenant, User, UserTenant, UserTenantRole,
 };
 use neocrates::{
     async_trait::async_trait,
@@ -24,9 +27,6 @@ use neocrates::{
 
 use super::repo::SqlxAuthRepository;
 use infra_base::SqlxRoleRepository;
-
-/// System role template code used to create the tenant-scoped guest role on signup.
-const SIGNUP_GUEST_ROLE_TEMPLATE_CODE: &str = "WEB::GUEST";
 
 /// Infra implementation of the auth domain service.
 ///
@@ -208,11 +208,11 @@ where
     /// Load the system-level signup role template from the roles table.
     async fn load_signup_role_template(&self) -> AppResult<Role> {
         self.role_repository
-            .find_system_role_by_code(SIGNUP_GUEST_ROLE_TEMPLATE_CODE)
+            .find_system_role_by_code(SIGNUP_ADMIN_CODE)
             .await?
             .ok_or_else(|| {
                 AppError::not_found_here(format!(
-                    "signup role template not found: {SIGNUP_GUEST_ROLE_TEMPLATE_CODE}"
+                    "signup role template not found: {SIGNUP_ADMIN_CODE}"
                 ))
             })
     }
@@ -386,7 +386,8 @@ where
             nickname: nickname.clone(),
             avatar_url: None,
             gender: 0,
-            status: 1,
+            // Initial signup users are disabled by default and can be enabled by tenant admins after email/phone verification.
+            status: 0,
             bio: None,
         })
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
@@ -404,18 +405,18 @@ where
         })
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
-        let role = Role::new(CreateRoleCmd {
-            id: generate_sonyflake_id() as i64,
-            tenant_id: Some(tenant.id),
-            parent_id: None,
-            code: role_template.code,
-            name: role_template.name,
-            description: role_template.description,
-            status: role_template.status,
-            is_builtin: role_template.is_builtin,
-            sort: role_template.sort,
-        })
-        .map_err(|err| AppError::ValidationError(err.to_string()))?;
+        // let role = Role::new(CreateRoleCmd {
+        //     id: generate_sonyflake_id() as i64,
+        //     tenant_id: Some(tenant.id),
+        //     parent_id: None,
+        //     code: role_template.code,
+        //     name: role_template.name,
+        //     description: role_template.description,
+        //     status: role_template.status,
+        //     is_builtin: false,
+        //     sort: role_template.sort,
+        // })
+        // .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
         let user_tenant = UserTenant::new(CreateUserTenantCmd {
             id: generate_sonyflake_id() as i64,
@@ -426,7 +427,7 @@ where
             job_title: None,
             status: 1,
             is_default: true,
-            is_tenant_admin: false,
+            is_tenant_admin: true,
             joined_at: Utc::now(),
             invited_by: None,
         })
@@ -435,7 +436,7 @@ where
         let user_tenant_role = UserTenantRole::new(CreateUserTenantRoleCmd {
             id: generate_sonyflake_id() as i64,
             user_tenant_id: user_tenant.id,
-            role_id: role.id,
+            role_id: role_template.id,
         })
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
@@ -443,7 +444,7 @@ where
             .create_account_signup_bundle(&AccountSignupBundle {
                 user,
                 tenant,
-                role,
+                role: role_template,
                 user_tenant,
                 user_tenant_role,
             })
