@@ -1,18 +1,21 @@
 use super::{
     req::{
-        ChildrenRoleReq, CreateRoleReq, DeleteRoleReq, GetRoleReq, PageRoleReq,
-        RemoveCascadeRoleReq, TreeRoleReq, UpdateRoleReq,
+        AssignRoleMenusReq, AssignRolePermsReq, ChildrenRoleReq, CreateRoleReq, DeleteRoleReq,
+        GetRoleMenusReq, GetRolePermsReq, GetRoleReq, PageRoleReq, RemoveCascadeRoleReq,
+        TreeRoleReq, UpdateRoleReq,
     },
     resp::{PaginateRoleResp, RoleChildrenResp, RoleResp, RoleTreeNodeResp, RoleTreeResp},
 };
 use crate::base::{BaseHttpState, logging};
 use domain_base::{
     CreateRoleCmd, PageRoleCmd, UpdateRoleCmd,
-    role::{ChildrenRoleCmd, RemoveCascadeRoleCmd, TreeRoleCmd},
+    role::{
+        AssignRoleMenusCmd, AssignRolePermsCmd, ChildrenRoleCmd, RemoveCascadeRoleCmd, TreeRoleCmd,
+    },
 };
 use neocrates::{
     axum::{Extension, Json, extract::State},
-    helper::core::axum_extractor::DetailedJson,
+    helper::core::{axum_extractor::DetailedJson, hashid},
     middlewares::RequestTraceContext,
     response::error::{AppError, AppResult},
     serde_json::json,
@@ -191,7 +194,7 @@ pub async fn remove_cascade(
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<RemoveCascadeRoleReq>,
 ) -> AppResult<Json<()>> {
-    tracing::info!("...Remove Cascade Role Req: {:?}...", req);
+    tracing::info!("...RemoveCascade Role Req: {:?}...", req);
 
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
@@ -201,6 +204,7 @@ pub async fn remove_cascade(
         logging::serialize_snapshot(RoleResp::from(state.role_service.get(id).await?));
     let cmd: RemoveCascadeRoleCmd = req.into();
     state.role_service.remove_cascade(cmd).await?;
+
     logging::write_mutation_logs(
         &state,
         &trace_context,
@@ -209,9 +213,103 @@ pub async fn remove_cascade(
         Some(id),
         id.to_string(),
         "remove_cascade",
-        "remove cascade role".to_string(),
+        "cascade remove role".to_string(),
         Some(before_snapshot),
-        Some(json!({ "id": id, "cascade": true })),
+        None,
+    )
+    .await;
+
+    Ok(Json(()))
+}
+
+pub async fn get_menus(
+    State(state): State<RolesState>,
+    DetailedJson(req): DetailedJson<GetRoleMenusReq>,
+) -> AppResult<Json<neocrates::serde_json::Value>> {
+    tracing::info!("...Get Role Menus Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let menu_ids = state.role_service.get_role_menus(req.role_id).await?;
+    let resp = neocrates::serde_json::json!({
+        "items": menu_ids.into_iter().map(|id| hashid::encode_i64(id)).collect::<Vec<_>>()
+    });
+    Ok(Json(resp))
+}
+
+pub async fn assign_menus(
+    State(state): State<RolesState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
+    DetailedJson(req): DetailedJson<AssignRoleMenusReq>,
+) -> AppResult<Json<()>> {
+    tracing::info!("...Assign Role Menus Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let role_id = req.role_id;
+    let cmd: AssignRoleMenusCmd = req.into();
+    state.role_service.assign_menus(cmd).await?;
+
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "roles",
+        "role",
+        Some(role_id),
+        role_id.to_string(),
+        "assign_menus",
+        "assign menus to role".to_string(),
+        None,
+        None,
+    )
+    .await;
+
+    Ok(Json(()))
+}
+
+pub async fn get_perms(
+    State(state): State<RolesState>,
+    DetailedJson(req): DetailedJson<GetRolePermsReq>,
+) -> AppResult<Json<neocrates::serde_json::Value>> {
+    tracing::info!("...Get Role Perms Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let perm_ids = state.role_service.get_role_perms(req.role_id).await?;
+    let resp = neocrates::serde_json::json!({
+        "items": perm_ids.into_iter().map(|id| hashid::encode_i64(id)).collect::<Vec<_>>()
+    });
+    Ok(Json(resp))
+}
+
+pub async fn assign_perms(
+    State(state): State<RolesState>,
+    Extension(trace_context): Extension<RequestTraceContext>,
+    DetailedJson(req): DetailedJson<AssignRolePermsReq>,
+) -> AppResult<Json<()>> {
+    tracing::info!("...Assign Role Perms Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let role_id = req.role_id;
+    let cmd: AssignRolePermsCmd = req.into();
+    state.role_service.assign_perms(cmd).await?;
+
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "roles",
+        "role",
+        Some(role_id),
+        role_id.to_string(),
+        "assign_perms",
+        "assign perms to role".to_string(),
+        None,
+        None,
     )
     .await;
 
