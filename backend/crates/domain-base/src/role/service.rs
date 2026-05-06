@@ -61,4 +61,14 @@ pub trait RoleService: Send + Sync {
 
     /// Delete a role and all descendants.
     async fn remove_cascade(&self, cmd: RemoveCascadeRoleCmd) -> AppResult<()>;
+
+    /// List all active roles visible within a tenant: system roles
+    /// (`tenant_id IS NULL`) **plus** roles belonging to the given tenant.
+    ///
+    /// # Arguments
+    /// * `tenant_id` - The tenant whose roles to load alongside system roles.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Role>>` - System and tenant-scoped active roles ordered by sort.
+    async fn list_for_tenant(&self, tenant_id: i64) -> AppResult<Vec<Role>>;
 }

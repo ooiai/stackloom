@@ -2,7 +2,8 @@
   "page": {
     "title": "Roles",
     "subtitle": "Manage role hierarchy, descriptions, and built-in markers",
-    "addRoot": "Add root role"
+    "addRoot": "Add root role",
+    "showNonBuiltin": "Show non-built-in roles"
   },
   "toast": {
     "created": "Role created",

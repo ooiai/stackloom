@@ -5,6 +5,7 @@ use domain_base::{
 };
 use neocrates::{
     async_trait::async_trait,
+    helper::core::snowflake::generate_sonyflake_id,
     response::error::{AppError, AppResult},
     sqlxhelper::pool::SqlxPool,
 };
@@ -181,6 +182,68 @@ impl UserTenantRoleRepository for SqlxUserTenantRoleRepository {
             .execute(self.pool.pool())
             .await
             .map_err(Self::map_sqlx_error)?;
+
+        Ok(())
+    }
+
+    async fn list_by_membership(&self, user_tenant_id: i64) -> AppResult<Vec<UserTenantRole>> {
+        let rows = sqlx::query_as::<_, UserTenantRoleRow>(
+            r#"
+            SELECT
+                id,
+                user_tenant_id,
+                role_id,
+                created_at
+            FROM user_tenant_roles
+            WHERE user_tenant_id = $1
+            ORDER BY created_at ASC
+            "#,
+        )
+        .bind(user_tenant_id)
+        .fetch_all(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows.into_iter().map(Into::into).collect())
+    }
+
+    async fn replace_by_membership(
+        &self,
+        user_tenant_id: i64,
+        role_ids: &[i64],
+    ) -> AppResult<()> {
+        let mut tx = self
+            .pool
+            .pool()
+            .begin()
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        // Remove all existing bindings for this membership.
+        sqlx::query("DELETE FROM user_tenant_roles WHERE user_tenant_id = $1")
+            .bind(user_tenant_id)
+            .execute(&mut *tx)
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        // Insert the new bindings (if any).
+        for &role_id in role_ids {
+            let id = generate_sonyflake_id() as i64;
+            sqlx::query(
+                r#"
+                INSERT INTO user_tenant_roles (id, user_tenant_id, role_id, created_at)
+                VALUES ($1, $2, $3, NOW())
+                "#,
+            )
+            .bind(id)
+            .bind(user_tenant_id)
+            .bind(role_id)
+            .execute(&mut *tx)
+            .await
+            .map_err(Self::map_sqlx_error)?;
+        }
+
+        tx.commit().await.map_err(Self::map_sqlx_error)?;
 
         Ok(())
     }

@@ -16,17 +16,19 @@ import { formatDateTimeAt } from "@/lib/time"
 import { getUserAvatarFallback, getUserDisplayName } from "./helpers"
 import type { UserData } from "@/types/base.types"
 import type { ColumnDef } from "@tanstack/react-table"
-import { Edit3Icon, EllipsisIcon, Trash2Icon } from "lucide-react"
+import { Edit3Icon, EllipsisIcon, ShieldIcon, Trash2Icon } from "lucide-react"
 
 interface CreateUserColumnsOptions {
   t: TranslateFn
   onOpenEdit: (user: UserData) => void
+  onOpenAssignRoles: (user: UserData) => void
   onDelete: (user: UserData) => void
 }
 
 export function createUserColumns({
   t,
   onOpenEdit,
+  onOpenAssignRoles,
   onDelete,
 }: CreateUserColumnsOptions): ColumnDef<UserData>[] {
   return [
@@ -143,6 +145,10 @@ export function createUserColumns({
             <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
               <Edit3Icon />
               {t("common.actions.edit")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onOpenAssignRoles(row.original)}>
+              <ShieldIcon />
+              {t("users.assignRoles.action")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

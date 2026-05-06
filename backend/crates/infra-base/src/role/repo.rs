@@ -304,6 +304,11 @@ impl RoleRepository for SqlxRoleRepository {
             builder.push_bind(status);
         }
 
+        if let Some(is_builtin) = query.is_builtin {
+            builder.push(" AND is_builtin = ");
+            builder.push_bind(is_builtin);
+        }
+
         builder.push(" ORDER BY sort ASC, name ASC, created_at ASC");
 
         let rows: Vec<RoleRow> = builder
@@ -346,6 +351,11 @@ impl RoleRepository for SqlxRoleRepository {
         if let Some(status) = query.status {
             builder.push(" AND status = ");
             builder.push_bind(status);
+        }
+
+        if let Some(is_builtin) = query.is_builtin {
+            builder.push(" AND is_builtin = ");
+            builder.push_bind(is_builtin);
         }
 
         if let Some(keyword) = query.keyword.as_ref() {
@@ -526,5 +536,36 @@ impl RoleRepository for SqlxRoleRepository {
             .map_err(Self::map_sqlx_error)?;
 
         Ok(())
+    }
+
+    async fn list_for_tenant(&self, tenant_id: i64) -> AppResult<Vec<Role>> {
+        let rows = sqlx::query_as::<_, RoleRow>(
+            r#"
+            SELECT
+                id,
+                tenant_id,
+                parent_id,
+                code,
+                name,
+                description,
+                status,
+                is_builtin,
+                sort,
+                created_at,
+                updated_at,
+                deleted_at
+            FROM roles
+            WHERE (tenant_id IS NULL OR tenant_id = $1)
+              AND status = 1
+              AND deleted_at IS NULL
+            ORDER BY sort ASC, created_at ASC
+            "#,
+        )
+        .bind(tenant_id)
+        .fetch_all(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows.into_iter().map(Into::into).collect())
     }
 }

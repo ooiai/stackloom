@@ -31,6 +31,7 @@ interface UsersPageViewProps {
   onRefresh: () => void
   onOpenCreate: () => void
   onOpenEdit: (user: UserData) => void
+  onOpenAssignRoles: (user: UserData) => void
   onDelete: (user: UserData) => void
 }
 
@@ -46,12 +47,13 @@ export function UsersPageView({
   onRefresh,
   onOpenCreate,
   onOpenEdit,
+  onOpenAssignRoles,
   onDelete,
 }: UsersPageViewProps) {
   const { t } = useI18n()
   const columns = useMemo(
-    () => createUserColumns({ t, onOpenEdit, onDelete }),
-    [onDelete, onOpenEdit, t]
+    () => createUserColumns({ t, onOpenEdit, onOpenAssignRoles, onDelete }),
+    [onDelete, onOpenEdit, onOpenAssignRoles, t]
   )
 
   const [columnOrder, setColumnOrder] = useState<string[]>(

@@ -37,6 +37,17 @@
     "deleteTitle": "Delete user",
     "deleteDescription": "Delete user \"{username}\"? This action cannot be undone."
   },
+  "assignRoles": {
+    "action": "Assign roles",
+    "title": "Assign roles",
+    "description": "Assign system and tenant roles to user \"{username}\"",
+    "systemRoles": "System roles",
+    "tenantRoles": "Tenant roles",
+    "empty": "No roles available for this tenant.",
+    "toast": {
+      "success": "Roles assigned successfully."
+    }
+  },
   "sheet": {
     "create": {
       "title": "Create user",

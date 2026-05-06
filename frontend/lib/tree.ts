@@ -67,6 +67,7 @@ function normalizeMenuInput(input: unknown): MenuItem[] {
  * 将菜单转为树，健壮版本：输入类型宽松，内部做归一化，渲染期不会抛错。
  * 根节点规则：pid 找不到对应 id（或无效/空）即视为根。
  * 排序：同级先按 sort 升序，再按 name（中文友好）排序。
+ * 性能：单次循环构建节点映射，单次循环建立父子关系，最后递归排序，整体 O(n log n)。
  */
 export function buildMenuTree(input: unknown): MenuTreeNode[] {
   const items = normalizeMenuInput(input)

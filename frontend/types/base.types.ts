@@ -174,6 +174,31 @@ export interface DeleteUserParam {
   ids: string[]
 }
 
+export interface UserRoleItemData {
+  id: string
+  tenant_id: string | null
+  parent_id: string | null
+  code: string
+  name: string
+  description: string | null
+  is_builtin: boolean
+  sort: number
+  is_assigned: boolean
+}
+
+export interface GetUserRolesParam {
+  user_id: string
+}
+
+export interface AssignUserRolesParam {
+  user_id: string
+  role_ids: string[]
+}
+
+export interface UserRolesResp {
+  items: UserRoleItemData[]
+}
+
 export interface GetTenantParam {
   id: string
 }
@@ -296,12 +321,14 @@ export interface PageRoleParam {
 export interface TreeRoleParam {
   keyword?: string
   status?: RoleStatus
+  is_builtin?: boolean
 }
 
 export interface ChildrenRoleParam {
   parent_id?: string | null
   keyword?: string
   status?: RoleStatus
+  is_builtin?: boolean
 }
 
 export interface CreateRoleParam {

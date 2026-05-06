@@ -76,6 +76,8 @@ sms:
   tencent_template_id: your_template_id
 
 auth:
+  # Whether to enable authentication
+  enabled: true
   # 60 * 15
   expires_at: 800
   # 60 * 60 * 24 * 15

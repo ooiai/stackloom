@@ -2,7 +2,8 @@
   "page": {
     "title": "角色管理",
     "subtitle": "维护角色树、角色说明与内置标记",
-    "addRoot": "添加根角色"
+    "addRoot": "添加根角色",
+    "showNonBuiltin": "显示非内置角色"
   },
   "toast": {
     "created": "角色已创建",

@@ -97,4 +97,18 @@ where
 
         self.repository.hard_delete_batch(&ids).await
     }
+
+    async fn list_by_membership(&self, user_tenant_id: i64) -> AppResult<Vec<UserTenantRole>> {
+        self.repository.list_by_membership(user_tenant_id).await
+    }
+
+    async fn replace_by_membership(
+        &self,
+        user_tenant_id: i64,
+        role_ids: &[i64],
+    ) -> AppResult<()> {
+        self.repository
+            .replace_by_membership(user_tenant_id, role_ids)
+            .await
+    }
 }

@@ -1,19 +1,24 @@
 "use client"
 
+import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/providers/i18n-provider"
 import { PlusIcon, RefreshCwIcon } from "lucide-react"
 
 interface RolesPageHeaderProps {
   isFetching: boolean
+  showNonBuiltin: boolean
   onRefresh: () => void
   onOpenCreateRoot: () => void
+  onToggleShowNonBuiltin: () => void
 }
 
 export function RolesPageHeader({
   isFetching,
+  showNonBuiltin,
   onRefresh,
   onOpenCreateRoot,
+  onToggleShowNonBuiltin,
 }: RolesPageHeaderProps) {
   const { t } = useI18n()
 
@@ -27,7 +32,11 @@ export function RolesPageHeader({
           {t("roles.page.subtitle")}
         </p>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground">
+          <Switch checked={showNonBuiltin} onCheckedChange={onToggleShowNonBuiltin} />
+          {t("roles.page.showNonBuiltin")}
+        </label>
         <Button
           hidden
           variant="outline"

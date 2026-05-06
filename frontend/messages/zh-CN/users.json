@@ -37,6 +37,17 @@
     "deleteTitle": "删除用户",
     "deleteDescription": "确定删除用户“{username}”吗？此操作无法撤销"
   },
+  "assignRoles": {
+    "action": "分配角色",
+    "title": "分配角色",
+    "description": "为用户“{username}”分配系统角色和租户角色",
+    "systemRoles": "系统角色",
+    "tenantRoles": "租户角色",
+    "empty": "当前租户暂无可用角色",
+    "toast": {
+      "success": "角色已分配成功"
+    }
+  },
   "sheet": {
     "create": {
       "title": "新增用户",

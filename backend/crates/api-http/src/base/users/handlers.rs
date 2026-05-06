@@ -1,13 +1,16 @@
 use super::{
-    req::{CreateUserReq, DeleteUserReq, GetUserReq, PageUserReq, UpdateUserReq},
-    resp::{PaginateUserResp, UserResp},
+    req::{
+        AssignUserRolesReq, CreateUserReq, DeleteUserReq, GetUserReq, GetUserRolesReq,
+        PageUserReq, UpdateUserReq,
+    },
+    resp::{PaginateUserResp, UserResp, UserRoleItemResp, UserRolesResp},
 };
 use crate::base::{BaseHttpState, logging};
 use domain_base::{CreateUserCmd, PageUserCmd, UpdateUserCmd};
 use neocrates::{
     axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
-    middlewares::RequestTraceContext,
+    middlewares::{RequestTraceContext, models::AuthModel},
     response::error::{AppError, AppResult},
     serde_json::json,
     tracing,
@@ -215,6 +218,167 @@ pub async fn delete(
         "delete user".to_string(),
         before_snapshot,
         Some(json!({ "ids": ids })),
+    )
+    .await;
+
+    Ok(Json(()))
+}
+
+/// Get all roles visible to the current tenant and which are assigned
+/// to the given user's membership.
+///
+/// The response contains both system roles (`tenant_id = null`) and
+/// tenant-scoped roles, each with an `is_assigned` flag.
+///
+/// # Arguments
+/// * `state`     - The base HTTP state.
+/// * `auth_user` - The authenticated admin making the request.
+/// * `req`       - The request body containing the target `user_id`.
+///
+/// # Returns
+/// * `AppResult<Json<UserRolesResp>>` - The role list with assignment flags.
+pub async fn get_roles(
+    State(state): State<UsersState>,
+    Extension(auth_user): Extension<AuthModel>,
+    DetailedJson(req): DetailedJson<GetUserRolesReq>,
+) -> AppResult<Json<UserRolesResp>> {
+    tracing::info!(
+        user_id = %req.user_id,
+        tenant_id = %auth_user.tid,
+        "get_user_roles"
+    );
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    // Load all roles available within this tenant (system + tenant-scoped).
+    let all_roles = state.role_service.list_for_tenant(auth_user.tid).await?;
+
+    // Resolve the user's membership to find currently assigned role IDs.
+    let assigned_role_ids = match state
+        .user_tenant_service
+        .find_by_user_and_tenant(req.user_id, auth_user.tid)
+        .await?
+    {
+        Some(membership) => {
+            let bindings = state
+                .user_tenant_role_service
+                .list_by_membership(membership.id)
+                .await?;
+            bindings.into_iter().map(|b| b.role_id).collect::<std::collections::HashSet<i64>>()
+        }
+        // User is not a member of this tenant — no roles assigned.
+        None => std::collections::HashSet::new(),
+    };
+
+    let items = all_roles
+        .into_iter()
+        .map(|role| UserRoleItemResp {
+            is_assigned: assigned_role_ids.contains(&role.id),
+            id: role.id,
+            tenant_id: role.tenant_id,
+            parent_id: role.parent_id,
+            code: role.code,
+            name: role.name,
+            description: role.description,
+            is_builtin: role.is_builtin,
+            sort: role.sort,
+        })
+        .collect();
+
+    Ok(Json(UserRolesResp { items }))
+}
+
+/// Atomically replace a user's role bindings within the current tenant.
+///
+/// All submitted `role_ids` are validated against the set of roles that are
+/// visible to the current tenant before any write is performed.
+///
+/// # Arguments
+/// * `state`          - The base HTTP state.
+/// * `auth_user`      - The authenticated admin making the request.
+/// * `trace_context`  - Request trace context for audit logging.
+/// * `req`            - The request body: `user_id` + new `role_ids[]`.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - `Ok(())` on success.
+pub async fn assign_roles(
+    State(state): State<UsersState>,
+    Extension(auth_user): Extension<AuthModel>,
+    Extension(trace_context): Extension<RequestTraceContext>,
+    DetailedJson(req): DetailedJson<AssignUserRolesReq>,
+) -> AppResult<Json<()>> {
+    tracing::info!(
+        user_id = %req.user_id,
+        tenant_id = %auth_user.tid,
+        role_count = %req.role_ids.len(),
+        "assign_user_roles"
+    );
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    // Deduplicate submitted role IDs.
+    let mut role_ids = req.role_ids.clone();
+    role_ids.dedup();
+    role_ids.sort_unstable();
+    role_ids.dedup();
+
+    // Validate every submitted role ID against the allowed set for this tenant.
+    let allowed_roles = state.role_service.list_for_tenant(auth_user.tid).await?;
+    let allowed_ids: std::collections::HashSet<i64> =
+        allowed_roles.iter().map(|r| r.id).collect();
+
+    for &role_id in &role_ids {
+        if !allowed_ids.contains(&role_id) {
+            tracing::warn!(
+                role_id = %role_id,
+                tenant_id = %auth_user.tid,
+                "assign_user_roles: rejected role_id not visible to tenant"
+            );
+            return Err(AppError::ValidationError(format!(
+                "role_id {role_id} is not allowed for this tenant"
+            )));
+        }
+    }
+
+    // Find the user's membership in this tenant.
+    let membership = state
+        .user_tenant_service
+        .find_by_user_and_tenant(req.user_id, auth_user.tid)
+        .await?
+        .ok_or_else(|| {
+            AppError::not_found_here(format!(
+                "user {} has no membership in tenant {}",
+                req.user_id, auth_user.tid
+            ))
+        })?;
+
+    // Capture before-state for audit log.
+    let before_bindings = state
+        .user_tenant_role_service
+        .list_by_membership(membership.id)
+        .await?;
+    let before_role_ids: Vec<i64> = before_bindings.iter().map(|b| b.role_id).collect();
+
+    // Atomically replace the bindings.
+    state
+        .user_tenant_role_service
+        .replace_by_membership(membership.id, &role_ids)
+        .await?;
+
+    // Write audit log.
+    logging::write_mutation_logs(
+        &state,
+        &trace_context,
+        "users",
+        "user_roles",
+        Some(req.user_id),
+        req.user_id.to_string(),
+        "assign_roles",
+        "assign user roles".to_string(),
+        Some(json!({ "role_ids": before_role_ids })),
+        Some(json!({ "role_ids": role_ids })),
     )
     .await;
 

@@ -21,6 +21,8 @@ interface RolesPageViewProps {
   expandedIds: Set<string>
   isFetching: boolean
   isInitialLoading: boolean
+  showNonBuiltin: boolean
+  onToggleShowNonBuiltin: () => void
   onTreeSearchChange: (value: string) => void
   onToggleExpand: (id: string) => void
   onSelectNode: (id: string | null) => void
@@ -41,6 +43,8 @@ export function RolesPageView({
   expandedIds,
   isFetching,
   isInitialLoading,
+  showNonBuiltin,
+  onToggleShowNonBuiltin,
   onTreeSearchChange,
   onToggleExpand,
   onSelectNode,
@@ -76,8 +80,10 @@ export function RolesPageView({
     <div className="w-full space-y-5 self-start">
       <RolesPageHeader
         isFetching={isFetching}
+        showNonBuiltin={showNonBuiltin}
         onRefresh={onRefresh}
         onOpenCreateRoot={onOpenCreateRoot}
+        onToggleShowNonBuiltin={onToggleShowNonBuiltin}
       />
 
       <div className="grid gap-5 xl:grid-cols-[300px_minmax(0,1fr)]">

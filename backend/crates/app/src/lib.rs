@@ -24,7 +24,7 @@ use crate::{
 use infra_auth::AuthServiceImpl;
 use infra_base::{
     DictServiceImpl, MenuServiceImpl, PermServiceImpl, RoleServiceImpl, TenantServiceImpl,
-    UserServiceImpl,
+    UserServiceImpl, UserTenantRoleServiceImpl, UserTenantServiceImpl,
 };
 use infra_system::{AuditLogServiceImpl, SysModule, SystemLogServiceImpl};
 use infra_web::OperationLogServiceImpl;
@@ -60,6 +60,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         pms_ignore_urls: cfg.pms_ignore_urls.clone(),
         auth_basics: cfg.auth_basics.clone(),
         prefix: cfg.server.prefix.to_string(),
+        enable_auth: cfg.auth.enabled,
     });
     // build app state
     tracing::info!("Monolith build app state...");
@@ -103,6 +104,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         menu_service: Arc::new(MenuServiceImpl::new(base_pool.clone())),
         role_service: Arc::new(RoleServiceImpl::new(base_pool.clone())),
         perm_service: Arc::new(PermServiceImpl::new(base_pool.clone())),
+        user_tenant_service: Arc::new(UserTenantServiceImpl::new(base_pool.clone())),
+        user_tenant_role_service: Arc::new(UserTenantRoleServiceImpl::new(base_pool.clone())),
         system_log_service: system_log_service.clone(),
         audit_log_service: audit_log_service.clone(),
         operation_log_service: operation_log_service.clone(),

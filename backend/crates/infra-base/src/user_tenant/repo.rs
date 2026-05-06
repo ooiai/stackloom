@@ -315,4 +315,42 @@ impl UserTenantRepository for SqlxUserTenantRepository {
 
         Ok(())
     }
+
+    async fn find_by_user_and_tenant(
+        &self,
+        user_id: i64,
+        tenant_id: i64,
+    ) -> AppResult<Option<UserTenant>> {
+        let row = sqlx::query_as::<_, UserTenantRow>(
+            r#"
+            SELECT
+                id,
+                user_id,
+                tenant_id,
+                display_name,
+                employee_no,
+                job_title,
+                status,
+                is_default,
+                is_tenant_admin,
+                joined_at,
+                invited_by,
+                created_at,
+                updated_at,
+                deleted_at
+            FROM user_tenants
+            WHERE user_id   = $1
+              AND tenant_id = $2
+              AND deleted_at IS NULL
+            LIMIT 1
+            "#,
+        )
+        .bind(user_id)
+        .bind(tenant_id)
+        .fetch_optional(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(row.map(Into::into))
+    }
 }

@@ -100,4 +100,14 @@ where
 
         self.repository.hard_delete_batch(&ids).await
     }
+
+    async fn find_by_user_and_tenant(
+        &self,
+        user_id: i64,
+        tenant_id: i64,
+    ) -> AppResult<Option<UserTenant>> {
+        self.repository
+            .find_by_user_and_tenant(user_id, tenant_id)
+            .await
+    }
 }

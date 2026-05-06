@@ -1,6 +1,7 @@
 import { post } from "@/lib/http/axios"
 import { BASE_CURRENT_MENU_ITEMS } from "@/lib/base-navigation"
 import type {
+  AssignUserRolesParam,
   ChildrenPermParam,
   ChildrenRoleParam,
   ChildrenMenuParam,
@@ -22,6 +23,7 @@ import type {
   GetRoleParam,
   GetMenuParam,
   GetTenantParam,
+  GetUserRolesParam,
   DictChildrenResp,
   DictData,
   DictTreeResp,
@@ -63,6 +65,7 @@ import type {
   UpdateDictParam,
   UpdateUserParam,
   UserData,
+  UserRolesResp,
 } from "@/types/base.types"
 
 const BASE_USER_API_PREFIX = "/apiv1/base/users"
@@ -94,6 +97,12 @@ export const userApi = {
   remove: async (ids: string[]): Promise<void> => {
     const params: DeleteUserParam = { ids }
     return post(`${BASE_USER_API_PREFIX}/remove`, params)
+  },
+  getRoles: async (params: GetUserRolesParam): Promise<UserRolesResp> => {
+    return post(`${BASE_USER_API_PREFIX}/get_roles`, params)
+  },
+  assignRoles: async (params: AssignUserRolesParam): Promise<void> => {
+    return post(`${BASE_USER_API_PREFIX}/assign_roles`, params)
   },
 }
 

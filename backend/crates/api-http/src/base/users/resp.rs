@@ -67,3 +67,35 @@ impl DeleteUserResp {
         Self { success: true, id }
     }
 }
+
+/// A single role item returned by `get_roles`, including whether it is currently
+/// assigned to the queried user's membership in the current tenant.
+#[derive(Debug, Clone, Serialize)]
+pub struct UserRoleItemResp {
+    /// The role's ID.
+    #[serde(serialize_with = "serde_helpers::serialize_i64")]
+    pub id: i64,
+
+    /// `None` for system roles; the tenant's ID for tenant-scoped roles.
+    #[serde(serialize_with = "serde_helpers::serialize_option_i64")]
+    pub tenant_id: Option<i64>,
+
+    /// Optional parent role ID for tree-aware display.
+    #[serde(serialize_with = "serde_helpers::serialize_option_i64")]
+    pub parent_id: Option<i64>,
+
+    pub code: String,
+    pub name: String,
+    pub description: Option<String>,
+    pub is_builtin: bool,
+    pub sort: i32,
+
+    /// `true` if this role is currently assigned to the user's membership.
+    pub is_assigned: bool,
+}
+
+/// Response for `get_roles`.
+#[derive(Debug, Clone, Serialize)]
+pub struct UserRolesResp {
+    pub items: Vec<UserRoleItemResp>,
+}

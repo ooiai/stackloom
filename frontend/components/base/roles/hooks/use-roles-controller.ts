@@ -52,16 +52,18 @@ export function useRolesController() {
     searchParams.get("node")
   )
   const [treeSearch, setTreeSearch] = useState(searchParams.get("tree") ?? "")
+  const [showNonBuiltin, setShowNonBuiltin] = useState(false)
   const [manualExpandedIds, setManualExpandedIds] = useState<Set<string>>(
     new Set()
   )
   const [sheet, setSheet] = useState<RoleSheetState>(DEFAULT_SHEET_STATE)
 
   const treeQuery = useQuery({
-    queryKey: ["base", "roles", "tree", treeSearch.trim()],
+    queryKey: ["base", "roles", "tree", treeSearch.trim(), showNonBuiltin],
     queryFn: () =>
       roleApi.tree({
         keyword: treeSearch.trim() || undefined,
+        is_builtin: showNonBuiltin ? undefined : true,
       }),
     placeholderData: keepPreviousData,
   })
@@ -79,10 +81,11 @@ export function useRolesController() {
   )
 
   const childrenQuery = useQuery({
-    queryKey: ["base", "roles", "children", selectedNodeId],
+    queryKey: ["base", "roles", "children", selectedNodeId, showNonBuiltin],
     queryFn: () =>
       roleApi.children({
         parent_id: selectedNodeId,
+        is_builtin: showNonBuiltin ? undefined : true,
       }),
     enabled: selectedNodeId !== null,
     placeholderData: keepPreviousData,
@@ -274,6 +277,8 @@ export function useRolesController() {
       expandedIds: new Set(manualExpandedIds),
       isFetching: treeQuery.isFetching || childrenQuery.isFetching,
       isInitialLoading: treeQuery.isLoading,
+      showNonBuiltin,
+      onToggleShowNonBuiltin: () => setShowNonBuiltin((prev) => !prev),
       onTreeSearchChange: setTreeSearch,
       onToggleExpand: toggleExpand,
       onSelectNode: setRawSelectedNodeId,

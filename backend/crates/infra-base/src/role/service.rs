@@ -98,7 +98,10 @@ where
     async fn tree(&self, cmd: TreeRoleCmd) -> AppResult<Vec<Role>> {
         let roles = self
             .repository
-            .list_for_tree(&RoleTreeQuery { status: cmd.status })
+            .list_for_tree(&RoleTreeQuery {
+                status: cmd.status,
+                is_builtin: cmd.is_builtin,
+            })
             .await?;
 
         let keyword = cmd.keyword.unwrap_or_default();
@@ -139,6 +142,7 @@ where
                 parent_id: cmd.parent_id,
                 keyword: cmd.keyword,
                 status: cmd.status,
+                is_builtin: cmd.is_builtin,
             })
             .await
     }
@@ -226,5 +230,9 @@ where
         }
 
         self.repository.hard_delete_batch(&descendant_ids).await
+    }
+
+    async fn list_for_tenant(&self, tenant_id: i64) -> AppResult<Vec<Role>> {
+        self.repository.list_for_tenant(tenant_id).await
     }
 }

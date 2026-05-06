@@ -51,4 +51,30 @@ pub trait UserTenantRoleService: Send + Sync {
     /// # Returns
     /// * `AppResult<()>` - The result of the delete operation.
     async fn delete(&self, ids: Vec<i64>) -> AppResult<()>;
+
+    /// List all role bindings for a given membership.
+    ///
+    /// # Arguments
+    /// * `user_tenant_id` - The membership ID.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<UserTenantRole>>` - All active role bindings for that membership.
+    async fn list_by_membership(&self, user_tenant_id: i64) -> AppResult<Vec<UserTenantRole>>;
+
+    /// Atomically replace all role bindings for a membership with a new set.
+    ///
+    /// Clears the existing bindings and inserts the new role IDs in one
+    /// database transaction.  An empty `role_ids` slice clears all bindings.
+    ///
+    /// # Arguments
+    /// * `user_tenant_id` - The membership ID.
+    /// * `role_ids` - The complete new set of role IDs.
+    ///
+    /// # Returns
+    /// * `AppResult<()>` - `Ok(())` on success.
+    async fn replace_by_membership(
+        &self,
+        user_tenant_id: i64,
+        role_ids: &[i64],
+    ) -> AppResult<()>;
 }

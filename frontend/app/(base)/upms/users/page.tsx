@@ -1,11 +1,12 @@
 "use client"
 
 import { UserMutateSheet } from "@/components/base/users/user-mutate-sheet"
+import { UserAssignRolesDialog } from "@/components/base/users/user-assign-roles-dialog"
 import { useUsersController } from "@/components/base/users/hooks/use-users-controller"
 import { UsersPageView } from "@/components/base/users/users-page-container"
 
 export default function UserPage() {
-  const { view, sheet } = useUsersController()
+  const { view, sheet, assignRolesDialog } = useUsersController()
 
   return (
     <>
@@ -23,6 +24,20 @@ export default function UserPage() {
           }
         }}
         onSubmit={sheet.onSubmit}
+      />
+
+      <UserAssignRolesDialog
+        open={assignRolesDialog.open}
+        user={assignRolesDialog.user}
+        roles={assignRolesDialog.roles}
+        isLoading={assignRolesDialog.isLoading}
+        isSaving={assignRolesDialog.isSaving}
+        onOpenChange={(open) => {
+          if (!open) {
+            assignRolesDialog.onClose()
+          }
+        }}
+        onSave={assignRolesDialog.onSave}
       />
     </>
   )

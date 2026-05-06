@@ -49,4 +49,19 @@ pub trait UserTenantService: Send + Sync {
     /// # Returns
     /// * `AppResult<()>` - The result of the delete operation.
     async fn delete(&self, ids: Vec<i64>) -> AppResult<()>;
+
+    /// Find the active membership record for a specific user within a tenant.
+    ///
+    /// # Arguments
+    /// * `user_id` - The user's ID.
+    /// * `tenant_id` - The tenant's ID.
+    ///
+    /// # Returns
+    /// * `AppResult<Option<UserTenant>>` - The membership row if the user belongs to
+    ///   that tenant, `None` otherwise.
+    async fn find_by_user_and_tenant(
+        &self,
+        user_id: i64,
+        tenant_id: i64,
+    ) -> AppResult<Option<UserTenant>>;
 }

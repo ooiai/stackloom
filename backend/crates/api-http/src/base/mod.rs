@@ -1,11 +1,11 @@
 use std::sync::Arc;
 
-use domain_base::{DictService, MenuService, PermService, RoleService, TenantService, UserService};
+use domain_base::{DictService, MenuService, PermService, RoleService, TenantService, UserService, UserTenantService, UserTenantRoleService};
 use domain_system::{AuditLogService, SystemLogService};
 use domain_web::OperationLogService;
 use neocrates::{
     axum::{Router, middleware},
-    middlewares::models::MiddlewareConfig,
+    middlewares::{interceptor::interceptor, models::MiddlewareConfig},
     rediscache::RedisPool,
 };
 
@@ -28,6 +28,8 @@ pub struct BaseHttpState {
     pub menu_service: Arc<dyn MenuService>,
     pub role_service: Arc<dyn RoleService>,
     pub perm_service: Arc<dyn PermService>,
+    pub user_tenant_service: Arc<dyn UserTenantService>,
+    pub user_tenant_role_service: Arc<dyn UserTenantRoleService>,
     pub system_log_service: Arc<dyn SystemLogService>,
     pub audit_log_service: Arc<dyn AuditLogService>,
     pub operation_log_service: Arc<dyn OperationLogService>,
@@ -42,7 +44,7 @@ pub struct BaseHttpState {
 /// # Returns
 /// A `Router` instance that includes the user routes.
 ///
-pub fn router(state: BaseHttpState, _mw: Arc<MiddlewareConfig>) -> Router {
+pub fn router(state: BaseHttpState, mw: Arc<MiddlewareConfig>) -> Router {
     let user_router = users::router(state.clone());
     let tenant_router = tenants::router(state.clone());
     let dict_router = dicts::router(state.clone());
@@ -64,5 +66,5 @@ pub fn router(state: BaseHttpState, _mw: Arc<MiddlewareConfig>) -> Router {
             state,
             crate::request_logging::base_request_trace_middleware,
         ))
-    // .layer(middleware::from_fn_with_state(mw, interceptor))
+        .layer(middleware::from_fn_with_state(mw, interceptor))
 }

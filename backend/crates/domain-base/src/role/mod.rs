@@ -193,6 +193,7 @@ pub struct PageRoleCmd {
 pub struct TreeRoleCmd {
     pub keyword: Option<String>,
     pub status: Option<i16>,
+    pub is_builtin: Option<bool>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -200,6 +201,7 @@ pub struct ChildrenRoleCmd {
     pub parent_id: Option<i64>,
     pub keyword: Option<String>,
     pub status: Option<i16>,
+    pub is_builtin: Option<bool>,
 }
 
 #[derive(Debug, Clone)]
@@ -218,6 +220,7 @@ pub struct RolePageQuery {
 #[derive(Debug, Clone, Default)]
 pub struct RoleTreeQuery {
     pub status: Option<i16>,
+    pub is_builtin: Option<bool>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -225,6 +228,7 @@ pub struct RoleChildrenQuery {
     pub parent_id: Option<i64>,
     pub keyword: Option<String>,
     pub status: Option<i16>,
+    pub is_builtin: Option<bool>,
 }
 
 impl Role {

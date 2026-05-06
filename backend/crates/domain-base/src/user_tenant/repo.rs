@@ -57,4 +57,19 @@ pub trait UserTenantRepository: Send + Sync {
     /// # Returns
     /// * `AppResult<()>` - Result of the batch hard delete operation
     async fn hard_delete_batch(&self, ids: &[i64]) -> AppResult<()>;
+
+    /// Find the active membership record for a specific user within a tenant.
+    ///
+    /// # Arguments
+    /// * `user_id` - The user's ID
+    /// * `tenant_id` - The tenant's ID
+    ///
+    /// # Returns
+    /// * `AppResult<Option<UserTenant>>` - The membership row if found, `None` if the user
+    ///   is not a member of that tenant or has been soft-deleted
+    async fn find_by_user_and_tenant(
+        &self,
+        user_id: i64,
+        tenant_id: i64,
+    ) -> AppResult<Option<UserTenant>>;
 }

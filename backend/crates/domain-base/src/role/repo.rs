@@ -81,4 +81,15 @@ pub trait RoleRepository: Send + Sync {
     /// # Returns
     /// * `AppResult<()>` - Result of the batch hard delete operation
     async fn hard_delete_batch(&self, ids: &[i64]) -> AppResult<()>;
+
+    /// List all active roles visible within a tenant: system roles
+    /// (where `tenant_id IS NULL`) **plus** roles that belong to the
+    /// given tenant (`tenant_id = tenant_id`).
+    ///
+    /// # Arguments
+    /// * `tenant_id` - The tenant whose roles to load alongside system roles
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Role>>` - System and tenant-scoped active roles, ordered by sort
+    async fn list_for_tenant(&self, tenant_id: i64) -> AppResult<Vec<Role>>;
 }

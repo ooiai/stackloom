@@ -3,7 +3,9 @@ use std::{sync::Arc, time::Instant};
 use domain_system::{CreateSystemLogCmd, SystemLogService};
 use neocrates::{
     axum::{
+        body::{Body, to_bytes},
         extract::{MatchedPath, Request, State},
+        http::Response as HttpResponse,
         middleware::Next,
         response::Response,
     },
@@ -78,6 +80,46 @@ async fn request_trace_middleware_impl(
         None
     };
 
+    // Buffer error response body to extract the message for logging and system_log storage.
+    let (error_message, response) = if status.is_client_error() || status.is_server_error() {
+        let (parts, body) = response.into_parts();
+        match to_bytes(body, 1024 * 1024).await {
+            Ok(bytes) => {
+                let msg = neocrates::serde_json::from_slice::<neocrates::serde_json::Value>(&bytes)
+                    .ok()
+                    .and_then(|v| v.get("message").and_then(|m| m.as_str()).map(str::to_string));
+                let resp = HttpResponse::from_parts(parts, Body::from(bytes));
+                (msg, resp)
+            }
+            Err(_) => {
+                let resp = HttpResponse::from_parts(parts, Body::empty());
+                (None, resp)
+            }
+        }
+    } else {
+        (None, response)
+    };
+
+    if status.is_server_error() {
+        tracing::error!(
+            method = %method,
+            path = %request_path,
+            status = %status.as_u16(),
+            trace_id = ?trace_context.trace_id,
+            error_message = ?error_message,
+            "request failed with server error"
+        );
+    } else if status.is_client_error() {
+        tracing::warn!(
+            method = %method,
+            path = %request_path,
+            status = %status.as_u16(),
+            trace_id = ?trace_context.trace_id,
+            error_message = ?error_message,
+            "request failed with client error"
+        );
+    }
+
     let ext = json!({
         "matched_path": matched_path,
         "query": request_query,
@@ -98,7 +140,7 @@ async fn request_trace_middleware_impl(
             latency_ms,
             result,
             error_code,
-            error_message: None,
+            error_message,
             ip: trace_context.ip,
             user_agent: trace_context.user_agent,
             ext: Some(ext),

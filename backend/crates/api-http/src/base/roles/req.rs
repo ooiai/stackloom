@@ -99,6 +99,7 @@ impl From<PageRoleReq> for PageRoleCmd {
 pub struct TreeRoleReq {
     pub keyword: Option<String>,
     pub status: Option<i16>,
+    pub is_builtin: Option<bool>,
 }
 
 impl From<TreeRoleReq> for TreeRoleCmd {
@@ -106,6 +107,7 @@ impl From<TreeRoleReq> for TreeRoleCmd {
         Self {
             keyword: req.keyword,
             status: req.status,
+            is_builtin: req.is_builtin,
         }
     }
 }
@@ -116,6 +118,7 @@ pub struct ChildrenRoleReq {
     pub parent_id: Option<i64>,
     pub keyword: Option<String>,
     pub status: Option<i16>,
+    pub is_builtin: Option<bool>,
 }
 
 impl From<ChildrenRoleReq> for ChildrenRoleCmd {
@@ -124,6 +127,7 @@ impl From<ChildrenRoleReq> for ChildrenRoleCmd {
             parent_id: req.parent_id,
             keyword: req.keyword,
             status: req.status,
+            is_builtin: req.is_builtin,
         }
     }
 }

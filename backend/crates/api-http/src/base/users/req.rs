@@ -181,3 +181,24 @@ pub struct DeleteUserReq {
     #[serde(deserialize_with = "serde_helpers::deserialize_vec_i64")]
     pub ids: Vec<i64>,
 }
+
+/// Request to load all roles visible within the current tenant for a given user,
+/// along with which roles are currently assigned to the user's membership.
+#[derive(Debug, Clone, Deserialize, Validate)]
+pub struct GetUserRolesReq {
+    /// The user whose role assignments to query.
+    #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
+    pub user_id: i64,
+}
+
+/// Request to atomically replace a user's role bindings within the current tenant.
+#[derive(Debug, Clone, Deserialize, Validate)]
+pub struct AssignUserRolesReq {
+    /// The user whose roles to update.
+    #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
+    pub user_id: i64,
+
+    /// The complete new set of role IDs to assign.  An empty list clears all roles.
+    #[serde(deserialize_with = "serde_helpers::deserialize_vec_i64")]
+    pub role_ids: Vec<i64>,
+}

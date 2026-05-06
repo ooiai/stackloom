@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { createFilter, type Filter } from "@/components/reui/filters"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { buildCreateUserParam, buildUpdateUserParam } from "../helpers"
+import { useUserAssignRoles } from "./use-user-assign-roles"
 import { useAlertDialog } from "@/providers/dialog-providers"
 import { useI18n } from "@/providers/i18n-provider"
 import { userApi } from "@/stores/base-api"
@@ -129,6 +130,8 @@ export function useUsersController() {
     pageSize: parsePageSize(searchParams.get("size"), DEFAULT_PAGE_SIZE),
   }))
   const [sheet, setSheet] = useState<UsersSheetState>(DEFAULT_SHEET_STATE)
+
+  const { assignRolesDialog } = useUserAssignRoles()
 
   const debouncedFilters = useDebouncedValue(filters, 300)
 
@@ -297,6 +300,7 @@ export function useUsersController() {
       onOpenCreate: openCreate,
       onOpenEdit: openEdit,
       onDelete: confirmRemoveUser,
+      onOpenAssignRoles: assignRolesDialog.onOpen,
     },
     sheet: {
       ...sheet,
@@ -304,5 +308,6 @@ export function useUsersController() {
       onClose: closeSheet,
       onSubmit: submitSheet,
     },
+    assignRolesDialog,
   }
 }

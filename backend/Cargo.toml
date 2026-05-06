@@ -54,7 +54,7 @@ monolith = { path = "bin/monolith" }
 #
 # dependencies
 #
-neocrates = "0.1.49"
+neocrates = "0.1"
 axum = "0.8"
 regex = "1"
 reqwest = { version = "0.13", default-features = false, features = [

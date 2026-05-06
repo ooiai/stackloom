@@ -57,4 +57,31 @@ pub trait UserTenantRoleRepository: Send + Sync {
     /// # Returns
     /// * `AppResult<()>` - Result of the batch hard delete operation
     async fn hard_delete_batch(&self, ids: &[i64]) -> AppResult<()>;
+
+    /// List all role bindings for a given membership.
+    ///
+    /// # Arguments
+    /// * `user_tenant_id` - The membership ID whose role bindings to load
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<UserTenantRole>>` - All active role bindings for the membership
+    async fn list_by_membership(&self, user_tenant_id: i64) -> AppResult<Vec<UserTenantRole>>;
+
+    /// Atomically replace all role bindings for a membership with a new set.
+    ///
+    /// Executes a `DELETE … WHERE user_tenant_id = ?` followed by a bulk
+    /// `INSERT` inside a single database transaction.  Passing an empty
+    /// `role_ids` slice clears all bindings.
+    ///
+    /// # Arguments
+    /// * `user_tenant_id` - The membership ID whose bindings to replace
+    /// * `role_ids` - The complete new set of role IDs to assign
+    ///
+    /// # Returns
+    /// * `AppResult<()>` - `Ok(())` on success
+    async fn replace_by_membership(
+        &self,
+        user_tenant_id: i64,
+        role_ids: &[i64],
+    ) -> AppResult<()>;
 }
