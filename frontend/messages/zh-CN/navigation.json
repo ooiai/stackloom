@@ -1,70 +1,21 @@
 {
+  "brand": {
+    "title": "Stackloom"
+  },
   "actions": {
     "notifications": "通知",
     "openMenu": "打开导航菜单",
     "settings": "设置"
   },
-  "brand": {
-    "title": "Stackloom Admin"
+  "profile": {
+    "openMenu": "打开用户菜单",
+    "fallbackName": "当前用户",
+    "fallbackMeta": "当前工作区",
+    "emailUnavailable": "暂无邮箱",
+    "logout": "退出登录"
   },
   "base-root": {
     "name": "后台管理",
     "remark": "Stackloom 管理后台入口"
-  },
-  "upms": {
-    "name": "账号与权限",
-    "remark": "用户、角色、租户与权限模块"
-  },
-  "tools": {
-    "name": "系统工具",
-    "remark": "配置业务基础能力和通用字典"
-  },
-  "tools-dicts": {
-    "name": "字典管理",
-    "remark": "维护树形字典项、键值和扩展配置"
-  },
-  "tools-system-logs": {
-    "name": "系统日志",
-    "remark": "查看请求链路、状态码与耗时摘要"
-  },
-  "tools-audit-logs": {
-    "name": "审计日志",
-    "remark": "查询敏感操作与安全审计留痕"
-  },
-  "tools-operation-logs": {
-    "name": "操作日志",
-    "remark": "追踪后台业务操作与变更快照"
-  },
-  "tools-group": {
-    "name": "系统工具",
-    "remark": "配置业务基础能力和通用字典"
-  },
-  "upms-group": {
-    "name": "账号与权限",
-    "remark": "用户、角色、租户与权限模块"
-  },
-  "upms-users": {
-    "name": "用户管理",
-    "remark": "维护系统用户资料、账号状态与联系方式"
-  },
-  "upms-tenants": {
-    "name": "租户管理",
-    "remark": "维护学校、校区与部门等层级租户结构"
-  },
-  "upms-menus": {
-    "name": "菜单管理",
-    "remark": "维护导航菜单、路由配置与层级结构"
-  },
-  "upms-roles": {
-    "name": "角色管理",
-    "remark": "维护角色树、角色描述与层级结构"
-  },
-  "upms-perms": {
-    "name": "权限管理",
-    "remark": "维护权限树、资源动作与层级结构"
-  },
-  "user": {
-    "name": "Admin",
-    "role": "系统管理员"
   }
 }

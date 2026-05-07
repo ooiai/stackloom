@@ -1,5 +1,6 @@
 use api_http::{
-    AuthHttpState, BaseHttpState, SysHttpState, auth_router, base_router, system_router,
+    AuthHttpState, BaseHttpState, SharedHttpState, SysHttpState, auth_router, base_router,
+    shared_router, system_router,
 };
 use common::config::env_config::EnvConfig;
 
@@ -110,6 +111,9 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         audit_log_service: audit_log_service.clone(),
         operation_log_service: operation_log_service.clone(),
     };
+    let shared_http_state = SharedHttpState {
+        user_service: Arc::new(UserServiceImpl::new(base_pool.clone())),
+    };
     let auth_http_state = AuthHttpState {
         auth_service,
         system_log_service: system_log_service.clone(),
@@ -139,6 +143,10 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         .nest(
             "/base",
             base_router(base_http_state, middleware_config.clone()),
+        )
+        .nest(
+            "/shared",
+            shared_router(shared_http_state, middleware_config.clone()),
         )
         .fallback(handler_404)
         .layer(trace_layer)

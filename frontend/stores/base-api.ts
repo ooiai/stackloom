@@ -71,6 +71,7 @@ import type {
   UpdateUserParam,
   UserData,
   UserRolesResp,
+  UserProfileData,
 } from "@/types/base.types"
 
 const BASE_USER_API_PREFIX = "/apiv1/base/users"
@@ -79,6 +80,7 @@ const BASE_MENU_API_PREFIX = "/apiv1/base/menus"
 const BASE_DICT_API_PREFIX = "/apiv1/base/dicts"
 const BASE_ROLE_API_PREFIX = "/apiv1/base/roles"
 const BASE_PERM_API_PREFIX = "/apiv1/base/perms"
+const SHARED_PROFILE_API_PREFIX = "/apiv1/shared/profile"
 
 export const userSharedApi = {
   listCurrentMenus: async (): Promise<MenuTreeNodeData[]> => {
@@ -272,5 +274,11 @@ export const permApi = {
   },
   removeCascade: async (id: string): Promise<void> => {
     return post(`${BASE_PERM_API_PREFIX}/remove_cascade`, { id })
+  },
+}
+
+export const sharedApi = {
+  getProfile: async (): Promise<UserProfileData> => {
+    return post(`${SHARED_PROFILE_API_PREFIX}/get`, {})
   },
 }

@@ -135,17 +135,17 @@ export function getUserStatusMeta(
     0: {
       label: t("users.status.disabled.label"),
       description: t("users.status.disabled.description"),
-      badgeVariant: "destructive-outline",
+      badgeVariant: "info-light",
     },
     1: {
       label: t("users.status.active.label"),
       description: t("users.status.active.description"),
-      badgeVariant: "success-outline",
+      badgeVariant: "success-light",
     },
     2: {
       label: t("users.status.locked.label"),
       description: t("users.status.locked.description"),
-      badgeVariant: "warning-outline",
+      badgeVariant: "warning-light",
     },
   }
 

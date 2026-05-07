@@ -1,5 +1,6 @@
 pub mod auth;
 pub mod base;
+pub mod shared;
 pub mod system;
 pub mod web;
 
@@ -13,4 +14,5 @@ pub use base::users::{
     router as user_routes,
 };
 pub use base::{BaseHttpState, router as base_router};
+pub use shared::{SharedHttpState, router as shared_router};
 pub use system::{SysHttpState, router as system_router};

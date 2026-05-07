@@ -17,11 +17,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const messages = await getLocaleMessages(locale)
 
   return {
-    title: getMessageValue(messages, "metadata.base.title", "Stackloom Admin"),
+    title: getMessageValue(messages, "metadata.base.title", "Stackloom"),
     description: getMessageValue(
       messages,
       "metadata.base.description",
-      "Stackloom admin console."
+      "Stackloom console."
     ),
     keywords: getMessageValue(messages, "metadata.base.keywords")
       .split(",")

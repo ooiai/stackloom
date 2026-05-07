@@ -584,3 +584,12 @@ export interface DictFormValues {
   ext: string
   parent_id?: string | null
 }
+
+export interface UserProfileData {
+  id: string
+  username: string
+  nickname: string | null
+  email: string | null
+  avatar_url: string | null
+  tenant_name: string
+}

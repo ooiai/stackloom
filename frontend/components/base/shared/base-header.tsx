@@ -10,13 +10,13 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
 import { first } from "lodash-es"
+import Image from "next/image"
 
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/reui/popover"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { LucideIcon } from "@/components/topui/icon"
 import type { IconName } from "@/components/topui/icon"
@@ -30,6 +30,7 @@ import {
   LayoutGridIcon,
   Settings2Icon,
 } from "lucide-react"
+import { HeaderUserMenu } from "@/components/base/shared/header-user-menu"
 
 function isItemActive(item: MenuTreeNodeData, pathname: string): boolean {
   if (
@@ -290,8 +291,14 @@ export default function BaseHeader({
           <div className="flex min-w-0 items-center gap-6">
             <Link href="/" className="text-primary hover:text-primary/90">
               <div className="flex items-center gap-3">
-                <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary ring-1 ring-primary/15">
-                  <LayoutGridIcon className="size-4" />
+                <div className="flex shrink-0 items-center justify-center text-primary">
+                  <Image
+                    src="/images/logo.png"
+                    alt="Stackloom"
+                    width={48}
+                    height={48}
+                    className="w-auto"
+                  />
                 </div>
                 <div className="hidden min-w-0 sm:block">
                   <p className="truncate text-sm font-semibold text-foreground">
@@ -328,19 +335,7 @@ export default function BaseHeader({
           >
             <Settings2Icon />
           </Button>
-          <div className="hidden items-center gap-3 border-s border-border/60 ps-3 lg:flex">
-            <Avatar size="sm">
-              <AvatarFallback>AD</AvatarFallback>
-            </Avatar>
-            <div className="leading-tight">
-              <p className="text-xs font-medium text-foreground">
-                {t("navigation.user.name")}
-              </p>
-              <p className="text-[11px] text-muted-foreground">
-                {t("navigation.user.role")}
-              </p>
-            </div>
-          </div>
+          <HeaderUserMenu />
         </div>
       </div>
     </header>
