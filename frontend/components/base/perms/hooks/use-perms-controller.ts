@@ -66,7 +66,10 @@ export function usePermsController() {
     placeholderData: keepPreviousData,
   })
 
-  const tree = useMemo(() => treeQuery.data?.items ?? [], [treeQuery.data?.items])
+  const tree = useMemo(
+    () => treeQuery.data?.items ?? [],
+    [treeQuery.data?.items]
+  )
   const selectedNode = useMemo(
     () => (rawSelectedNodeId ? findPermNode(tree, rawSelectedNodeId) : null),
     [rawSelectedNodeId, tree]
@@ -248,6 +251,7 @@ export function usePermsController() {
       const hasChildren = (treeNode?.children.length ?? 0) > 0
 
       dialog.show({
+        variant: "destructive",
         title: t("perms.dialog.deleteTitle"),
         description: hasChildren
           ? t("perms.dialog.deleteBranchDescription", { name: perm.name })

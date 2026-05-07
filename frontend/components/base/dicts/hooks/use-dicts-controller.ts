@@ -254,16 +254,14 @@ export function useDictsController() {
     })
   }, [])
 
-  const selectNode = useCallback(
-    (id: string | null) => {
-      setRawSelectedNodeId(id)
-    },
-    []
-  )
+  const selectNode = useCallback((id: string | null) => {
+    setRawSelectedNodeId(id)
+  }, [])
 
   const removeDict = useCallback(
     (dict: DictData) => {
       dialog.show({
+        variant: "destructive",
         title: t("dicts.dialog.deleteTitle"),
         description: dict.is_leaf
           ? t("dicts.dialog.deleteLeafDescription", { label: dict.label })

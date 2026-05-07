@@ -9,9 +9,10 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogMedia,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { LoaderCircle } from "lucide-react"
+import { LoaderCircle, Trash2Icon } from "lucide-react"
 import {
   createContext,
   ReactNode,
@@ -25,6 +26,8 @@ interface AlertDialogOptions {
   description?: string
   cancelText?: string
   confirmText?: string
+  variant?: "default" | "destructive"
+  size?: "default" | "sm"
   autoCloseOnConfirm?: boolean
   confirmLoading?: boolean
   confirmDisable?: boolean
@@ -77,8 +80,18 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
       {children}
 
       <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent
+          size={
+            options.size ||
+            (options.variant === "destructive" ? "sm" : "default")
+          }
+        >
           <AlertDialogHeader>
+            {options.variant === "destructive" && (
+              <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+                <Trash2Icon />
+              </AlertDialogMedia>
+            )}
             <AlertDialogTitle>{options.title}</AlertDialogTitle>
             <AlertDialogDescription>
               {options.description}
@@ -89,6 +102,9 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
               {options.cancelText || "Cancel"}
             </AlertDialogCancel>
             <AlertDialogAction
+              variant={
+                options.variant === "destructive" ? "destructive" : "default"
+              }
               disabled={options.confirmDisable || options.confirmLoading}
               onClick={handleConfirm}
             >

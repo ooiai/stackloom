@@ -66,7 +66,10 @@ export function useMenusController() {
     placeholderData: keepPreviousData,
   })
 
-  const tree = useMemo(() => treeQuery.data?.items ?? [], [treeQuery.data?.items])
+  const tree = useMemo(
+    () => treeQuery.data?.items ?? [],
+    [treeQuery.data?.items]
+  )
   const selectedNode = useMemo(
     () => (rawSelectedNodeId ? findMenuNode(tree, rawSelectedNodeId) : null),
     [rawSelectedNodeId, tree]
@@ -248,6 +251,7 @@ export function useMenusController() {
       const hasChildren = (treeNode?.children.length ?? 0) > 0
 
       dialog.show({
+        variant: "destructive",
         title: t("menus.dialog.deleteTitle"),
         description: hasChildren
           ? t("menus.dialog.deleteBranchDescription", { name: menu.name })

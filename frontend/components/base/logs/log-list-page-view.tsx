@@ -92,12 +92,19 @@ export function LogListPageView<TData extends { id: string }>({
   return (
     <div className="w-full space-y-5 self-start">
       <ManagementPageHeader
-        eyebrow={t("navigation.tools.name")}
+        // eyebrow={t("navigation.tools.name")}
         title={title}
         description={description}
         actions={
-          <Button variant="outline" size="sm" onClick={onRefresh} disabled={isFetching}>
-            <RefreshCwIcon className={isFetching ? "animate-spin" : undefined} />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onRefresh}
+            disabled={isFetching}
+          >
+            <RefreshCwIcon
+              className={isFetching ? "animate-spin" : undefined}
+            />
             {t("common.actions.refresh")}
           </Button>
         }
@@ -118,10 +125,7 @@ export function LogListPageView<TData extends { id: string }>({
         loadingMode="spinner"
         loadingMessage={t("common.loading.default")}
         emptyMessage={
-          <EntityEmptyState
-            title={emptyTitle}
-            description={emptyDescription}
-          />
+          <EntityEmptyState title={emptyTitle} description={emptyDescription} />
         }
         tableLayout={{
           columnsMovable: false,

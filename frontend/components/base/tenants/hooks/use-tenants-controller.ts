@@ -251,6 +251,7 @@ export function useTenantsController() {
       const hasChildren = (treeNode?.children.length ?? 0) > 0
 
       dialog.show({
+        variant: "destructive",
         title: t("tenants.dialog.deleteTitle"),
         description: hasChildren
           ? t("tenants.dialog.deleteBranchDescription", { name: tenant.name })

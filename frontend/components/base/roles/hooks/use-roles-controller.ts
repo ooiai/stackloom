@@ -261,6 +261,7 @@ export function useRolesController() {
       const hasChildren = (treeNode?.children.length ?? 0) > 0
 
       dialog.show({
+        variant: "destructive",
         title: t("roles.dialog.deleteTitle"),
         description: hasChildren
           ? t("roles.dialog.deleteBranchDescription", { name: role.name })

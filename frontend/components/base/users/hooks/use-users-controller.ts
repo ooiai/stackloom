@@ -269,6 +269,7 @@ export function useUsersController() {
   const confirmRemoveUser = useCallback(
     (user: UserData) => {
       dialog.show({
+        variant: "destructive",
         title: t("users.dialog.deleteTitle"),
         description: t("users.dialog.deleteDescription", {
           username: user.username,
