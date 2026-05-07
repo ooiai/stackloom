@@ -108,6 +108,13 @@
     },
     "keepAlive": {
       "label": "开启缓存"
+    },
+    "description": {
+      "label": "描述",
+      "placeholder": "简短描述该菜单的用途（可选）",
+      "validation": {
+        "max": "描述长度不能超过 500 个字符"
+      }
     }
   },
   "status": {

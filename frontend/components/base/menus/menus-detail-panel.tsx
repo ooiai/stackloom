@@ -130,6 +130,12 @@ export function MenusDetailPanel({
               />
             </div>
 
+            {selectedNode.description ? (
+              <p className="text-sm text-muted-foreground">
+                {selectedNode.description}
+              </p>
+            ) : null}
+
             <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <span>{t("menus.detail.visible")}：</span>
               <span>

@@ -64,6 +64,7 @@ export interface MenuData {
   parent_id: string | null
   code: string
   name: string
+  description: string | null
   path: string | null
   component: string | null
   redirect: string | null
@@ -293,6 +294,7 @@ export interface CreateMenuParam {
   parent_id?: string | null
   code: string
   name: string
+  description?: string | null
   path?: string
   component?: string
   redirect?: string
@@ -310,6 +312,7 @@ export interface UpdateMenuParam {
   parent_id?: string | null
   code?: string
   name?: string
+  description?: string | null
   path?: string
   component?: string
   redirect?: string
@@ -511,6 +514,7 @@ export interface MenuFormValues {
   parent_id?: string | null
   code: string
   name: string
+  description: string
   path: string
   component: string
   redirect: string

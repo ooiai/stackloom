@@ -55,6 +55,7 @@ export function createMenuFormSchema(t: TranslateFn = defaultT) {
       .trim()
       .min(1, t("menus.form.name.validation.required"))
       .max(100, t("menus.form.name.validation.max")),
+    description: optionalText(500, t("menus.form.description.validation.max")),
     path: optionalText(255, t("menus.form.path.validation.max")),
     component: optionalText(255, t("menus.form.component.validation.max")),
     redirect: optionalText(255, t("menus.form.redirect.validation.max")),
@@ -195,6 +196,7 @@ export function getDefaultMenuFormValues(
     parent_id: menu?.parent_id ?? parent?.id ?? null,
     code: menu?.code ?? "",
     name: menu?.name ?? "",
+    description: menu?.description ?? "",
     path: menu?.path ?? "",
     component: menu?.component ?? "",
     redirect: menu?.redirect ?? "",
@@ -218,6 +220,7 @@ export function buildCreateMenuParam(
     parent_id: parsed.parent_id ?? null,
     code: parsed.code,
     name: parsed.name,
+    description: parsed.description ?? null,
     path: parsed.path,
     component: parsed.component,
     redirect: parsed.redirect,
@@ -243,6 +246,7 @@ export function buildUpdateMenuParam(
     parent_id: parsed.parent_id ?? null,
     code: parsed.code,
     name: parsed.name,
+    description: parsed.description ?? null,
     path: parsed.path,
     component: parsed.component,
     redirect: parsed.redirect,

@@ -55,6 +55,7 @@ impl MenuRepository for SqlxMenuRepository {
                 parent_id,
                 code,
                 name,
+                description,
                 path,
                 component,
                 redirect,
@@ -68,13 +69,14 @@ impl MenuRepository for SqlxMenuRepository {
                 updated_at,
                 deleted_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
             RETURNING
                 id,
                 tenant_id,
                 parent_id,
                 code,
                 name,
+                description,
                 path,
                 component,
                 redirect,
@@ -94,6 +96,7 @@ impl MenuRepository for SqlxMenuRepository {
         .bind(&menu.parent_id)
         .bind(&menu.code)
         .bind(&menu.name)
+        .bind(&menu.description)
         .bind(&menu.path)
         .bind(&menu.component)
         .bind(&menu.redirect)
@@ -122,6 +125,7 @@ impl MenuRepository for SqlxMenuRepository {
                 parent_id,
                 code,
                 name,
+                description,
                 path,
                 component,
                 redirect,
@@ -156,6 +160,7 @@ impl MenuRepository for SqlxMenuRepository {
                 parent_id,
                 code,
                 name,
+                description,
                 path,
                 component,
                 redirect,
@@ -228,6 +233,7 @@ impl MenuRepository for SqlxMenuRepository {
                 parent_id,
                 code,
                 name,
+                description,
                 path,
                 component,
                 redirect,
@@ -298,6 +304,7 @@ impl MenuRepository for SqlxMenuRepository {
                 parent_id,
                 code,
                 name,
+                description,
                 path,
                 component,
                 redirect,
@@ -340,6 +347,7 @@ impl MenuRepository for SqlxMenuRepository {
                 parent_id,
                 code,
                 name,
+                description,
                 path,
                 component,
                 redirect,
@@ -449,16 +457,17 @@ impl MenuRepository for SqlxMenuRepository {
                 parent_id = $3,
                 code = $4,
                 name = $5,
-                path = $6,
-                component = $7,
-                redirect = $8,
-                icon = $9,
-                menu_type = $10,
-                sort = $11,
-                visible = $12,
-                keep_alive = $13,
-                status = $14,
-                updated_at = $15
+                description = $6,
+                path = $7,
+                component = $8,
+                redirect = $9,
+                icon = $10,
+                menu_type = $11,
+                sort = $12,
+                visible = $13,
+                keep_alive = $14,
+                status = $15,
+                updated_at = $16
             WHERE id = $1
             RETURNING
                 id,
@@ -466,6 +475,7 @@ impl MenuRepository for SqlxMenuRepository {
                 parent_id,
                 code,
                 name,
+                description,
                 path,
                 component,
                 redirect,
@@ -485,6 +495,7 @@ impl MenuRepository for SqlxMenuRepository {
         .bind(&menu.parent_id)
         .bind(&menu.code)
         .bind(&menu.name)
+        .bind(&menu.description)
         .bind(&menu.path)
         .bind(&menu.component)
         .bind(&menu.redirect)

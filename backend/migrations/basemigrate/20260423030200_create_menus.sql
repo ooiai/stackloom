@@ -6,6 +6,7 @@ CREATE TABLE menus (
     parent_id BIGINT,
     code VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
+    description TEXT,
     path VARCHAR(255),
     component VARCHAR(255),
     redirect VARCHAR(255),
@@ -29,6 +30,7 @@ COMMENT ON COLUMN menus.tenant_id IS '所属租户ID，NULL 表示系统级菜�
 COMMENT ON COLUMN menus.parent_id IS '父级菜单ID';
 COMMENT ON COLUMN menus.code IS '菜单编码';
 COMMENT ON COLUMN menus.name IS '菜单名称';
+COMMENT ON COLUMN menus.description IS '菜单描述';
 COMMENT ON COLUMN menus.path IS '前端路由路径';
 COMMENT ON COLUMN menus.component IS '前端组件路径';
 COMMENT ON COLUMN menus.redirect IS '重定向路由';

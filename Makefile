@@ -22,7 +22,7 @@ endif
 
 MIGRATE_SOURCE := .$(subst ./backend,,$(MIGRATE_PATH))
 
-.PHONY: help git-run git-commit clean add install web-dev server check \
+.PHONY: help git-run git-commit clean add install web server check \
 	nbm be-module new-backend-module new_backend_module \
 	migrate-check migrate-add migrate-run migrate-revert migrate-info
 
@@ -35,7 +35,7 @@ help:
 	@echo "  clean                                  Remove frontend build artifacts and cargo cache"
 	@echo "  add <package>                          Add a frontend dependency with pnpm"
 	@echo "  install                                Install frontend dependencies"
-	@echo "  web-dev                                Start frontend development server"
+	@echo "  web                                Start frontend development server"
 	@echo "  server                                 Start backend server"
 	@echo "  check                                  Run cargo check in backend"
 	@echo "  nbm p=base table=users [entity=user] [Entity=User] [migration=basemigrate] [api_http=true|false]"
@@ -102,10 +102,10 @@ install:
 	$(CD) $(FRONTEND_PATH) && $(PNPM) install
 
 # Frontend start dev server
-# Usage: make web-dev
-web-dev:
+# Usage: make web
+web:
 	@echo "===> Frontend start dev server."
-	$(CD) $(FRONTEND_PATH) && $(PNPM) install
+	$(CD) $(FRONTEND_PATH) && ($(PNPM) install || ($(PNPM) self-update && $(PNPM) install))
 	$(CD) $(FRONTEND_PATH) && $(PNPM) dev
 
 # Backend run server

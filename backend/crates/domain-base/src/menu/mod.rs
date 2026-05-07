@@ -15,6 +15,7 @@ pub struct Menu {
     pub parent_id: Option<i64>,
     pub code: String,
     pub name: String,
+    pub description: Option<String>,
     pub path: Option<String>,
     pub component: Option<String>,
     pub redirect: Option<String>,
@@ -41,6 +42,7 @@ impl Menu {
             parent_id: cmd.parent_id,
             code: cmd.code,
             name: cmd.name,
+            description: cmd.description,
             path: cmd.path,
             component: cmd.component,
             redirect: cmd.redirect,
@@ -89,6 +91,10 @@ impl Menu {
 
         if let Some(icon) = cmd.icon {
             self.icon = Some(icon);
+        }
+
+        if let Some(description) = cmd.description {
+            self.description = Some(description);
         }
 
         if let Some(menu_type) = cmd.menu_type {
@@ -145,6 +151,7 @@ pub struct CreateMenuCmd {
     pub parent_id: Option<i64>,
     pub code: String,
     pub name: String,
+    pub description: Option<String>,
     pub path: Option<String>,
     pub component: Option<String>,
     pub redirect: Option<String>,
@@ -180,6 +187,7 @@ pub struct UpdateMenuCmd {
     pub parent_id: Option<i64>,
     pub code: Option<String>,
     pub name: Option<String>,
+    pub description: Option<String>,
     pub path: Option<String>,
     pub component: Option<String>,
     pub redirect: Option<String>,

@@ -1,455 +1,351 @@
-# StackLoom
+<a name="readme-top"></a>
 
-Weave full‑stack apps from UI blocks with AI.
+<p align="center">
+  <img src="./docs/images/logo.png" alt="StackLoom" width="80" />
+</p>
 
-> Status: **early / experimental** – APIs, internals, and folder structure may change frequently.
+<h1 align="center">StackLoom</h1>
+
+<p align="center">
+  <b>The open-source multi-tenant SaaS admin scaffold — Rust-powered, production-ready.</b><br/>
+  <sub>Authentication · Multi-Tenancy · RBAC · Menus · Audit Logs — woven together, ready to ship.</sub>
+</p>
+
+<p align="center">
+  <a href="#-features">Features</a> ·
+  <a href="#-architecture">Architecture</a> ·
+  <a href="#-tech-stack">Stack</a> ·
+  <a href="#-getting-started">Get Started</a> ·
+  <a href="#-project-structure">Structure</a> ·
+  <a href="#-contributing">Contributing</a>
+  &nbsp;|&nbsp;
+  <a href="./README.zh-CN.md">中文文档</a>
+</p>
+
+<p align="center">
+  <a href="./LICENSE">
+    <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" />
+  </a>
+  <img alt="Rust" src="https://img.shields.io/badge/backend-Rust-orange?style=flat-square&logo=rust" />
+  <img alt="Next.js" src="https://img.shields.io/badge/frontend-Next.js%2016-black?style=flat-square&logo=next.js" />
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/database-PostgreSQL-336791?style=flat-square&logo=postgresql&logoColor=white" />
+  <img alt="Redis" src="https://img.shields.io/badge/cache-Redis-DC382D?style=flat-square&logo=redis&logoColor=white" />
+  <img alt="Status" src="https://img.shields.io/badge/status-active%20development-green?style=flat-square" />
+</p>
 
 ---
 
 ## What is StackLoom?
 
-StackLoom is an experimental tool to help you build full‑stack web applications from **UI blocks** and **natural‑language instructions**.
+> *A loom weaves individual threads into a strong, coherent fabric.*
+> *StackLoom weaves your core admin concerns — auth, tenancy, roles, permissions — into a single, cohesive platform.*
 
-Instead of starting from a blank project and wiring everything manually, you:
+**StackLoom** is a production-grade, multi-tenant SaaS admin scaffold. Instead of re-implementing the same authentication flows, RBAC trees, and tenant isolation logic for every new product, StackLoom gives you a hardened, tested foundation you can build on — and ship from.
 
-1. Describe what you want (pages, components, flows, data),
-2. Let StackLoom propose **UI blocks + backend glue**, and
-3. Refine the code through **iteration** (both by prompt and by hand).
-
-The goal is **not** to hide your code behind a black box. The generated output lives in your repo as regular code that you are expected to read, modify, and own.
+It's built with a strict **Domain-Driven Design** layering (domain → infra → api-http → app), a **Rust** API server for performance and type safety, and a **Next.js 16** admin console for a modern, responsive management experience.
 
 ---
 
-## Key ideas
+## ✨ Features
 
-- **UI‑first, AI‑assisted**
+🏢 **Multi-Tenant by Design**
+Tenant isolation from day one. Each tenant carries its own user pool, role set, menus, and permission configuration — with zero cross-contamination.
 
-    You think in terms of _screens_ and _blocks_ (hero, sidebar, dashboard, form section, CRUD table, etc.). StackLoom uses AI to scaffold the UI and related logic.
+�� **Fine-Grained RBAC**
+Hierarchical roles → permission trees → dynamic menus. Roles can be system-wide or tenant-scoped. Permissions are bound to menus and API routes, not hard-coded in handlers.
 
-- **Full‑stack by design**
+🛡️ **JWT Authentication + Slider Captcha**
+Two-phase sign-in: verify account → select tenant → receive scoped JWT. Slider captcha keeps bots out. Refresh tokens keep sessions alive without re-login.
 
-    It aims to connect frontend and backend: components, routes, handlers, and data model stubs. Not just mock UIs.
+👥 **User & Tenant Management**
+Full CRUD for users and tenants with status lifecycle, avatar upload (S3-compatible), and soft-delete. Assign roles directly from the admin UI.
 
-- **Incremental changes**
+📋 **Dynamic Menu System**
+Tree-structured menus stored in the database and served per-role. No code deploys needed to change navigation — manage it in the admin console.
 
-    You can run StackLoom multiple times as requirements evolve. It should try to keep changes localized and diff‑friendly instead of rewriting everything every time.
+📖 **Data Dictionary**
+Centralised code-table management. Store enumerations (status, types, categories) in the DB and reference them across your app with type-safe lookups.
 
-- **Code you control**
+📝 **Audit & Operation Logs**
+Every mutation writes a structured before/after snapshot. System logs capture HTTP-level activity. Query and filter logs from the admin console.
 
-    All code is meant to be human‑readable and checked into version control. You are encouraged to review, refactor, and extend it.
+⚙️ **Background Job Queue**
+Async task processing via [Apalis](https://github.com/geofmureithi/apalis) backed by Redis. Decouple heavy work (emails, exports, notifications) from the request path.
+
+🌐 **i18n Ready**
+Full internationalisation support (zh-CN, en-US) across the entire admin console, powered by `next-intl`.
+
+🎨 **Dark / Light Mode**
+System-aware theme switching with no flash, no flicker.
+
+🚀 **Module Scaffold**
+Generate a complete CRUD module (domain entity + infra repo + HTTP handler + frontend page) with a single `make nbm` command.
 
 ---
 
-## Repository structure
+## 🏗️ Architecture
 
-This repo is organized roughly as follows:
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                        Browser / Mobile Client                        │
+└───────────────────────────────┬──────────────────────────────────────┘
+                                │  HTTPS
+┌───────────────────────────────▼──────────────────────────────────────┐
+│               Next.js 16 Frontend  (App Router · React 19)            │
+│       shadcn-compatible UI · TanStack Query/Table · next-intl          │
+│                                                                        │
+│   (auth)          (base/upms)             (web)                        │
+│  signin/signup    users · roles           landing page                 │
+│                   tenants · menus                                      │
+│                   perms · dicts                                        │
+└───────────────────────────────┬──────────────────────────────────────┘
+                                │  REST / JSON  (Bearer JWT)
+┌───────────────────────────────▼──────────────────────────────────────┐
+│                  Rust API Server  (Axum 0.8 · Tokio)                  │
+│                                                                        │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐   │
+│  │  /auth       │  │  /base       │  │  /system                 │   │
+│  │  signin      │  │  users       │  │  logs · sms · aws        │   │
+│  │  signup      │  │  roles       │  └──────────────────────────┘   │
+│  │  tokens      │  │  menus       │                                   │
+│  └──────────────┘  │  perms       │  JWT middleware + RBAC checks     │
+│                    │  tenants     │  Request tracing (tower-http)      │
+│                    │  dicts       │                                    │
+│                    └──────────────┘                                   │
+│                                                                        │
+│                    SQLx  (compile-time checked queries)                │
+└──────────┬────────────────────────────────────┬───────────────────────┘
+           │                                    │
+┌──────────▼──────────┐            ┌────────────▼───────────────────────┐
+│     PostgreSQL       │            │  Redis                             │
+│  (primary store)     │            │  · JWT token store                 │
+│  · multi-tenant data │            │  · Apalis job queue                │
+│  · migrations/SQLx   │            │  · rate limiting                   │
+└─────────────────────┘            └────────────────────────────────────┘
+```
 
-- `frontend/` – Frontend application
-- `backend/` – Backend services / API handlers
-- `docs/` – Additional documentation and design notes
+### Backend Crate Layout
 
-Each folder can evolve independently. The exact framework / stack may differ per project; treat this README as a high‑level guide and consult sub‑READMEs or docs for details when they exist.
+The Rust workspace follows a strict DDD layering — no layer may import from a layer above it:
+
+| Crate | Role |
+|---|---|
+| `domain-base` | Entities, service traits, value objects, business rules |
+| `infra-base` | SQLx repositories — the only layer that talks to the DB |
+| `api-http` | Axum routes, request/response DTOs, middleware wiring |
+| `app` | Bootstrap: dependency injection, server startup, migrations |
+| `domain-auth` / `infra-auth` | Authentication domain — isolated from base |
 
 ---
 
-## Getting started
+## 🔧 Tech Stack
 
-> The commands below are **templates**. Adjust them to match your actual stack, package manager, and scripts.
+**Backend**
+
+| | Technology | Purpose |
+|---|---|---|
+| 🦀 | [Rust](https://www.rust-lang.org/) + [Axum 0.8](https://github.com/tokio-rs/axum) | Async HTTP server, zero-cost middleware |
+| 🗃️ | [SQLx 0.8](https://github.com/launchbadge/sqlx) | Compile-time checked SQL queries |
+| 🐘 | [PostgreSQL](https://www.postgresql.org/) | Primary relational store |
+| ⚡ | [Redis](https://redis.io/) | Token store, caching, job queues |
+| 📬 | [Apalis](https://github.com/geofmureithi/apalis) | Background job processing |
+| 🆔 | Sonyflake | Distributed ID generation |
+| 🔑 | JWT (HS256) | Stateless auth tokens with Redis revocation |
+
+**Frontend**
+
+| | Technology | Purpose |
+|---|---|---|
+| ⚛️ | [Next.js 16](https://nextjs.org/) + [React 19](https://react.dev/) | App Router, SSR, React Server Components |
+| 🎨 | [Tailwind CSS v4](https://tailwindcss.com/) + [Base UI](https://base-ui.com/) | Styling and accessible primitives |
+| 🔄 | [TanStack Query v5](https://tanstack.com/query) | Server state, caching, optimistic updates |
+| 📊 | [TanStack Table v8](https://tanstack.com/table) | Headless data tables with sorting and pagination |
+| 🌍 | [next-intl](https://next-intl-docs.vercel.app/) | Internationalisation (zh-CN, en-US) |
+| 🔐 | [hashids](https://hashids.org/) | Obfuscated numeric IDs in URLs |
+| 🏪 | [Zustand](https://zustand-demo.pmnd.rs/) | Lightweight client state management |
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Git
-- Node.js (LTS) and either `npm`, `pnpm`, or `yarn`
-- (Optional) Docker, if you plan to containerize services
-- (Optional) LLM provider key (e.g., OpenAI‑compatible API key) if StackLoom relies on external models
-
-### Install dependencies
-
-From the repo root:
-
-1. Install frontend dependencies:
-
-    ```bash
-    cd frontend
-    # Use your preferred package manager
-    npm install
-    # or: pnpm install
-    # or: yarn
-    ```
-
-2. Install backend dependencies:
-
-    ```bash
-    cd backend
-    # Example for Node / TypeScript backend
-    npm install
-    # or your backend stack's equivalent:
-    #   pip install -r requirements.txt
-    #   bun install
-    #   etc.
-    ```
-
-3. Set up environment variables:
-
-    Create an `.env` (or multiple env files per app) and add variables such as:
-
-    ```bash
-    STACKLOOM_ENV=development
-    # Example if you use an external LLM:
-    STACKLOOM_OPENAI_API_KEY=your_api_key_here
-    ```
-
-    Check your project’s docs or code for the exact set of required variables.
-
-### Run the apps
-
-From the repo root:
+- [Rust](https://rustup.rs/) (stable toolchain)
+- [Node.js](https://nodejs.org/) 20+ and [pnpm](https://pnpm.io/)
+- [PostgreSQL](https://www.postgresql.org/) 15+
+- [Redis](https://redis.io/) 7+
+- [`sqlx-cli`](https://github.com/launchbadge/sqlx/tree/main/sqlx-cli)
 
 ```bash
-# Example pattern using a Makefile
-make dev
+cargo install sqlx-cli --no-default-features --features postgres
 ```
 
-or start each side separately:
+### 1 · Clone
 
 ```bash
-# Terminal 1
-cd frontend
-npm run dev
-
-# Terminal 2
-cd backend
-npm run dev
+git clone https://github.com/ooiai/stackloom.git
+cd stackloom
 ```
 
-Then open the printed URL(s), such as:
+### 2 · Configure environment
 
-- `http://localhost:3000` for the frontend
-- `http://localhost:PORT` for the backend (port depends on your setup)
-
----
-
-## Using StackLoom in practice
-
-How you **invoke** StackLoom depends on your integration (CLI, UI, or API), but a typical workflow looks like this:
-
-### 1. Describe your app
-
-You provide a high‑level description like:
-
-- “A landing page with hero, feature list, and pricing cards”
-- “An authenticated dashboard with a left sidebar and a top navigation bar”
-- “CRUD pages for Project and Task, with filtering and pagination”
-
-This description might live in:
-
-- a dedicated config file (e.g., `stackloom.config.*`),
-- a prompt in a web UI,
-- or a CLI command.
-
-### 2. Generate blocks
-
-StackLoom uses this description to propose and/or generate:
-
-- UI components and pages,
-- API endpoints / backend handlers,
-- basic data model stubs,
-- wiring code (routing, type definitions, shared utilities, etc.).
-
-The generated artifacts are regular files under `frontend/` and `backend/`.
-
-### 3. Refine and iterate
-
-You iterate in two main ways:
-
-- **Prompt‑level changes**  
-  Change the description or constraints and regenerate or update parts of the app.
-
-- **Code‑level changes**  
-  Edit generated code like any other project. Over time, your hand‑written code can dominate; StackLoom becomes a helper instead of the source of truth.
-
-A well‑behaved integration should:
-
-- Avoid rewriting files unnecessarily, and
-- Try to keep diffs small and reviewable.
-
-### 4. Integrate real systems and ship
-
-StackLoom is not a full platform; you are still responsible for:
-
-- Authentication and authorization
-- Database schema and migrations
-- Observability (logging, metrics, tracing)
-- Security, privacy, compliance
-- Deployment (PaaS, containers, etc.)
-
-Once the generated structure is in a good place, treat it like any other codebase: write tests, add monitoring, and deploy via your existing pipelines.
-
----
-
-## Module scaffold specs and scripts
-
-This repository now includes a standardized module scaffold flow based on the completed `users` module.
-
-### Separated spec documents
-
-Use:
-
-- `spec/backend_new_template.md`
-- `spec/frontend_new_template.md`
-
-And keep:
-
-- `spec/new_template.md`
-
-as the overview entry for the two sides.
-
-#### `spec/backend_new_template.md`
-
-This document should describe the backend module scaffold conventions for modules such as:
-
-- `tenants`
-- `roles`
-- `menus`
-- `perms`
-- `dicts`
-
-It should cover the expected layout across:
-
-- `backend/crates/domain-base`
-- `backend/crates/infra-base`
-- `backend/crates/api-http`
-
-and document conventions such as:
-
-- unified `POST + body` handlers
-- `req.rs` / `resp.rs` / `handlers.rs` / `mod.rs`
-- bigint `id` serde helpers
-- `AppError / AppResult`
-- `XxxService` + `XxxServiceImpl`
-- `SqlxXxxRepository`
-
-#### `spec/frontend_new_template.md`
-
-This document should describe the frontend module scaffold conventions aligned with the actual current frontend structure of this repository, including areas such as:
-
-- `frontend/app/(base)/`
-- `frontend/components/`
-- `frontend/hooks/`
-- `frontend/lib/`
-- `frontend/types/`
-
-It should document conventions such as:
-
-- page entry placement
-- component folder naming
-- hook naming
-- API wrapper placement
-- type file naming
-- frontend and backend CRUD action alignment
-
-### Separated scaffold scripts
-
-Use:
-
-- `backend/scripts/new_backend_module.sh`
-- `frontend/scripts/new_frontend_module.sh`
-
-And keep:
-
-- `backend/scripts/new_module.sh`
-
-only as a temporary compatibility entry if needed.
-
-#### Backend scaffold script
-
-Example usage:
+Copy the example config and fill in your values:
 
 ```bash
-sh backend/scripts/new_backend_module.sh p=base table=users
+cp backend/.env.example backend/.env
 ```
 
-or:
+Key variables:
+
+```env
+# Database
+BASE_DATABASE_URL=postgres://user:password@localhost:5432/stackloom
+
+# Redis
+REDIS_URL=redis://localhost:6379
+
+# Auth
+JWT_SECRET=your-secret-here
+```
+
+### 3 · Run database migrations
 
 ```bash
-sh backend/scripts/new_backend_module.sh p=base table=tenants
+make migrate-run MIGRATE_TARGET=base
 ```
 
-It should scaffold backend files for:
-
-- `backend/crates/domain-base/src/<entity>/`
-- `backend/crates/infra-base/src/<entity>/`
-- `backend/crates/api-http/src/<p>/<table>/`
-
-Including standard files such as:
-
-- `mod.rs`
-- `req.rs`
-- `resp.rs`
-- `handlers.rs`
-- `repo.rs`
-- `service.rs`
-
-#### Frontend scaffold script
-
-Example usage:
+### 4 · Start the backend
 
 ```bash
-sh frontend/scripts/new_frontend_module.sh p=base table=users
+make server
+# or:  cd backend && cargo run
 ```
 
-or:
+### 5 · Install frontend dependencies
 
 ```bash
-sh frontend/scripts/new_frontend_module.sh p=base table=tenants
+make install
+# or:  cd frontend && pnpm install
 ```
 
-It should scaffold frontend files according to the current repository layout, such as:
+### 6 · Start the frontend dev server
 
-- `frontend/app/(base)/<table>/page.tsx`
-- `frontend/components/<Entity>/<Entity>Form.tsx`
-- `frontend/components/<Entity>/<Entity>Table.tsx`
-- `frontend/components/<Entity>/<Entity>Dialog.tsx`
-- `frontend/hooks/use-<entity>.ts`
-- `frontend/lib/<entity>.ts`
-- `frontend/types/<entity>.types.ts`
+```bash
+make web-dev
+# or:  cd frontend && pnpm dev
+```
 
-### Supported parameters
-
-Both scripts should support:
-
-- `p`
-    - API or route group name, for example `base`
-- `table`
-    - plural module/table name, for example `users`
-- `entity`
-    - singular snake_case name, optional
-- `Entity`
-    - singular PascalCase name, optional
-
-If `entity` and `Entity` are omitted, the script should derive them from `table`.
-
-### Important note
-
-The backend and frontend scaffolds should evolve independently, because their responsibilities, file layout, and iteration speed are different.
-
-After generation, you should still manually review and update registration points such as:
-
-#### Backend registration points
-
-- `backend/crates/domain-base/src/lib.rs`
-- `backend/crates/infra-base/src/lib.rs`
-- `backend/crates/api-http/src/base/mod.rs`
-- `backend/crates/app/src/lib.rs`
-
-#### Frontend registration points
-
-- `frontend/app/(base)/`
-- `frontend/components/`
-- `frontend/hooks/`
-- `frontend/lib/`
-- `frontend/types/`
-- any frontend routing, navigation, menu, or page registry you are using
-
-### Recommended workflow
-
-1. Read `spec/backend_new_template.md`
-2. Read `spec/frontend_new_template.md`
-3. Run the backend scaffold script
-4. Run the frontend scaffold script
-5. Fill in real fields, SQL, frontend UI, and business logic
-6. Register the module in parent exports, app wiring, and frontend routes/pages
-7. Run your checks and tests
-
-## Configuration
-
-Because StackLoom is experimental and flexible, configuration details are project‑specific. Common configuration areas include:
-
-- **Model & provider settings**
-    - Which model/provider to use (e.g., `gpt‑4.1`, local LLM, etc.)
-    - Parameters such as temperature, max tokens, and timeouts
-    - Retries and rate‑limit behavior
-
-- **Project structure**
-    - Where to place:
-        - UI blocks (components, pages)
-        - Backend routes / handlers
-        - Shared types, DTOs, utilities
-    - Naming conventions and folder layout
-
-- **Scaffolding rules**
-    - File naming patterns (e.g., `*.page.tsx`, `*.route.ts`)
-    - Whether to generate tests alongside features
-    - Preferred libraries or frameworks
-
-Check your config files (e.g., `stackloom.config.*`, `.env`, `package.json` scripts, etc.) or additional docs under `docs/` for the concrete configuration used in this repository.
+Open [http://localhost:8606](http://localhost:8606) in your browser.
 
 ---
 
-## Development guidelines
+## 📁 Project Structure
 
-To keep the project healthy and AI‑friendly:
-
-- **Prefer explicit structure**
-    - Clear folder boundaries (`frontend`, `backend`, `shared`, etc.)
-    - Obvious entrypoints (e.g., `main.ts`, `app.tsx`)
-
-- **Keep generated code reviewable**
-    - Avoid massive one‑shot generations that produce thousands of lines without structure.
-    - If StackLoom is used via CLI/automation, try to scope each run to a specific area (e.g., “dashboard page”, “user profile form”).
-
-- **Log decisions**
-    - Add comments or docs for non‑obvious architecture decisions.
-    - When overriding generated behavior, leave a short note explaining why.
-
-- **Tests are welcome**
-    - Even basic smoke tests help catch regressions when regenerating or refactoring.
-
----
-
-## Roadmap (illustrative)
-
-This is an example roadmap for StackLoom‑style tooling:
-
-- [ ] **Diff‑aware updates**  
-       Apply minimal edits to existing files instead of replacing entire blocks.
-
-- [ ] **Richer UI block library**  
-       Pre‑built layouts, dashboards, data tables, complex forms, and patterns.
-
-- [ ] **Deeper framework integrations**  
-       e.g., Next.js, Remix, NestJS, FastAPI, and others, with first‑class routing/data primitives.
-
-- [ ] **Multiple model backends**  
-       Support for hosted APIs, on‑prem / self‑hosted inference, and local models.
-
-- [ ] **Templates & examples**  
-       Starter templates for typical apps: admin dashboards, SaaS boilerplates, internal tools.
-
----
-
-## Contributing
-
-Contributions are welcome while the project is still in early stages.
-
-- Use issues for:
-    - bug reports,
-    - feature requests,
-    - design questions.
-
-- For pull requests:
-    - Keep changes focused and scoped (one main concern per PR).
-    - Add or update tests when behavior changes.
-    - Update docs or comments where applicable.
-
-- Code style:
-    - Prefer clarity over cleverness.
-    - Small, composable modules are easier for both humans and AI tools to work with.
+```
+stackloom/
+├── backend/                    # Rust workspace
+│   ├── bin/
+│   │   └── monolith/           # Server entrypoint
+│   ├── crates/
+│   │   ├── domain-auth/        # Auth domain: entities, service traits
+│   │   ├── domain-base/        # Base domain: users, roles, tenants, menus...
+│   │   ├── infra-auth/         # Auth repositories (SQLx)
+│   │   ├── infra-base/         # Base repositories (SQLx)
+│   │   ├── api-http/           # Axum routes and HTTP handlers
+│   │   │   ├── auth/           #   /auth/signin, /auth/signup
+│   │   │   ├── base/           #   /base/users, /roles, /tenants...
+│   │   │   └── system/         #   /system/logs, /sms, /aws
+│   │   └── app/                # Dependency wiring + server bootstrap
+│   └── migrations/
+│       └── basemigrate/        # SQLx migration files
+│
+├── frontend/                   # Next.js 16 application
+│   ├── app/
+│   │   ├── (auth)/             # Public: signin, signup
+│   │   ├── (base)/             # Admin console (requires auth)
+│   │   │   └── upms/           #   users · roles · menus · perms · tenants · dicts
+│   │   └── (web)/              # Public landing page
+│   ├── components/
+│   │   ├── base/               # Feature components (per UPMS module)
+│   │   ├── auth/               # Sign-in / sign-up UI
+│   │   ├── reui/               # Reusable design system wrappers
+│   │   └── ui/                 # Primitive UI components
+│   ├── stores/                 # API clients and global state
+│   ├── types/                  # Shared TypeScript interfaces
+│   └── messages/               # i18n strings (zh-CN, en-US)
+│
+├── docs/                       # Architecture notes and design docs
+├── spec/                       # Module scaffold specifications
+└── Makefile                    # Developer task runner
+```
 
 ---
 
-## License
+## 🧩 Module Scaffold
 
-MIT License. See the `LICENSE` file at the root of this repository for details.
+Generating a new CRUD module takes one command:
+
+```bash
+# Scaffold backend (domain + infra + api-http)
+make nbm p=base table=orders entity=order Entity=Order
+
+# Scaffold frontend (page + components + hooks + types)
+cd frontend && sh scripts/new_frontend_module.sh p=base table=orders
+```
+
+This generates the full layered skeleton — entity, repository, service, HTTP handlers, request/response types, React page, columns, controller hook, and i18n keys. You fill in the real business logic.
+
+See [`spec/backend_new_template.md`](./spec/backend_new_template.md) and [`spec/frontend_new_template.md`](./spec/frontend_new_template.md) for the full conventions.
 
 ---
+
+## 🌍 Internationalisation
+
+Supported locales: **zh-CN** (default) · **en-US**
+
+Message files live in `frontend/messages/{locale}/`. Each module has its own message file:
+
+```
+messages/
+├── zh-CN/
+│   ├── common.json
+│   ├── users.json
+│   ├── roles.json
+│   └── ...
+└── en-US/
+    ├── common.json
+    ├── users.json
+    └── ...
+```
+
+Adding a new locale is a matter of adding a new folder and wiring it in `lib/i18n/`.
+
+---
+
+## 🤝 Contributing
+
+Contributions are very welcome. A few guidelines:
+
+1. **Fork → branch → PR** — keep PRs focused on a single concern.
+2. **Backend**: run `cd backend && cargo check --workspace && cargo test --workspace` before opening a PR.
+3. **Frontend**: run `cd frontend && pnpm typecheck` before opening a PR.
+4. **No auto-commits** — reviewers will read every diff before merging.
+5. Follow the existing DDD layer boundaries. A handler in `api-http` must not bypass the service layer to call a repository directly.
+
+Please open an issue first for any non-trivial feature or architectural change.
+
+---
+
+## 📄 License
+
+MIT © [ooiai](https://github.com/ooiai)
+
+See the [`LICENSE`](./LICENSE) file for details.
+
+---
+
+<div align="right">
+
+[↑ Back to top](#readme-top)
+
+</div>

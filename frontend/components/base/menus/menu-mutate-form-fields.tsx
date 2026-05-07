@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/reui/select"
+import { Textarea } from "@/components/reui/textarea"
 import { getMenuTypeOptions } from "@/components/base/menus/helpers"
 import type { MenuMutateFormApi } from "@/components/base/menus/hooks/use-menu-mutate-form"
 import { useI18n } from "@/providers/i18n-provider"
@@ -123,6 +124,29 @@ export function MenuMutateFormFields({
                 </Select>
               </FieldContent>
             </Field>
+          )}
+        </form.Field>
+
+        <form.Field name="description">
+          {(field) => (
+            <LabelField
+              label={t("menus.form.description.label")}
+              htmlFor={field.name}
+              error={
+                field.state.meta.isTouched && !field.state.meta.isValid ? (
+                  <FieldError errors={field.state.meta.errors} />
+                ) : null
+              }
+            >
+              <Textarea
+                id={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(event) => field.handleChange(event.target.value)}
+                placeholder={t("menus.form.description.placeholder")}
+                rows={3}
+              />
+            </LabelField>
           )}
         </form.Field>
       </MenuMutateBasicSection>

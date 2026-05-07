@@ -1,444 +1,351 @@
-# StackLoom
+<a name="readme-top"></a>
 
-用 AI 把 UI 模块「编织」成完整的全栈应用。
+<p align="center">
+  <img src="./docs/images/logo.png" alt="StackLoom" width="80" />
+</p>
 
----
+<h1 align="center">StackLoom</h1>
 
-## 项目简介
+<p align="center">
+  <b>开源多租户 SaaS 管理脚手架 — Rust 驱动，开箱即用。</b><br/>
+  <sub>认证 · 多租户 · RBAC · 菜单 · 审计日志 — 紧密编织，随时上线。</sub>
+</p>
 
-StackLoom 是一个实验性的全栈应用生成与协作工具，目标是：
+<p align="center">
+  <a href="#-功能特性">功能特性</a> ·
+  <a href="#-系统架构">系统架构</a> ·
+  <a href="#-技术栈">技术栈</a> ·
+  <a href="#-快速开始">快速开始</a> ·
+  <a href="#-项目结构">项目结构</a> ·
+  <a href="#-参与贡献">参与贡献</a>
+  &nbsp;|&nbsp;
+  <a href="./README.md">English</a>
+</p>
 
-> 让开发者可以从「UI 模块 + 自然语言描述」出发，快速迭代出可运行的前后端应用。
-
-你不用从空白项目开始搭建路由、页面和接口，而是通过描述想要的体验和功能，让 StackLoom 帮你：
-
-- 生成 UI 组件、页面结构和布局
-- 连接前端与后端（路由、API、数据模型）
-- 在你不断修改需求时，尽量保持代码结构的可读性和可维护性
-
-> 当前状态：**早期 / 实验阶段**，API 与项目结构仍在快速迭代中，请谨慎用于生产环境。
-
----
-
-## 核心理念
-
-- **UI 优先（UI‑first）**  
-  从页面和组件出发，而不是从数据库或接口设计出发。
-
-- **人机共创（Human‑in‑the‑loop）**  
-  强调「AI 生成 + 人类审阅与调整」，代码产物始终是你可以修改和掌控的。
-
-- **增量改进（Incremental）**  
-  支持在已有代码上做小步更新，而不是每次都重头生成。
-
-- **全栈导向（Full‑stack）**  
-  不只生成组件，而是关注一个真实应用所需的前后端配合。
-
----
-
-## 目录结构概览
-
-仓库根目录下的主要子目录如下（以当前版本为准）：
-
-- `frontend/` – 前端应用（UI 层、路由、页面、组件等）
-- `backend/` – 后端服务（接口、业务逻辑、数据访问等）
-- `docs/` – 文档、设计记录与实验说明
-- `README.md` – 英文版项目介绍（简要）
-- `README.zh-CN.md` – 当前文件，中文版项目说明
-
-> 具体技术栈、框架与目录层级可能会在演进过程中发生变化，请以对应目录下的说明文件和实际代码为准。
+<p align="center">
+  <a href="./LICENSE">
+    <img alt="许可证：MIT" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" />
+  </a>
+  <img alt="Rust" src="https://img.shields.io/badge/后端-Rust-orange?style=flat-square&logo=rust" />
+  <img alt="Next.js" src="https://img.shields.io/badge/前端-Next.js%2016-black?style=flat-square&logo=next.js" />
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/数据库-PostgreSQL-336791?style=flat-square&logo=postgresql&logoColor=white" />
+  <img alt="Redis" src="https://img.shields.io/badge/缓存-Redis-DC382D?style=flat-square&logo=redis&logoColor=white" />
+  <img alt="状态" src="https://img.shields.io/badge/状态-积极开发中-green?style=flat-square" />
+</p>
 
 ---
 
-## 快速开始
+## 这是什么？
 
-> 以下为通用模板，请根据你当前仓库的实际脚本和依赖做对应调整。
+> *织机将一根根纱线编织成坚韧的布料。*
+> *StackLoom 将认证、租户隔离、角色权限……编织成一套完整的后台管理平台。*
 
-### 环境要求
+**StackLoom** 是一个生产级多租户 SaaS 管理脚手架。它让你不必重复实现认证流程、RBAC 权限树和租户隔离逻辑，而是直接拥有一套经过验证的坚实基础 —— 拿来即用，随时扩展。
 
-- Git
-- Node.js LTS（建议 18+）
-- 包管理工具：`npm` / `pnpm` / `yarn` 之一
-- （可选）Docker，如果你打算以容器形式运行或部署服务
-- （可选）访问外部大模型的 API Key（如 OpenAI / Azure OpenAI / OpenAI 兼容服务），如果项目配置了相关支持
+后端采用严格的**领域驱动设计**分层（domain → infra → api-http → app），**Rust** 提供极致的类型安全与性能，**Next.js 16** 的管理控制台带来现代化、响应式的操作体验。
 
-### 克隆仓库
+---
+
+## ✨ 功能特性
+
+🏢 **多租户原生支持**
+从第一行代码起即具备租户隔离。每个租户拥有独立的用户池、角色集、菜单树和权限配置，数据零泄漏。
+
+🔐 **细粒度 RBAC**
+角色 → 权限树 → 动态菜单，层层递进。角色分为系统级和租户级两类，权限绑定菜单和路由，不在处理器里硬编码。
+
+🛡️ **JWT 认证 + 滑块验证码**
+两阶段登录：验证账号 → 选择租户 → 颁发作用域 JWT。滑块验证码阻止机器人访问，刷新令牌保持会话长期有效。
+
+👥 **用户 & 租户管理**
+完整的增删改查，包含状态生命周期管理、头像上传（兼容 S3）和软删除。可在管理台直接为用户分配角色。
+
+📋 **动态菜单系统**
+菜单以树形结构存入数据库，并按角色动态下发。更改导航不需要重新部署，在管理台操作即可。
+
+📖 **数据字典**
+集中管理编码表（状态、类型、分类等），在数据库中维护枚举值，全局引用，强类型查询。
+
+📝 **审计 & 操作日志**
+每次数据变更均记录操作前后的结构化快照。系统日志捕获 HTTP 层活动，均可在管理台查询过滤。
+
+⚙️ **后台任务队列**
+基于 [Apalis](https://github.com/geofmureithi/apalis) + Redis 的异步任务处理。邮件、导出、通知等耗时操作从请求路径中解耦。
+
+🌐 **国际化就绪**
+管理控制台完整支持多语言（zh-CN、en-US），由 `next-intl` 驱动。
+
+🎨 **深浅色主题**
+跟随系统自动切换，无闪烁，无白屏。
+
+🚀 **模块脚手架**
+一条 `make nbm` 命令，生成完整 CRUD 模块（domain 实体 + infra 仓库 + HTTP 处理器 + 前端页面）。
+
+---
+
+## 🏗️ 系统架构
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                          浏览器 / 移动端客户端                          │
+└───────────────────────────────┬──────────────────────────────────────┘
+                                │  HTTPS
+┌───────────────────────────────▼──────────────────────────────────────┐
+│               Next.js 16 前端  (App Router · React 19)                │
+│       shadcn 兼容 UI · TanStack Query/Table · next-intl                │
+│                                                                        │
+│   (auth)          (base/upms)             (web)                        │
+│  登录/注册         用户 · 角色             公开落地页                    │
+│                   租户 · 菜单                                           │
+│                   权限 · 字典                                           │
+└───────────────────────────────┬──────────────────────────────────────┘
+                                │  REST / JSON  (Bearer JWT)
+┌───────────────────────────────▼──────────────────────────────────────┐
+│                  Rust API 服务器  (Axum 0.8 · Tokio)                  │
+│                                                                        │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐   │
+│  │  /auth       │  │  /base       │  │  /system                 │   │
+│  │  signin      │  │  users       │  │  日志 · SMS · 对象存储    │   │
+│  │  signup      │  │  roles       │  └──────────────────────────┘   │
+│  │  tokens      │  │  menus       │                                   │
+│  └──────────────┘  │  perms       │  JWT 中间件 + RBAC 鉴权           │
+│                    │  tenants     │  请求追踪 (tower-http)             │
+│                    │  dicts       │                                    │
+│                    └──────────────┘                                   │
+│                                                                        │
+│                    SQLx（编译期 SQL 检查）                              │
+└──────────┬────────────────────────────────────┬───────────────────────┘
+           │                                    │
+┌──────────▼──────────┐            ┌────────────▼───────────────────────┐
+│     PostgreSQL       │            │  Redis                             │
+│  （主要持久化存储）    │            │  · JWT 令牌存储                     │
+│  · 多租户数据         │            │  · Apalis 任务队列                 │
+│  · SQLx 迁移文件      │            │  · 限流                            │
+└─────────────────────┘            └────────────────────────────────────┘
+```
+
+### 后端 Crate 分层
+
+Rust 工作区严格遵守 DDD 分层 —— 上层不可被下层导入：
+
+| Crate | 职责 |
+|---|---|
+| `domain-base` | 实体、服务 Trait、值对象、业务规则 |
+| `infra-base` | SQLx 仓库实现 —— 唯一可与数据库通信的层 |
+| `api-http` | Axum 路由、请求/响应 DTO、中间件装配 |
+| `app` | 依赖注入、服务器启动、迁移执行 |
+| `domain-auth` / `infra-auth` | 认证领域，与 base 隔离 |
+
+---
+
+## 🔧 技术栈
+
+**后端**
+
+| | 技术 | 作用 |
+|---|---|---|
+| 🦀 | [Rust](https://www.rust-lang.org/) + [Axum 0.8](https://github.com/tokio-rs/axum) | 异步 HTTP 服务，零开销中间件 |
+| 🗃️ | [SQLx 0.8](https://github.com/launchbadge/sqlx) | 编译期 SQL 正确性检查 |
+| 🐘 | [PostgreSQL](https://www.postgresql.org/) | 主要关系型数据存储 |
+| ⚡ | [Redis](https://redis.io/) | 令牌存储、缓存、任务队列 |
+| 📬 | [Apalis](https://github.com/geofmureithi/apalis) | 后台任务处理 |
+| 🆔 | Sonyflake | 分布式 ID 生成 |
+| 🔑 | JWT (HS256) | 无状态认证令牌 + Redis 吊销支持 |
+
+**前端**
+
+| | 技术 | 作用 |
+|---|---|---|
+| ⚛️ | [Next.js 16](https://nextjs.org/) + [React 19](https://react.dev/) | App Router、SSR、React 服务端组件 |
+| 🎨 | [Tailwind CSS v4](https://tailwindcss.com/) + [Base UI](https://base-ui.com/) | 样式与无障碍原语组件 |
+| 🔄 | [TanStack Query v5](https://tanstack.com/query) | 服务端状态、缓存、乐观更新 |
+| 📊 | [TanStack Table v8](https://tanstack.com/table) | 无头数据表格（排序、分页） |
+| 🌍 | [next-intl](https://next-intl-docs.vercel.app/) | 国际化（zh-CN、en-US） |
+| 🔐 | [hashids](https://hashids.org/) | URL 中的混淆数字 ID |
+| 🏪 | [Zustand](https://zustand-demo.pmnd.rs/) | 轻量客户端状态管理 |
+
+---
+
+## 🚀 快速开始
+
+### 前置要求
+
+- [Rust](https://rustup.rs/)（stable 工具链）
+- [Node.js](https://nodejs.org/) 20+ 及 [pnpm](https://pnpm.io/)
+- [PostgreSQL](https://www.postgresql.org/) 15+
+- [Redis](https://redis.io/) 7+
+- [`sqlx-cli`](https://github.com/launchbadge/sqlx/tree/main/sqlx-cli)
 
 ```bash
-git clone <your-repo-url> stackloom
+cargo install sqlx-cli --no-default-features --features postgres
+```
+
+### 1 · 克隆仓库
+
+```bash
+git clone https://github.com/ooiai/stackloom.git
 cd stackloom
 ```
 
-### 安装依赖
+### 2 · 配置环境变量
 
-根据实际项目结构可能略有不同，一种典型方式是前后端分别安装：
-
-```bash
-# 安装前端依赖
-cd frontend
-npm install   # 或 pnpm install / yarn
-
-# 回到根目录
-cd ..
-
-# 安装后端依赖
-cd backend
-# 例如（视后端技术栈而定）：
-# npm install
-# 或 pip install -r requirements.txt
-# 或 bun install
-```
-
-### 配置环境变量
-
-仓库中通常会包含一个示例环境配置文件（如 `.env.example`）。你可以参考它创建本地环境配置：
+复制示例配置并填入你的参数：
 
 ```bash
-cp .env.example .env
+cp backend/.env.example backend/.env
 ```
 
-打开 `.env`，填入实际的配置值，例如：
+关键变量：
 
 ```env
-STACKLOOM_ENV=development
-STACKLOOM_OPENAI_API_KEY=你的_api_key_这里
-# 其他依项目而定的配置
+# 数据库
+BASE_DATABASE_URL=postgres://user:password@localhost:5432/stackloom
+
+# Redis
+REDIS_URL=redis://localhost:6379
+
+# 认证
+JWT_SECRET=your-secret-here
 ```
 
-> 如果前后端分别有环境文件，例如 `frontend/.env.local`、`backend/.env`，也请同步配置。
-
-### 启动开发环境
-
-如果项目根目录提供了统一脚本（例如 Makefile、npm workspace、turbo 等），你可以直接在根目录执行：
+### 3 · 执行数据库迁移
 
 ```bash
-# 示例：使用 Makefile
-make dev
+make migrate-run MIGRATE_TARGET=base
 ```
 
-也可以手动分别启动前后端（仅供参考）：
+### 4 · 启动后端服务
 
 ```bash
-# 启动前端
-cd frontend
-npm run dev
-
-# 启动后端（在另一个终端）
-cd backend
-npm run dev   # 或对应后端框架的启动命令
+make server
+# 或：cd backend && cargo run
 ```
 
-启动成功后，在浏览器访问对应地址（例如 `http://localhost:3000` 或 README/终端输出中提示的地址）。
-
----
-
-## 使用方式概览
-
-StackLoom 更偏向「工作流」而不是一个单一 CLI 命令，典型使用方式可能是以下组合（以你的项目实现为准）：
-
-1. **通过自然语言描述需求**
-
-    例如，在某个配置文件、对话界面或 DevTools 面板中描述：
-    - 需要一个登录页 + 注册页
-    - 登录后进入一个带侧边栏的仪表盘
-    - 仪表盘中有「项目列表」和「任务列表」，支持筛选和分页
-    - 提供一个「任务详情页」，可以编辑任务状态和备注
-
-2. **生成初始代码结构**
-
-    StackLoom 根据描述生成：
-    - 对应的前端路由与页面组件
-    - 基础的 UI 布局与组件（header / sidebar / card / form 等）
-    - 后端路由或 API handler 的骨架代码
-    - 简单的数据模型或类型定义（视实现而定）
-
-3. **迭代与重构**
-    - 增加新需求（例如新增一个「团队管理」页面）
-    - 调整已有页面布局（例如将列表拆成卡片视图和表格视图）
-    - 修改字段命名、接口结构等
-
-    StackLoom 会尝试在现有代码的基础上进行增量更新，而不是每次完全重写。
-
-4. **接入真实数据与基础设施**
-
-    在生成的代码基础上，你可以：
-    - 接入真实数据库（PostgreSQL / MySQL / MongoDB / 其他）
-    - 接入鉴权与权限控制
-    - 增加日志、监控与错误上报
-    - 按常规方式进行测试与部署
-
----
-
-## 配置与自定义
-
-> 具体配置项以项目中的实际配置文件为准，这里只总结常见维度。
-
-### 模型与提供方配置
-
-例如（示意）：
-
-- 使用哪个模型（如 `gpt-4.1`、`gpt-4.1-mini`、自托管模型等）
-- 超时时间 / 最大 token / 温度等参数
-- 是否允许联网搜索 / 检索增强等
-
-通常在 `.env` 或某个 `config` 文件中体现。
-
-### 代码生成策略
-
-包括但不限于：
-
-- 前端与后端代码的输出目录
-- 命名规范（文件命名、组件命名、路由命名等）
-- 是否自动生成测试文件、Storybook 示例等
-- 代码样式（如是否使用 TypeScript、是否使用 ESLint/Prettier 等）
-
-### UI 组件与设计系统
-
-如果你在项目中使用了某套 UI 库（例如 shadcn/ui、Ant Design、Material UI 等），可以通过配置让 StackLoom 尽量复用这些组件，从而：
-
-- 保持视觉与交互风格一致
-- 减少重复造轮子
-
----
-
-## 适用场景
-
-StackLoom 尤其适合：
-
-- **产品原型 / MVP**  
-  快速拉起一个端到端可跑的原型，覆盖基础业务流程。
-
-- **内部管理后台 / 工具类应用**  
-  大量表单、列表、详情页、过滤与导出逻辑，结构重复且模版化程度高。
-
-- **探索性开发**  
-  业务需求还不完全确定，需要频繁试错和改动界面与流程。
-
-不太适合（至少在当前阶段）：
-
-- 对性能、稳定性和安全性有非常严格要求的核心系统
-- 需要大量高度定制、像素级还原设计稿的前端项目
-
----
-
-## 模块脚手架规范与脚本
-
-当前仓库已经基于已完成的 `users` 模块，整理出一套标准化的新模块脚手架流程。
-
-### 拆分后的规范文档
-
-请使用：
-
-- `spec/backend_new_template.md`
-- `spec/frontend_new_template.md`
-
-并将：
-
-- `spec/new_template.md`
-
-作为前后端两侧规范的总入口索引。
-
-#### `spec/backend_new_template.md`
-
-这个文档用于说明后端新模块脚手架规范，适用于例如：
-
-- `tenants`
-- `roles`
-- `menus`
-- `perms`
-- `dicts`
-
-它应覆盖如下目录与约定：
-
-- `backend/crates/domain-base`
-- `backend/crates/infra-base`
-- `backend/crates/api-http`
-
-以及这些统一规范：
-
-- `POST + body`
-- `req.rs` / `resp.rs` / `handlers.rs` / `mod.rs`
-- bigint `id` 的 serde 处理
-- `AppError / AppResult`
-- `XxxService` + `XxxServiceImpl`
-- `SqlxXxxRepository`
-
-#### `spec/frontend_new_template.md`
-
-这个文档用于说明前端新模块脚手架规范，并且必须严格对齐当前仓库真实前端结构，例如：
-
-- `frontend/app/(base)/`
-- `frontend/components/`
-- `frontend/hooks/`
-- `frontend/lib/`
-- `frontend/types/`
-
-它应覆盖这些统一规范：
-
-- 页面入口位置
-- 组件目录命名
-- hooks 命名
-- API 封装位置
-- 类型文件命名
-- 前后端 CRUD 动作对齐
-
-### 拆分后的脚手架脚本
-
-请使用：
-
-- `backend/scripts/new_backend_module.sh`
-- `frontend/scripts/new_frontend_module.sh`
-
-并将：
-
-- `backend/scripts/new_module.sh`
-
-仅保留为兼容旧调用方式的临时入口。
-
-#### 后端脚本
-
-示例：
+### 5 · 安装前端依赖
 
 ```bash
-sh backend/scripts/new_backend_module.sh p=base table=users
+make install
+# 或：cd frontend && pnpm install
 ```
 
-或：
+### 6 · 启动前端开发服务器
 
 ```bash
-sh backend/scripts/new_backend_module.sh p=base table=tenants
+make web-dev
+# 或：cd frontend && pnpm dev
 ```
 
-它应负责生成后端模块骨架，例如：
+打开浏览器访问 [http://localhost:8606](http://localhost:8606)。
 
-- `backend/crates/domain-base/src/<entity>/`
-- `backend/crates/infra-base/src/<entity>/`
-- `backend/crates/api-http/src/<p>/<table>/`
+---
 
-并包含标准文件：
+## 📁 项目结构
 
-- `mod.rs`
-- `req.rs`
-- `resp.rs`
-- `handlers.rs`
-- `repo.rs`
-- `service.rs`
+```
+stackloom/
+├── backend/                    # Rust 工作区
+│   ├── bin/
+│   │   └── monolith/           # 服务器入口
+│   ├── crates/
+│   │   ├── domain-auth/        # 认证领域：实体、服务 Trait
+│   │   ├── domain-base/        # 基础领域：用户、角色、租户、菜单等
+│   │   ├── infra-auth/         # 认证仓库实现（SQLx）
+│   │   ├── infra-base/         # 基础仓库实现（SQLx）
+│   │   ├── api-http/           # Axum 路由与 HTTP 处理器
+│   │   │   ├── auth/           #   /auth/signin、/auth/signup
+│   │   │   ├── base/           #   /base/users、/roles、/tenants…
+│   │   │   └── system/         #   /system/logs、/sms、/aws
+│   │   └── app/                # 依赖装配 + 服务器启动
+│   └── migrations/
+│       └── basemigrate/        # SQLx 迁移文件
+│
+├── frontend/                   # Next.js 16 应用
+│   ├── app/
+│   │   ├── (auth)/             # 公开页面：登录、注册
+│   │   ├── (base)/             # 管理控制台（需认证）
+│   │   │   └── upms/           #   用户 · 角色 · 菜单 · 权限 · 租户 · 字典
+│   │   └── (web)/              # 公开落地页
+│   ├── components/
+│   │   ├── base/               # 功能组件（按 UPMS 模块划分）
+│   │   ├── auth/               # 登录 / 注册 UI
+│   │   ├── reui/               # 可复用设计系统封装
+│   │   └── ui/                 # 基础 UI 原语组件
+│   ├── stores/                 # API 客户端与全局状态
+│   ├── types/                  # 共享 TypeScript 接口
+│   └── messages/               # i18n 文案（zh-CN、en-US）
+│
+├── docs/                       # 架构说明与设计文档
+├── spec/                       # 模块脚手架规范
+└── Makefile                    # 开发者任务运行器
+```
 
-#### 前端脚本
+---
 
-示例：
+## 🧩 模块脚手架
+
+一条命令生成完整 CRUD 模块：
 
 ```bash
-sh frontend/scripts/new_frontend_module.sh p=base table=users
+# 生成后端（domain + infra + api-http）
+make nbm p=base table=orders entity=order Entity=Order
+
+# 生成前端（页面 + 组件 + Hook + 类型定义）
+cd frontend && sh scripts/new_frontend_module.sh p=base table=orders
 ```
 
-或：
+生成物包含：实体、仓库、服务、HTTP 处理器、请求/响应类型、React 页面、列定义、控制器 Hook 和 i18n 文案。你只需填入真正的业务逻辑。
 
-```bash
-sh frontend/scripts/new_frontend_module.sh p=base table=tenants
+详细规范见 [`spec/backend_new_template.md`](./spec/backend_new_template.md) 和 [`spec/frontend_new_template.md`](./spec/frontend_new_template.md)。
+
+---
+
+## 🌍 国际化
+
+支持语言：**zh-CN**（默认）· **en-US**
+
+文案文件位于 `frontend/messages/{locale}/`，每个模块独立维护：
+
+```
+messages/
+├── zh-CN/
+│   ├── common.json
+│   ├── users.json
+│   ├── roles.json
+│   └── ...
+└── en-US/
+    ├── common.json
+    ├── users.json
+    └── ...
 ```
 
-它应负责按照当前真实前端目录生成这些文件：
-
-- `frontend/app/(base)/<table>/page.tsx`
-- `frontend/components/<Entity>/<Entity>Form.tsx`
-- `frontend/components/<Entity>/<Entity>Table.tsx`
-- `frontend/components/<Entity>/<Entity>Dialog.tsx`
-- `frontend/hooks/use-<entity>.ts`
-- `frontend/lib/<entity>.ts`
-- `frontend/types/<entity>.types.ts`
-
-### 支持的参数
-
-前后端脚本都建议支持：
-
-- `p`
-    - 路由分组名，例如 `base`
-- `table`
-    - 复数模块名，例如 `users`
-- `entity`
-    - 单数 snake_case，选填
-- `Entity`
-    - 单数 PascalCase，选填
-
-如果没有传入 `entity` 和 `Entity`，脚本应尽量根据 `table` 自动推导。
-
-### 重要说明
-
-后端和前端脚手架需要分开演进，因为它们的职责、目录结构、变化节奏都不同。
-
-脚手架生成完成后，你仍然应该手动检查并补充这些注册点：
-
-#### 后端注册点
-
-- `backend/crates/domain-base/src/lib.rs`
-- `backend/crates/infra-base/src/lib.rs`
-- `backend/crates/api-http/src/base/mod.rs`
-- `backend/crates/app/src/lib.rs`
-
-#### 前端注册点
-
-- `frontend/app/(base)/`
-- `frontend/components/`
-- `frontend/hooks/`
-- `frontend/lib/`
-- `frontend/types/`
-- 以及你正在使用的菜单、导航、页面注册等位置
-
-### 推荐流程
-
-1. 先看 `spec/backend_new_template.md`
-2. 再看 `spec/frontend_new_template.md`
-3. 先运行后端脚本
-4. 再运行前端脚本
-5. 手动补充真实字段、SQL、UI、表单、表格列、类型定义和业务逻辑
-6. 完成模块注册与装配
-7. 运行检查、测试与联调
+新增语言只需添加对应文件夹并在 `lib/i18n/` 中注册即可。
 
 ---
 
-## 路线图（示例）
+## 🤝 参与贡献
 
-具体规划以实际项目 issue / project board 为准，这里给出一个示例方向：
+欢迎一切形式的贡献。请遵守以下原则：
 
-- [ ] 更智能的「差异感知」更新（基于现有代码结构做局部改动）
-- [ ] 更丰富的页面与布局模板库
-- [ ] 与主流框架的深度集成（如 Next.js、Remix、NestJS、FastAPI 等）
-- [ ] 支持更多推理后端（私有部署、本地模型等）
-- [ ] 提供若干开箱即用的「应用蓝本」（后台管理、SaaS、多租户等）
-- [ ] 更可视化的「模块编织」界面（Block/Flow 视图等）
+1. **Fork → 分支 → PR** —— 保持每个 PR 只关注单一关切。
+2. **后端**：提 PR 前请运行 `cd backend && cargo check --workspace && cargo test --workspace`。
+3. **前端**：提 PR 前请运行 `cd frontend && pnpm typecheck`。
+4. **不自动提交** —— 每次合并前均需人工审阅差异。
+5. 遵守现有 DDD 分层边界。`api-http` 中的处理器不得绕过服务层直接调用仓库。
 
----
-
-## 贡献指南
-
-欢迎参与共建，尤其是在项目早期阶段：
-
-1. **提 Issue**
-    - 报告 Bug：尽量附带复现步骤、日志或截图
-    - 功能建议：说明使用场景与痛点，越具体越好
-2. **提交 Pull Request**
-    - 优先保证 PR 聚焦于单一主题（一个 Bug 或一个特性）
-    - 遵守现有代码风格与目录结构
-    - 如有行为变化，请同步更新相关文档或注释
-3. **讨论与反馈**
-    - 对方向性问题，可以先在 Issue / Discussion 中交流
-    - 欢迎分享你基于 StackLoom 搭建的项目与踩坑经验
+非平凡的功能或架构变更，请先开 Issue 讨论。
 
 ---
 
-## 许可协议（License）
+## 📄 许可证
 
-本项目使用 MIT 协议。具体条款请见仓库根目录的 `LICENSE` 文件。
+MIT © [ooiai](https://github.com/ooiai)
+
+详见 [`LICENSE`](./LICENSE) 文件。
 
 ---
 
-## 联系方式
+<div align="right">
 
-根据你的项目实际情况，可以在此处补充：
+[↑ 返回顶部](#readme-top)
 
-- 团队或个人主页
-- Issue / Discussion 区使用指引
-- 其他支持渠道（如邮件列表、企业内部沟通渠道等）
-
-> 如果你正在阅读这份文档，欢迎尝试使用 StackLoom 为你的下一个小工具或内部后台「织」一个原型。
+</div>

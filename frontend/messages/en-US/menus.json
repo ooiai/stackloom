@@ -108,6 +108,13 @@
     },
     "keepAlive": {
       "label": "Enable cache"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Briefly describe the purpose of this menu item (optional)",
+      "validation": {
+        "max": "Description must be 500 characters or fewer"
+      }
     }
   },
   "status": {
