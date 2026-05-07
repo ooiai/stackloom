@@ -222,16 +222,17 @@ export default function BaseHeader({
     queryFn: () => userSharedApi.listCurrentMenus(),
     staleTime: Number.POSITIVE_INFINITY,
   })
+
   const trees = useMemo(() => {
     return currentMenus.map((node) => ({
       ...node,
-      name: t(`navigation.${node.code}.name`, undefined, node.name),
+      name: node.name,
       children: node.children.map((child) => ({
         ...child,
-        name: t(`navigation.${child.code}.name`, undefined, child.name),
+        name: child.name,
       })),
     }))
-  }, [currentMenus, t])
+  }, [currentMenus])
 
   return (
     <header className="border-b px-4 md:px-6">
