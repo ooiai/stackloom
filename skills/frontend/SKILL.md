@@ -43,13 +43,22 @@ frontend/app/
 │   ├── layout.tsx
 │   ├── upms/
 │   │   ├── layout.tsx
-│   │   └── users/page.tsx
+│   │   ├── users/page.tsx
+│   │   ├── tenants/page.tsx
+│   │   ├── roles/page.tsx
+│   │   ├── menus/page.tsx
+│   │   └── perms/page.tsx
 │   └── tools/
 │       ├── layout.tsx
-│       └── dicts/page.tsx
+│       ├── dicts/page.tsx
+│       ├── audit-logs/page.tsx
+│       ├── operation-logs/page.tsx
+│       └── system-logs/page.tsx
 ├── (web)/
 │   ├── layout.tsx
-│   └── page.tsx
+│   ├── page.tsx
+│   ├── privacy/page.tsx
+│   └── terms/page.tsx
 ├── forbidden.tsx
 ├── not-found.tsx
 ├── loading.tsx
@@ -65,8 +74,10 @@ For auth flows, use the same responsibility split under `frontend/components/aut
 frontend/components/base/users/
 ├── hooks/
 │   ├── use-user-mutate-form.ts
-│   └── use-users-controller.ts
+│   ├── use-users-controller.ts
+│   └── use-user-assign-roles.ts       ← secondary assign dialog
 ├── user-mutate-*.tsx
+├── user-assign-roles-dialog.tsx        ← assign-roles secondary dialog
 ├── users-page-*.tsx
 └── user-status-badge.tsx
 
@@ -96,6 +107,30 @@ frontend/components/base/tenants/
 ├── tenant-mutate-*.tsx
 ├── tenants-*.tsx
 └── tenant-status-badge.tsx
+```
+
+Some features also include **secondary assign dialogs** for many-to-many bindings.
+These follow the same hook-plus-dialog pattern as the mutate flow but operate on junction tables:
+
+```text
+frontend/components/base/roles/
+├── hooks/
+│   ├── use-role-mutate-form.ts
+│   ├── use-roles-controller.ts
+│   ├── use-role-assign-menus.ts        ← assign menus to role
+│   └── use-role-assign-perms.ts        ← assign perms to role
+├── role-mutate-*.tsx
+├── role-assign-menus-dialog.tsx
+├── role-assign-perms-dialog.tsx
+├── roles-page-*.tsx
+└── role-status-badge.tsx
+```
+
+When implementing a secondary assign dialog:
+1. Create `use-<resource>-assign-<target>.ts` inside the feature `hooks/` directory.
+2. Create `<resource>-assign-<target>-dialog.tsx` for the dialog shell and checkbox list.
+3. Keep the assignment API call in `stores/<group>-api.ts` alongside the primary CRUD calls.
+4. Open the dialog from the feature controller hook's action dispatcher.
 
 frontend/components/auth/
 ├── auth-page-shell.tsx
@@ -157,6 +192,30 @@ These rules are strict:
 - Raw `<button>` is acceptable inside `frontend/components/ui/**` or `frontend/components/reui/**` when implementing a shared primitive/wrapper and the low-level DOM element is intentional.
 
 ## Shared infrastructure
+
+### `components/base/shared/` — Feature-level layout components
+
+The `frontend/components/base/shared/` directory contains reusable page-level building blocks
+shared across all base (`(base)/`) admin features.
+
+| Component | Purpose |
+|---|---|
+| `management-page-header.tsx` | Standard header bar for admin list pages |
+| `base-header.tsx` | Top navigation header for the base layout |
+| `header-user-menu.tsx` | User menu rendered in the base layout header |
+| `entity-name-cell.tsx` | Standardized avatar + name cell for tables |
+| `entity-empty-state.tsx` | Empty state for list/tree views |
+| `entity-mutate-sheet-header.tsx` | Sheet header for create/edit forms |
+| `detail-meta-item.tsx` | Label–value pair for detail panels |
+| `metric-card.tsx` | KPI card for dashboard/overview sections |
+| `layout-width-toggle.tsx` | Toggle for the base layout width preference |
+
+Use these components before creating a new one-off header, empty state, or sheet header.
+
+### `components/topui/` — Project-level UI utilities
+
+`topui` is a project-specific utility layer on top of shadcn/ui and reui.
+See `skills/frontend/rules/topui.md` for the component inventory and usage rules.
 
 ### Providers
 
@@ -303,6 +362,8 @@ Read these files when relevant:
 - `skills/frontend/rules/i18n.md`
 - `skills/frontend/rules/reui.md`
 - `skills/frontend/rules/shadcn.md`
+- `skills/frontend/rules/topui.md`
+- `skills/frontend/rules/lib-utils.md`
 - `skills/frontend/rules/logging-pages.md`
 - `skills/frontend/rules/signin.md`
 - `skills/frontend/rules/stores.md`

@@ -60,7 +60,6 @@ import type {
   TreePermParam,
   TreeRoleParam,
   TreeMenuParam,
-  TreeByCodeMenuParam,
   TreeTenantParam,
   UpdatePermParam,
   UpdateRoleParam,
@@ -80,12 +79,13 @@ const BASE_MENU_API_PREFIX = "/apiv1/base/menus"
 const BASE_DICT_API_PREFIX = "/apiv1/base/dicts"
 const BASE_ROLE_API_PREFIX = "/apiv1/base/roles"
 const BASE_PERM_API_PREFIX = "/apiv1/base/perms"
+const SHARED_COMMON_API_PREFIX = "/apiv1/shared/common"
 const SHARED_PROFILE_API_PREFIX = "/apiv1/shared/profile"
 
 export const userSharedApi = {
   listCurrentMenus: async (): Promise<MenuTreeNodeData[]> => {
     const resp: MenuTreeResp = await post(
-      `${BASE_MENU_API_PREFIX}/tree_by_code`,
+      `${SHARED_COMMON_API_PREFIX}/tree_by_code`,
       {
         code: "BACKEND",
         status: 1,
@@ -190,9 +190,6 @@ export const menuApi = {
   },
   tree: async (params: TreeMenuParam): Promise<MenuTreeResp> => {
     return post(`${BASE_MENU_API_PREFIX}/tree`, params)
-  },
-  treeByCode: async (params: TreeByCodeMenuParam): Promise<MenuTreeResp> => {
-    return post(`${BASE_MENU_API_PREFIX}/tree_by_code`, params)
   },
   children: async (params: ChildrenMenuParam): Promise<MenuChildrenResp> => {
     return post(`${BASE_MENU_API_PREFIX}/children`, params)

@@ -87,7 +87,11 @@ async fn request_trace_middleware_impl(
             Ok(bytes) => {
                 let msg = neocrates::serde_json::from_slice::<neocrates::serde_json::Value>(&bytes)
                     .ok()
-                    .and_then(|v| v.get("message").and_then(|m| m.as_str()).map(str::to_string));
+                    .and_then(|v| {
+                        v.get("message")
+                            .and_then(|m| m.as_str())
+                            .map(str::to_string)
+                    });
                 let resp = HttpResponse::from_parts(parts, Body::from(bytes));
                 (msg, resp)
             }

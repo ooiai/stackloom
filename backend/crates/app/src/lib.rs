@@ -112,6 +112,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         operation_log_service: operation_log_service.clone(),
     };
     let shared_http_state = SharedHttpState {
+        menu_service: Arc::new(MenuServiceImpl::new(base_pool.clone())),
         user_service: Arc::new(UserServiceImpl::new(base_pool.clone())),
     };
     let auth_http_state = AuthHttpState {

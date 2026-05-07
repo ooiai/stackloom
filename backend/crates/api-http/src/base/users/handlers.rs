@@ -1,7 +1,7 @@
 use super::{
     req::{
-        AssignUserRolesReq, CreateUserReq, DeleteUserReq, GetUserReq, GetUserRolesReq,
-        PageUserReq, UpdateUserReq,
+        AssignUserRolesReq, CreateUserReq, DeleteUserReq, GetUserReq, GetUserRolesReq, PageUserReq,
+        UpdateUserReq,
     },
     resp::{PaginateUserResp, UserResp, UserRoleItemResp, UserRolesResp},
 };
@@ -270,7 +270,10 @@ pub async fn get_roles(
                 .user_tenant_role_service
                 .list_by_membership(membership.id)
                 .await?;
-            bindings.into_iter().map(|b| b.role_id).collect::<std::collections::HashSet<i64>>()
+            bindings
+                .into_iter()
+                .map(|b| b.role_id)
+                .collect::<std::collections::HashSet<i64>>()
         }
         // User is not a member of this tenant — no roles assigned.
         None => std::collections::HashSet::new(),
@@ -331,8 +334,7 @@ pub async fn assign_roles(
 
     // Validate every submitted role ID against the allowed set for this tenant.
     let allowed_roles = state.role_service.list_for_tenant(auth_user.tid).await?;
-    let allowed_ids: std::collections::HashSet<i64> =
-        allowed_roles.iter().map(|r| r.id).collect();
+    let allowed_ids: std::collections::HashSet<i64> = allowed_roles.iter().map(|r| r.id).collect();
 
     for &role_id in &role_ids {
         if !allowed_ids.contains(&role_id) {

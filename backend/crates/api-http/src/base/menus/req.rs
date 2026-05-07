@@ -1,6 +1,6 @@
 use domain_base::{
     CreateMenuCmd, PageMenuCmd, UpdateMenuCmd,
-    menu::{ChildrenMenuCmd, RemoveCascadeMenuCmd, TreeByCodeMenuCmd, TreeMenuCmd},
+    menu::{ChildrenMenuCmd, RemoveCascadeMenuCmd, TreeMenuCmd},
 };
 use neocrates::{
     helper::core::{serde_helpers, snowflake::generate_sonyflake_id},
@@ -170,21 +170,5 @@ pub struct RemoveCascadeMenuReq {
 impl From<RemoveCascadeMenuReq> for RemoveCascadeMenuCmd {
     fn from(req: RemoveCascadeMenuReq) -> Self {
         Self { id: req.id }
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Validate)]
-pub struct TreeByCodeMenuReq {
-    #[validate(length(min = 1, message = "code is required"))]
-    pub code: String,
-    pub status: Option<i16>,
-}
-
-impl From<TreeByCodeMenuReq> for TreeByCodeMenuCmd {
-    fn from(req: TreeByCodeMenuReq) -> Self {
-        Self {
-            code: req.code,
-            status: req.status,
-        }
     }
 }

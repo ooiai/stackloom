@@ -1,6 +1,9 @@
 use std::sync::Arc;
 
-use domain_base::{DictService, MenuService, PermService, RoleService, TenantService, UserService, UserTenantService, UserTenantRoleService};
+use domain_base::{
+    DictService, MenuService, PermService, RoleService, TenantService, UserService,
+    UserTenantRoleService, UserTenantService,
+};
 use domain_system::{AuditLogService, SystemLogService};
 use domain_web::OperationLogService;
 use neocrates::{

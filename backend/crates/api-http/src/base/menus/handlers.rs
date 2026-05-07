@@ -1,14 +1,14 @@
 use super::{
     req::{
         ChildrenMenuReq, CreateMenuReq, DeleteMenuReq, GetMenuReq, PageMenuReq,
-        RemoveCascadeMenuReq, TreeByCodeMenuReq, TreeMenuReq, UpdateMenuReq,
+        RemoveCascadeMenuReq, TreeMenuReq, UpdateMenuReq,
     },
     resp::{MenuChildrenResp, MenuResp, MenuTreeNodeResp, MenuTreeResp, PaginateMenuResp},
 };
 use crate::base::{BaseHttpState, logging};
 use domain_base::{
     CreateMenuCmd, PageMenuCmd, UpdateMenuCmd,
-    menu::{ChildrenMenuCmd, RemoveCascadeMenuCmd, TreeByCodeMenuCmd, TreeMenuCmd},
+    menu::{ChildrenMenuCmd, RemoveCascadeMenuCmd, TreeMenuCmd},
 };
 use neocrates::{
     axum::{Extension, Json, extract::State},
@@ -133,31 +133,6 @@ pub async fn tree(
 
     let cmd: TreeMenuCmd = req.into();
     let menus = state.menu_service.tree(cmd).await?;
-    let items = MenuTreeNodeResp::from_flat(menus);
-
-    Ok(Json(MenuTreeResp::new(items)))
-}
-
-/// Load the menu subtree rooted at the given code.
-///
-/// # Arguments
-/// * `state` - The base HTTP state.
-/// * `req` - The request body containing the root `code`.
-///
-/// # Returns
-/// * `AppResult<Json<MenuTreeResp>>` - The subtree response.
-pub async fn tree_by_code(
-    State(state): State<MenusState>,
-    Extension(_auth_user): Extension<AuthModel>,
-    DetailedJson(req): DetailedJson<TreeByCodeMenuReq>,
-) -> AppResult<Json<MenuTreeResp>> {
-    tracing::info!("...Tree By Code Menu Req: {:?}...", req);
-
-    req.validate()
-        .map_err(|e| AppError::ValidationError(e.to_string()))?;
-
-    let cmd: TreeByCodeMenuCmd = req.into();
-    let menus = state.menu_service.tree_by_code(cmd).await?;
     let items = MenuTreeNodeResp::from_flat(menus);
 
     Ok(Json(MenuTreeResp::new(items)))

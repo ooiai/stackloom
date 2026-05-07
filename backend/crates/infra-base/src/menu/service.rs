@@ -215,10 +215,20 @@ where
     }
 
     async fn tree_by_code(&self, cmd: TreeByCodeMenuCmd) -> AppResult<Vec<Menu>> {
+        if cmd.role_ids.is_empty() {
+            return Ok(Vec::new());
+        }
+
         let all_menus = self
             .repository
             .list_for_tree(&MenuTreeQuery { status: cmd.status })
             .await?;
+        let granted_menu_ids = self
+            .repository
+            .list_menu_ids_by_role_ids(&cmd.role_ids)
+            .await?
+            .into_iter()
+            .collect::<HashSet<_>>();
 
         let root_id = all_menus
             .iter()
@@ -228,27 +238,54 @@ where
             })?
             .id;
 
-        let children_by_parent: HashMap<i64, Vec<i64>> =
-            all_menus.iter().filter_map(|m| m.parent_id.map(|pid| (pid, m.id))).fold(
-                HashMap::new(),
-                |mut map, (pid, id)| {
-                    map.entry(pid).or_default().push(id);
-                    map
-                },
-            );
+        let children_by_parent: HashMap<i64, Vec<i64>> = all_menus
+            .iter()
+            .filter_map(|m| m.parent_id.map(|pid| (pid, m.id)))
+            .fold(HashMap::new(), |mut map, (pid, id)| {
+                map.entry(pid).or_default().push(id);
+                map
+            });
+        let parent_by_id = all_menus
+            .iter()
+            .map(|menu| (menu.id, menu.parent_id))
+            .collect::<HashMap<_, _>>();
 
-        let mut included_ids = HashSet::new();
+        let mut subtree_ids = HashSet::new();
         let mut queue = vec![root_id];
         while let Some(id) = queue.pop() {
-            if included_ids.insert(id) {
+            if subtree_ids.insert(id) {
                 if let Some(children) = children_by_parent.get(&id) {
                     queue.extend_from_slice(children);
                 }
             }
         }
 
-        let mut menus: Vec<Menu> =
-            all_menus.into_iter().filter(|m| included_ids.contains(&m.id)).collect();
+        let mut included_ids = HashSet::new();
+        for menu_id in granted_menu_ids {
+            if !subtree_ids.contains(&menu_id) {
+                continue;
+            }
+
+            let mut current_id = Some(menu_id);
+            while let Some(id) = current_id {
+                if !subtree_ids.contains(&id) {
+                    break;
+                }
+                if !included_ids.insert(id) {
+                    break;
+                }
+                current_id = parent_by_id.get(&id).copied().flatten();
+            }
+        }
+
+        if included_ids.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let mut menus: Vec<Menu> = all_menus
+            .into_iter()
+            .filter(|m| included_ids.contains(&m.id))
+            .collect();
 
         // Ensure the root appears at the top level in from_flat (parent_id = None)
         if let Some(root) = menus.iter_mut().find(|m| m.id == root_id) {

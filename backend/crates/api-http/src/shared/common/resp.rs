@@ -4,10 +4,10 @@ use domain_base::Menu;
 use neocrates::{
     chrono::{DateTime, Utc},
     helper::core::serde_helpers,
-    serde::{Deserialize, Serialize},
+    serde::Serialize,
 };
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct MenuResp {
     #[serde(serialize_with = "serde_helpers::serialize_i64")]
     pub id: i64,
@@ -31,7 +31,7 @@ pub struct MenuResp {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct MenuTreeNodeResp {
     #[serde(flatten)]
     pub menu: MenuResp,
@@ -94,19 +94,7 @@ impl From<Menu> for MenuResp {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PaginateMenuResp {
-    pub items: Vec<MenuResp>,
-    pub total: usize,
-}
-
-impl PaginateMenuResp {
-    pub fn new(items: Vec<MenuResp>, total: usize) -> Self {
-        Self { items, total }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct MenuTreeResp {
     pub items: Vec<MenuTreeNodeResp>,
 }
@@ -114,29 +102,5 @@ pub struct MenuTreeResp {
 impl MenuTreeResp {
     pub fn new(items: Vec<MenuTreeNodeResp>) -> Self {
         Self { items }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MenuChildrenResp {
-    pub items: Vec<MenuResp>,
-}
-
-impl MenuChildrenResp {
-    pub fn new(items: Vec<MenuResp>) -> Self {
-        Self { items }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DeleteMenuResp {
-    pub success: bool,
-    #[serde(serialize_with = "serde_helpers::serialize_i64")]
-    pub id: i64,
-}
-
-impl DeleteMenuResp {
-    pub fn new(id: i64) -> Self {
-        Self { success: true, id }
     }
 }

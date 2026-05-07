@@ -448,6 +448,35 @@ impl MenuRepository for SqlxMenuRepository {
         Ok(ids)
     }
 
+    async fn list_menu_ids_by_role_ids(&self, role_ids: &[i64]) -> AppResult<Vec<i64>> {
+        if role_ids.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let mut builder = QueryBuilder::new(
+            r#"
+            SELECT DISTINCT rm.menu_id
+            FROM role_menus rm
+            INNER JOIN menus m ON m.id = rm.menu_id
+            WHERE m.deleted_at IS NULL
+              AND rm.role_id IN (
+            "#,
+        );
+        let mut separated = builder.separated(", ");
+        for role_id in role_ids {
+            separated.push_bind(role_id);
+        }
+        separated.push_unseparated(")");
+
+        let menu_ids = builder
+            .build_query_scalar::<i64>()
+            .fetch_all(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        Ok(menu_ids)
+    }
+
     async fn update(&self, menu: &Menu) -> AppResult<Menu> {
         let row = sqlx::query_as::<_, MenuRow>(
             r#"

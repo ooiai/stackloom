@@ -207,11 +207,7 @@ impl UserTenantRoleRepository for SqlxUserTenantRoleRepository {
         Ok(rows.into_iter().map(Into::into).collect())
     }
 
-    async fn replace_by_membership(
-        &self,
-        user_tenant_id: i64,
-        role_ids: &[i64],
-    ) -> AppResult<()> {
+    async fn replace_by_membership(&self, user_tenant_id: i64, role_ids: &[i64]) -> AppResult<()> {
         let mut tx = self
             .pool
             .pool()

@@ -271,6 +271,7 @@ pub struct TreeMenuCmd {
 pub struct TreeByCodeMenuCmd {
     pub code: String,
     pub status: Option<i16>,
+    pub role_ids: Vec<i64>,
 }
 
 #[derive(Debug, Clone, Default)]

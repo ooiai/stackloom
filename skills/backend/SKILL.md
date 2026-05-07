@@ -140,6 +140,13 @@ When a task is primarily about one backend layer or concern, read the matching r
     - registration points
     - scaffold script behavior
 
+- `rules/auth.md`
+    - `AuthHttpState` structure and dependencies
+    - two-phase signin flow (account → tenant select → JWT issue)
+    - self-service signup flow (auto-tenant + guest role creation)
+    - JWT + Redis token lifecycle and revocation
+    - auth route map (`/auth/signin/*`, `/auth/signup/*`)
+
 ### How to use this skill
 
 When doing backend work, prefer this lookup order:
@@ -161,6 +168,7 @@ Use these quick selection rules when deciding which backend rule file to open fi
 - If you are handling **validation errors, conflict/not-found behavior, or bigint `i64` request/response serialization**, start with `rules/error-serde.md`.
 - If you are editing **request tracing, audit logging, operation logging, or log redaction rules**, start with `rules/logging.md`.
 - If you are generating or extending **module scaffold behavior**, start with `rules/scaffold.md`.
+- If you are working on the **auth group** (signin, signup, JWT, tenant selection), start with `rules/auth.md`.
 
 ### Frontend-style usage mindset
 
@@ -627,3 +635,74 @@ The purpose of this skill is to help agents produce backend code that is:
 - easy to review
 - practical to evolve
 - ready for continued scaffolding across `users`, `tenants`, `roles`, `menus`, `perms`, and `dicts`
+
+---
+
+## Crate Responsibility Reference
+
+The following table maps each crate to its specific domain of responsibility. Use it to determine where new code belongs before writing.
+
+| Crate | Responsibility |
+|---|---|
+| `common` | Cross-cutting: `EnvConfig`, `biz_error.rs` i18n keys, ID utilities, constants, enums |
+| `domain-auth` | Auth service trait + signin/signup command types |
+| `domain-base` | Base domain: entities, commands, repo/service traits for user, tenant, role, menu, perm, dict, and all junction tables |
+| `domain-system` | System log and audit log service/repo traits |
+| `domain-web` | Operation log service/repo traits |
+| `infra-auth` | `AuthServiceImpl`: two-phase signin, signup with auto-tenant creation, JWT issue and revocation via Redis |
+| `infra-base` | SQLx implementations for all base domain traits |
+| `infra-system` | SQLx implementations for system/audit log traits; `SysModule` helper |
+| `infra-web` | SQLx implementation for operation log trait |
+| `api-http` | All HTTP transport: 5 route groups (auth, base, system, shared, web), their state types, and `request_logging` middleware |
+| `app` | Composition root: pool init, migration run, service wiring, state construction, router merge, server start |
+
+---
+
+## HTTP Route Group Map
+
+The `api-http` crate organizes routes into five parent groups.
+Every group has its own `XxxHttpState` that holds the `Arc<dyn XxxService>` dependencies for its handlers.
+
+| Group | URL prefix | State type | Submodules |
+|---|---|---|---|
+| `auth` | `/auth` | `AuthHttpState` | `signin`, `signup` |
+| `base` | `/base` | `BaseHttpState` | `users`, `tenants`, `roles`, `menus`, `perms`, `dicts`, `operation_logs`, `logging` |
+| `system` | `/system` | `SysHttpState` | `captcha`, `sms`, `aws`, `logs` |
+| `shared` | `/shared` | `SharedHttpState` | `common` (captcha cache), `profile` (current user info) |
+| `web` | `/web` | *(placeholder — not yet implemented)* | *(placeholder — not yet implemented)* |
+
+**Route registration:** Each group router is assembled in its own `mod.rs`, then merged in `app/src/lib.rs` under the server router.
+
+---
+
+## Junction Table Modules
+
+Domain-base and infra-base contain dedicated modules for each many-to-many relationship. These follow the same entity / repository / service pattern as first-class modules.
+
+| Module | Table | Relationship |
+|---|---|---|
+| `user_tenant` | `user_tenants` | User ↔ Tenant membership (includes `is_default`, `is_tenant_admin`, display metadata) |
+| `user_tenant_role` | `user_tenant_roles` | UserTenant ↔ Role assignment |
+| `role_menu` | `role_menus` | Role ↔ Menu binding |
+| `role_perm` | `role_perms` | Role ↔ Permission binding |
+
+All four live under `domain-base/src/<module>/` (mod.rs / repo.rs / service.rs) and `infra-base/src/<module>/` (mod.rs / repo.rs / service.rs).
+
+When assigning roles, menus, or permissions, always work through these dedicated modules. Never write raw junction inserts directly in unrelated handlers.
+
+---
+
+## Business Error Key Convention
+
+All stable i18n error keys live in `common/src/core/biz_error.rs` as `&str` constants.
+
+The naming convention is: `"errors.biz.<module>.<camelCaseName>"`
+
+These keys map to frontend translation files at `frontend/messages/{locale}/errors.json → biz.<module>.<name>`.
+
+When adding a new conflict or business error:
+1. Add a constant to `biz_error.rs` (not an inline string in the service).
+2. Use `AppError::DataError(BIZ_CONSTANT, "debug detail")` at the call site.
+3. Add the matching translation keys in both `zh-CN/errors.json` and `en-US/errors.json`.
+
+See `rules/error-serde.md` §12 for the full reference.

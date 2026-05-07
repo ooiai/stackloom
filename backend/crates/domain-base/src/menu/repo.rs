@@ -79,6 +79,15 @@ pub trait MenuRepository: Send + Sync {
     /// * `AppResult<Vec<i64>>` - Root and descendant ids
     async fn find_descendant_ids(&self, id: i64) -> AppResult<Vec<i64>>;
 
+    /// Load distinct menu ids granted to the provided role ids.
+    ///
+    /// # Arguments
+    /// * `role_ids` - Role ids whose menu assignments should be merged.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<i64>>` - Distinct granted menu ids.
+    async fn list_menu_ids_by_role_ids(&self, role_ids: &[i64]) -> AppResult<Vec<i64>>;
+
     /// Update an existing Menu.
     ///
     /// # Arguments

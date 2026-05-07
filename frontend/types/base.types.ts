@@ -283,11 +283,6 @@ export interface TreeMenuParam {
   status?: MenuStatus
 }
 
-export interface TreeByCodeMenuParam {
-  code: string
-  status?: MenuStatus
-}
-
 export interface ChildrenMenuParam {
   parent_id?: string | null
   keyword?: string
