@@ -239,6 +239,7 @@ const decryptResData = (response: AxiosResponse<any, any>) => {
   try {
     resultData = JSON.parse(decryptedText)
   } catch (error: any) {
+    console.error("Failed to parse decrypted response data:", error)
     resultData = decryptedText
   }
 
