@@ -267,6 +267,12 @@ pub struct TreeMenuCmd {
     pub status: Option<i16>,
 }
 
+#[derive(Debug, Clone)]
+pub struct TreeByCodeMenuCmd {
+    pub code: String,
+    pub status: Option<i16>,
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct ChildrenMenuCmd {
     pub parent_id: Option<i64>,

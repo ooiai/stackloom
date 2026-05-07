@@ -8,7 +8,7 @@ use domain_base::{
     CreateMenuCmd, Menu, MenuRepository, MenuService, PageMenuCmd, UpdateMenuCmd,
     menu::{
         ChildrenMenuCmd, MenuChildrenQuery, MenuPageQuery, MenuTreeQuery, RemoveCascadeMenuCmd,
-        TreeMenuCmd,
+        TreeByCodeMenuCmd, TreeMenuCmd,
     },
 };
 use neocrates::{
@@ -212,6 +212,50 @@ where
         }
 
         self.repository.hard_delete_batch(&ids).await
+    }
+
+    async fn tree_by_code(&self, cmd: TreeByCodeMenuCmd) -> AppResult<Vec<Menu>> {
+        let all_menus = self
+            .repository
+            .list_for_tree(&MenuTreeQuery { status: cmd.status })
+            .await?;
+
+        let root_id = all_menus
+            .iter()
+            .find(|m| m.code == cmd.code)
+            .ok_or_else(|| {
+                AppError::not_found_here(format!("menu with code '{}' not found", cmd.code))
+            })?
+            .id;
+
+        let children_by_parent: HashMap<i64, Vec<i64>> =
+            all_menus.iter().filter_map(|m| m.parent_id.map(|pid| (pid, m.id))).fold(
+                HashMap::new(),
+                |mut map, (pid, id)| {
+                    map.entry(pid).or_default().push(id);
+                    map
+                },
+            );
+
+        let mut included_ids = HashSet::new();
+        let mut queue = vec![root_id];
+        while let Some(id) = queue.pop() {
+            if included_ids.insert(id) {
+                if let Some(children) = children_by_parent.get(&id) {
+                    queue.extend_from_slice(children);
+                }
+            }
+        }
+
+        let mut menus: Vec<Menu> =
+            all_menus.into_iter().filter(|m| included_ids.contains(&m.id)).collect();
+
+        // Ensure the root appears at the top level in from_flat (parent_id = None)
+        if let Some(root) = menus.iter_mut().find(|m| m.id == root_id) {
+            root.parent_id = None;
+        }
+
+        Ok(menus)
     }
 
     async fn remove_cascade(&self, cmd: RemoveCascadeMenuCmd) -> AppResult<()> {

@@ -15,7 +15,7 @@ use domain_base::{
 use neocrates::{
     axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
-    middlewares::RequestTraceContext,
+    middlewares::{RequestTraceContext, models::AuthModel},
     response::error::{AppError, AppResult},
     serde_json::json,
     tracing,
@@ -34,6 +34,7 @@ pub type TenantsState = BaseHttpState;
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn create(
     State(state): State<TenantsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreateTenantReq>,
 ) -> AppResult<Json<()>> {
@@ -73,6 +74,7 @@ pub async fn create(
 /// * `AppResult<Json<TenantResp>>` - The tenant response.
 pub async fn get(
     State(state): State<TenantsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<GetTenantReq>,
 ) -> AppResult<Json<TenantResp>> {
     tracing::info!("...Get Tenant Req: {:?}...", req);
@@ -96,6 +98,7 @@ pub async fn get(
 /// * `AppResult<Json<PaginateTenantResp>>` - The paginated response.
 pub async fn page(
     State(state): State<TenantsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<PageTenantReq>,
 ) -> AppResult<Json<PaginateTenantResp>> {
     tracing::info!("...Paginate Tenant Req: {:?}...", req);
@@ -125,6 +128,7 @@ pub async fn page(
 /// * `AppResult<Json<TenantTreeResp>>` - The tenant tree response.
 pub async fn tree(
     State(state): State<TenantsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<TreeTenantReq>,
 ) -> AppResult<Json<TenantTreeResp>> {
     tracing::info!("...Tree Tenant Req: {:?}...", req);
@@ -149,6 +153,7 @@ pub async fn tree(
 /// * `AppResult<Json<TenantChildrenResp>>` - The direct child response.
 pub async fn children(
     State(state): State<TenantsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<ChildrenTenantReq>,
 ) -> AppResult<Json<TenantChildrenResp>> {
     tracing::info!("...Children Tenant Req: {:?}...", req);
@@ -176,6 +181,7 @@ pub async fn children(
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn update(
     State(state): State<TenantsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdateTenantReq>,
 ) -> AppResult<Json<()>> {
@@ -217,6 +223,7 @@ pub async fn update(
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn delete(
     State(state): State<TenantsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<DeleteTenantReq>,
 ) -> AppResult<Json<()>> {
@@ -264,6 +271,7 @@ pub async fn delete(
 /// * `AppResult<Json<()>>` - The result of the cascade delete operation.
 pub async fn remove_cascade(
     State(state): State<TenantsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<RemoveCascadeTenantReq>,
 ) -> AppResult<Json<()>> {

@@ -35,9 +35,21 @@ pub trait PermService: Send + Sync {
     async fn page(&self, cmd: PagePermCmd) -> AppResult<(Vec<Perm>, i64)>;
 
     /// Load the perm tree.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing tree filter details.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Perm>>` - The perm tree as a flat list.
     async fn tree(&self, cmd: TreePermCmd) -> AppResult<Vec<Perm>>;
 
     /// Load direct perm children by parent.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing parent and filter details.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Perm>>` - Direct child perm items.
     async fn children(&self, cmd: ChildrenPermCmd) -> AppResult<Vec<Perm>>;
 
     /// Update an existing perm.
@@ -60,5 +72,11 @@ pub trait PermService: Send + Sync {
     async fn delete(&self, ids: Vec<i64>) -> AppResult<()>;
 
     /// Delete a perm and all descendants.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing the root perm id.
+    ///
+    /// # Returns
+    /// * `AppResult<()>` - The result of the cascade delete operation.
     async fn remove_cascade(&self, cmd: RemoveCascadePermCmd) -> AppResult<()>;
 }

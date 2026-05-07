@@ -18,34 +18,20 @@ import {
 } from "@/components/reui/popover"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { LucideIcon } from "@/components/topui/icon"
+import type { IconName } from "@/components/topui/icon"
 import { useI18n } from "@/providers/i18n-provider"
-import { buildMenuTree, type MenuTreeNode } from "@/lib/tree"
 import { cn } from "@/lib/utils"
 import { userSharedApi } from "@/stores/base-api"
+import type { MenuTreeNodeData } from "@/types/base.types"
 import {
   BellIcon,
-  BookMarkedIcon,
   ChevronDownIcon,
   LayoutGridIcon,
   Settings2Icon,
-  ShieldCheckIcon,
-  UsersIcon,
 } from "lucide-react"
 
-function MenuGlyph({ icon, className }: { icon?: string; className?: string }) {
-  switch (icon) {
-    case "BookMarked":
-      return <BookMarkedIcon className={className} />
-    case "ShieldCheck":
-      return <ShieldCheckIcon className={className} />
-    case "Users":
-      return <UsersIcon className={className} />
-    default:
-      return <LayoutGridIcon className={className} />
-  }
-}
-
-function isItemActive(item: MenuTreeNode, pathname: string): boolean {
+function isItemActive(item: MenuTreeNodeData, pathname: string): boolean {
   if (
     item.path &&
     item.path !== "/" &&
@@ -64,7 +50,7 @@ function ListItem({
   icon,
 }: React.ComponentPropsWithoutRef<"li"> & {
   href: string
-  icon?: string
+  icon?: string | null
 }) {
   return (
     <li>
@@ -78,7 +64,11 @@ function ListItem({
             hidden={!icon}
             className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground ring-1 ring-border/50 transition-transform duration-200 group-hover:scale-105"
           >
-            <MenuGlyph icon={icon} className="size-4" />
+            <LucideIcon
+              name={(icon || "LayoutGrid") as IconName}
+              fallback={<LayoutGridIcon className="size-4" />}
+              className="size-4"
+            />
           </div>
 
           <div className="min-w-0">
@@ -100,7 +90,7 @@ function AdminNavBar({
   pathname,
   mobile = false,
 }: {
-  data: MenuTreeNode[]
+  data: MenuTreeNodeData[]
   pathname: string
   mobile?: boolean
 }) {
@@ -113,7 +103,7 @@ function AdminNavBar({
   if (mobile) {
     return (
       <nav className="space-y-4">
-        {items.map((item: MenuTreeNode) => {
+        {items.map((item: MenuTreeNodeData) => {
           const active = isItemActive(item, pathname)
 
           return (
@@ -124,19 +114,23 @@ function AdminNavBar({
                   active ? "bg-primary/10 text-primary" : "text-foreground"
                 )}
               >
-                <MenuGlyph icon={item.icon} className="size-4" />
+                <LucideIcon
+                  name={(item.icon || "LayoutGrid") as IconName}
+                  fallback={<LayoutGridIcon className="size-4" />}
+                  className="size-4"
+                />
                 {item.name}
               </div>
 
               <ul className="space-y-1.5">
-                {item.children.map((child: MenuTreeNode) => (
+                {item.children.map((child: MenuTreeNodeData) => (
                   <ListItem
                     key={child.id}
                     title={child.name}
-                    href={child.path}
+                    href={child.path ?? "#"}
                     icon={child.icon}
                   >
-                    {child.remark || child.name}
+                    {child.description || child.name}
                   </ListItem>
                 ))}
               </ul>
@@ -150,14 +144,14 @@ function AdminNavBar({
   return (
     <nav className="hidden md:block">
       <div className="flex items-center gap-1">
-        {items.map((item: MenuTreeNode) => {
+        {items.map((item: MenuTreeNodeData) => {
           const active = isItemActive(item, pathname)
 
           if (item.children.length === 0) {
             return (
               <Link
                 key={item.id}
-                href={item.path}
+                href={item.path ?? "#"}
                 className={cn(
                   "inline-flex h-9 items-center rounded-md px-3 text-sm font-medium transition",
                   active
@@ -194,14 +188,14 @@ function AdminNavBar({
                 className="w-96 gap-0 p-2 md:w-lg lg:w-152"
               >
                 <ul className="grid gap-2 md:grid-cols-2">
-                  {item.children.map((child: MenuTreeNode) => (
+                  {item.children.map((child: MenuTreeNodeData) => (
                     <ListItem
                       key={child.id}
                       title={child.name}
-                      href={child.path}
+                      href={child.path ?? "#"}
                       icon={child.icon}
                     >
-                      {child.remark || child.name}
+                      {child.description || child.name}
                     </ListItem>
                   ))}
                 </ul>
@@ -229,15 +223,12 @@ export default function BaseHeader({
     staleTime: Number.POSITIVE_INFINITY,
   })
   const trees = useMemo(() => {
-    return buildMenuTree(currentMenus).map((node) => ({
+    return currentMenus.map((node) => ({
       ...node,
       name: t(`navigation.${node.code}.name`, undefined, node.name),
-      remark: t(`navigation.${node.code}.remark`, undefined, node.remark),
       children: node.children.map((child) => ({
         ...child,
         name: t(`navigation.${child.code}.name`, undefined, child.name),
-        remark: t(`navigation.${child.code}.remark`, undefined, child.remark),
-        children: child.children,
       })),
     }))
   }, [currentMenus, t])

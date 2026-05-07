@@ -16,7 +16,7 @@ use domain_base::{
 use neocrates::{
     axum::{Extension, Json, extract::State},
     helper::core::{axum_extractor::DetailedJson, hashid},
-    middlewares::RequestTraceContext,
+    middlewares::{RequestTraceContext, models::AuthModel},
     response::error::{AppError, AppResult},
     serde_json::json,
     tracing,
@@ -25,8 +25,17 @@ use validator::Validate;
 
 pub type RolesState = BaseHttpState;
 
+/// Create a new role.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn create(
     State(state): State<RolesState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreateRoleReq>,
 ) -> AppResult<Json<()>> {
@@ -56,8 +65,17 @@ pub async fn create(
     Ok(Json(()))
 }
 
+/// Get a role by id.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<RoleResp>>` - The role response.
 pub async fn get(
     State(state): State<RolesState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<GetRoleReq>,
 ) -> AppResult<Json<RoleResp>> {
     tracing::info!("...Get Role Req: {:?}...", req);
@@ -69,8 +87,17 @@ pub async fn get(
     Ok(Json(role.into()))
 }
 
+/// Page roles.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<PaginateRoleResp>>` - The paginated response.
 pub async fn page(
     State(state): State<RolesState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<PageRoleReq>,
 ) -> AppResult<Json<PaginateRoleResp>> {
     tracing::info!("...Paginate Role Req: {:?}...", req);
@@ -85,8 +112,17 @@ pub async fn page(
     Ok(Json(PaginateRoleResp::new(items, total as usize)))
 }
 
+/// Load the role tree.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<RoleTreeResp>>` - The role tree response.
 pub async fn tree(
     State(state): State<RolesState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<TreeRoleReq>,
 ) -> AppResult<Json<RoleTreeResp>> {
     tracing::info!("...Tree Role Req: {:?}...", req);
@@ -101,8 +137,17 @@ pub async fn tree(
     Ok(Json(RoleTreeResp::new(items)))
 }
 
+/// Load direct role children by parent.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<RoleChildrenResp>>` - The direct child response.
 pub async fn children(
     State(state): State<RolesState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<ChildrenRoleReq>,
 ) -> AppResult<Json<RoleChildrenResp>> {
     tracing::info!("...Children Role Req: {:?}...", req);
@@ -117,8 +162,17 @@ pub async fn children(
     Ok(Json(RoleChildrenResp::new(items)))
 }
 
+/// Update an existing role.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - Update request body.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn update(
     State(state): State<RolesState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdateRoleReq>,
 ) -> AppResult<Json<()>> {
@@ -150,8 +204,17 @@ pub async fn update(
     Ok(Json(()))
 }
 
+/// Delete roles.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn delete(
     State(state): State<RolesState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<DeleteRoleReq>,
 ) -> AppResult<Json<()>> {
@@ -189,8 +252,17 @@ pub async fn delete(
     Ok(Json(()))
 }
 
+/// Delete a role and all descendants.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the cascade delete operation.
 pub async fn remove_cascade(
     State(state): State<RolesState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<RemoveCascadeRoleReq>,
 ) -> AppResult<Json<()>> {
@@ -222,8 +294,17 @@ pub async fn remove_cascade(
     Ok(Json(()))
 }
 
+/// Get the list of menus assigned to a role.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body containing the `role_id`.
+///
+/// # Returns
+/// * `AppResult<Json<Value>>` - JSON object with `items` array of encoded menu IDs.
 pub async fn get_menus(
     State(state): State<RolesState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<GetRoleMenusReq>,
 ) -> AppResult<Json<neocrates::serde_json::Value>> {
     tracing::info!("...Get Role Menus Req: {:?}...", req);
@@ -238,8 +319,17 @@ pub async fn get_menus(
     Ok(Json(resp))
 }
 
+/// Assign menus to a role (replaces the current assignment).
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body containing `role_id` and menu ID list.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn assign_menus(
     State(state): State<RolesState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<AssignRoleMenusReq>,
 ) -> AppResult<Json<()>> {
@@ -269,8 +359,17 @@ pub async fn assign_menus(
     Ok(Json(()))
 }
 
+/// Get the list of perms assigned to a role.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body containing the `role_id`.
+///
+/// # Returns
+/// * `AppResult<Json<Value>>` - JSON object with `items` array of encoded perm IDs.
 pub async fn get_perms(
     State(state): State<RolesState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<GetRolePermsReq>,
 ) -> AppResult<Json<neocrates::serde_json::Value>> {
     tracing::info!("...Get Role Perms Req: {:?}...", req);
@@ -285,8 +384,17 @@ pub async fn get_perms(
     Ok(Json(resp))
 }
 
+/// Assign perms to a role (replaces the current assignment).
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body containing `role_id` and perm ID list.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn assign_perms(
     State(state): State<RolesState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<AssignRolePermsReq>,
 ) -> AppResult<Json<()>> {

@@ -2,7 +2,7 @@ use neocrates::{async_trait::async_trait, response::error::AppResult};
 
 use crate::{
     CreateMenuCmd, Menu, PageMenuCmd, UpdateMenuCmd,
-    menu::{ChildrenMenuCmd, RemoveCascadeMenuCmd, TreeMenuCmd},
+    menu::{ChildrenMenuCmd, RemoveCascadeMenuCmd, TreeByCodeMenuCmd, TreeMenuCmd},
 };
 
 #[async_trait]
@@ -61,6 +61,15 @@ pub trait MenuService: Send + Sync {
     /// # Returns
     /// * `AppResult<Menu>` - The result of the update operation.
     async fn update(&self, id: i64, cmd: UpdateMenuCmd) -> AppResult<Menu>;
+
+    /// Load the menu subtree rooted at the given code.
+    ///
+    /// # Arguments
+    /// * `cmd` - The command containing the root code and optional status filter.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Menu>>` - The subtree as a flat list, ready for tree building.
+    async fn tree_by_code(&self, cmd: TreeByCodeMenuCmd) -> AppResult<Vec<Menu>>;
 
     /// Delete menus by their IDs.
     ///

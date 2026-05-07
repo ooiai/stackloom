@@ -36,6 +36,7 @@ pub type UsersState = BaseHttpState;
 /// - `response 200`: `JSON`
 pub async fn create(
     State(state): State<UsersState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreateUserReq>,
 ) -> AppResult<Json<()>> {
@@ -76,6 +77,7 @@ pub async fn create(
 /// * `AppResult<Json<UserResp>>` - The user response.
 pub async fn get(
     State(state): State<UsersState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<GetUserReq>,
 ) -> AppResult<Json<UserResp>> {
     tracing::info!("...Get User Req: {:?}...", req);
@@ -106,6 +108,7 @@ pub async fn get(
 /// - `response 200`: `JSON`
 pub async fn page(
     State(state): State<UsersState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<PageUserReq>,
 ) -> AppResult<Json<PaginateUserResp>> {
     tracing::info!("...Paginate User Req: {:?}...", req);
@@ -139,6 +142,7 @@ pub async fn page(
 /// - `response 200`: `JSON`
 pub async fn update(
     State(state): State<UsersState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdateUserReq>,
 ) -> AppResult<Json<()>> {
@@ -187,6 +191,7 @@ pub async fn update(
 /// - `response 200`: `JSON`
 pub async fn delete(
     State(state): State<UsersState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<DeleteUserReq>,
 ) -> AppResult<Json<()>> {

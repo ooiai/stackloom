@@ -1,19 +1,19 @@
 use super::{
     req::{
         ChildrenMenuReq, CreateMenuReq, DeleteMenuReq, GetMenuReq, PageMenuReq,
-        RemoveCascadeMenuReq, TreeMenuReq, UpdateMenuReq,
+        RemoveCascadeMenuReq, TreeByCodeMenuReq, TreeMenuReq, UpdateMenuReq,
     },
     resp::{MenuChildrenResp, MenuResp, MenuTreeNodeResp, MenuTreeResp, PaginateMenuResp},
 };
 use crate::base::{BaseHttpState, logging};
 use domain_base::{
     CreateMenuCmd, PageMenuCmd, UpdateMenuCmd,
-    menu::{ChildrenMenuCmd, RemoveCascadeMenuCmd, TreeMenuCmd},
+    menu::{ChildrenMenuCmd, RemoveCascadeMenuCmd, TreeByCodeMenuCmd, TreeMenuCmd},
 };
 use neocrates::{
     axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
-    middlewares::RequestTraceContext,
+    middlewares::{RequestTraceContext, models::AuthModel},
     response::error::{AppError, AppResult},
     serde_json::json,
     tracing,
@@ -32,6 +32,7 @@ pub type MenusState = BaseHttpState;
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn create(
     State(state): State<MenusState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreateMenuReq>,
 ) -> AppResult<Json<()>> {
@@ -71,6 +72,7 @@ pub async fn create(
 /// * `AppResult<Json<MenuResp>>` - The menu response.
 pub async fn get(
     State(state): State<MenusState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<GetMenuReq>,
 ) -> AppResult<Json<MenuResp>> {
     tracing::info!("...Get Menu Req: {:?}...", req);
@@ -94,6 +96,7 @@ pub async fn get(
 /// * `AppResult<Json<PaginateMenuResp>>` - The paginated response.
 pub async fn page(
     State(state): State<MenusState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<PageMenuReq>,
 ) -> AppResult<Json<PaginateMenuResp>> {
     tracing::info!("...Paginate Menu Req: {:?}...", req);
@@ -120,6 +123,7 @@ pub async fn page(
 /// * `AppResult<Json<MenuTreeResp>>` - The menu tree response.
 pub async fn tree(
     State(state): State<MenusState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<TreeMenuReq>,
 ) -> AppResult<Json<MenuTreeResp>> {
     tracing::info!("...Tree Menu Req: {:?}...", req);
@@ -129,6 +133,31 @@ pub async fn tree(
 
     let cmd: TreeMenuCmd = req.into();
     let menus = state.menu_service.tree(cmd).await?;
+    let items = MenuTreeNodeResp::from_flat(menus);
+
+    Ok(Json(MenuTreeResp::new(items)))
+}
+
+/// Load the menu subtree rooted at the given code.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body containing the root `code`.
+///
+/// # Returns
+/// * `AppResult<Json<MenuTreeResp>>` - The subtree response.
+pub async fn tree_by_code(
+    State(state): State<MenusState>,
+    Extension(_auth_user): Extension<AuthModel>,
+    DetailedJson(req): DetailedJson<TreeByCodeMenuReq>,
+) -> AppResult<Json<MenuTreeResp>> {
+    tracing::info!("...Tree By Code Menu Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let cmd: TreeByCodeMenuCmd = req.into();
+    let menus = state.menu_service.tree_by_code(cmd).await?;
     let items = MenuTreeNodeResp::from_flat(menus);
 
     Ok(Json(MenuTreeResp::new(items)))
@@ -144,6 +173,7 @@ pub async fn tree(
 /// * `AppResult<Json<MenuChildrenResp>>` - The direct child response.
 pub async fn children(
     State(state): State<MenusState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<ChildrenMenuReq>,
 ) -> AppResult<Json<MenuChildrenResp>> {
     tracing::info!("...Children Menu Req: {:?}...", req);
@@ -168,6 +198,7 @@ pub async fn children(
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn update(
     State(state): State<MenusState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdateMenuReq>,
 ) -> AppResult<Json<()>> {
@@ -209,6 +240,7 @@ pub async fn update(
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn delete(
     State(state): State<MenusState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<DeleteMenuReq>,
 ) -> AppResult<Json<()>> {
@@ -256,6 +288,7 @@ pub async fn delete(
 /// * `AppResult<Json<()>>` - The result of the cascade delete operation.
 pub async fn remove_cascade(
     State(state): State<MenusState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<RemoveCascadeMenuReq>,
 ) -> AppResult<Json<()>> {

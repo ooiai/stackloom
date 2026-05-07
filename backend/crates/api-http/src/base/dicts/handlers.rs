@@ -12,7 +12,7 @@ use domain_base::{
 use neocrates::{
     axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
-    middlewares::RequestTraceContext,
+    middlewares::{RequestTraceContext, models::AuthModel},
     response::error::{AppError, AppResult},
     serde_json::json,
     tracing,
@@ -31,6 +31,7 @@ pub type DictsState = BaseHttpState;
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn create(
     State(state): State<DictsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreateDictReq>,
 ) -> AppResult<Json<()>> {
@@ -69,6 +70,7 @@ pub async fn create(
 /// * `AppResult<Json<DictResp>>` - The dict response.
 pub async fn get(
     State(state): State<DictsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<GetDictReq>,
 ) -> AppResult<Json<DictResp>> {
     tracing::info!("...Get Dict Req: {:?}...", req);
@@ -92,6 +94,7 @@ pub async fn get(
 /// * `AppResult<Json<PaginateDictResp>>` - The paginated response.
 pub async fn page(
     State(state): State<DictsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<PageDictReq>,
 ) -> AppResult<Json<PaginateDictResp>> {
     tracing::info!("...Paginate Dict Req: {:?}...", req);
@@ -118,6 +121,7 @@ pub async fn page(
 /// * `AppResult<Json<DictTreeResp>>` - The dict tree response.
 pub async fn tree(
     State(state): State<DictsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<TreeDictReq>,
 ) -> AppResult<Json<DictTreeResp>> {
     tracing::info!("...Tree Dict Req: {:?}...", req);
@@ -142,6 +146,7 @@ pub async fn tree(
 /// * `AppResult<Json<DictChildrenResp>>` - The direct child response.
 pub async fn children(
     State(state): State<DictsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<ChildrenDictReq>,
 ) -> AppResult<Json<DictChildrenResp>> {
     tracing::info!("...Children Dict Req: {:?}...", req);
@@ -166,6 +171,7 @@ pub async fn children(
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn update(
     State(state): State<DictsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdateDictReq>,
 ) -> AppResult<Json<()>> {
@@ -207,6 +213,7 @@ pub async fn update(
 /// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn delete(
     State(state): State<DictsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<DeleteDictReq>,
 ) -> AppResult<Json<()>> {
@@ -254,6 +261,7 @@ pub async fn delete(
 /// * `AppResult<Json<()>>` - The result of the cascade delete operation.
 pub async fn remove_cascade(
     State(state): State<DictsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<RemoveCascadeDictReq>,
 ) -> AppResult<Json<()>> {

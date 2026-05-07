@@ -32,6 +32,9 @@ importers:
       '@fingerprintjs/fingerprintjs':
         specifier: ^5.2.0
         version: 5.2.0
+      '@remixicon/react':
+        specifier: ^4.9.0
+        version: 4.9.0(react@19.2.5)
       '@tabler/icons-react':
         specifier: ^3.41.1
         version: 3.41.1(react@19.2.5)
@@ -1139,6 +1142,11 @@ packages:
         optional: true
       react-redux:
         optional: true
+
+  '@remixicon/react@4.9.0':
+    resolution: {integrity: sha512-5/jLDD4DtKxH2B4QVXTobvV1C2uL8ab9D5yAYNtFt+w80O0Ys1xFOrspqROL3fjrZi+7ElFUWE37hBfaAl6U+Q==}
+    peerDependencies:
+      react: '>=18.2.0'
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
@@ -5709,6 +5717,10 @@ snapshots:
     optionalDependencies:
       react: 19.2.5
       react-redux: 9.2.0(@types/react@19.2.14)(react@19.2.5)(redux@5.0.1)
+
+  '@remixicon/react@4.9.0(react@19.2.5)':
+    dependencies:
+      react: 19.2.5
 
   '@rtsao/scc@1.1.0': {}
 

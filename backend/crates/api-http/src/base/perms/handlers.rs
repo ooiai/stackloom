@@ -13,7 +13,7 @@ use domain_base::{
 use neocrates::{
     axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
-    middlewares::RequestTraceContext,
+    middlewares::{RequestTraceContext, models::AuthModel},
     response::error::{AppError, AppResult},
     serde_json::json,
     tracing,
@@ -22,8 +22,17 @@ use validator::Validate;
 
 pub type PermsState = BaseHttpState;
 
+/// Create a new perm.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn create(
     State(state): State<PermsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreatePermReq>,
 ) -> AppResult<Json<()>> {
@@ -53,8 +62,17 @@ pub async fn create(
     Ok(Json(()))
 }
 
+/// Get a perm by id.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<PermResp>>` - The perm response.
 pub async fn get(
     State(state): State<PermsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<GetPermReq>,
 ) -> AppResult<Json<PermResp>> {
     tracing::info!("...Get Perm Req: {:?}...", req);
@@ -66,8 +84,17 @@ pub async fn get(
     Ok(Json(perm.into()))
 }
 
+/// Page perms.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<PaginatePermResp>>` - The paginated response.
 pub async fn page(
     State(state): State<PermsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<PagePermReq>,
 ) -> AppResult<Json<PaginatePermResp>> {
     tracing::info!("...Paginate Perm Req: {:?}...", req);
@@ -82,8 +109,17 @@ pub async fn page(
     Ok(Json(PaginatePermResp::new(items, total as usize)))
 }
 
+/// Load the perm tree.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<PermTreeResp>>` - The perm tree response.
 pub async fn tree(
     State(state): State<PermsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<TreePermReq>,
 ) -> AppResult<Json<PermTreeResp>> {
     tracing::info!("...Tree Perm Req: {:?}...", req);
@@ -98,8 +134,17 @@ pub async fn tree(
     Ok(Json(PermTreeResp::new(items)))
 }
 
+/// Load direct perm children by parent.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<PermChildrenResp>>` - The direct child response.
 pub async fn children(
     State(state): State<PermsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<ChildrenPermReq>,
 ) -> AppResult<Json<PermChildrenResp>> {
     tracing::info!("...Children Perm Req: {:?}...", req);
@@ -114,8 +159,17 @@ pub async fn children(
     Ok(Json(PermChildrenResp::new(items)))
 }
 
+/// Update an existing perm.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - Update request body.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn update(
     State(state): State<PermsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdatePermReq>,
 ) -> AppResult<Json<()>> {
@@ -147,8 +201,17 @@ pub async fn update(
     Ok(Json(()))
 }
 
+/// Delete perms.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the operation.
 pub async fn delete(
     State(state): State<PermsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<DeletePermReq>,
 ) -> AppResult<Json<()>> {
@@ -186,8 +249,17 @@ pub async fn delete(
     Ok(Json(()))
 }
 
+/// Delete a perm and all descendants.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the cascade delete operation.
 pub async fn remove_cascade(
     State(state): State<PermsState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<RemoveCascadePermReq>,
 ) -> AppResult<Json<()>> {

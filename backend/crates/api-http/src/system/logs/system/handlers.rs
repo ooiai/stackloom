@@ -5,15 +5,26 @@ use super::{
 use crate::system::SysHttpState;
 use domain_system::PageSystemLogCmd;
 use neocrates::{
-    axum::{Json, extract::State},
+    axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
+    middlewares::models::AuthModel,
     response::error::{AppError, AppResult},
     tracing,
 };
 use validator::Validate;
 
+/// Page system logs.
+///
+/// # Arguments
+/// * `state` - The system HTTP state.
+/// * `_auth_user` - The authenticated user.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<PaginateSystemLogResp>>` - The paginated response.
 pub async fn page(
     State(state): State<SysHttpState>,
+    Extension(_auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<PageSystemLogReq>,
 ) -> AppResult<Json<PaginateSystemLogResp>> {
     tracing::info!("...Paginate System Log Req: {:?}...", req);

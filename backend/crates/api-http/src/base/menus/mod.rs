@@ -3,10 +3,12 @@ pub mod req;
 pub mod resp;
 
 use super::BaseHttpState;
-pub use handlers::{MenusState, children, create, delete, get, page, remove_cascade, tree, update};
+pub use handlers::{
+    MenusState, children, create, delete, get, page, remove_cascade, tree, tree_by_code, update,
+};
 pub use req::{
     ChildrenMenuReq, CreateMenuReq, DeleteMenuReq, GetMenuReq, PageMenuReq, RemoveCascadeMenuReq,
-    TreeMenuReq, UpdateMenuReq,
+    TreeByCodeMenuReq, TreeMenuReq, UpdateMenuReq,
 };
 pub use resp::{DeleteMenuResp, MenuChildrenResp, MenuResp, MenuTreeResp, PaginateMenuResp};
 
@@ -19,6 +21,7 @@ pub fn router(state: BaseHttpState) -> Router {
         .route("/update", post(update))
         .route("/page", post(page))
         .route("/tree", post(tree))
+        .route("/tree_by_code", post(tree_by_code))
         .route("/children", post(children))
         .route("/remove", post(delete))
         .route("/remove_cascade", post(remove_cascade))
