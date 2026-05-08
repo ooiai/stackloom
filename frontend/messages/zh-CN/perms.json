@@ -1,7 +1,7 @@
 {
   "page": {
     "title": "权限管理",
-    "subtitle": "维护权限树、资源标识与动作定义",
+    "subtitle": "维护权限树、资源标识、动作定义与 HTTP 方法元数据",
     "addRoot": "添加根权限"
   },
   "toast": {
@@ -17,7 +17,7 @@
   "sheet": {
     "create": {
       "title": "新增权限",
-      "description": "维护权限编码、资源动作与层级关系",
+      "description": "维护权限编码、资源动作、HTTP 方法元数据与层级关系",
       "submit": "创建权限"
     },
     "update": {
@@ -33,7 +33,7 @@
     },
     "route": {
       "title": "资源映射",
-      "description": "描述资源、动作以及该权限的业务说明"
+      "description": "描述资源、动作、HTTP 方法元数据以及该权限的业务说明"
     },
     "display": {
       "title": "状态与排序",
@@ -74,6 +74,10 @@
       "validation": {
         "max": "动作标识长度不能超过 100 个字符"
       }
+    },
+    "method": {
+      "label": "HTTP 方法",
+      "none": "不指定 HTTP 方法"
     },
     "description": {
       "label": "权限说明",
@@ -119,6 +123,7 @@
     "code": "权限编码",
     "resource": "资源标识",
     "action": "动作标识",
+    "method": "HTTP 方法",
     "description": "权限说明",
     "sort": "排序",
     "emptyChildrenTitle": "当前权限下暂无子级",
@@ -130,6 +135,7 @@
     "code": "权限编码",
     "resource": "资源标识",
     "action": "动作标识",
+    "method": "HTTP 方法",
     "sort": "排序",
     "status": "状态",
     "updatedAt": "更新时间",

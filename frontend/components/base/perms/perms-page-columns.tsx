@@ -121,6 +121,24 @@ export function createPermColumns({
       enableSorting: false,
     },
     {
+      accessorKey: "method",
+      id: "method",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          title={t("perms.table.method")}
+          column={column}
+          className="font-medium"
+        />
+      ),
+      cell: ({ row }) => (
+        <code className="rounded-md bg-primary/5 px-1.5 py-1 text-xs text-primary">
+          {row.original.method || t("common.misc.none")}
+        </code>
+      ),
+      size: 110,
+      enableSorting: false,
+    },
+    {
       accessorKey: "sort",
       id: "sort",
       header: ({ column }) => (
@@ -153,7 +171,7 @@ export function createPermColumns({
           {row.original.action || t("common.misc.none")}
         </span>
       ),
-      size: 140,
+      size: 120,
       enableSorting: false,
     },
     {

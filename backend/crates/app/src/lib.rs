@@ -91,7 +91,11 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     let user_service = Arc::new(UserServiceImpl::new(base_pool.clone()));
     let dict_service = Arc::new(DictServiceImpl::new(base_pool.clone()));
     let tenant_service = Arc::new(TenantServiceImpl::new(base_pool.clone()));
-    let menu_service = Arc::new(MenuServiceImpl::new(base_pool.clone()));
+    let menu_service = Arc::new(MenuServiceImpl::new(
+        base_pool.clone(),
+        redis_pool.clone(),
+        cfg.server.prefix.clone(),
+    ));
     let role_service = Arc::new(RoleServiceImpl::new(
         base_pool.clone(),
         redis_pool.clone(),

@@ -26,3 +26,6 @@ pub const DICT_CACHE_TTL: u64 = 600;
 /// System role template code used to create the tenant-scoped guest role on signup.
 pub const SIGNUP_GUEST_CODE: &str = "WEB::GUEST";
 pub const SIGNUP_ADMIN_CODE: &str = "WEB::ADMIN";
+
+// set per-role cached tree_by_code menus key prefix
+pub const CACHE_MENUS_TREE_BY_CODE_RID: &str = ":menus:tree_roleid:";

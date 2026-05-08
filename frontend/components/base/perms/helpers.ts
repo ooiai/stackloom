@@ -6,14 +6,33 @@ import type {
   CreatePermParam,
   PermData,
   PermFormValues,
+  PermHttpMethod,
   PermStatus,
   PermTreeNodeData,
   UpdatePermParam,
 } from "@/types/base.types"
 
 const defaultT: TranslateFn = (key, _values, fallback) => fallback ?? key
+const permHttpMethodSchema = z.enum([
+  "GET",
+  "POST",
+  "PUT",
+  "PATCH",
+  "DELETE",
+  "HEAD",
+  "OPTIONS",
+])
 
 export type PermTreeNode = PermTreeNodeData
+export const PERM_HTTP_METHOD_OPTIONS: PermHttpMethod[] = [
+  "GET",
+  "POST",
+  "PUT",
+  "PATCH",
+  "DELETE",
+  "HEAD",
+  "OPTIONS",
+]
 
 type PermStatusMeta = {
   label: string
@@ -51,6 +70,9 @@ export function createPermFormSchema(t: TranslateFn = defaultT) {
       .max(100, t("perms.form.name.validation.max")),
     resource: optionalText(255, t("perms.form.resource.validation.max")),
     action: optionalText(100, t("perms.form.action.validation.max")),
+    method: z
+      .union([z.literal(""), permHttpMethodSchema])
+      .transform((value) => (value === "" ? undefined : value)),
     description: optionalText(500, t("perms.form.description.validation.max")),
     sort: z
       .number()
@@ -155,6 +177,7 @@ export function getDefaultPermFormValues(
     name: perm?.name ?? "",
     resource: perm?.resource ?? "",
     action: perm?.action ?? "",
+    method: perm?.method ?? "",
     description: perm?.description ?? "",
     sort: perm?.sort ?? 0,
     status: perm?.status ?? 1,
@@ -174,6 +197,7 @@ export function buildCreatePermParam(
     name: parsed.name,
     resource: parsed.resource,
     action: parsed.action,
+    method: parsed.method,
     description: parsed.description,
     sort: parsed.sort,
     status: parsed.status,
@@ -195,6 +219,7 @@ export function buildUpdatePermParam(
     name: parsed.name,
     resource: parsed.resource,
     action: parsed.action,
+    method: parsed.method,
     description: parsed.description,
     sort: parsed.sort,
     status: parsed.status,

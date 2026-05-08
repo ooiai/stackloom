@@ -7,12 +7,16 @@ import {
 } from "@/components/base/perms/perm-mutate-sheet-sections"
 import type { PermMutateFormApi } from "@/components/base/perms/hooks/use-perm-mutate-form"
 import {
+  PERM_HTTP_METHOD_OPTIONS,
+} from "@/components/base/perms/helpers"
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/reui/select"
+import type { PermHttpMethod } from "@/types/base.types"
 import { Textarea } from "@/components/reui/textarea"
 import { LabelField } from "@/components/topui/label-field"
 import {
@@ -32,6 +36,16 @@ export function PermMutateFormFields({
   parentLabel: string
 }) {
   const { t } = useI18n()
+  const methodLabelMap: Record<PermHttpMethod | "", string> = {
+    "": t("perms.form.method.none"),
+    GET: "GET",
+    POST: "POST",
+    PUT: "PUT",
+    PATCH: "PATCH",
+    DELETE: "DELETE",
+    HEAD: "HEAD",
+    OPTIONS: "OPTIONS",
+  }
   const statusLabelMap: Record<0 | 1, string> = {
     0: t("perms.status.disabled.label"),
     1: t("perms.status.active.label"),
@@ -134,6 +148,40 @@ export function PermMutateFormFields({
                 placeholder={t("perms.form.action.placeholder")}
               />
             </LabelField>
+          )}
+        </form.Field>
+
+        <form.Field name="method">
+          {(field) => (
+            <Field>
+              <FieldLabel>{t("perms.form.method.label")}</FieldLabel>
+              <FieldContent>
+                <Select
+                  value={field.state.value || "__none__"}
+                  onValueChange={(value) =>
+                    field.handleChange(
+                      value === "__none__" ? "" : (value as PermHttpMethod)
+                    )
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue>
+                      {methodLabelMap[field.state.value || ""]}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">
+                      {t("perms.form.method.none")}
+                    </SelectItem>
+                    {PERM_HTTP_METHOD_OPTIONS.map((method) => (
+                      <SelectItem key={method} value={method}>
+                        {method}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FieldContent>
+            </Field>
           )}
         </form.Field>
 

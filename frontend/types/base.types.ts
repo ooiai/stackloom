@@ -13,6 +13,14 @@ export type RoleStatus = 0 | 1
 export type RoleMutateMode = "create" | "update"
 export type PermStatus = 0 | 1
 export type PermMutateMode = "create" | "update"
+export type PermHttpMethod =
+  | "GET"
+  | "POST"
+  | "PUT"
+  | "PATCH"
+  | "DELETE"
+  | "HEAD"
+  | "OPTIONS"
 
 export interface UserData {
   id: string
@@ -108,6 +116,7 @@ export interface PermData {
   name: string
   resource: string | null
   action: string | null
+  method: PermHttpMethod | null
   description: string | null
   status: PermStatus
   sort: number
@@ -408,6 +417,7 @@ export interface CreatePermParam {
   name: string
   resource?: string
   action?: string
+  method?: PermHttpMethod
   description?: string
   status: PermStatus
   sort: number
@@ -421,6 +431,7 @@ export interface UpdatePermParam {
   name?: string
   resource?: string
   action?: string
+  method?: PermHttpMethod
   description?: string
   status?: PermStatus
   sort?: number
@@ -544,6 +555,7 @@ export interface PermFormValues {
   name: string
   resource: string
   action: string
+  method: PermHttpMethod | ""
   description: string
   status: PermStatus
   sort: number

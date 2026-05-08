@@ -8,6 +8,28 @@ use chrono::{DateTime, Utc};
 
 use neocrates::response::error::{AppError, AppResult};
 
+const PERM_HTTP_METHODS: [&str; 7] = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"];
+
+fn normalize_optional_perm_method(method: Option<String>) -> AppResult<Option<String>> {
+    let Some(method) = method else {
+        return Ok(None);
+    };
+
+    let normalized = method.trim().to_ascii_uppercase();
+    if normalized.is_empty() {
+        return Ok(None);
+    }
+
+    if PERM_HTTP_METHODS.contains(&normalized.as_str()) {
+        return Ok(Some(normalized));
+    }
+
+    Err(AppError::ValidationError(format!(
+        "method must be one of: {}",
+        PERM_HTTP_METHODS.join(", ")
+    )))
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Perm {
     pub id: i64,
@@ -17,6 +39,7 @@ pub struct Perm {
     pub name: String,
     pub resource: Option<String>,
     pub action: Option<String>,
+    pub method: Option<String>,
     pub description: Option<String>,
     pub status: i16,
     pub sort: i32,
@@ -39,6 +62,7 @@ impl Perm {
             name: cmd.name,
             resource: cmd.resource,
             action: cmd.action,
+            method: normalize_optional_perm_method(cmd.method)?,
             description: cmd.description,
             status: cmd.status,
             sort: cmd.sort,
@@ -73,6 +97,10 @@ impl Perm {
 
         if let Some(action) = cmd.action {
             self.action = Some(action);
+        }
+
+        if cmd.method.is_some() {
+            self.method = normalize_optional_perm_method(cmd.method)?;
         }
 
         if let Some(description) = cmd.description {
@@ -123,6 +151,7 @@ pub struct CreatePermCmd {
     pub name: String,
     pub resource: Option<String>,
     pub action: Option<String>,
+    pub method: Option<String>,
     pub description: Option<String>,
     pub status: i16,
     pub sort: i32,
@@ -142,6 +171,8 @@ impl CreatePermCmd {
             ));
         }
 
+        let _ = normalize_optional_perm_method(self.method.clone())?;
+
         Ok(())
     }
 }
@@ -154,6 +185,7 @@ pub struct UpdatePermCmd {
     pub name: Option<String>,
     pub resource: Option<String>,
     pub action: Option<String>,
+    pub method: Option<String>,
     pub description: Option<String>,
     pub status: Option<i16>,
     pub sort: Option<i32>,
@@ -192,6 +224,8 @@ impl UpdatePermCmd {
                 ));
             }
         }
+
+        let _ = normalize_optional_perm_method(self.method.clone())?;
 
         if let Some(value) = self.description.as_ref() {
             if value.trim().is_empty() {

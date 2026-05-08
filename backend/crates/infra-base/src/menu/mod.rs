@@ -6,9 +6,10 @@ pub use service::MenuServiceImpl;
 
 use chrono::{DateTime, Utc};
 use domain_base::Menu;
+use neocrates::serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
-#[derive(Debug, Clone, FromRow)]
+#[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
 pub struct MenuRow {
     pub id: i64,
     pub tenant_id: Option<i64>,
@@ -51,6 +52,31 @@ impl From<MenuRow> for Menu {
             created_at: row.created_at,
             updated_at: row.updated_at,
             deleted_at: row.deleted_at,
+        }
+    }
+}
+
+impl From<Menu> for MenuRow {
+    fn from(menu: Menu) -> Self {
+        Self {
+            id: menu.id,
+            tenant_id: menu.tenant_id,
+            parent_id: menu.parent_id,
+            code: menu.code,
+            name: menu.name,
+            description: menu.description,
+            path: menu.path,
+            component: menu.component,
+            redirect: menu.redirect,
+            icon: menu.icon,
+            menu_type: menu.menu_type,
+            sort: menu.sort,
+            visible: menu.visible,
+            keep_alive: menu.keep_alive,
+            status: menu.status,
+            created_at: menu.created_at,
+            updated_at: menu.updated_at,
+            deleted_at: menu.deleted_at,
         }
     }
 }

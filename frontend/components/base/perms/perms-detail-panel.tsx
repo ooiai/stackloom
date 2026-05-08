@@ -121,6 +121,10 @@ export function PermsDetailPanel({
                 value={selectedNode.action || t("common.misc.none")}
               />
               <DetailMetaItem
+                label={t("perms.detail.method")}
+                value={selectedNode.method || t("common.misc.none")}
+              />
+              <DetailMetaItem
                 label={t("perms.detail.sort")}
                 value={String(selectedNode.sort)}
               />

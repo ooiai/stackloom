@@ -7,6 +7,7 @@ CREATE TABLE perms (
     name VARCHAR(100) NOT NULL,
     resource VARCHAR(100),
     action VARCHAR(100),
+    method VARCHAR(16),
     description TEXT,
     status SMALLINT NOT NULL DEFAULT 1,
     parent_id BIGINT,
@@ -25,6 +26,7 @@ COMMENT ON COLUMN perms.code IS '权限编码，如 user:create';
 COMMENT ON COLUMN perms.name IS '权限名称';
 COMMENT ON COLUMN perms.resource IS '资源标识，如 user';
 COMMENT ON COLUMN perms.action IS '动作标识，如 create';
+COMMENT ON COLUMN perms.method IS 'HTTP 方法元数据，仅用于展示/审计；权限校验仍以 code 为准';
 COMMENT ON COLUMN perms.description IS '权限描述';
 COMMENT ON COLUMN perms.status IS '权限状态：0禁用，1正常';
 COMMENT ON COLUMN perms.parent_id IS '父权限ID，NULL 表示根权限';

@@ -1,7 +1,7 @@
 {
   "page": {
     "title": "Permissions",
-    "subtitle": "Manage permission hierarchy, resources, and actions",
+    "subtitle": "Manage permission hierarchy, resources, actions, and HTTP method metadata",
     "addRoot": "Add root permission"
   },
   "toast": {
@@ -17,7 +17,7 @@
   "sheet": {
     "create": {
       "title": "Create permission",
-      "description": "Maintain permission identity, resource, action, and hierarchy",
+      "description": "Maintain permission identity, resource, action, HTTP method metadata, and hierarchy",
       "submit": "Create permission"
     },
     "update": {
@@ -33,7 +33,7 @@
     },
     "route": {
       "title": "Resource mapping",
-      "description": "Describe the resource, action, and usage notes for this permission"
+      "description": "Describe the resource, action, HTTP method metadata, and usage notes for this permission"
     },
     "display": {
       "title": "Status and ordering",
@@ -74,6 +74,10 @@
       "validation": {
         "max": "Action must be 100 characters or fewer"
       }
+    },
+    "method": {
+      "label": "HTTP method",
+      "none": "No HTTP method"
     },
     "description": {
       "label": "Description",
@@ -119,6 +123,7 @@
     "code": "Permission code",
     "resource": "Resource",
     "action": "Action",
+    "method": "HTTP method",
     "description": "Description",
     "sort": "Sort",
     "emptyChildrenTitle": "No child permissions under this node",
@@ -130,6 +135,7 @@
     "code": "Permission code",
     "resource": "Resource",
     "action": "Action",
+    "method": "HTTP method",
     "sort": "Sort",
     "status": "Status",
     "updatedAt": "Updated at",

@@ -57,6 +57,7 @@ impl PermRepository for SqlxPermRepository {
                 name,
                 resource,
                 action,
+                method,
                 description,
                 status,
                 sort,
@@ -64,7 +65,7 @@ impl PermRepository for SqlxPermRepository {
                 updated_at,
                 deleted_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
             RETURNING
                 id,
                 tenant_id,
@@ -73,6 +74,7 @@ impl PermRepository for SqlxPermRepository {
                 name,
                 resource,
                 action,
+                method,
                 description,
                 status,
                 sort,
@@ -88,6 +90,7 @@ impl PermRepository for SqlxPermRepository {
         .bind(&perm.name)
         .bind(&perm.resource)
         .bind(&perm.action)
+        .bind(&perm.method)
         .bind(&perm.description)
         .bind(&perm.status)
         .bind(&perm.sort)
@@ -112,6 +115,7 @@ impl PermRepository for SqlxPermRepository {
                 name,
                 resource,
                 action,
+                method,
                 description,
                 status,
                 sort,
@@ -142,6 +146,7 @@ impl PermRepository for SqlxPermRepository {
                 name,
                 resource,
                 action,
+                method,
                 description,
                 status,
                 sort,
@@ -208,6 +213,7 @@ impl PermRepository for SqlxPermRepository {
                 name,
                 resource,
                 action,
+                method,
                 description,
                 status,
                 sort,
@@ -272,6 +278,7 @@ impl PermRepository for SqlxPermRepository {
                 name,
                 resource,
                 action,
+                method,
                 description,
                 status,
                 sort,
@@ -310,6 +317,7 @@ impl PermRepository for SqlxPermRepository {
                 name,
                 resource,
                 action,
+                method,
                 description,
                 status,
                 sort,
@@ -413,10 +421,11 @@ impl PermRepository for SqlxPermRepository {
                 name = $5,
                 resource = $6,
                 action = $7,
-                description = $8,
-                status = $9,
-                sort = $10,
-                updated_at = $11
+                method = $8,
+                description = $9,
+                status = $10,
+                sort = $11,
+                updated_at = $12
             WHERE id = $1
             RETURNING
                 id,
@@ -426,6 +435,7 @@ impl PermRepository for SqlxPermRepository {
                 name,
                 resource,
                 action,
+                method,
                 description,
                 status,
                 sort,
@@ -441,6 +451,7 @@ impl PermRepository for SqlxPermRepository {
         .bind(&perm.name)
         .bind(&perm.resource)
         .bind(&perm.action)
+        .bind(&perm.method)
         .bind(&perm.description)
         .bind(&perm.status)
         .bind(&perm.sort)

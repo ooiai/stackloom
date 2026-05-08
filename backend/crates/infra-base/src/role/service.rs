@@ -3,7 +3,7 @@ use std::{
     sync::Arc,
 };
 
-use common::core::biz_error::ROLE_CODE_EXISTS;
+use common::core::{biz_error::ROLE_CODE_EXISTS, constants::CACHE_MENUS_TREE_BY_CODE_RID};
 use domain_base::{
     CreateRoleCmd, PageRoleCmd, Role, RoleCodeService, RoleRepository, RoleService, UpdateRoleCmd,
     role::{
@@ -66,6 +66,13 @@ where
 
     fn perm_cache_key(&self, role_id: i64) -> String {
         format!("{}{}{}", self.key_prefix, CACHE_PERMS_RID, role_id)
+    }
+
+    fn tree_cache_role_prefix(&self, role_id: i64) -> String {
+        format!(
+            "{}{}{}",
+            self.key_prefix, CACHE_MENUS_TREE_BY_CODE_RID, role_id
+        )
     }
 
     async fn cache_menu_codes(
@@ -217,6 +224,20 @@ where
                         "failed to invalidate role code cache"
                     );
                 }
+            }
+        }
+    }
+
+    async fn invalidate_role_tree_cache(&self, role_ids: &[i64]) {
+        let unique_role_ids = role_ids.iter().copied().collect::<BTreeSet<_>>();
+        for role_id in unique_role_ids {
+            let prefix = self.tree_cache_role_prefix(role_id);
+            if let Err(e) = self.redis_pool.del_prefix(&prefix).await {
+                tracing::warn!(
+                    role_id = %role_id,
+                    error = %e,
+                    "failed to invalidate role tree_by_code cache"
+                );
             }
         }
     }
@@ -394,6 +415,7 @@ where
 
         self.repository.hard_delete_batch(&ids).await?;
         self.invalidate_role_codes_cache(&ids).await;
+        self.invalidate_role_tree_cache(&ids).await;
         Ok(())
     }
 
@@ -410,6 +432,7 @@ where
 
         self.repository.hard_delete_batch(&descendant_ids).await?;
         self.invalidate_role_codes_cache(&descendant_ids).await;
+        self.invalidate_role_tree_cache(&descendant_ids).await;
         Ok(())
     }
 
@@ -431,6 +454,7 @@ where
             .replace_role_menus(cmd.role_id, &cmd.menu_ids)
             .await?;
         self.refresh_role_menu_codes_cache(cmd.role_id).await;
+        self.invalidate_role_tree_cache(&[cmd.role_id]).await;
         Ok(())
     }
 
