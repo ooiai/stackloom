@@ -37,8 +37,8 @@
 
 ## 这是什么？
 
-> *织机将一根根纱线编织成坚韧的布料。*
-> *StackLoom 将认证、租户隔离、角色权限……编织成一套完整的后台管理平台。*
+> _织机将一根根纱线编织成坚韧的布料。_
+> _StackLoom 将认证、租户隔离、角色权限……编织成一套完整的后台管理平台。_
 
 **StackLoom** 是一个生产级多租户 SaaS 管理脚手架。它让你不必重复实现认证流程、RBAC 权限树和租户隔离逻辑，而是直接拥有一套经过验证的坚实基础 —— 拿来即用，随时扩展。
 
@@ -128,13 +128,13 @@
 
 Rust 工作区严格遵守 DDD 分层 —— 上层不可被下层导入：
 
-| Crate | 职责 |
-|---|---|
-| `domain-base` | 实体、服务 Trait、值对象、业务规则 |
-| `infra-base` | SQLx 仓库实现 —— 唯一可与数据库通信的层 |
-| `api-http` | Axum 路由、请求/响应 DTO、中间件装配 |
-| `app` | 依赖注入、服务器启动、迁移执行 |
-| `domain-auth` / `infra-auth` | 认证领域，与 base 隔离 |
+| Crate                        | 职责                                    |
+| ---------------------------- | --------------------------------------- |
+| `domain-base`                | 实体、服务 Trait、值对象、业务规则      |
+| `infra-base`                 | SQLx 仓库实现 —— 唯一可与数据库通信的层 |
+| `api-http`                   | Axum 路由、请求/响应 DTO、中间件装配    |
+| `app`                        | 依赖注入、服务器启动、迁移执行          |
+| `domain-auth` / `infra-auth` | 认证领域，与 base 隔离                  |
 
 ---
 
@@ -142,27 +142,27 @@ Rust 工作区严格遵守 DDD 分层 —— 上层不可被下层导入：
 
 **后端**
 
-| | 技术 | 作用 |
-|---|---|---|
-| 🦀 | [Rust](https://www.rust-lang.org/) + [Axum 0.8](https://github.com/tokio-rs/axum) | 异步 HTTP 服务，零开销中间件 |
-| 🗃️ | [SQLx 0.8](https://github.com/launchbadge/sqlx) | 编译期 SQL 正确性检查 |
-| 🐘 | [PostgreSQL](https://www.postgresql.org/) | 主要关系型数据存储 |
-| ⚡ | [Redis](https://redis.io/) | 令牌存储、缓存、任务队列 |
-| 📬 | [Apalis](https://github.com/geofmureithi/apalis) | 后台任务处理 |
-| 🆔 | Sonyflake | 分布式 ID 生成 |
-| 🔑 | JWT (HS256) | 无状态认证令牌 + Redis 吊销支持 |
+|     | 技术                                                                              | 作用                            |
+| --- | --------------------------------------------------------------------------------- | ------------------------------- |
+| 🦀  | [Rust](https://www.rust-lang.org/) + [Axum 0.8](https://github.com/tokio-rs/axum) | 异步 HTTP 服务，零开销中间件    |
+| 🗃️  | [SQLx 0.8](https://github.com/launchbadge/sqlx)                                   | 编译期 SQL 正确性检查           |
+| 🐘  | [PostgreSQL](https://www.postgresql.org/)                                         | 主要关系型数据存储              |
+| ⚡  | [Redis](https://redis.io/)                                                        | 令牌存储、缓存、任务队列        |
+| 📬  | [Apalis](https://github.com/geofmureithi/apalis)                                  | 后台任务处理                    |
+| 🆔  | Sonyflake                                                                         | 分布式 ID 生成                  |
+| 🔑  | JWT (HS256)                                                                       | 无状态认证令牌 + Redis 吊销支持 |
 
 **前端**
 
-| | 技术 | 作用 |
-|---|---|---|
-| ⚛️ | [Next.js 16](https://nextjs.org/) + [React 19](https://react.dev/) | App Router、SSR、React 服务端组件 |
-| 🎨 | [Tailwind CSS v4](https://tailwindcss.com/) + [Base UI](https://base-ui.com/) | 样式与无障碍原语组件 |
-| 🔄 | [TanStack Query v5](https://tanstack.com/query) | 服务端状态、缓存、乐观更新 |
-| 📊 | [TanStack Table v8](https://tanstack.com/table) | 无头数据表格（排序、分页） |
-| 🌍 | [next-intl](https://next-intl-docs.vercel.app/) | 国际化（zh-CN、en-US） |
-| 🔐 | [hashids](https://hashids.org/) | URL 中的混淆数字 ID |
-| 🏪 | [Zustand](https://zustand-demo.pmnd.rs/) | 轻量客户端状态管理 |
+|     | 技术                                                                          | 作用                              |
+| --- | ----------------------------------------------------------------------------- | --------------------------------- |
+| ⚛️  | [Next.js 16](https://nextjs.org/) + [React 19](https://react.dev/)            | App Router、SSR、React 服务端组件 |
+| 🎨  | [Tailwind CSS v4](https://tailwindcss.com/) + [Base UI](https://base-ui.com/) | 样式与无障碍原语组件              |
+| 🔄  | [TanStack Query v5](https://tanstack.com/query)                               | 服务端状态、缓存、乐观更新        |
+| 📊  | [TanStack Table v8](https://tanstack.com/table)                               | 无头数据表格（排序、分页）        |
+| 🌍  | [next-intl](https://next-intl-docs.vercel.app/)                               | 国际化（zh-CN、en-US）            |
+| 🔐  | [hashids](https://hashids.org/)                                               | URL 中的混淆数字 ID               |
+| 🏪  | [Zustand](https://zustand-demo.pmnd.rs/)                                      | 轻量客户端状态管理                |
 
 ---
 
@@ -236,6 +236,41 @@ make web-dev
 ```
 
 打开浏览器访问 [http://localhost:8606](http://localhost:8606)。
+
+---
+
+## 🐳 使用 Docker Compose 部署
+
+仓库现在已经按端提供了部署文件：
+
+- `docker/monolith/` —— Rust 后端 monolith
+- `docker/frontend/` —— Next.js 前端
+
+### 部署后端 monolith
+
+1. 先修改 `docker/monolith/config.prod.yml`，让它指向你自己的**外部** PostgreSQL 和 Redis。
+2. 需要保证 `stackloom/` 与 `neocrates/` 是同级目录，因为后端 workspace 依赖本地 `../neocrates` 路径。
+3. 启动容器：
+
+```bash
+cd docker/monolith
+docker compose up -d --build
+```
+
+这个 compose **只会启动 monolith 容器本身**，不会帮你创建 PostgreSQL 或 Redis。
+
+### 部署前端
+
+前端镜像使用 Next.js standalone 输出。`NEXT_PUBLIC_*` 变量会在构建阶段写入产物，所以修改后需要重新 build。
+
+```bash
+cd docker/frontend
+NEXT_PUBLIC_BASE_URL=https://api.example.com \
+NEXT_PUBLIC_SIGIN=stackloom::basic \
+docker compose up -d --build
+```
+
+这个 compose **只会启动前端容器本身**，并假定 `NEXT_PUBLIC_BASE_URL` 指向一个已经可访问的后端 API。
 
 ---
 

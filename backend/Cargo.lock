@@ -3749,7 +3749,7 @@ dependencies = [
 
 [[package]]
 name = "neocrates"
-version = "0.1.50"
+version = "0.1.51"
 dependencies = [
  "anyhow",
  "argon2",

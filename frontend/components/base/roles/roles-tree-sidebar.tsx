@@ -230,10 +230,10 @@ function RoleTreeNodeItem({
       {isExpanded && hasChildren ? (
         <div>
           {node.children.map((child) => (
-              <RoleTreeNodeItem
-                key={child.id}
-                permissions={permissions}
-                node={child}
+            <RoleTreeNodeItem
+              key={child.id}
+              permissions={permissions}
+              node={child}
               selectedNodeId={selectedNodeId}
               expandedIds={expandedIds}
               onToggleExpand={onToggleExpand}

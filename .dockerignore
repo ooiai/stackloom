@@ -1,0 +1,12 @@
+.git
+.github
+.next
+node_modules
+target
+**/.DS_Store
+**/*.log
+**/node_modules
+**/target
+frontend/.next
+frontend/node_modules
+

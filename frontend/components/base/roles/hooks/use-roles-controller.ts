@@ -187,7 +187,9 @@ export function useRolesController() {
   )
 
   const openCreateRoot = useCallback(() => {
-    if (!guardPerm(ROLE_ACTION_PERMS.create, { source: "roles.createRoot.open" })) {
+    if (
+      !guardPerm(ROLE_ACTION_PERMS.create, { source: "roles.createRoot.open" })
+    ) {
       return
     }
 
@@ -201,7 +203,9 @@ export function useRolesController() {
 
   const openAddChild = useCallback(
     (parentId: string) => {
-      if (!guardPerm(ROLE_ACTION_PERMS.create, { source: "roles.addChild.open" })) {
+      if (
+        !guardPerm(ROLE_ACTION_PERMS.create, { source: "roles.addChild.open" })
+      ) {
         return
       }
 
@@ -230,7 +234,9 @@ export function useRolesController() {
 
   const openEdit = useCallback(
     (role: RoleData) => {
-      if (!guardPerm(ROLE_ACTION_PERMS.update, { source: "roles.update.open" })) {
+      if (
+        !guardPerm(ROLE_ACTION_PERMS.update, { source: "roles.update.open" })
+      ) {
         return
       }
 

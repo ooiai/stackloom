@@ -1,0 +1,28 @@
+services:
+  frontend:
+    image: ${FRONTEND_IMAGE:-stackloom-frontend:latest}
+    container_name: ${FRONTEND_CONTAINER_NAME:-stackloom-frontend}
+    build:
+      context: ../..
+      dockerfile: docker/frontend/Dockerfile
+      args:
+        NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:?set NEXT_PUBLIC_BASE_URL before building docker/frontend}
+        NEXT_PUBLIC_SIGIN: ${NEXT_PUBLIC_SIGIN:?set NEXT_PUBLIC_SIGIN before building docker/frontend}
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-8606}:3000"
+    environment:
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000').then((res)=>process.exit(res.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s

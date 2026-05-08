@@ -1,0 +1,91 @@
+# Edit this file before deployment.
+# The docker/monolith compose only starts the Rust monolith container.
+# PostgreSQL and Redis must already exist and be reachable from this container.
+
+rust-log:
+  level: info,tower_http=info
+  sql-log: false
+
+server:
+  prefix: sl
+  debug: false
+  host: 0.0.0.0
+  port: 6620
+
+pg-database:
+  url: postgres://postgres:change_me@postgres.example.com:5432/postgres
+  max_size: 20
+
+base-database:
+  url: postgres://postgres:change_me@postgres.example.com:5432/stackloom
+  max_size: 20
+
+redis:
+  url: redis://:change_me@redis.example.com:6379/0
+
+apalis:
+  url: redis://:change_me@redis.example.com:6379/1
+  concurrency: 10
+
+aws-cos:
+  cos_type: aliyun
+  aliyun_accesskey_id: your_access_key_id
+  aliyun_accesskey_secret: your_access_key_secret
+  aliyun_role_arn: your_role_arn
+  aliyun_expiration: 3600
+  aliyun_role_session_name: your_session_name
+  aliyun_endpoint: oss-cn-hangzhou.aliyuncs.com
+  aliyun_region_id: cn-hangzhou
+  aliyun_bucket: your_bucket
+  aliyun_base_url: https://your_bucket.oss-cn-hangzhou.aliyuncs.com
+  rustfs_accesskey_id: your_access_key_id
+  rustfs_accesskey_secret: your_access_key_secret
+  rustfs_endpoint: https://rustfs.example.com
+  rustfs_region_id: us-east-1
+  rustfs_bucket: your_bucket
+  rustfs_expiration: 3600
+  rustfs_base_url: https://rustfs.example.com/your_bucket
+  minio_accesskey_id: your_access_key_id
+  minio_accesskey_secret: your_access_key_secret
+  minio_endpoint: https://minio.example.com
+  minio_region_id: us-east-1
+  minio_bucket: your_bucket
+  minio_expiration: 3600
+  minio_base_url: https://minio.example.com/your_bucket
+
+sms:
+  debug: false
+  provider: aliyun
+  aliyun_access_key_id: your_access_key_id
+  aliyun_access_key_secret: your_access_key_secret
+  aliyun_sign_name: your_sign_name
+  aliyun_template_code: your_template_code
+  tencent_secret_id: your_secret_id
+  tencent_secret_key: your_secret_key
+  tencent_app_id: your_app_id
+  tencent_region: ap-beijing
+  tencent_sign_name: your_sign_name
+  tencent_template_id: your_template_id
+
+auth:
+  enabled: true
+  expires_at: 800
+  refresh_expires_at: 1296000
+
+auth-basics:
+  - ZEc5d1pXUjFPanBoZFhSbw==
+  - ZEc5d1pXUjFPanBpWVhOcFl3PT0=
+  - ZEc5d1pXUjFPanB5WldaeVpYTm9YM1J2YTJWdQ==
+
+ignore-urls:
+  - /health
+  - /metrics
+
+pms-ignore-urls:
+  - /signin/refresh_token
+  - /signin/account
+  - /signin/tenants
+  - /signup/account
+  - /sms/signin
+  - /captcha/slider
+

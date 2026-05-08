@@ -37,8 +37,8 @@
 
 ## What is StackLoom?
 
-> *A loom weaves individual threads into a strong, coherent fabric.*
-> *StackLoom weaves your core admin concerns — auth, tenancy, roles, permissions — into a single, cohesive platform.*
+> _A loom weaves individual threads into a strong, coherent fabric._
+> _StackLoom weaves your core admin concerns — auth, tenancy, roles, permissions — into a single, cohesive platform._
 
 **StackLoom** is a production-grade, multi-tenant SaaS admin scaffold. Instead of re-implementing the same authentication flows, RBAC trees, and tenant isolation logic for every new product, StackLoom gives you a hardened, tested foundation you can build on — and ship from.
 
@@ -128,13 +128,13 @@ Generate a complete CRUD module (domain entity + infra repo + HTTP handler + fro
 
 The Rust workspace follows a strict DDD layering — no layer may import from a layer above it:
 
-| Crate | Role |
-|---|---|
-| `domain-base` | Entities, service traits, value objects, business rules |
-| `infra-base` | SQLx repositories — the only layer that talks to the DB |
-| `api-http` | Axum routes, request/response DTOs, middleware wiring |
-| `app` | Bootstrap: dependency injection, server startup, migrations |
-| `domain-auth` / `infra-auth` | Authentication domain — isolated from base |
+| Crate                        | Role                                                        |
+| ---------------------------- | ----------------------------------------------------------- |
+| `domain-base`                | Entities, service traits, value objects, business rules     |
+| `infra-base`                 | SQLx repositories — the only layer that talks to the DB     |
+| `api-http`                   | Axum routes, request/response DTOs, middleware wiring       |
+| `app`                        | Bootstrap: dependency injection, server startup, migrations |
+| `domain-auth` / `infra-auth` | Authentication domain — isolated from base                  |
 
 ---
 
@@ -142,27 +142,27 @@ The Rust workspace follows a strict DDD layering — no layer may import from a 
 
 **Backend**
 
-| | Technology | Purpose |
-|---|---|---|
-| 🦀 | [Rust](https://www.rust-lang.org/) + [Axum 0.8](https://github.com/tokio-rs/axum) | Async HTTP server, zero-cost middleware |
-| 🗃️ | [SQLx 0.8](https://github.com/launchbadge/sqlx) | Compile-time checked SQL queries |
-| 🐘 | [PostgreSQL](https://www.postgresql.org/) | Primary relational store |
-| ⚡ | [Redis](https://redis.io/) | Token store, caching, job queues |
-| 📬 | [Apalis](https://github.com/geofmureithi/apalis) | Background job processing |
-| 🆔 | Sonyflake | Distributed ID generation |
-| 🔑 | JWT (HS256) | Stateless auth tokens with Redis revocation |
+|     | Technology                                                                        | Purpose                                     |
+| --- | --------------------------------------------------------------------------------- | ------------------------------------------- |
+| 🦀  | [Rust](https://www.rust-lang.org/) + [Axum 0.8](https://github.com/tokio-rs/axum) | Async HTTP server, zero-cost middleware     |
+| 🗃️  | [SQLx 0.8](https://github.com/launchbadge/sqlx)                                   | Compile-time checked SQL queries            |
+| 🐘  | [PostgreSQL](https://www.postgresql.org/)                                         | Primary relational store                    |
+| ⚡  | [Redis](https://redis.io/)                                                        | Token store, caching, job queues            |
+| 📬  | [Apalis](https://github.com/geofmureithi/apalis)                                  | Background job processing                   |
+| 🆔  | Sonyflake                                                                         | Distributed ID generation                   |
+| 🔑  | JWT (HS256)                                                                       | Stateless auth tokens with Redis revocation |
 
 **Frontend**
 
-| | Technology | Purpose |
-|---|---|---|
-| ⚛️ | [Next.js 16](https://nextjs.org/) + [React 19](https://react.dev/) | App Router, SSR, React Server Components |
-| 🎨 | [Tailwind CSS v4](https://tailwindcss.com/) + [Base UI](https://base-ui.com/) | Styling and accessible primitives |
-| 🔄 | [TanStack Query v5](https://tanstack.com/query) | Server state, caching, optimistic updates |
-| 📊 | [TanStack Table v8](https://tanstack.com/table) | Headless data tables with sorting and pagination |
-| 🌍 | [next-intl](https://next-intl-docs.vercel.app/) | Internationalisation (zh-CN, en-US) |
-| 🔐 | [hashids](https://hashids.org/) | Obfuscated numeric IDs in URLs |
-| 🏪 | [Zustand](https://zustand-demo.pmnd.rs/) | Lightweight client state management |
+|     | Technology                                                                    | Purpose                                          |
+| --- | ----------------------------------------------------------------------------- | ------------------------------------------------ |
+| ⚛️  | [Next.js 16](https://nextjs.org/) + [React 19](https://react.dev/)            | App Router, SSR, React Server Components         |
+| 🎨  | [Tailwind CSS v4](https://tailwindcss.com/) + [Base UI](https://base-ui.com/) | Styling and accessible primitives                |
+| 🔄  | [TanStack Query v5](https://tanstack.com/query)                               | Server state, caching, optimistic updates        |
+| 📊  | [TanStack Table v8](https://tanstack.com/table)                               | Headless data tables with sorting and pagination |
+| 🌍  | [next-intl](https://next-intl-docs.vercel.app/)                               | Internationalisation (zh-CN, en-US)              |
+| 🔐  | [hashids](https://hashids.org/)                                               | Obfuscated numeric IDs in URLs                   |
+| 🏪  | [Zustand](https://zustand-demo.pmnd.rs/)                                      | Lightweight client state management              |
 
 ---
 
@@ -236,6 +236,41 @@ make web-dev
 ```
 
 Open [http://localhost:8606](http://localhost:8606) in your browser.
+
+---
+
+## 🐳 Deploy with Docker Compose
+
+The repository now includes per-app deployment files under `docker/`:
+
+- `docker/monolith/` — Rust backend monolith
+- `docker/frontend/` — Next.js frontend
+
+### Backend monolith
+
+1. Edit `docker/monolith/config.prod.yml` so it points to your **external** PostgreSQL and Redis services.
+2. Make sure `stackloom/` and `neocrates/` are checked out as sibling directories, because the backend workspace depends on the local `../neocrates` path.
+3. Start the container:
+
+```bash
+cd docker/monolith
+docker compose up -d --build
+```
+
+The compose file only starts the monolith container. It does **not** create PostgreSQL or Redis for you.
+
+### Frontend
+
+The frontend image is built with Next.js standalone output. Public env vars are baked in at build time, so changing them requires a rebuild.
+
+```bash
+cd docker/frontend
+NEXT_PUBLIC_BASE_URL=https://api.example.com \
+NEXT_PUBLIC_SIGIN=stackloom::basic \
+docker compose up -d --build
+```
+
+The frontend compose only starts the web container and expects the backend API to already be reachable at `NEXT_PUBLIC_BASE_URL`.
 
 ---
 

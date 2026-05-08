@@ -1,0 +1,24 @@
+services:
+  monolith:
+    image: ${MONOLITH_IMAGE:-stackloom-monolith:latest}
+    container_name: ${MONOLITH_CONTAINER_NAME:-stackloom-monolith}
+    build:
+      context: ../..
+      dockerfile: docker/monolith/Dockerfile
+      additional_contexts:
+        # The backend workspace depends on ../neocrates relative to the stackloom repo root.
+        neocrates: ../../../neocrates
+    restart: unless-stopped
+    environment:
+      ENV: prod
+    ports:
+      - "${MONOLITH_PORT:-6620}:6620"
+    volumes:
+      - ./config.prod.yml:/app/config.prod.yml:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:6620/ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+

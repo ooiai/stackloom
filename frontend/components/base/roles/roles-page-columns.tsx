@@ -225,7 +225,7 @@ export function createRoleColumns({
                 {t("common.actions.addChild")}
               </DropdownMenuItem>
             ) : null}
-            {(permissions.canAddChild || permissions.canEdit) ? (
+            {permissions.canAddChild || permissions.canEdit ? (
               <DropdownMenuSeparator />
             ) : null}
             {permissions.canEdit ? (
