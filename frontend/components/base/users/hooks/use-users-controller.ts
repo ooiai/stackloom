@@ -4,7 +4,9 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { createFilter, type Filter } from "@/components/reui/filters"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
+import { usePermissionAccess } from "@/hooks/use-permission-access"
 import { buildCreateUserParam, buildUpdateUserParam } from "../helpers"
+import { USER_ACTION_PERMS } from "../helpers"
 import { useUserAssignRoles } from "./use-user-assign-roles"
 import { useAlertDialog } from "@/providers/dialog-providers"
 import { useI18n } from "@/providers/i18n-provider"
@@ -121,6 +123,7 @@ export function useUsersController() {
   const searchParams = useSearchParams()
   const dialog = useAlertDialog()
   const queryClient = useQueryClient()
+  const { hasPerm, guardPerm } = usePermissionAccess()
 
   const [filters, setFilters] = useState<Filter<UsersFilterValue>[]>(() =>
     createFiltersFromSearchParams(searchParams)
@@ -131,7 +134,7 @@ export function useUsersController() {
   }))
   const [sheet, setSheet] = useState<UsersSheetState>(DEFAULT_SHEET_STATE)
 
-  const { assignRolesDialog } = useUserAssignRoles()
+  const { assignRolesDialog: rawAssignRolesDialog } = useUserAssignRoles()
 
   const debouncedFilters = useDebouncedValue(filters, 300)
 
@@ -228,20 +231,28 @@ export function useUsersController() {
   }, [])
 
   const openCreate = useCallback(() => {
+    if (!guardPerm(USER_ACTION_PERMS.create, { source: "users.create.open" })) {
+      return
+    }
+
     setSheet({
       mode: "create",
       open: true,
       user: null,
     })
-  }, [])
+  }, [guardPerm])
 
   const openEdit = useCallback((user: UserData) => {
+    if (!guardPerm(USER_ACTION_PERMS.update, { source: "users.update.open" })) {
+      return
+    }
+
     setSheet({
       mode: "update",
       open: true,
       user,
     })
-  }, [])
+  }, [guardPerm])
 
   const closeSheet = useCallback(() => {
     setSheet(DEFAULT_SHEET_STATE)
@@ -250,6 +261,14 @@ export function useUsersController() {
   const submitSheet = useCallback(
     async (values: UserFormValues) => {
       if (sheet.mode === "create") {
+        if (
+          !guardPerm(USER_ACTION_PERMS.create, {
+            source: "users.create.submit",
+          })
+        ) {
+          return
+        }
+
         await createMutation.mutateAsync(values)
         return
       }
@@ -258,16 +277,28 @@ export function useUsersController() {
         return
       }
 
+      if (
+        !guardPerm(USER_ACTION_PERMS.update, {
+          source: "users.update.submit",
+        })
+      ) {
+        return
+      }
+
       await updateMutation.mutateAsync({
         id: sheet.user.id,
         values,
       })
     },
-    [createMutation, sheet.mode, sheet.user, updateMutation]
+    [createMutation, guardPerm, sheet.mode, sheet.user, updateMutation]
   )
 
   const confirmRemoveUser = useCallback(
     (user: UserData) => {
+      if (!guardPerm(USER_ACTION_PERMS.remove, { source: "users.remove.confirm" })) {
+        return
+      }
+
       dialog.show({
         variant: "destructive",
         title: t("users.dialog.deleteTitle"),
@@ -282,11 +313,65 @@ export function useUsersController() {
         },
       })
     },
-    [dialog, removeMutation, t]
+    [dialog, guardPerm, removeMutation, t]
+  )
+
+  const openAssignRoles = useCallback(
+    (user: UserData) => {
+      if (
+        !guardPerm(USER_ACTION_PERMS.assignRoles, {
+          source: "users.assignRoles.open",
+        })
+      ) {
+        return
+      }
+
+      rawAssignRolesDialog.onOpen(user)
+    },
+    [guardPerm, rawAssignRolesDialog]
+  )
+
+  const saveAssignRoles = useCallback(
+    async (roleIds: string[]) => {
+      if (
+        !guardPerm(USER_ACTION_PERMS.assignRoles, {
+          source: "users.assignRoles.save",
+        })
+      ) {
+        return
+      }
+
+      await rawAssignRolesDialog.onSave(roleIds)
+    },
+    [guardPerm, rawAssignRolesDialog]
+  )
+
+  const permissions = useMemo(
+    () => ({
+      canCreate: hasPerm(USER_ACTION_PERMS.create),
+      canEdit: hasPerm(USER_ACTION_PERMS.update),
+      canAssignRoles: hasPerm(USER_ACTION_PERMS.assignRoles),
+      canDelete: hasPerm(USER_ACTION_PERMS.remove),
+      hasAnyRowAction:
+        hasPerm(USER_ACTION_PERMS.update) ||
+        hasPerm(USER_ACTION_PERMS.assignRoles) ||
+        hasPerm(USER_ACTION_PERMS.remove),
+    }),
+    [hasPerm]
+  )
+
+  const assignRolesDialog = useMemo(
+    () => ({
+      ...rawAssignRolesDialog,
+      onOpen: openAssignRoles,
+      onSave: saveAssignRoles,
+    }),
+    [openAssignRoles, rawAssignRolesDialog, saveAssignRoles]
   )
 
   return {
     view: {
+      permissions,
       filters,
       users: usersQuery.data?.items ?? [],
       total: usersQuery.data?.total ?? 0,
@@ -301,7 +386,7 @@ export function useUsersController() {
       onOpenCreate: openCreate,
       onOpenEdit: openEdit,
       onDelete: confirmRemoveUser,
-      onOpenAssignRoles: assignRolesDialog.onOpen,
+      onOpenAssignRoles: openAssignRoles,
     },
     sheet: {
       ...sheet,

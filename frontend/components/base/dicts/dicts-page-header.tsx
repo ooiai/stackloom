@@ -5,12 +5,14 @@ import { useI18n } from "@/providers/i18n-provider"
 import { PlusIcon, RefreshCwIcon } from "lucide-react"
 
 interface DictsPageHeaderProps {
+  canCreateRoot: boolean
   isFetching: boolean
   onRefresh: () => void
   onOpenCreateRoot: () => void
 }
 
 export function DictsPageHeader({
+  canCreateRoot,
   isFetching,
   onRefresh,
   onOpenCreateRoot,
@@ -38,10 +40,12 @@ export function DictsPageHeader({
           <RefreshCwIcon className={isFetching ? "animate-spin" : undefined} />
           {t("common.actions.refresh")}
         </Button>
-        <Button onClick={onOpenCreateRoot}>
-          <PlusIcon />
-          {t("dicts.page.addRoot")}
-        </Button>
+        {canCreateRoot ? (
+          <Button onClick={onOpenCreateRoot}>
+            <PlusIcon />
+            {t("dicts.page.addRoot")}
+          </Button>
+        ) : null}
       </div>
     </div>
   )

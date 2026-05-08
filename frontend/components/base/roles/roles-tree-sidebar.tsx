@@ -32,6 +32,15 @@ import {
 } from "lucide-react"
 
 interface RolesTreeSidebarProps {
+  permissions: {
+    canCreateRoot: boolean
+    canAddChild: boolean
+    canEdit: boolean
+    canAssignMenus: boolean
+    canAssignPerms: boolean
+    canDelete: (role: RoleData) => boolean
+    hasAnyNodeAction: boolean
+  }
   treeSearch: string
   tree: RoleTreeNode[]
   selectedNodeId: string | null
@@ -49,6 +58,7 @@ interface RolesTreeSidebarProps {
 }
 
 function RoleTreeNodeItem({
+  permissions,
   node,
   selectedNodeId,
   expandedIds,
@@ -61,6 +71,7 @@ function RoleTreeNodeItem({
   onOpenAssignPerms,
   depth = 0,
 }: {
+  permissions: RolesTreeSidebarProps["permissions"]
   node: RoleTreeNode
   selectedNodeId: string | null
   expandedIds: Set<string>
@@ -77,6 +88,12 @@ function RoleTreeNodeItem({
   const isSelected = selectedNodeId === node.id
   const hasChildren = node.children.length > 0
   const isExpanded = expandedIds.has(node.id)
+  const hasNodeActions =
+    permissions.canAddChild ||
+    permissions.canEdit ||
+    permissions.canAssignMenus ||
+    permissions.canAssignPerms ||
+    permissions.canDelete(node)
 
   return (
     <div>
@@ -152,49 +169,71 @@ function RoleTreeNodeItem({
               {node.children.length}
             </span>
           ) : null}
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={<Button size="icon-xs" variant="ghost" />}
-            >
-              <EllipsisIcon className="size-3.5" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" side="bottom">
-              <DropdownMenuItem onClick={() => onOpenAddChild(node.id)}>
-                <PlusIcon />
-                {t("common.actions.addChild")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onOpenEdit(node)}>
-                <Edit3Icon />
-                {t("common.actions.edit")}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => onOpenAssignMenus(node)}>
-                <LayoutGridIcon />
-                {t("roles.assignMenus.action")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onOpenAssignPerms(node)}>
-                <KeyIcon />
-                {t("roles.assignPerms.action")}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => onDelete(node)}
+          {hasNodeActions ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={<Button size="icon-xs" variant="ghost" />}
               >
-                <Trash2Icon />
-                {t("common.actions.delete")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <EllipsisIcon className="size-3.5" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" side="bottom">
+                {permissions.canAddChild ? (
+                  <DropdownMenuItem onClick={() => onOpenAddChild(node.id)}>
+                    <PlusIcon />
+                    {t("common.actions.addChild")}
+                  </DropdownMenuItem>
+                ) : null}
+                {permissions.canEdit ? (
+                  <DropdownMenuItem onClick={() => onOpenEdit(node)}>
+                    <Edit3Icon />
+                    {t("common.actions.edit")}
+                  </DropdownMenuItem>
+                ) : null}
+                {(permissions.canAddChild || permissions.canEdit) &&
+                (permissions.canAssignMenus || permissions.canAssignPerms) ? (
+                  <DropdownMenuSeparator />
+                ) : null}
+                {permissions.canAssignMenus ? (
+                  <DropdownMenuItem onClick={() => onOpenAssignMenus(node)}>
+                    <LayoutGridIcon />
+                    {t("roles.assignMenus.action")}
+                  </DropdownMenuItem>
+                ) : null}
+                {permissions.canAssignPerms ? (
+                  <DropdownMenuItem onClick={() => onOpenAssignPerms(node)}>
+                    <KeyIcon />
+                    {t("roles.assignPerms.action")}
+                  </DropdownMenuItem>
+                ) : null}
+                {(permissions.canAddChild ||
+                  permissions.canEdit ||
+                  permissions.canAssignMenus ||
+                  permissions.canAssignPerms) &&
+                permissions.canDelete(node) ? (
+                  <DropdownMenuSeparator />
+                ) : null}
+                {permissions.canDelete(node) ? (
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={() => onDelete(node)}
+                  >
+                    <Trash2Icon />
+                    {t("common.actions.delete")}
+                  </DropdownMenuItem>
+                ) : null}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
         </div>
       </div>
 
       {isExpanded && hasChildren ? (
         <div>
           {node.children.map((child) => (
-            <RoleTreeNodeItem
-              key={child.id}
-              node={child}
+              <RoleTreeNodeItem
+                key={child.id}
+                permissions={permissions}
+                node={child}
               selectedNodeId={selectedNodeId}
               expandedIds={expandedIds}
               onToggleExpand={onToggleExpand}
@@ -214,6 +253,7 @@ function RoleTreeNodeItem({
 }
 
 export function RolesTreeSidebar({
+  permissions,
   treeSearch,
   tree,
   selectedNodeId,
@@ -242,15 +282,17 @@ export function RolesTreeSidebar({
             {t("roles.sidebar.subtitle")}
           </p>
         </div>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="text-muted-foreground hover:text-foreground"
-          title={t("roles.sidebar.addRoot")}
-          onClick={onOpenCreateRoot}
-        >
-          <PlusIcon />
-        </Button>
+        {permissions.canCreateRoot ? (
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="text-muted-foreground hover:text-foreground"
+            title={t("roles.sidebar.addRoot")}
+            onClick={onOpenCreateRoot}
+          >
+            <PlusIcon />
+          </Button>
+        ) : null}
       </div>
 
       <div className="border-b border-border/60 px-4 py-3">
@@ -287,7 +329,7 @@ export function RolesTreeSidebar({
                     : t("roles.sidebar.emptyDefaultDescription")}
                 </p>
               </div>
-              {!treeSearch.trim() ? (
+              {!treeSearch.trim() && permissions.canCreateRoot ? (
                 <Button size="sm" onClick={onOpenCreateRoot}>
                   <PlusIcon />
                   {t("roles.sidebar.create")}
@@ -298,6 +340,7 @@ export function RolesTreeSidebar({
             tree.map((node) => (
               <RoleTreeNodeItem
                 key={node.id}
+                permissions={permissions}
                 node={node}
                 depth={0}
                 selectedNodeId={selectedNodeId}

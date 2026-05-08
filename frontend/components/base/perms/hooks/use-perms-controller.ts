@@ -7,7 +7,9 @@ import {
   buildPermBreadcrumb,
   buildUpdatePermParam,
   findPermNode,
+  PERM_ACTION_PERMS,
 } from "@/components/base/perms/helpers"
+import { usePermissionAccess } from "@/hooks/use-permission-access"
 import { useAlertDialog } from "@/providers/dialog-providers"
 import { useI18n } from "@/providers/i18n-provider"
 import { permApi } from "@/stores/base-api"
@@ -47,6 +49,7 @@ export function usePermsController() {
   const searchParams = useSearchParams()
   const dialog = useAlertDialog()
   const queryClient = useQueryClient()
+  const { hasPerm, guardPerm } = usePermissionAccess()
 
   const [rawSelectedNodeId, setRawSelectedNodeId] = useState<string | null>(
     searchParams.get("node")
@@ -162,17 +165,36 @@ export function usePermsController() {
     },
   })
 
+  const getDeletePermCode = useCallback(
+    (perm: PermData) => {
+      const treeNode = findPermNode(tree, perm.id)
+      const hasChildren = (treeNode?.children.length ?? 0) > 0
+      return hasChildren
+        ? PERM_ACTION_PERMS.removeCascade
+        : PERM_ACTION_PERMS.remove
+    },
+    [tree]
+  )
+
   const openCreateRoot = useCallback(() => {
+    if (!guardPerm(PERM_ACTION_PERMS.create, { source: "perms.createRoot.open" })) {
+      return
+    }
+
     setSheet({
       mode: "create",
       open: true,
       perm: null,
       parent: null,
     })
-  }, [])
+  }, [guardPerm])
 
   const openAddChild = useCallback(
     (parentId: string) => {
+      if (!guardPerm(PERM_ACTION_PERMS.create, { source: "perms.addChild.open" })) {
+        return
+      }
+
       const parentNode =
         findPermNode(tree, parentId) ??
         (selectedNode?.id === parentId ? selectedNode : null)
@@ -193,11 +215,15 @@ export function usePermsController() {
         parent: parentNode,
       })
     },
-    [selectedNode, tree]
+    [guardPerm, selectedNode, tree]
   )
 
   const openEdit = useCallback(
     (perm: PermData) => {
+      if (!guardPerm(PERM_ACTION_PERMS.update, { source: "perms.update.open" })) {
+        return
+      }
+
       setSheet({
         mode: "update",
         open: true,
@@ -207,7 +233,7 @@ export function usePermsController() {
           (selectedNode?.id === perm.parent_id ? selectedNode : null),
       })
     },
-    [selectedNode, tree]
+    [guardPerm, selectedNode, tree]
   )
 
   const closeSheet = useCallback(() => {
@@ -217,6 +243,14 @@ export function usePermsController() {
   const submitSheet = useCallback(
     async (values: PermFormValues) => {
       if (sheet.mode === "create") {
+        if (
+          !guardPerm(PERM_ACTION_PERMS.create, {
+            source: "perms.create.submit",
+          })
+        ) {
+          return
+        }
+
         await createMutation.mutateAsync(values)
         return
       }
@@ -225,12 +259,20 @@ export function usePermsController() {
         return
       }
 
+      if (
+        !guardPerm(PERM_ACTION_PERMS.update, {
+          source: "perms.update.submit",
+        })
+      ) {
+        return
+      }
+
       await updateMutation.mutateAsync({
         perm: sheet.perm,
         values,
       })
     },
-    [createMutation, sheet.perm, sheet.mode, updateMutation]
+    [createMutation, guardPerm, sheet.perm, sheet.mode, updateMutation]
   )
 
   const toggleExpand = useCallback((id: string) => {
@@ -247,6 +289,11 @@ export function usePermsController() {
 
   const removePerm = useCallback(
     (perm: PermData) => {
+      const deletePermCode = getDeletePermCode(perm)
+      if (!guardPerm(deletePermCode, { source: "perms.remove.confirm" })) {
+        return
+      }
+
       const treeNode = findPermNode(tree, perm.id)
       const hasChildren = (treeNode?.children.length ?? 0) > 0
 
@@ -264,11 +311,34 @@ export function usePermsController() {
         },
       })
     },
-    [deleteMutation, dialog, t, tree]
+    [deleteMutation, dialog, getDeletePermCode, guardPerm, t, tree]
+  )
+
+  const canDeletePerm = useCallback(
+    (perm: PermData) => hasPerm(getDeletePermCode(perm)),
+    [getDeletePermCode, hasPerm]
+  )
+
+  const permissions = useMemo(
+    () => ({
+      canCreateRoot: hasPerm(PERM_ACTION_PERMS.create),
+      canAddChild: hasPerm(PERM_ACTION_PERMS.create),
+      canEdit: hasPerm(PERM_ACTION_PERMS.update),
+      canDeleteLeaf: hasPerm(PERM_ACTION_PERMS.remove),
+      canDeleteBranch: hasPerm(PERM_ACTION_PERMS.removeCascade),
+      canDelete: canDeletePerm,
+      hasAnyNodeAction:
+        hasPerm(PERM_ACTION_PERMS.create) ||
+        hasPerm(PERM_ACTION_PERMS.update) ||
+        hasPerm(PERM_ACTION_PERMS.remove) ||
+        hasPerm(PERM_ACTION_PERMS.removeCascade),
+    }),
+    [canDeletePerm, hasPerm]
   )
 
   return {
     view: {
+      permissions,
       treeSearch,
       tree,
       selectedNodeId,

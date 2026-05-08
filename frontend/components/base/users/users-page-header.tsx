@@ -5,12 +5,14 @@ import { useI18n } from "@/providers/i18n-provider"
 import { RefreshCwIcon, UserPlusIcon } from "lucide-react"
 
 interface UsersPageHeaderProps {
+  canCreate: boolean
   isFetching: boolean
   onRefresh: () => void
   onOpenCreate: () => void
 }
 
 export function UsersPageHeader({
+  canCreate,
   isFetching,
   onRefresh,
   onOpenCreate,
@@ -38,10 +40,12 @@ export function UsersPageHeader({
           <RefreshCwIcon className={isFetching ? "animate-spin" : undefined} />
           {t("common.actions.refresh")}
         </Button>
-        <Button onClick={onOpenCreate}>
-          <UserPlusIcon />
-          {t("users.page.create")}
-        </Button>
+        {canCreate ? (
+          <Button onClick={onOpenCreate}>
+            <UserPlusIcon />
+            {t("users.page.create")}
+          </Button>
+        ) : null}
       </div>
     </div>
   )

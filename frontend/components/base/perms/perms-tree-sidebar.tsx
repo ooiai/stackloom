@@ -30,6 +30,13 @@ import {
 } from "lucide-react"
 
 interface PermsTreeSidebarProps {
+  permissions: {
+    canCreateRoot: boolean
+    canAddChild: boolean
+    canEdit: boolean
+    canDelete: (perm: PermData) => boolean
+    hasAnyNodeAction: boolean
+  }
   treeSearch: string
   tree: PermTreeNode[]
   selectedNodeId: string | null
@@ -45,6 +52,7 @@ interface PermsTreeSidebarProps {
 }
 
 function PermTreeNodeItem({
+  permissions,
   node,
   selectedNodeId,
   expandedIds,
@@ -55,6 +63,7 @@ function PermTreeNodeItem({
   onDelete,
   depth = 0,
 }: {
+  permissions: PermsTreeSidebarProps["permissions"]
   node: PermTreeNode
   selectedNodeId: string | null
   expandedIds: Set<string>
@@ -69,6 +78,8 @@ function PermTreeNodeItem({
   const isSelected = selectedNodeId === node.id
   const hasChildren = node.children.length > 0
   const isExpanded = expandedIds.has(node.id)
+  const hasNodeActions =
+    permissions.canAddChild || permissions.canEdit || permissions.canDelete(node)
 
   return (
     <div>
@@ -144,40 +155,52 @@ function PermTreeNodeItem({
               {node.children.length}
             </span>
           ) : null}
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={<Button size="icon-xs" variant="ghost" />}
-            >
-              <EllipsisIcon className="size-3.5" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" side="bottom">
-              <DropdownMenuItem onClick={() => onOpenAddChild(node.id)}>
-                <PlusIcon />
-                {t("common.actions.addChild")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onOpenEdit(node)}>
-                <Edit3Icon />
-                {t("common.actions.edit")}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => onDelete(node)}
+          {hasNodeActions ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={<Button size="icon-xs" variant="ghost" />}
               >
-                <Trash2Icon />
-                {t("common.actions.delete")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <EllipsisIcon className="size-3.5" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" side="bottom">
+                {permissions.canAddChild ? (
+                  <DropdownMenuItem onClick={() => onOpenAddChild(node.id)}>
+                    <PlusIcon />
+                    {t("common.actions.addChild")}
+                  </DropdownMenuItem>
+                ) : null}
+                {permissions.canEdit ? (
+                  <DropdownMenuItem onClick={() => onOpenEdit(node)}>
+                    <Edit3Icon />
+                    {t("common.actions.edit")}
+                  </DropdownMenuItem>
+                ) : null}
+                {(permissions.canAddChild || permissions.canEdit) &&
+                permissions.canDelete(node) ? (
+                  <DropdownMenuSeparator />
+                ) : null}
+                {permissions.canDelete(node) ? (
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={() => onDelete(node)}
+                  >
+                    <Trash2Icon />
+                    {t("common.actions.delete")}
+                  </DropdownMenuItem>
+                ) : null}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
         </div>
       </div>
 
       {isExpanded && hasChildren ? (
         <div>
           {node.children.map((child) => (
-            <PermTreeNodeItem
-              key={child.id}
-              node={child}
+              <PermTreeNodeItem
+                key={child.id}
+                permissions={permissions}
+                node={child}
               selectedNodeId={selectedNodeId}
               expandedIds={expandedIds}
               onToggleExpand={onToggleExpand}
@@ -195,6 +218,7 @@ function PermTreeNodeItem({
 }
 
 export function PermsTreeSidebar({
+  permissions,
   treeSearch,
   tree,
   selectedNodeId,
@@ -221,15 +245,17 @@ export function PermsTreeSidebar({
             {t("perms.sidebar.subtitle")}
           </p>
         </div>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="text-muted-foreground hover:text-foreground"
-          title={t("perms.sidebar.addRoot")}
-          onClick={onOpenCreateRoot}
-        >
-          <PlusIcon />
-        </Button>
+        {permissions.canCreateRoot ? (
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="text-muted-foreground hover:text-foreground"
+            title={t("perms.sidebar.addRoot")}
+            onClick={onOpenCreateRoot}
+          >
+            <PlusIcon />
+          </Button>
+        ) : null}
       </div>
 
       <div className="border-b border-border/60 px-4 py-3">
@@ -266,7 +292,7 @@ export function PermsTreeSidebar({
                     : t("perms.sidebar.emptyDefaultDescription")}
                 </p>
               </div>
-              {!treeSearch.trim() ? (
+              {!treeSearch.trim() && permissions.canCreateRoot ? (
                 <Button size="sm" onClick={onOpenCreateRoot}>
                   <PlusIcon />
                   {t("perms.sidebar.create")}
@@ -277,6 +303,7 @@ export function PermsTreeSidebar({
             tree.map((node) => (
               <PermTreeNodeItem
                 key={node.id}
+                permissions={permissions}
                 node={node}
                 selectedNodeId={selectedNodeId}
                 expandedIds={expandedIds}

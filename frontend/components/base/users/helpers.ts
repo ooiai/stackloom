@@ -14,6 +14,13 @@ import type { BadgeProps } from "@/components/reui/badge"
 
 const defaultT: TranslateFn = (key, _values, fallback) => fallback ?? key
 
+export const USER_ACTION_PERMS = {
+  create: "BACKEND::USER::CREATE",
+  update: "BACKEND::USER::UPDATE",
+  assignRoles: "BACKEND::USER::ASSIGN_ROLES",
+  remove: "BACKEND::USER::REMOVE",
+} as const
+
 function normalizeOptionalUpdateValue(
   rawValue: string,
   parsedValue: string | undefined

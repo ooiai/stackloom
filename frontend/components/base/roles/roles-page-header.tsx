@@ -6,6 +6,7 @@ import { useI18n } from "@/providers/i18n-provider"
 import { PlusIcon, RefreshCwIcon } from "lucide-react"
 
 interface RolesPageHeaderProps {
+  canCreateRoot: boolean
   isFetching: boolean
   showNonBuiltin: boolean
   onRefresh: () => void
@@ -14,6 +15,7 @@ interface RolesPageHeaderProps {
 }
 
 export function RolesPageHeader({
+  canCreateRoot,
   isFetching,
   showNonBuiltin,
   onRefresh,
@@ -47,10 +49,12 @@ export function RolesPageHeader({
           <RefreshCwIcon className={isFetching ? "animate-spin" : undefined} />
           {t("common.actions.refresh")}
         </Button>
-        <Button onClick={onOpenCreateRoot}>
-          <PlusIcon />
-          {t("roles.page.addRoot")}
-        </Button>
+        {canCreateRoot ? (
+          <Button onClick={onOpenCreateRoot}>
+            <PlusIcon />
+            {t("roles.page.addRoot")}
+          </Button>
+        ) : null}
       </div>
     </div>
   )

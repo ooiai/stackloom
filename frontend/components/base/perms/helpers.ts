@@ -34,6 +34,13 @@ export const PERM_HTTP_METHOD_OPTIONS: PermHttpMethod[] = [
   "OPTIONS",
 ]
 
+export const PERM_ACTION_PERMS = {
+  create: "BACKEND::PERM::CREATE",
+  update: "BACKEND::PERM::UPDATE",
+  remove: "BACKEND::PERM::REMOVE",
+  removeCascade: "BACKEND::PERM::REMOVE_CASCADE",
+} as const
+
 type PermStatusMeta = {
   label: string
   badgeVariant: BadgeProps["variant"]

@@ -26,6 +26,7 @@ import {
 } from "lucide-react"
 
 export function createMenuColumns({
+  permissions,
   t,
   tree,
   onSelectNode,
@@ -33,6 +34,11 @@ export function createMenuColumns({
   onOpenEdit,
   onDelete,
 }: {
+  permissions: {
+    canAddChild: boolean
+    canEdit: boolean
+    canDelete: (menu: MenuData) => boolean
+  }
   t: TranslateFn
   tree: MenuTreeNode[]
   onSelectNode: (id: string | null) => void
@@ -203,23 +209,34 @@ export function createMenuColumns({
               <ArrowRightIcon />
               {t("common.actions.viewChildren")}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onOpenAddChild(row.original.id)}>
-              <PlusIcon />
-              {t("common.actions.addChild")}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
-              <Edit3Icon />
-              {t("common.actions.edit")}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              variant="destructive"
-              onClick={() => onDelete(row.original)}
-            >
-              <Trash2Icon />
-              {t("common.actions.delete")}
-            </DropdownMenuItem>
+            {permissions.canAddChild ? (
+              <DropdownMenuItem onClick={() => onOpenAddChild(row.original.id)}>
+                <PlusIcon />
+                {t("common.actions.addChild")}
+              </DropdownMenuItem>
+            ) : null}
+            {(permissions.canAddChild || permissions.canEdit) ? (
+              <DropdownMenuSeparator />
+            ) : null}
+            {permissions.canEdit ? (
+              <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
+                <Edit3Icon />
+                {t("common.actions.edit")}
+              </DropdownMenuItem>
+            ) : null}
+            {(permissions.canAddChild || permissions.canEdit) &&
+            permissions.canDelete(row.original) ? (
+              <DropdownMenuSeparator />
+            ) : null}
+            {permissions.canDelete(row.original) ? (
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => onDelete(row.original)}
+              >
+                <Trash2Icon />
+                {t("common.actions.delete")}
+              </DropdownMenuItem>
+            ) : null}
           </DropdownMenuContent>
         </DropdownMenu>
       ),

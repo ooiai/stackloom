@@ -5,12 +5,14 @@ import { useI18n } from "@/providers/i18n-provider"
 import { PlusIcon, RefreshCwIcon } from "lucide-react"
 
 interface PermsPageHeaderProps {
+  canCreateRoot: boolean
   isFetching: boolean
   onRefresh: () => void
   onOpenCreateRoot: () => void
 }
 
 export function PermsPageHeader({
+  canCreateRoot,
   isFetching,
   onRefresh,
   onOpenCreateRoot,
@@ -38,10 +40,12 @@ export function PermsPageHeader({
           <RefreshCwIcon className={isFetching ? "animate-spin" : undefined} />
           {t("common.actions.refresh")}
         </Button>
-        <Button onClick={onOpenCreateRoot}>
-          <PlusIcon />
-          {t("perms.page.addRoot")}
-        </Button>
+        {canCreateRoot ? (
+          <Button onClick={onOpenCreateRoot}>
+            <PlusIcon />
+            {t("perms.page.addRoot")}
+          </Button>
+        ) : null}
       </div>
     </div>
   )

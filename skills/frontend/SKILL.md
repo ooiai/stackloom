@@ -246,6 +246,42 @@ All backend-facing ids are **hashid strings** on the frontend.
 - Treat arrays of ids as `string[]`
 - Do not parse ids into numbers in frontend code
 
+### Permission access
+
+Action-level permission gating now follows a shared pattern:
+
+- `useHeaderContext()` remains the source of `permCodes`
+- cross-feature permission helpers live in `frontend/lib/permissions.ts`
+- cross-feature permission state/orchestration lives in `frontend/hooks/use-permission-access.ts`
+- feature-local action-to-permission-code constants stay in each feature's `helpers.ts`
+
+Use exact code matching against backend-issued permission strings such as:
+
+- `BACKEND::USER::CREATE`
+- `BACKEND::ROLE::ASSIGN_PERMS`
+- `BACKEND::DICT::REMOVE_CASCADE`
+
+Do not invent inferred naming schemes or normalize separators on the frontend.
+Treat permission codes as stable backend-owned identifiers.
+
+Loading state matters:
+
+- do not treat unloaded `permCodes` as a real "no permission" state
+- `usePermissionAccess()` should be the shared place that exposes readiness like `isReady`
+- avoid rendering forbidden UX or firing fallback guards before permission context is ready
+
+Controller/view split for permissions:
+
+- controllers compute a normalized `permissions` view model
+- presentational components receive booleans and row/node predicates from the controller
+- do not scatter raw `hasPerm("...")` checks throughout view components
+- controller action handlers should keep a lightweight fallback guard for create/edit/delete/assign entrypoints and show `t("errors.http.forbidden")` when an unauthorized trigger slips through
+
+Scope note:
+
+- current frontend permission gating is **UX-level action hiding/guarding**
+- route/page guards and backend endpoint authorization are separate concerns and should not be silently mixed into ordinary frontend feature work
+
 ## i18n
 
 This repo now uses `next-intl`.
@@ -309,6 +345,13 @@ For admin CRUD pages:
 - Keep page header/actions in a dedicated component like `users-page-header.tsx`
 
 Do not build ad-hoc table stacks when an existing `DataGrid + Filters` pattern fits.
+
+When a page has gated actions:
+
+- page headers receive permission booleans for create/root-create buttons
+- row menus receive permission booleans or predicates for row actions
+- tree sidebars and detail panels receive the same controller-produced permission props
+- keep action visibility decisions at the action surface, but derive them centrally in the controller
 
 ## Authentication pages
 

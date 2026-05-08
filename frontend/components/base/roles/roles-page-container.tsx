@@ -12,6 +12,15 @@ import type { RoleData } from "@/types/base.types"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
 interface RolesPageViewProps {
+  permissions: {
+    canCreateRoot: boolean
+    canAddChild: boolean
+    canEdit: boolean
+    canAssignMenus: boolean
+    canAssignPerms: boolean
+    canDelete: (role: RoleData) => boolean
+    hasAnyNodeAction: boolean
+  }
   treeSearch: string
   tree: RoleTreeNode[]
   selectedNodeId: string | null
@@ -36,6 +45,7 @@ interface RolesPageViewProps {
 }
 
 export function RolesPageView({
+  permissions,
   treeSearch,
   tree,
   selectedNodeId,
@@ -61,9 +71,10 @@ export function RolesPageView({
   const { t } = useI18n()
   const columns = useMemo(
     () =>
-      createRoleColumns({
-        t,
-        tree,
+        createRoleColumns({
+          permissions,
+          t,
+          tree,
         onSelectNode,
         onOpenAddChild,
         onOpenEdit,
@@ -72,6 +83,7 @@ export function RolesPageView({
         onOpenAssignPerms,
       }),
     [
+      permissions,
       t,
       tree,
       onSelectNode,
@@ -94,6 +106,7 @@ export function RolesPageView({
   return (
     <div className="w-full space-y-5 self-start">
       <RolesPageHeader
+        canCreateRoot={permissions.canCreateRoot}
         isFetching={isFetching}
         showNonBuiltin={showNonBuiltin}
         onRefresh={onRefresh}
@@ -103,6 +116,7 @@ export function RolesPageView({
 
       <div className="grid gap-5 xl:grid-cols-[300px_minmax(0,1fr)]">
         <RolesTreeSidebar
+          permissions={permissions}
           treeSearch={treeSearch}
           tree={tree}
           selectedNodeId={selectedNodeId}
@@ -120,6 +134,7 @@ export function RolesPageView({
         />
 
         <RolesDetailPanel
+          permissions={permissions}
           selectedNode={selectedNode}
           breadcrumb={breadcrumb}
           childItems={children}

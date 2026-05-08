@@ -16,6 +16,13 @@ const defaultT: TranslateFn = (key, _values, fallback) => fallback ?? key
 
 export type MenuTreeNode = MenuTreeNodeData
 
+export const MENU_ACTION_PERMS = {
+  create: "BACKEND::MENU::CREATE",
+  update: "BACKEND::MENU::UPDATE",
+  remove: "BACKEND::MENU::REMOVE",
+  removeCascade: "BACKEND::MENU::REMOVE_CASCADE",
+} as const
+
 type MenuStatusMeta = {
   label: string
   badgeVariant: BadgeProps["variant"]

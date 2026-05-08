@@ -15,6 +15,15 @@ const defaultT: TranslateFn = (key, _values, fallback) => fallback ?? key
 
 export type RoleTreeNode = RoleTreeNodeData
 
+export const ROLE_ACTION_PERMS = {
+  create: "BACKEND::ROLE::CREATE",
+  update: "BACKEND::ROLE::UPDATE",
+  assignMenus: "BACKEND::ROLE::ASSIGN_MENUS",
+  assignPerms: "BACKEND::ROLE::ASSIGN_PERMS",
+  remove: "BACKEND::ROLE::REMOVE",
+  removeCascade: "BACKEND::ROLE::REMOVE_CASCADE",
+} as const
+
 type RoleStatusMeta = {
   label: string
   badgeVariant: BadgeProps["variant"]

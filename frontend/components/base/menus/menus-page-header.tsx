@@ -5,12 +5,14 @@ import { useI18n } from "@/providers/i18n-provider"
 import { PlusIcon, RefreshCwIcon } from "lucide-react"
 
 interface MenusPageHeaderProps {
+  canCreateRoot: boolean
   isFetching: boolean
   onRefresh: () => void
   onOpenCreateRoot: () => void
 }
 
 export function MenusPageHeader({
+  canCreateRoot,
   isFetching,
   onRefresh,
   onOpenCreateRoot,
@@ -38,10 +40,12 @@ export function MenusPageHeader({
           <RefreshCwIcon className={isFetching ? "animate-spin" : undefined} />
           {t("common.actions.refresh")}
         </Button>
-        <Button onClick={onOpenCreateRoot}>
-          <PlusIcon />
-          {t("menus.page.addRoot")}
-        </Button>
+        {canCreateRoot ? (
+          <Button onClick={onOpenCreateRoot}>
+            <PlusIcon />
+            {t("menus.page.addRoot")}
+          </Button>
+        ) : null}
       </div>
     </div>
   )

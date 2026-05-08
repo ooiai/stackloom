@@ -17,6 +17,13 @@ import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import { useI18n } from "@/providers/i18n-provider"
 
 interface UsersPageViewProps {
+  permissions: {
+    canCreate: boolean
+    canEdit: boolean
+    canAssignRoles: boolean
+    canDelete: boolean
+    hasAnyRowAction: boolean
+  }
   filters: Filter<UsersFilterValue>[]
   users: UserData[]
   total: number
@@ -36,6 +43,7 @@ interface UsersPageViewProps {
 }
 
 export function UsersPageView({
+  permissions,
   filters,
   users,
   total,
@@ -52,8 +60,15 @@ export function UsersPageView({
 }: UsersPageViewProps) {
   const { t } = useI18n()
   const columns = useMemo(
-    () => createUserColumns({ t, onOpenEdit, onOpenAssignRoles, onDelete }),
-    [onDelete, onOpenEdit, onOpenAssignRoles, t]
+    () =>
+      createUserColumns({
+        permissions,
+        t,
+        onOpenEdit,
+        onOpenAssignRoles,
+        onDelete,
+      }),
+    [onDelete, onOpenEdit, onOpenAssignRoles, permissions, t]
   )
 
   const [columnOrder, setColumnOrder] = useState<string[]>(
@@ -84,6 +99,7 @@ export function UsersPageView({
   return (
     <div className="w-full space-y-5 self-start">
       <UsersPageHeader
+        canCreate={permissions.canCreate}
         isFetching={isFetching}
         onRefresh={onRefresh}
         onOpenCreate={onOpenCreate}

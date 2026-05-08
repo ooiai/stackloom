@@ -19,6 +19,12 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { Edit3Icon, EllipsisIcon, ShieldIcon, Trash2Icon } from "lucide-react"
 
 interface CreateUserColumnsOptions {
+  permissions: {
+    canEdit: boolean
+    canAssignRoles: boolean
+    canDelete: boolean
+    hasAnyRowAction: boolean
+  }
   t: TranslateFn
   onOpenEdit: (user: UserData) => void
   onOpenAssignRoles: (user: UserData) => void
@@ -26,12 +32,13 @@ interface CreateUserColumnsOptions {
 }
 
 export function createUserColumns({
+  permissions,
   t,
   onOpenEdit,
   onOpenAssignRoles,
   onDelete,
 }: CreateUserColumnsOptions): ColumnDef<UserData>[] {
-  return [
+  const columns: ColumnDef<UserData>[] = [
     {
       accessorKey: "username",
       id: "username",
@@ -131,40 +138,57 @@ export function createUserColumns({
       size: 180,
       enableSorting: false,
     },
-    {
+  ]
+
+  if (!permissions.hasAnyRowAction) {
+    return columns
+  }
+
+  columns.push({
       id: "actions",
       header: "",
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={<Button className="size-7" variant="ghost" />}
-          >
-            <EllipsisIcon />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent side="bottom" align="end">
-            <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
-              <Edit3Icon />
-              {t("common.actions.edit")}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onOpenAssignRoles(row.original)}>
-              <ShieldIcon />
-              {t("users.assignRoles.action")}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              variant="destructive"
-              onClick={() => onDelete(row.original)}
+      cell: ({ row }) => {
+        const hasManageAction = permissions.canEdit || permissions.canAssignRoles
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={<Button className="size-7" variant="ghost" />}
             >
-              <Trash2Icon />
-              {t("common.actions.delete")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
+              <EllipsisIcon />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="bottom" align="end">
+              {permissions.canEdit ? (
+                <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
+                  <Edit3Icon />
+                  {t("common.actions.edit")}
+                </DropdownMenuItem>
+              ) : null}
+              {permissions.canAssignRoles ? (
+                <DropdownMenuItem onClick={() => onOpenAssignRoles(row.original)}>
+                  <ShieldIcon />
+                  {t("users.assignRoles.action")}
+                </DropdownMenuItem>
+              ) : null}
+              {hasManageAction && permissions.canDelete ? <DropdownMenuSeparator /> : null}
+              {permissions.canDelete ? (
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() => onDelete(row.original)}
+                >
+                  <Trash2Icon />
+                  {t("common.actions.delete")}
+                </DropdownMenuItem>
+              ) : null}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
       size: 60,
       enableSorting: false,
       enableHiding: false,
       enableResizing: false,
-    },
-  ]
+    })
+
+  return columns
 }

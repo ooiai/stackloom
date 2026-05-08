@@ -7,7 +7,9 @@ import {
   buildRoleBreadcrumb,
   buildUpdateRoleParam,
   findRoleNode,
+  ROLE_ACTION_PERMS,
 } from "@/components/base/roles/helpers"
+import { usePermissionAccess } from "@/hooks/use-permission-access"
 import { useAlertDialog } from "@/providers/dialog-providers"
 import { useI18n } from "@/providers/i18n-provider"
 import { roleApi } from "@/stores/base-api"
@@ -50,11 +52,12 @@ export function useRolesController() {
   const searchParams = useSearchParams()
   const dialog = useAlertDialog()
   const queryClient = useQueryClient()
+  const { hasPerm, guardPerm } = usePermissionAccess()
 
   const [sheet, setSheet] = useState<RoleSheetState>(DEFAULT_SHEET_STATE)
 
-  const { assignMenusDialog } = useRoleAssignMenus()
-  const { assignPermsDialog } = useRoleAssignPerms()
+  const { assignMenusDialog: rawAssignMenusDialog } = useRoleAssignMenus()
+  const { assignPermsDialog: rawAssignPermsDialog } = useRoleAssignPerms()
 
   const [rawSelectedNodeId, setRawSelectedNodeId] = useState<string | null>(
     searchParams.get("node")
@@ -172,17 +175,36 @@ export function useRolesController() {
     },
   })
 
+  const getDeletePermCode = useCallback(
+    (role: RoleData) => {
+      const treeNode = findRoleNode(tree, role.id)
+      const hasChildren = (treeNode?.children.length ?? 0) > 0
+      return hasChildren
+        ? ROLE_ACTION_PERMS.removeCascade
+        : ROLE_ACTION_PERMS.remove
+    },
+    [tree]
+  )
+
   const openCreateRoot = useCallback(() => {
+    if (!guardPerm(ROLE_ACTION_PERMS.create, { source: "roles.createRoot.open" })) {
+      return
+    }
+
     setSheet({
       mode: "create",
       open: true,
       role: null,
       parent: null,
     })
-  }, [])
+  }, [guardPerm])
 
   const openAddChild = useCallback(
     (parentId: string) => {
+      if (!guardPerm(ROLE_ACTION_PERMS.create, { source: "roles.addChild.open" })) {
+        return
+      }
+
       const parentNode =
         findRoleNode(tree, parentId) ??
         (selectedNode?.id === parentId ? selectedNode : null)
@@ -203,11 +225,15 @@ export function useRolesController() {
         parent: parentNode,
       })
     },
-    [selectedNode, tree]
+    [guardPerm, selectedNode, tree]
   )
 
   const openEdit = useCallback(
     (role: RoleData) => {
+      if (!guardPerm(ROLE_ACTION_PERMS.update, { source: "roles.update.open" })) {
+        return
+      }
+
       setSheet({
         mode: "update",
         open: true,
@@ -217,7 +243,7 @@ export function useRolesController() {
           (selectedNode?.id === role.parent_id ? selectedNode : null),
       })
     },
-    [selectedNode, tree]
+    [guardPerm, selectedNode, tree]
   )
 
   const closeSheet = useCallback(() => {
@@ -227,6 +253,14 @@ export function useRolesController() {
   const submitSheet = useCallback(
     async (values: RoleFormValues) => {
       if (sheet.mode === "create") {
+        if (
+          !guardPerm(ROLE_ACTION_PERMS.create, {
+            source: "roles.create.submit",
+          })
+        ) {
+          return
+        }
+
         await createMutation.mutateAsync(values)
         return
       }
@@ -235,12 +269,20 @@ export function useRolesController() {
         return
       }
 
+      if (
+        !guardPerm(ROLE_ACTION_PERMS.update, {
+          source: "roles.update.submit",
+        })
+      ) {
+        return
+      }
+
       await updateMutation.mutateAsync({
         role: sheet.role,
         values,
       })
     },
-    [createMutation, sheet.role, sheet.mode, updateMutation]
+    [createMutation, guardPerm, sheet.role, sheet.mode, updateMutation]
   )
 
   const toggleExpand = useCallback((id: string) => {
@@ -257,6 +299,11 @@ export function useRolesController() {
 
   const removeRole = useCallback(
     (role: RoleData) => {
+      const deletePermCode = getDeletePermCode(role)
+      if (!guardPerm(deletePermCode, { source: "roles.remove.confirm" })) {
+        return
+      }
+
       const treeNode = findRoleNode(tree, role.id)
       const hasChildren = (treeNode?.children.length ?? 0) > 0
 
@@ -274,13 +321,118 @@ export function useRolesController() {
         },
       })
     },
-    [deleteMutation, dialog, t, tree]
+    [deleteMutation, dialog, getDeletePermCode, guardPerm, t, tree]
+  )
+
+  const openAssignMenus = useCallback(
+    (role: RoleData) => {
+      if (
+        !guardPerm(ROLE_ACTION_PERMS.assignMenus, {
+          source: "roles.assignMenus.open",
+        })
+      ) {
+        return
+      }
+
+      rawAssignMenusDialog.onOpen(role)
+    },
+    [guardPerm, rawAssignMenusDialog]
+  )
+
+  const saveAssignMenus = useCallback(
+    async (menuIds: string[]) => {
+      if (
+        !guardPerm(ROLE_ACTION_PERMS.assignMenus, {
+          source: "roles.assignMenus.save",
+        })
+      ) {
+        return
+      }
+
+      await rawAssignMenusDialog.onSave(menuIds)
+    },
+    [guardPerm, rawAssignMenusDialog]
+  )
+
+  const openAssignPerms = useCallback(
+    (role: RoleData) => {
+      if (
+        !guardPerm(ROLE_ACTION_PERMS.assignPerms, {
+          source: "roles.assignPerms.open",
+        })
+      ) {
+        return
+      }
+
+      rawAssignPermsDialog.onOpen(role)
+    },
+    [guardPerm, rawAssignPermsDialog]
+  )
+
+  const saveAssignPerms = useCallback(
+    async (permIds: string[]) => {
+      if (
+        !guardPerm(ROLE_ACTION_PERMS.assignPerms, {
+          source: "roles.assignPerms.save",
+        })
+      ) {
+        return
+      }
+
+      await rawAssignPermsDialog.onSave(permIds)
+    },
+    [guardPerm, rawAssignPermsDialog]
+  )
+
+  const canDeleteRole = useCallback(
+    (role: RoleData) => hasPerm(getDeletePermCode(role)),
+    [getDeletePermCode, hasPerm]
+  )
+
+  const permissions = useMemo(
+    () => ({
+      canCreateRoot: hasPerm(ROLE_ACTION_PERMS.create),
+      canAddChild: hasPerm(ROLE_ACTION_PERMS.create),
+      canEdit: hasPerm(ROLE_ACTION_PERMS.update),
+      canAssignMenus: hasPerm(ROLE_ACTION_PERMS.assignMenus),
+      canAssignPerms: hasPerm(ROLE_ACTION_PERMS.assignPerms),
+      canDeleteLeaf: hasPerm(ROLE_ACTION_PERMS.remove),
+      canDeleteBranch: hasPerm(ROLE_ACTION_PERMS.removeCascade),
+      canDelete: canDeleteRole,
+      hasAnyNodeAction:
+        hasPerm(ROLE_ACTION_PERMS.create) ||
+        hasPerm(ROLE_ACTION_PERMS.update) ||
+        hasPerm(ROLE_ACTION_PERMS.assignMenus) ||
+        hasPerm(ROLE_ACTION_PERMS.assignPerms) ||
+        hasPerm(ROLE_ACTION_PERMS.remove) ||
+        hasPerm(ROLE_ACTION_PERMS.removeCascade),
+    }),
+    [canDeleteRole, hasPerm]
+  )
+
+  const assignMenusDialog = useMemo(
+    () => ({
+      ...rawAssignMenusDialog,
+      onOpen: openAssignMenus,
+      onSave: saveAssignMenus,
+    }),
+    [openAssignMenus, rawAssignMenusDialog, saveAssignMenus]
+  )
+
+  const assignPermsDialog = useMemo(
+    () => ({
+      ...rawAssignPermsDialog,
+      onOpen: openAssignPerms,
+      onSave: saveAssignPerms,
+    }),
+    [openAssignPerms, rawAssignPermsDialog, saveAssignPerms]
   )
 
   return {
     assignMenusDialog,
     assignPermsDialog,
     view: {
+      permissions,
       treeSearch,
       tree,
       selectedNodeId,
@@ -305,8 +457,8 @@ export function useRolesController() {
       onOpenAddChild: openAddChild,
       onOpenEdit: openEdit,
       onDelete: removeRole,
-      onOpenAssignMenus: assignMenusDialog.onOpen,
-      onOpenAssignPerms: assignPermsDialog.onOpen,
+      onOpenAssignMenus: openAssignMenus,
+      onOpenAssignPerms: openAssignPerms,
     },
     sheet: {
       ...sheet,

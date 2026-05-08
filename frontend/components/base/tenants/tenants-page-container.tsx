@@ -12,6 +12,13 @@ import type { TenantData } from "@/types/base.types"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
 interface TenantsPageViewProps {
+  permissions: {
+    canCreateRoot: boolean
+    canAddChild: boolean
+    canEdit: boolean
+    canDelete: (tenant: TenantData) => boolean
+    hasAnyNodeAction: boolean
+  }
   treeSearch: string
   tree: TenantTreeNode[]
   selectedNodeId: string | null
@@ -32,6 +39,7 @@ interface TenantsPageViewProps {
 }
 
 export function TenantsPageView({
+  permissions,
   treeSearch,
   tree,
   selectedNodeId,
@@ -53,15 +61,16 @@ export function TenantsPageView({
   const { t } = useI18n()
   const columns = useMemo(
     () =>
-      createTenantColumns({
-        t,
+        createTenantColumns({
+          permissions,
+          t,
         tree,
         onSelectNode,
         onOpenAddChild,
         onOpenEdit,
         onDelete,
       }),
-    [onDelete, onOpenAddChild, onOpenEdit, onSelectNode, t, tree]
+    [onDelete, onOpenAddChild, onOpenEdit, onSelectNode, permissions, t, tree]
   )
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -75,6 +84,7 @@ export function TenantsPageView({
   return (
     <div className="w-full space-y-5 self-start">
       <TenantsPageHeader
+        canCreateRoot={permissions.canCreateRoot}
         isFetching={isFetching}
         onRefresh={onRefresh}
         onOpenCreateRoot={onOpenCreateRoot}
@@ -82,6 +92,7 @@ export function TenantsPageView({
 
       <div className="grid gap-5 xl:grid-cols-[300px_minmax(0,1fr)]">
         <TenantsTreeSidebar
+          permissions={permissions}
           treeSearch={treeSearch}
           tree={tree}
           selectedNodeId={selectedNodeId}
@@ -97,6 +108,7 @@ export function TenantsPageView({
         />
 
         <TenantsDetailPanel
+          permissions={permissions}
           selectedNode={selectedNode}
           breadcrumb={breadcrumb}
           childItems={children}

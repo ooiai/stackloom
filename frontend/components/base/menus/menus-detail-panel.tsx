@@ -23,6 +23,10 @@ import {
 } from "lucide-react"
 
 interface MenusDetailPanelProps {
+  permissions: {
+    canAddChild: boolean
+    canEdit: boolean
+  }
   selectedNode: MenuTreeNode | null
   breadcrumb: MenuTreeNode[]
   childItems: MenuData[]
@@ -34,6 +38,7 @@ interface MenusDetailPanelProps {
 }
 
 export function MenusDetailPanel({
+  permissions,
   selectedNode,
   breadcrumb,
   childItems,
@@ -153,20 +158,26 @@ export function MenusDetailPanel({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onOpenEdit(selectedNode)}
-            >
-              <Edit3Icon />
-              {t("common.actions.edit")}
-            </Button>
-            <Button size="sm" onClick={() => onOpenAddChild(selectedNode.id)}>
-              <PlusIcon />
-              {t("common.actions.addChild")}
-            </Button>
-          </div>
+          {permissions.canEdit || permissions.canAddChild ? (
+            <div className="flex items-center gap-2">
+              {permissions.canEdit ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onOpenEdit(selectedNode)}
+                >
+                  <Edit3Icon />
+                  {t("common.actions.edit")}
+                </Button>
+              ) : null}
+              {permissions.canAddChild ? (
+                <Button size="sm" onClick={() => onOpenAddChild(selectedNode.id)}>
+                  <PlusIcon />
+                  {t("common.actions.addChild")}
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
 

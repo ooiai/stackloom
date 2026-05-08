@@ -100,12 +100,21 @@ components/auth/
 - URL sync
 - dialog/sheet state
 - selected row/node state
+- permission orchestration for the feature
 - auth flow orchestration when the feature is under `components/auth/**`
+
+For permissioned admin features, the controller is the place to:
+
+- read shared permission access from `frontend/hooks/use-permission-access.ts`
+- translate feature-local permission codes into a `permissions` view model
+- expose both simple booleans like `canCreate` and row/node predicates like `canDelete(row)`
+- keep fallback guards around create/edit/delete/assign handlers so accidental unauthorized triggers still fail closed in the UI
 
 ### `*-page-container.tsx`
 
 - page composition only
 - receives normalized view props
+- receives normalized permission props
 - assembles header, filters, grid, empty state
 
 For auth flows, the equivalent file is usually `*-page-view.tsx` instead of `*-page-container.tsx`.
@@ -114,7 +123,8 @@ For auth flows, the equivalent file is usually `*-page-view.tsx` instead of `*-p
 
 - table column factories only
 - row actions only
-- accept callbacks and translation function through params
+- accept callbacks, permission props/predicates, and translation function through params
+- do not call shared permission hooks directly from the column factory
 
 ### `use-*-mutate-form.ts`
 
@@ -134,6 +144,7 @@ For auth flows, the equivalent file is usually `*-page-view.tsx` instead of `*-p
 - option builders
 - payload builders
 - tree/table helper functions
+- feature-local action permission constants such as `USER_ACTION_PERMS`
 - auth redirect and captcha payload helpers when relevant
 
 ## Placement rules
@@ -151,4 +162,6 @@ For auth flows, the equivalent file is usually `*-page-view.tsx` instead of `*-p
 - Do not leave feature-private hooks in global `frontend/hooks`.
 - Do not put feature-only helper functions in `frontend/lib`.
 - Do not mix controller logic into presentation components.
+- Do not scatter raw permission-string checks across headers, columns, detail panels, and tree nodes.
+- Do not move feature-specific action permission maps into a single global permissions file.
 - Do not keep auth flow orchestration in a single giant `signin-form.tsx` or `signup-form.tsx`.

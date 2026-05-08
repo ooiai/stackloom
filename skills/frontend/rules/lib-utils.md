@@ -53,6 +53,14 @@ formatting, and text truncation in table cells and detail panels.
 Date/time formatting helpers. Use for rendering `created_at`, `updated_at`, log timestamps,
 and similar fields with consistent locale-aware display.
 
+### Permission utilities — `lib/permissions.ts`
+
+Cross-feature permission helpers for action gating.
+
+- build a `Set` from backend-issued `permCodes`
+- perform exact permission-code checks such as `hasPerm`, `hasAnyPerm`, `hasAllPerms`
+- keep this layer pure; it should not own React Query, toasts, or feature-specific permission maps
+
 ### Signature utilities — `lib/signutils.ts`
 
 Request signing helpers. Used by certain API calls that require HMAC-based request signing.
@@ -79,6 +87,8 @@ Feature-specific hooks belong inside `components/base/<feature>/hooks/` instead.
 | `hooks/use-mobile.ts` | Detects whether the viewport is mobile-sized |
 | `hooks/use-persisted-state.ts` | LocalStorage-backed persisted state |
 | `hooks/setup-axios.ts` | Axios error handler hook, mounted at the app layout level |
+| `hooks/use-header-context.ts` | Shared header context query for user/menuCodes/permCodes |
+| `hooks/use-permission-access.ts` | Shared permission access wrapper with readiness and guard helpers |
 
 ---
 
@@ -90,9 +100,12 @@ Feature-specific hooks belong inside `components/base/<feature>/hooks/` instead.
 | Date/time display formatting | `lib/time.ts` |
 | Number/string display formatting | `lib/format.ts` |
 | Password hashing before API call | `lib/crypt.ts` |
+| Cross-feature permission matching helpers | `lib/permissions.ts` |
+| Cross-feature permission readiness / guard hook | `hooks/use-permission-access.ts` |
 | Feature-specific validation schema | Feature's `helpers.ts` |
 | Feature-specific option builders | Feature's `helpers.ts` |
 | Feature-specific API payload shapes | Feature's `helpers.ts` |
+| Feature-specific action permission constants | Feature's `helpers.ts` |
 | Cross-feature clipboard utility | `hooks/use-copy-to-clipboard.ts` |
 | Feature-specific debounce | Inline `useState + useEffect` or feature's hook |
 
@@ -108,3 +121,7 @@ Feature-specific hooks belong inside `components/base/<feature>/hooks/` instead.
   All HTTP calls must use the shared Axios instance from `lib/http/axios.ts` via `stores/*-api.ts`.
 - **Keep `lib/config/constants.ts` for compile-time constants only.**
   Do not put runtime-fetched config in this file.
+- **Keep permission code matching exact.**
+  `lib/permissions.ts` should treat backend-issued permission codes as exact strings, not inferred naming patterns.
+- **Do not move feature-owned permission maps into `frontend/lib/`.**
+  Shared lib/hook layers provide matching and readiness only; feature action-to-code mappings stay beside the feature.

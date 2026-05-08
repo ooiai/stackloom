@@ -22,6 +22,10 @@ import {
 } from "lucide-react"
 
 interface PermsDetailPanelProps {
+  permissions: {
+    canAddChild: boolean
+    canEdit: boolean
+  }
   selectedNode: PermTreeNode | null
   breadcrumb: PermTreeNode[]
   childItems: PermData[]
@@ -33,6 +37,7 @@ interface PermsDetailPanelProps {
 }
 
 export function PermsDetailPanel({
+  permissions,
   selectedNode,
   breadcrumb,
   childItems,
@@ -136,20 +141,26 @@ export function PermsDetailPanel({
             />
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onOpenEdit(selectedNode)}
-            >
-              <Edit3Icon />
-              {t("common.actions.edit")}
-            </Button>
-            <Button size="sm" onClick={() => onOpenAddChild(selectedNode.id)}>
-              <PlusIcon />
-              {t("common.actions.addChild")}
-            </Button>
-          </div>
+          {permissions.canEdit || permissions.canAddChild ? (
+            <div className="flex items-center gap-2">
+              {permissions.canEdit ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onOpenEdit(selectedNode)}
+                >
+                  <Edit3Icon />
+                  {t("common.actions.edit")}
+                </Button>
+              ) : null}
+              {permissions.canAddChild ? (
+                <Button size="sm" onClick={() => onOpenAddChild(selectedNode.id)}>
+                  <PlusIcon />
+                  {t("common.actions.addChild")}
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
 

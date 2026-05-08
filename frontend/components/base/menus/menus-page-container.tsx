@@ -12,6 +12,13 @@ import type { MenuData } from "@/types/base.types"
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
 interface MenusPageViewProps {
+  permissions: {
+    canCreateRoot: boolean
+    canAddChild: boolean
+    canEdit: boolean
+    canDelete: (menu: MenuData) => boolean
+    hasAnyNodeAction: boolean
+  }
   treeSearch: string
   tree: MenuTreeNode[]
   selectedNodeId: string | null
@@ -32,6 +39,7 @@ interface MenusPageViewProps {
 }
 
 export function MenusPageView({
+  permissions,
   treeSearch,
   tree,
   selectedNodeId,
@@ -53,15 +61,16 @@ export function MenusPageView({
   const { t } = useI18n()
   const columns = useMemo(
     () =>
-      createMenuColumns({
-        t,
+        createMenuColumns({
+          permissions,
+          t,
         tree,
         onSelectNode,
         onOpenAddChild,
         onOpenEdit,
         onDelete,
       }),
-    [onDelete, onOpenAddChild, onOpenEdit, onSelectNode, t, tree]
+    [onDelete, onOpenAddChild, onOpenEdit, onSelectNode, permissions, t, tree]
   )
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -75,6 +84,7 @@ export function MenusPageView({
   return (
     <div className="w-full space-y-5 self-start">
       <MenusPageHeader
+        canCreateRoot={permissions.canCreateRoot}
         isFetching={isFetching}
         onRefresh={onRefresh}
         onOpenCreateRoot={onOpenCreateRoot}
@@ -82,6 +92,7 @@ export function MenusPageView({
 
       <div className="grid gap-5 xl:grid-cols-[300px_minmax(0,1fr)]">
         <MenusTreeSidebar
+          permissions={permissions}
           treeSearch={treeSearch}
           tree={tree}
           selectedNodeId={selectedNodeId}
@@ -97,6 +108,7 @@ export function MenusPageView({
         />
 
         <MenusDetailPanel
+          permissions={permissions}
           selectedNode={selectedNode}
           breadcrumb={breadcrumb}
           childItems={children}

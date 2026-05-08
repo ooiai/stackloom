@@ -15,6 +15,13 @@ const defaultT: TranslateFn = (key, _values, fallback) => fallback ?? key
 
 export type TenantTreeNode = TenantTreeNodeData
 
+export const TENANT_ACTION_PERMS = {
+  create: "BACKEND::TENANT::CREATE",
+  update: "BACKEND::TENANT::UPDATE",
+  remove: "BACKEND::TENANT::REMOVE",
+  removeCascade: "BACKEND::TENANT::REMOVE_CASCADE",
+} as const
+
 type TenantStatusMeta = {
   label: string
   badgeVariant: BadgeProps["variant"]

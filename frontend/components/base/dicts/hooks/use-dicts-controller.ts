@@ -6,9 +6,11 @@ import {
   buildCreateDictParam,
   buildDictBreadcrumb,
   buildUpdateDictParam,
+  DICT_ACTION_PERMS,
   findDictNode,
 } from "@/components/base/dicts/helpers"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
+import { usePermissionAccess } from "@/hooks/use-permission-access"
 import { useAlertDialog } from "@/providers/dialog-providers"
 import { useI18n } from "@/providers/i18n-provider"
 import { dictApi } from "@/stores/base-api"
@@ -49,6 +51,7 @@ export function useDictsController() {
   const searchParams = useSearchParams()
   const dialog = useAlertDialog()
   const queryClient = useQueryClient()
+  const { hasPerm, guardPerm } = usePermissionAccess()
 
   const [rawSelectedNodeId, setRawSelectedNodeId] = useState<string | null>(
     searchParams.get("node")
@@ -172,16 +175,24 @@ export function useDictsController() {
   })
 
   const openCreateRoot = useCallback(() => {
+    if (!guardPerm(DICT_ACTION_PERMS.create, { source: "dicts.createRoot.open" })) {
+      return
+    }
+
     setSheet({
       mode: "create",
       open: true,
       dict: null,
       parent: null,
     })
-  }, [])
+  }, [guardPerm])
 
   const openAddChild = useCallback(
     (parentId: string) => {
+      if (!guardPerm(DICT_ACTION_PERMS.create, { source: "dicts.addChild.open" })) {
+        return
+      }
+
       const parentNode =
         findDictNode(tree, parentId) ??
         (selectedNode?.id === parentId ? selectedNode : null)
@@ -202,11 +213,15 @@ export function useDictsController() {
         parent: parentNode,
       })
     },
-    [selectedNode, tree]
+    [guardPerm, selectedNode, tree]
   )
 
   const openEdit = useCallback(
     (dict: DictData) => {
+      if (!guardPerm(DICT_ACTION_PERMS.update, { source: "dicts.update.open" })) {
+        return
+      }
+
       setSheet({
         mode: "update",
         open: true,
@@ -216,7 +231,7 @@ export function useDictsController() {
           (selectedNode?.id === dict.parent_id ? selectedNode : null),
       })
     },
-    [selectedNode, tree]
+    [guardPerm, selectedNode, tree]
   )
 
   const closeSheet = useCallback(() => {
@@ -226,6 +241,14 @@ export function useDictsController() {
   const submitSheet = useCallback(
     async (values: DictFormValues) => {
       if (sheet.mode === "create") {
+        if (
+          !guardPerm(DICT_ACTION_PERMS.create, {
+            source: "dicts.create.submit",
+          })
+        ) {
+          return
+        }
+
         await createMutation.mutateAsync(values)
         return
       }
@@ -234,12 +257,20 @@ export function useDictsController() {
         return
       }
 
+      if (
+        !guardPerm(DICT_ACTION_PERMS.update, {
+          source: "dicts.update.submit",
+        })
+      ) {
+        return
+      }
+
       await updateMutation.mutateAsync({
         dict: sheet.dict,
         values,
       })
     },
-    [createMutation, sheet.dict, sheet.mode, updateMutation]
+    [createMutation, guardPerm, sheet.dict, sheet.mode, updateMutation]
   )
 
   const toggleExpand = useCallback((id: string) => {
@@ -260,6 +291,13 @@ export function useDictsController() {
 
   const removeDict = useCallback(
     (dict: DictData) => {
+      const deletePermCode = dict.is_leaf
+        ? DICT_ACTION_PERMS.remove
+        : DICT_ACTION_PERMS.removeCascade
+      if (!guardPerm(deletePermCode, { source: "dicts.remove.confirm" })) {
+        return
+      }
+
       dialog.show({
         variant: "destructive",
         title: t("dicts.dialog.deleteTitle"),
@@ -274,11 +312,35 @@ export function useDictsController() {
         },
       })
     },
-    [deleteMutation, dialog, t]
+    [deleteMutation, dialog, guardPerm, t]
+  )
+
+  const canDeleteDict = useCallback(
+    (dict: DictData) =>
+      hasPerm(dict.is_leaf ? DICT_ACTION_PERMS.remove : DICT_ACTION_PERMS.removeCascade),
+    [hasPerm]
+  )
+
+  const permissions = useMemo(
+    () => ({
+      canCreateRoot: hasPerm(DICT_ACTION_PERMS.create),
+      canAddChild: hasPerm(DICT_ACTION_PERMS.create),
+      canEdit: hasPerm(DICT_ACTION_PERMS.update),
+      canDeleteLeaf: hasPerm(DICT_ACTION_PERMS.remove),
+      canDeleteBranch: hasPerm(DICT_ACTION_PERMS.removeCascade),
+      canDelete: canDeleteDict,
+      hasAnyNodeAction:
+        hasPerm(DICT_ACTION_PERMS.create) ||
+        hasPerm(DICT_ACTION_PERMS.update) ||
+        hasPerm(DICT_ACTION_PERMS.remove) ||
+        hasPerm(DICT_ACTION_PERMS.removeCascade),
+    }),
+    [canDeleteDict, hasPerm]
   )
 
   return {
     view: {
+      permissions,
       treeSearch,
       tree,
       selectedNodeId,

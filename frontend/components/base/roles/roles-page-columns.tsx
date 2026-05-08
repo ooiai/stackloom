@@ -28,6 +28,7 @@ import {
 } from "lucide-react"
 
 export function createRoleColumns({
+  permissions,
   t,
   tree,
   onSelectNode,
@@ -37,6 +38,13 @@ export function createRoleColumns({
   onOpenAssignMenus,
   onOpenAssignPerms,
 }: {
+  permissions: {
+    canAddChild: boolean
+    canEdit: boolean
+    canAssignMenus: boolean
+    canAssignPerms: boolean
+    canDelete: (role: RoleData) => boolean
+  }
   t: TranslateFn
   tree: RoleTreeNode[]
   onSelectNode: (id: string | null) => void
@@ -211,32 +219,55 @@ export function createRoleColumns({
               <ArrowRightIcon />
               {t("common.actions.viewChildren")}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onOpenAddChild(row.original.id)}>
-              <PlusIcon />
-              {t("common.actions.addChild")}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
-              <Edit3Icon />
-              {t("common.actions.edit")}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onOpenAssignMenus(row.original)}>
-              <LayoutGridIcon />
-              {t("roles.assignMenus.action")}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onOpenAssignPerms(row.original)}>
-              <KeyIcon />
-              {t("roles.assignPerms.action")}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              variant="destructive"
-              onClick={() => onDelete(row.original)}
-            >
-              <Trash2Icon />
-              {t("common.actions.delete")}
-            </DropdownMenuItem>
+            {permissions.canAddChild ? (
+              <DropdownMenuItem onClick={() => onOpenAddChild(row.original.id)}>
+                <PlusIcon />
+                {t("common.actions.addChild")}
+              </DropdownMenuItem>
+            ) : null}
+            {(permissions.canAddChild || permissions.canEdit) ? (
+              <DropdownMenuSeparator />
+            ) : null}
+            {permissions.canEdit ? (
+              <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
+                <Edit3Icon />
+                {t("common.actions.edit")}
+              </DropdownMenuItem>
+            ) : null}
+            {(permissions.canEdit ||
+              permissions.canAssignMenus ||
+              permissions.canAssignPerms) &&
+            (permissions.canAssignMenus || permissions.canAssignPerms) ? (
+              <DropdownMenuSeparator />
+            ) : null}
+            {permissions.canAssignMenus ? (
+              <DropdownMenuItem onClick={() => onOpenAssignMenus(row.original)}>
+                <LayoutGridIcon />
+                {t("roles.assignMenus.action")}
+              </DropdownMenuItem>
+            ) : null}
+            {permissions.canAssignPerms ? (
+              <DropdownMenuItem onClick={() => onOpenAssignPerms(row.original)}>
+                <KeyIcon />
+                {t("roles.assignPerms.action")}
+              </DropdownMenuItem>
+            ) : null}
+            {(permissions.canAssignMenus ||
+              permissions.canAssignPerms ||
+              permissions.canEdit ||
+              permissions.canAddChild) &&
+            permissions.canDelete(row.original) ? (
+              <DropdownMenuSeparator />
+            ) : null}
+            {permissions.canDelete(row.original) ? (
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => onDelete(row.original)}
+              >
+                <Trash2Icon />
+                {t("common.actions.delete")}
+              </DropdownMenuItem>
+            ) : null}
           </DropdownMenuContent>
         </DropdownMenu>
       ),

@@ -4,10 +4,12 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 
 import {
   buildCreateTenantParam,
+  TENANT_ACTION_PERMS,
   buildTenantBreadcrumb,
   buildUpdateTenantParam,
   findTenantNode,
 } from "@/components/base/tenants/helpers"
+import { usePermissionAccess } from "@/hooks/use-permission-access"
 import { useAlertDialog } from "@/providers/dialog-providers"
 import { useI18n } from "@/providers/i18n-provider"
 import { tenantApi } from "@/stores/base-api"
@@ -47,6 +49,7 @@ export function useTenantsController() {
   const searchParams = useSearchParams()
   const dialog = useAlertDialog()
   const queryClient = useQueryClient()
+  const { hasPerm, guardPerm } = usePermissionAccess()
 
   const [rawSelectedNodeId, setRawSelectedNodeId] = useState<string | null>(
     searchParams.get("node")
@@ -162,17 +165,44 @@ export function useTenantsController() {
     },
   })
 
+  const getDeletePermCode = useCallback(
+    (tenant: TenantData) => {
+      const treeNode = findTenantNode(tree, tenant.id)
+      const hasChildren = (treeNode?.children.length ?? 0) > 0
+      return hasChildren
+        ? TENANT_ACTION_PERMS.removeCascade
+        : TENANT_ACTION_PERMS.remove
+    },
+    [tree]
+  )
+
   const openCreateRoot = useCallback(() => {
+    if (
+      !guardPerm(TENANT_ACTION_PERMS.create, {
+        source: "tenants.createRoot.open",
+      })
+    ) {
+      return
+    }
+
     setSheet({
       mode: "create",
       open: true,
       tenant: null,
       parent: null,
     })
-  }, [])
+  }, [guardPerm])
 
   const openAddChild = useCallback(
     (parentId: string) => {
+      if (
+        !guardPerm(TENANT_ACTION_PERMS.create, {
+          source: "tenants.addChild.open",
+        })
+      ) {
+        return
+      }
+
       const parentNode =
         findTenantNode(tree, parentId) ??
         (selectedNode?.id === parentId ? selectedNode : null)
@@ -193,11 +223,19 @@ export function useTenantsController() {
         parent: parentNode,
       })
     },
-    [selectedNode, tree]
+    [guardPerm, selectedNode, tree]
   )
 
   const openEdit = useCallback(
     (tenant: TenantData) => {
+      if (
+        !guardPerm(TENANT_ACTION_PERMS.update, {
+          source: "tenants.update.open",
+        })
+      ) {
+        return
+      }
+
       setSheet({
         mode: "update",
         open: true,
@@ -207,7 +245,7 @@ export function useTenantsController() {
           (selectedNode?.id === tenant.parent_id ? selectedNode : null),
       })
     },
-    [selectedNode, tree]
+    [guardPerm, selectedNode, tree]
   )
 
   const closeSheet = useCallback(() => {
@@ -217,6 +255,14 @@ export function useTenantsController() {
   const submitSheet = useCallback(
     async (values: TenantFormValues) => {
       if (sheet.mode === "create") {
+        if (
+          !guardPerm(TENANT_ACTION_PERMS.create, {
+            source: "tenants.create.submit",
+          })
+        ) {
+          return
+        }
+
         await createMutation.mutateAsync(values)
         return
       }
@@ -225,12 +271,20 @@ export function useTenantsController() {
         return
       }
 
+      if (
+        !guardPerm(TENANT_ACTION_PERMS.update, {
+          source: "tenants.update.submit",
+        })
+      ) {
+        return
+      }
+
       await updateMutation.mutateAsync({
         tenant: sheet.tenant,
         values,
       })
     },
-    [createMutation, sheet.mode, sheet.tenant, updateMutation]
+    [createMutation, guardPerm, sheet.mode, sheet.tenant, updateMutation]
   )
 
   const toggleExpand = useCallback((id: string) => {
@@ -247,6 +301,11 @@ export function useTenantsController() {
 
   const removeTenant = useCallback(
     (tenant: TenantData) => {
+      const deletePermCode = getDeletePermCode(tenant)
+      if (!guardPerm(deletePermCode, { source: "tenants.remove.confirm" })) {
+        return
+      }
+
       const treeNode = findTenantNode(tree, tenant.id)
       const hasChildren = (treeNode?.children.length ?? 0) > 0
 
@@ -264,11 +323,34 @@ export function useTenantsController() {
         },
       })
     },
-    [deleteMutation, dialog, t, tree]
+    [deleteMutation, dialog, getDeletePermCode, guardPerm, t, tree]
+  )
+
+  const canDeleteTenant = useCallback(
+    (tenant: TenantData) => hasPerm(getDeletePermCode(tenant)),
+    [getDeletePermCode, hasPerm]
+  )
+
+  const permissions = useMemo(
+    () => ({
+      canCreateRoot: hasPerm(TENANT_ACTION_PERMS.create),
+      canAddChild: hasPerm(TENANT_ACTION_PERMS.create),
+      canEdit: hasPerm(TENANT_ACTION_PERMS.update),
+      canDeleteLeaf: hasPerm(TENANT_ACTION_PERMS.remove),
+      canDeleteBranch: hasPerm(TENANT_ACTION_PERMS.removeCascade),
+      canDelete: canDeleteTenant,
+      hasAnyNodeAction:
+        hasPerm(TENANT_ACTION_PERMS.create) ||
+        hasPerm(TENANT_ACTION_PERMS.update) ||
+        hasPerm(TENANT_ACTION_PERMS.remove) ||
+        hasPerm(TENANT_ACTION_PERMS.removeCascade),
+    }),
+    [canDeleteTenant, hasPerm]
   )
 
   return {
     view: {
+      permissions,
       treeSearch,
       tree,
       selectedNodeId,

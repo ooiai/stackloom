@@ -17,6 +17,13 @@ export const DICT_ROOT_NODE_ID = "__dict_root__"
 
 export type DictTreeNode = DictTreeNodeData
 
+export const DICT_ACTION_PERMS = {
+  create: "BACKEND::DICT::CREATE",
+  update: "BACKEND::DICT::UPDATE",
+  remove: "BACKEND::DICT::REMOVE",
+  removeCascade: "BACKEND::DICT::REMOVE_CASCADE",
+} as const
+
 type DictStatusMeta = {
   label: string
   description: string
