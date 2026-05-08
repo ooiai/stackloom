@@ -12,7 +12,7 @@ CREATE TABLE audit_logs (
     reason TEXT,
     before_data JSONB NOT NULL DEFAULT '{}'::jsonb,
     after_data JSONB NOT NULL DEFAULT '{}'::jsonb,
-    ip INET,
+    ip TEXT,
     user_agent TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT chk_audit_logs_target_type_not_blank CHECK (btrim(target_type) <> ''),

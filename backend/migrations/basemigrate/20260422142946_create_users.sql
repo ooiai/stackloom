@@ -11,7 +11,7 @@ CREATE TABLE users (
     status SMALLINT NOT NULL DEFAULT 1,
     bio TEXT,
     last_login_at TIMESTAMPTZ,
-    last_login_ip INET,
+    last_login_ip TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMPTZ,

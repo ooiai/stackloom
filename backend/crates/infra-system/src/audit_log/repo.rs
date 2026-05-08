@@ -105,7 +105,7 @@ impl AuditLogRepository for SqlxAuditLogRepository {
                 $9,
                 $10,
                 $11,
-                CAST($12 AS inet),
+                $12,
                 $13,
                 $14
             )

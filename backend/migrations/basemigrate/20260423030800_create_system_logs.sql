@@ -15,7 +15,7 @@ CREATE TABLE system_logs (
     result VARCHAR(32) NOT NULL DEFAULT 'unknown',
     error_code VARCHAR(100),
     error_message TEXT,
-    ip INET,
+    ip TEXT,
     user_agent TEXT,
     ext JSONB NOT NULL DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
