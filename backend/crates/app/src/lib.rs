@@ -1,6 +1,6 @@
 use api_http::{
-    AuthHttpState, BaseHttpState, SharedHttpState, SysHttpState, WebHttpState, auth_router,
-    base_router, shared_router, system_router, web_router,
+    AuthHttpState, BaseHttpState, SharedHttpState, SysHttpState, auth_router, base_router,
+    shared_router, system_router,
 };
 use common::config::env_config::EnvConfig;
 
@@ -27,7 +27,7 @@ use infra_base::{
     DictServiceImpl, MenuServiceImpl, PermServiceImpl, RoleServiceImpl, TenantServiceImpl,
     UserServiceImpl, UserTenantRoleServiceImpl, UserTenantServiceImpl,
 };
-use infra_system::{AuditLogServiceImpl, SysModule, SystemLogServiceImpl};
+use infra_system::{AuditLogServiceImpl, MonitorServiceImpl, SysModule, SystemLogServiceImpl};
 use infra_web::OperationLogServiceImpl;
 
 mod diesel_init;
@@ -53,6 +53,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     tracing::info!("Monolith load redis...");
     // initialize redis pool
     let redis_pool: Arc<RedisPool> = RedisInit::init(cfg.redis.clone()).await;
+    // record server start time for uptime tracking
+    let start_time = Arc::new(std::time::Instant::now());
 
     // module middleware config
     let middleware_config = Arc::new(MiddlewareConfig {
@@ -113,15 +115,12 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     ));
 
     // build base http state
-    let web_http_state = WebHttpState {
-        user_tenant_service: user_tenant_service.clone(),
-    };
     let base_http_state = BaseHttpState {
         cfg: cfg.clone(),
         redis_pool: redis_pool.clone(),
         user_service: user_service.clone(),
         dict_service: dict_service,
-        tenant_service: tenant_service,
+        tenant_service: tenant_service.clone(),
         menu_service: menu_service.clone(),
         role_service: role_service.clone(),
         perm_service,
@@ -135,6 +134,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         menu_service,
         role_code_service: role_service,
         user_service,
+        tenant_service,
     };
     let auth_http_state = AuthHttpState {
         auth_service,
@@ -142,6 +142,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     };
 
     let sys = SysModule::new(cfg.as_ref().clone(), redis_pool.as_ref().clone());
+    let monitor_service = Arc::new(MonitorServiceImpl::new(base_pool.clone(), redis_pool.clone(), start_time));
     let sys_http_state = SysHttpState {
         cfg: cfg.clone(),
         redis_pool: redis_pool.clone(),
@@ -150,6 +151,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         sms_config,
         system_log_service,
         audit_log_service,
+        monitor_service,
     };
 
     let router = Router::new()
@@ -169,10 +171,6 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         .nest(
             "/shared",
             shared_router(shared_http_state, middleware_config.clone()),
-        )
-        .nest(
-            "/web",
-            web_router(web_http_state, middleware_config.clone()),
         )
         .fallback(handler_404)
         .layer(trace_layer)

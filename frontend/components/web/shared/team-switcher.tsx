@@ -50,9 +50,9 @@ export function TeamSwitcher({ teams }: { teams: MyTenantData[] }) {
             render={
               <SidebarMenuButton
                 size="lg"
-                className="rounded-lg bg-background transition-[background-color,color] duration-200 hover:bg-primary/[0.05] hover:text-primary data-[state=open]:bg-primary/[0.08] data-[state=open]:text-primary"
+                className="rounded-xl border border-transparent bg-gradient-to-r from-background/90 to-muted/40 transition-[background-color,border-color,color,box-shadow] duration-200 hover:border-primary/25 hover:bg-primary/15 hover:text-primary data-[state=open]:border-primary/35 data-[state=open]:bg-primary/20 data-[state=open]:text-primary data-[state=open]:shadow-[0_10px_24px_hsl(var(--primary)/0.22)] data-[state=open]:ring-1 data-[state=open]:ring-inset data-[state=open]:ring-primary/25"
               >
-                <div className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground">
+                <div className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground ring-1 ring-border/70">
                   {avatarChar(activeTeam.name)}
                 </div>
                 <div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
@@ -80,7 +80,7 @@ export function TeamSwitcher({ teams }: { teams: MyTenantData[] }) {
               <DropdownMenuItem
                 key={team.id}
                 onClick={() => setActiveTeamState(team)}
-                className="gap-2 p-2 hover:bg-primary/5 focus:bg-primary/5"
+                className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-md border text-xs font-semibold">
                   {avatarChar(team.name)}
@@ -90,7 +90,7 @@ export function TeamSwitcher({ teams }: { teams: MyTenantData[] }) {
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2 hover:bg-primary/5 focus:bg-primary/5">
+            <DropdownMenuItem className="gap-2 p-2">
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <Plus className="size-4" />
               </div>

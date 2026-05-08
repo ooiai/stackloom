@@ -10,7 +10,7 @@ common.workspace = true
 domain-system.workspace = true
 
 # dependencies
-neocrates = { workspace = true, features = ["logger", "sqlx"] }
+neocrates = { workspace = true, features = ["logger", "sqlx", "redis"] }
 chrono = { workspace = true, features = ["serde"] }
 bon.workspace = true
 serde_json.workspace = true

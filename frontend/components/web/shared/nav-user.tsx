@@ -56,9 +56,9 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
             render={
               <SidebarMenuButton
                 size="lg"
-                className="rounded-lg bg-background transition-[background-color,color] duration-200 hover:bg-primary/[0.05] hover:text-primary data-[state=open]:bg-primary/[0.08] data-[state=open]:text-primary"
+                className="rounded-xl border border-transparent bg-gradient-to-r from-background/90 to-muted/40 transition-[background-color,border-color,color,box-shadow] duration-200 hover:border-primary/25 hover:bg-primary/15 hover:text-primary data-[state=open]:border-primary/35 data-[state=open]:bg-primary/20 data-[state=open]:text-primary data-[state=open]:shadow-[0_10px_24px_hsl(var(--primary)/0.22)] data-[state=open]:ring-1 data-[state=open]:ring-inset data-[state=open]:ring-primary/25"
               >
-                <Avatar className="h-8 w-8 rounded-lg">
+                <Avatar className="h-8 w-8 rounded-lg ring-1 ring-border/70">
                   <AvatarImage src={avatarUrl} alt={displayName} />
                   <AvatarFallback className="rounded-lg">{avatarFallback}</AvatarFallback>
                 </Avatar>
@@ -92,31 +92,28 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="hover:bg-primary/5 focus:bg-primary/5">
+              <DropdownMenuItem>
                 <Sparkles />
                 {t("upgrade")}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="hover:bg-primary/5 focus:bg-primary/5">
+              <DropdownMenuItem>
                 <BadgeCheck />
                 {t("account")}
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:bg-primary/5 focus:bg-primary/5">
+              <DropdownMenuItem>
                 <CreditCard />
                 {t("billing")}
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:bg-primary/5 focus:bg-primary/5">
+              <DropdownMenuItem>
                 <Bell />
                 {t("notifications")}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="hover:bg-primary/5 focus:bg-primary/5"
-            >
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               {t("logout")}
             </DropdownMenuItem>

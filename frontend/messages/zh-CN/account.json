@@ -1,0 +1,16 @@
+{
+  "settings": {
+    "title": "账户设置",
+    "subtitle": "管理您的个人信息",
+    "username": "用户名",
+    "nickname": "昵称",
+    "avatar": "头像",
+    "avatarHint": "输入图片 URL 或点击上传",
+    "nicknamePlaceholder": "输入您的昵称",
+    "save": "保存",
+    "cancel": "取消",
+    "success": "设置已保存",
+    "error": "保存失败，请稍后重试",
+    "loading": "保存中..."
+  }
+}

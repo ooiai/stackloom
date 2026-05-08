@@ -22,14 +22,13 @@ export function MonitorRedisGrid({ redisStats }: MonitorRedisGridProps) {
       : 100
 
   return (
-    <div className="grid grid-cols-2 gap-4 xl:grid-cols-6">
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
       <MetricCard
         label={t("monitor.redis_pool")}
         value={`${poolUsed} / ${redisStats.pool_max_size}`}
         hint={`${t("monitor.redis_pool_idle")}: ${redisStats.pool_idle}`}
         tone={poolUsed >= redisStats.pool_max_size ? "warning" : "default"}
         icon={<ServerIcon className="size-4" />}
-        className="xl:col-span-2"
       />
       <MetricCard
         label={t("monitor.redis_memory")}
@@ -37,7 +36,6 @@ export function MonitorRedisGrid({ redisStats }: MonitorRedisGridProps) {
         hint={`${t("monitor.redis_memory_peak")}: ${formatBytes(redisStats.used_memory_peak_bytes)}`}
         tone="default"
         icon={<DatabaseIcon className="size-4" />}
-        className="xl:col-span-2"
       />
       <MetricCard
         label={t("monitor.redis_hit_rate")}
@@ -45,9 +43,6 @@ export function MonitorRedisGrid({ redisStats }: MonitorRedisGridProps) {
         hint={`${t("monitor.redis_hits")}: ${redisStats.keyspace_hits.toLocaleString()} / ${t("monitor.redis_misses")}: ${redisStats.keyspace_misses.toLocaleString()}`}
         tone={hitRate < 50 ? "warning" : "success"}
         icon={<DatabaseIcon className="size-4" />}
-        className="xl:col-span-2"
-        size="hero"
-        footer={t("monitor.redis_hit_rate_summary")}
       />
       <MetricCard
         label={t("monitor.redis_uptime")}
@@ -55,15 +50,6 @@ export function MonitorRedisGrid({ redisStats }: MonitorRedisGridProps) {
         hint={`Redis ${redisStats.redis_version} · ${redisStats.connected_clients} ${t("monitor.redis_clients")}`}
         tone="default"
         icon={<TimerIcon className="size-4" />}
-        className="xl:col-span-3"
-      />
-      <MetricCard
-        label={t("monitor.redis_commands")}
-        value={redisStats.total_commands_processed.toLocaleString()}
-        hint={t("monitor.redis_commands_hint")}
-        tone="default"
-        icon={<ServerIcon className="size-4" />}
-        className="xl:col-span-3"
       />
     </div>
   )

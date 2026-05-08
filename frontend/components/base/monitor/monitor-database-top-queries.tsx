@@ -2,7 +2,6 @@
 
 import { useI18n } from "@/providers/i18n-provider"
 import type { DatabaseStats, DatabaseTopQuery } from "@/types/monitor.types"
-import { MonitorPanelHeader } from "./monitor-panel-header"
 
 interface MonitorDatabaseTopQueriesProps {
   databaseStats: DatabaseStats
@@ -21,10 +20,7 @@ function QueryTable({
 
   return (
     <div className="rounded-2xl border border-border/70 bg-background/80 p-4 shadow-sm backdrop-blur">
-      <MonitorPanelHeader
-        title={title}
-        description={t("monitor.db_top_queries_description")}
-      />
+      <p className="mb-3 text-sm font-medium text-foreground">{title}</p>
       {rows.length === 0 ? (
         <p className="text-xs text-muted-foreground">—</p>
       ) : (
@@ -75,10 +71,7 @@ export function MonitorDatabaseTopQueries({
   if (!pgss.available) {
     return (
       <div className="rounded-2xl border border-dashed border-border/70 bg-background/60 p-4 text-sm text-muted-foreground">
-        <MonitorPanelHeader
-          title={t("monitor.db_top_queries_title")}
-          description={t("monitor.db_top_queries_disabled")}
-        />
+        <p className="font-medium text-foreground">{t("monitor.db_top_queries_title")}</p>
         <p className="mt-2">
           {pgss.unavailable_reason_key
             ? t(pgss.unavailable_reason_key)

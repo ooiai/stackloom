@@ -1,0 +1,16 @@
+{
+  "settings": {
+    "title": "Account Settings",
+    "subtitle": "Manage your personal information",
+    "username": "Username",
+    "nickname": "Nickname",
+    "avatar": "Avatar",
+    "avatarHint": "Paste image URL or click to upload",
+    "nicknamePlaceholder": "Enter your nickname",
+    "save": "Save",
+    "cancel": "Cancel",
+    "success": "Settings saved successfully",
+    "error": "Failed to save settings, please try again",
+    "loading": "Saving..."
+  }
+}
