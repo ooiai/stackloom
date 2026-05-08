@@ -108,6 +108,9 @@ pub trait RoleRepository: Send + Sync {
     /// Get perm codes assigned to a role (joined from the perms table).
     async fn get_role_perm_codes(&self, role_id: i64) -> AppResult<Vec<String>>;
 
+    /// Get non-empty perm actions assigned to a role (joined from the perms table).
+    async fn get_role_perm_actions(&self, role_id: i64) -> AppResult<Vec<String>>;
+
     /// Replace all perms for a role.
     async fn replace_role_perms(&self, role_id: i64, perm_ids: &[i64]) -> AppResult<()>;
 }

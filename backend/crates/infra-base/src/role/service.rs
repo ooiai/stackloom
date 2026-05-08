@@ -14,7 +14,7 @@ use domain_base::{
 use neocrates::{
     async_trait::async_trait,
     helper::core::snowflake::generate_sonyflake_id,
-    middlewares::models::{CACHE_MENUS_RID, CACHE_PERMS_RID},
+    middlewares::models::{CACHE_MENUS_RID, CACHE_PERMS, CACHE_PERMS_RID},
     rediscache::RedisPool,
     response::error::{AppError, AppResult},
     serde_json,
@@ -68,6 +68,10 @@ where
         format!("{}{}{}", self.key_prefix, CACHE_PERMS_RID, role_id)
     }
 
+    fn perm_action_cache_key(&self, role_id: i64) -> String {
+        format!("{}{}{}", self.key_prefix, CACHE_PERMS, role_id)
+    }
+
     fn tree_cache_role_prefix(&self, role_id: i64) -> String {
         format!(
             "{}{}{}",
@@ -94,6 +98,17 @@ where
         let json = serde_json::to_string(codes)?;
         self.redis_pool
             .set(self.perm_cache_key(role_id), json)
+            .await
+    }
+
+    async fn cache_perm_actions(
+        &self,
+        role_id: i64,
+        actions: &[String],
+    ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        let json = serde_json::to_string(actions)?;
+        self.redis_pool
+            .set(self.perm_action_cache_key(role_id), json)
             .await
     }
 
@@ -209,12 +224,34 @@ where
         }
     }
 
-    async fn invalidate_role_codes_cache(&self, role_ids: &[i64]) {
+    async fn refresh_role_perm_actions_cache(&self, role_id: i64) {
+        match self.repository.get_role_perm_actions(role_id).await {
+            Ok(actions) => {
+                if let Err(e) = self.cache_perm_actions(role_id, &actions).await {
+                    tracing::warn!(
+                        role_id = %role_id,
+                        error = %e,
+                        "assign_perms: failed to update perm action cache"
+                    );
+                }
+            }
+            Err(e) => {
+                tracing::warn!(
+                    role_id = %role_id,
+                    error = %e,
+                    "assign_perms: failed to query perm actions for cache"
+                );
+            }
+        }
+    }
+
+    async fn invalidate_role_assignment_cache(&self, role_ids: &[i64]) {
         let unique_role_ids = role_ids.iter().copied().collect::<BTreeSet<_>>();
         for role_id in unique_role_ids {
             for (cache_key, cache_name) in [
                 (self.menu_cache_key(role_id), "menu"),
                 (self.perm_cache_key(role_id), "perm"),
+                (self.perm_action_cache_key(role_id), "perm_action"),
             ] {
                 if let Err(e) = self.redis_pool.del(&cache_key).await {
                     tracing::warn!(
@@ -414,7 +451,7 @@ where
         }
 
         self.repository.hard_delete_batch(&ids).await?;
-        self.invalidate_role_codes_cache(&ids).await;
+        self.invalidate_role_assignment_cache(&ids).await;
         self.invalidate_role_tree_cache(&ids).await;
         Ok(())
     }
@@ -431,7 +468,7 @@ where
         }
 
         self.repository.hard_delete_batch(&descendant_ids).await?;
-        self.invalidate_role_codes_cache(&descendant_ids).await;
+        self.invalidate_role_assignment_cache(&descendant_ids).await;
         self.invalidate_role_tree_cache(&descendant_ids).await;
         Ok(())
     }
@@ -472,6 +509,7 @@ where
             .replace_role_perms(cmd.role_id, &cmd.perm_ids)
             .await?;
         self.refresh_role_perm_codes_cache(cmd.role_id).await;
+        self.refresh_role_perm_actions_cache(cmd.role_id).await;
         Ok(())
     }
 }

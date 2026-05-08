@@ -654,6 +654,24 @@ impl RoleRepository for SqlxRoleRepository {
         Ok(rows)
     }
 
+    async fn get_role_perm_actions(&self, role_id: i64) -> AppResult<Vec<String>> {
+        let rows = sqlx::query_scalar::<_, String>(
+            "SELECT DISTINCT p.action FROM perms p \
+             INNER JOIN role_perms rp ON p.id = rp.perm_id \
+             WHERE rp.role_id = $1 \
+               AND p.deleted_at IS NULL \
+               AND p.action IS NOT NULL \
+               AND BTRIM(p.action) <> '' \
+             ORDER BY p.action ASC",
+        )
+        .bind(role_id)
+        .fetch_all(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows)
+    }
+
     async fn replace_role_perms(&self, role_id: i64, perm_ids: &[i64]) -> AppResult<()> {
         let mut tx = self
             .pool
