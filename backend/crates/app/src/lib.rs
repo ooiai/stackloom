@@ -98,6 +98,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
 
     // build base http state
     let base_http_state = BaseHttpState {
+        cfg: cfg.clone(),
         redis_pool: redis_pool.clone(),
         user_service: Arc::new(UserServiceImpl::new(base_pool.clone())),
         dict_service: Arc::new(DictServiceImpl::new(base_pool.clone())),

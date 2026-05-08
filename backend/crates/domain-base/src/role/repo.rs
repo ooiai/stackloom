@@ -96,11 +96,17 @@ pub trait RoleRepository: Send + Sync {
     /// Get menu IDs assigned to a role.
     async fn get_role_menus(&self, role_id: i64) -> AppResult<Vec<i64>>;
 
+    /// Get menu codes assigned to a role (joined from the menus table).
+    async fn get_role_menu_codes(&self, role_id: i64) -> AppResult<Vec<String>>;
+
     /// Replace all menus for a role.
     async fn replace_role_menus(&self, role_id: i64, menu_ids: &[i64]) -> AppResult<()>;
 
     /// Get perm IDs assigned to a role.
     async fn get_role_perms(&self, role_id: i64) -> AppResult<Vec<i64>>;
+
+    /// Get perm codes assigned to a role (joined from the perms table).
+    async fn get_role_perm_codes(&self, role_id: i64) -> AppResult<Vec<String>>;
 
     /// Replace all perms for a role.
     async fn replace_role_perms(&self, role_id: i64, perm_ids: &[i64]) -> AppResult<()>;

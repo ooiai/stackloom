@@ -101,6 +101,15 @@ pub trait RoleService: Send + Sync {
     /// * `AppResult<Vec<i64>>` - The list of assigned menu IDs.
     async fn get_role_menus(&self, role_id: i64) -> AppResult<Vec<i64>>;
 
+    /// Get assigned menu codes for a role.
+    ///
+    /// # Arguments
+    /// * `role_id` - The ID of the role.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<String>>` - The list of assigned menu codes.
+    async fn get_role_menu_codes(&self, role_id: i64) -> AppResult<Vec<String>>;
+
     /// Assign menus to a role.
     ///
     /// # Arguments
@@ -118,6 +127,15 @@ pub trait RoleService: Send + Sync {
     /// # Returns
     /// * `AppResult<Vec<i64>>` - The list of assigned perm IDs.
     async fn get_role_perms(&self, role_id: i64) -> AppResult<Vec<i64>>;
+
+    /// Get assigned perm codes for a role.
+    ///
+    /// # Arguments
+    /// * `role_id` - The ID of the role.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<String>>` - The list of assigned perm codes.
+    async fn get_role_perm_codes(&self, role_id: i64) -> AppResult<Vec<String>>;
 
     /// Assign perms to a role.
     ///

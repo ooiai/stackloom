@@ -580,6 +580,20 @@ impl RoleRepository for SqlxRoleRepository {
         Ok(rows)
     }
 
+    async fn get_role_menu_codes(&self, role_id: i64) -> AppResult<Vec<String>> {
+        let rows = sqlx::query_scalar::<_, String>(
+            "SELECT m.code FROM menus m \
+             INNER JOIN role_menus rm ON m.id = rm.menu_id \
+             WHERE rm.role_id = $1 AND m.deleted_at IS NULL",
+        )
+        .bind(role_id)
+        .fetch_all(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows)
+    }
+
     async fn replace_role_menus(&self, role_id: i64, menu_ids: &[i64]) -> AppResult<()> {
         let mut tx = self
             .pool
@@ -622,6 +636,20 @@ impl RoleRepository for SqlxRoleRepository {
                 .fetch_all(self.pool.pool())
                 .await
                 .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows)
+    }
+
+    async fn get_role_perm_codes(&self, role_id: i64) -> AppResult<Vec<String>> {
+        let rows = sqlx::query_scalar::<_, String>(
+            "SELECT p.code FROM perms p \
+             INNER JOIN role_perms rp ON p.id = rp.perm_id \
+             WHERE rp.role_id = $1 AND p.deleted_at IS NULL",
+        )
+        .bind(role_id)
+        .fetch_all(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
 
         Ok(rows)
     }

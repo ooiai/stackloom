@@ -240,6 +240,10 @@ where
         self.repository.get_role_menus(role_id).await
     }
 
+    async fn get_role_menu_codes(&self, role_id: i64) -> AppResult<Vec<String>> {
+        self.repository.get_role_menu_codes(role_id).await
+    }
+
     async fn assign_menus(&self, cmd: AssignRoleMenusCmd) -> AppResult<()> {
         cmd.validate()?;
         self.repository
@@ -249,6 +253,10 @@ where
 
     async fn get_role_perms(&self, role_id: i64) -> AppResult<Vec<i64>> {
         self.repository.get_role_perms(role_id).await
+    }
+
+    async fn get_role_perm_codes(&self, role_id: i64) -> AppResult<Vec<String>> {
+        self.repository.get_role_perm_codes(role_id).await
     }
 
     async fn assign_perms(&self, cmd: AssignRolePermsCmd) -> AppResult<()> {

@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use common::config::env_config::EnvConfig;
 use domain_base::{
     DictService, MenuService, PermService, RoleService, TenantService, UserService,
     UserTenantRoleService, UserTenantService,
@@ -24,6 +25,7 @@ pub mod users;
 /// The shared state for the HTTP server, which includes the user service.
 #[derive(Clone)]
 pub struct BaseHttpState {
+    pub cfg: Arc<EnvConfig>,
     pub redis_pool: Arc<RedisPool>,
     pub user_service: Arc<dyn UserService>,
     pub tenant_service: Arc<dyn TenantService>,
