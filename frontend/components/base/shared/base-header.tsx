@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { LucideIcon } from "@/components/topui/icon"
 import type { IconName } from "@/components/topui/icon"
+import { useHeaderContext } from "@/hooks/use-header-context"
 import { useI18n } from "@/providers/i18n-provider"
 import { cn } from "@/lib/utils"
 import { userSharedApi } from "@/stores/base-api"
@@ -218,6 +219,8 @@ export default function BaseHeader({
 }) {
   const { t } = useI18n()
   const pathname = usePathname()
+  const { user } = useHeaderContext()
+
   const { data: currentMenus = [] } = useQuery({
     queryKey: ["listCurrentMenusQuery"],
     queryFn: () => userSharedApi.listCurrentMenus(),
@@ -335,7 +338,7 @@ export default function BaseHeader({
           >
             <Settings2Icon />
           </Button>
-          <HeaderUserMenu />
+          <HeaderUserMenu user={user} />
         </div>
       </div>
     </header>

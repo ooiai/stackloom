@@ -128,6 +128,20 @@ export interface PermTreeNodeData extends PermData {
   children: PermTreeNodeData[]
 }
 
+export interface HeaderContextUserData {
+  id: string
+  username: string
+  nickname: string | null
+  avatar_url: string | null
+  tenant_name: string
+}
+
+export interface HeaderContextData {
+  user: HeaderContextUserData
+  menu_codes: string[]
+  perm_codes: string[]
+}
+
 export interface TenantData {
   id: string
   parent_id: string | null
@@ -590,13 +604,4 @@ export interface DictFormValues {
   is_builtin: boolean
   ext: string
   parent_id?: string | null
-}
-
-export interface UserProfileData {
-  id: string
-  username: string
-  nickname: string | null
-  email: string | null
-  avatar_url: string | null
-  tenant_name: string
 }

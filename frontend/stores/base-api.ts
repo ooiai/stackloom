@@ -68,9 +68,9 @@ import type {
   TreeDictParam,
   UpdateDictParam,
   UpdateUserParam,
+  HeaderContextData,
   UserData,
   UserRolesResp,
-  UserProfileData,
 } from "@/types/base.types"
 
 const BASE_USER_API_PREFIX = "/apiv1/base/users"
@@ -80,7 +80,6 @@ const BASE_DICT_API_PREFIX = "/apiv1/base/dicts"
 const BASE_ROLE_API_PREFIX = "/apiv1/base/roles"
 const BASE_PERM_API_PREFIX = "/apiv1/base/perms"
 const SHARED_COMMON_API_PREFIX = "/apiv1/shared/common"
-const SHARED_PROFILE_API_PREFIX = "/apiv1/shared/profile"
 
 export const userSharedApi = {
   listCurrentMenus: async (): Promise<MenuTreeNodeData[]> => {
@@ -275,7 +274,7 @@ export const permApi = {
 }
 
 export const sharedApi = {
-  getProfile: async (): Promise<UserProfileData> => {
-    return post(`${SHARED_PROFILE_API_PREFIX}/get`, {})
+  getHeaderContext: async (): Promise<HeaderContextData> => {
+    return post(`${SHARED_COMMON_API_PREFIX}/header_context`, {})
   },
 }
