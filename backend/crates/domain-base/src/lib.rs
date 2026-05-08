@@ -42,5 +42,5 @@ pub use role_perm::service::RolePermService;
 pub use role_perm::{CreateRolePermCmd, PageRolePermCmd, RolePerm, UpdateRolePermCmd};
 pub mod role;
 pub use role::repo::RoleRepository;
-pub use role::service::RoleService;
+pub use role::service::{RoleCodeService, RoleService};
 pub use role::{CreateRoleCmd, PageRoleCmd, Role, UpdateRoleCmd};

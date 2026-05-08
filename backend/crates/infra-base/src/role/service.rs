@@ -1,11 +1,11 @@
 use std::{
-    collections::{HashMap, HashSet},
+    collections::{BTreeSet, HashMap, HashSet},
     sync::Arc,
 };
 
 use common::core::biz_error::ROLE_CODE_EXISTS;
 use domain_base::{
-    CreateRoleCmd, PageRoleCmd, Role, RoleRepository, RoleService, UpdateRoleCmd,
+    CreateRoleCmd, PageRoleCmd, Role, RoleCodeService, RoleRepository, RoleService, UpdateRoleCmd,
     role::{
         AssignRoleMenusCmd, AssignRolePermsCmd, ChildrenRoleCmd, RemoveCascadeRoleCmd,
         RoleChildrenQuery, RolePageQuery, RoleTreeQuery, TreeRoleCmd,
@@ -14,8 +14,12 @@ use domain_base::{
 use neocrates::{
     async_trait::async_trait,
     helper::core::snowflake::generate_sonyflake_id,
+    middlewares::models::{CACHE_MENUS_RID, CACHE_PERMS_RID},
+    rediscache::RedisPool,
     response::error::{AppError, AppResult},
+    serde_json,
     sqlxhelper::pool::SqlxPool,
+    tracing,
 };
 
 use super::repo::SqlxRoleRepository;
@@ -26,12 +30,16 @@ where
     R: RoleRepository,
 {
     repository: Arc<R>,
+    redis_pool: Arc<RedisPool>,
+    key_prefix: String,
 }
 
 impl RoleServiceImpl<SqlxRoleRepository> {
-    pub fn new(pool: Arc<SqlxPool>) -> Self {
+    pub fn new(pool: Arc<SqlxPool>, redis_pool: Arc<RedisPool>, key_prefix: String) -> Self {
         Self {
             repository: Arc::new(SqlxRoleRepository::new(pool)),
+            redis_pool,
+            key_prefix,
         }
     }
 }
@@ -40,8 +48,177 @@ impl<R> RoleServiceImpl<R>
 where
     R: RoleRepository,
 {
-    pub fn with_repository(repository: Arc<R>) -> Self {
-        Self { repository }
+    pub fn with_repository(
+        repository: Arc<R>,
+        redis_pool: Arc<RedisPool>,
+        key_prefix: String,
+    ) -> Self {
+        Self {
+            repository,
+            redis_pool,
+            key_prefix,
+        }
+    }
+
+    fn menu_cache_key(&self, role_id: i64) -> String {
+        format!("{}{}{}", self.key_prefix, CACHE_MENUS_RID, role_id)
+    }
+
+    fn perm_cache_key(&self, role_id: i64) -> String {
+        format!("{}{}{}", self.key_prefix, CACHE_PERMS_RID, role_id)
+    }
+
+    async fn cache_menu_codes(
+        &self,
+        role_id: i64,
+        codes: &[String],
+    ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        let json = serde_json::to_string(codes)?;
+        self.redis_pool
+            .set(self.menu_cache_key(role_id), json)
+            .await
+    }
+
+    async fn cache_perm_codes(
+        &self,
+        role_id: i64,
+        codes: &[String],
+    ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        let json = serde_json::to_string(codes)?;
+        self.redis_pool
+            .set(self.perm_cache_key(role_id), json)
+            .await
+    }
+
+    async fn load_role_menu_codes_cached(&self, role_id: i64) -> AppResult<Vec<String>> {
+        let cache_key = self.menu_cache_key(role_id);
+        match self.redis_pool.get::<_, String>(&cache_key).await {
+            Ok(Some(json)) => match serde_json::from_str::<Vec<String>>(&json) {
+                Ok(codes) => return Ok(codes),
+                Err(e) => {
+                    tracing::warn!(
+                        role_id = %role_id,
+                        error = %e,
+                        "role menu cache decode failed, falling back to db"
+                    );
+                }
+            },
+            Ok(None) => {}
+            Err(e) => {
+                tracing::warn!(
+                    role_id = %role_id,
+                    error = %e,
+                    "role menu cache read failed, falling back to db"
+                );
+            }
+        }
+
+        let codes = self.repository.get_role_menu_codes(role_id).await?;
+        if let Err(e) = self.cache_menu_codes(role_id, &codes).await {
+            tracing::warn!(
+                role_id = %role_id,
+                error = %e,
+                "role menu cache write failed after db fallback"
+            );
+        }
+
+        Ok(codes)
+    }
+
+    async fn load_role_perm_codes_cached(&self, role_id: i64) -> AppResult<Vec<String>> {
+        let cache_key = self.perm_cache_key(role_id);
+        match self.redis_pool.get::<_, String>(&cache_key).await {
+            Ok(Some(json)) => match serde_json::from_str::<Vec<String>>(&json) {
+                Ok(codes) => return Ok(codes),
+                Err(e) => {
+                    tracing::warn!(
+                        role_id = %role_id,
+                        error = %e,
+                        "role perm cache decode failed, falling back to db"
+                    );
+                }
+            },
+            Ok(None) => {}
+            Err(e) => {
+                tracing::warn!(
+                    role_id = %role_id,
+                    error = %e,
+                    "role perm cache read failed, falling back to db"
+                );
+            }
+        }
+
+        let codes = self.repository.get_role_perm_codes(role_id).await?;
+        if let Err(e) = self.cache_perm_codes(role_id, &codes).await {
+            tracing::warn!(
+                role_id = %role_id,
+                error = %e,
+                "role perm cache write failed after db fallback"
+            );
+        }
+
+        Ok(codes)
+    }
+
+    async fn refresh_role_menu_codes_cache(&self, role_id: i64) {
+        match self.repository.get_role_menu_codes(role_id).await {
+            Ok(codes) => {
+                if let Err(e) = self.cache_menu_codes(role_id, &codes).await {
+                    tracing::warn!(
+                        role_id = %role_id,
+                        error = %e,
+                        "assign_menus: failed to update menu cache"
+                    );
+                }
+            }
+            Err(e) => {
+                tracing::warn!(
+                    role_id = %role_id,
+                    error = %e,
+                    "assign_menus: failed to query menu codes for cache"
+                );
+            }
+        }
+    }
+
+    async fn refresh_role_perm_codes_cache(&self, role_id: i64) {
+        match self.repository.get_role_perm_codes(role_id).await {
+            Ok(codes) => {
+                if let Err(e) = self.cache_perm_codes(role_id, &codes).await {
+                    tracing::warn!(
+                        role_id = %role_id,
+                        error = %e,
+                        "assign_perms: failed to update perm cache"
+                    );
+                }
+            }
+            Err(e) => {
+                tracing::warn!(
+                    role_id = %role_id,
+                    error = %e,
+                    "assign_perms: failed to query perm codes for cache"
+                );
+            }
+        }
+    }
+
+    async fn invalidate_role_codes_cache(&self, role_ids: &[i64]) {
+        let unique_role_ids = role_ids.iter().copied().collect::<BTreeSet<_>>();
+        for role_id in unique_role_ids {
+            for (cache_key, cache_name) in [
+                (self.menu_cache_key(role_id), "menu"),
+                (self.perm_cache_key(role_id), "perm"),
+            ] {
+                if let Err(e) = self.redis_pool.del(&cache_key).await {
+                    tracing::warn!(
+                        role_id = %role_id,
+                        cache = cache_name,
+                        error = %e,
+                        "failed to invalidate role code cache"
+                    );
+                }
+            }
+        }
     }
 }
 
@@ -215,7 +392,9 @@ where
             }
         }
 
-        self.repository.hard_delete_batch(&ids).await
+        self.repository.hard_delete_batch(&ids).await?;
+        self.invalidate_role_codes_cache(&ids).await;
+        Ok(())
     }
 
     async fn remove_cascade(&self, cmd: RemoveCascadeRoleCmd) -> AppResult<()> {
@@ -229,7 +408,9 @@ where
             return Ok(());
         }
 
-        self.repository.hard_delete_batch(&descendant_ids).await
+        self.repository.hard_delete_batch(&descendant_ids).await?;
+        self.invalidate_role_codes_cache(&descendant_ids).await;
+        Ok(())
     }
 
     async fn list_for_tenant(&self, tenant_id: i64) -> AppResult<Vec<Role>> {
@@ -248,7 +429,9 @@ where
         cmd.validate()?;
         self.repository
             .replace_role_menus(cmd.role_id, &cmd.menu_ids)
-            .await
+            .await?;
+        self.refresh_role_menu_codes_cache(cmd.role_id).await;
+        Ok(())
     }
 
     async fn get_role_perms(&self, role_id: i64) -> AppResult<Vec<i64>> {
@@ -263,6 +446,44 @@ where
         cmd.validate()?;
         self.repository
             .replace_role_perms(cmd.role_id, &cmd.perm_ids)
-            .await
+            .await?;
+        self.refresh_role_perm_codes_cache(cmd.role_id).await;
+        Ok(())
+    }
+}
+
+#[async_trait]
+impl<R> RoleCodeService for RoleServiceImpl<R>
+where
+    R: RoleRepository,
+{
+    async fn aggregate_menu_codes(&self, role_ids: &[i64]) -> AppResult<Vec<String>> {
+        if role_ids.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let mut merged_codes = BTreeSet::new();
+        for role_id in role_ids.iter().copied().collect::<BTreeSet<_>>() {
+            for code in self.load_role_menu_codes_cached(role_id).await? {
+                merged_codes.insert(code);
+            }
+        }
+
+        Ok(merged_codes.into_iter().collect())
+    }
+
+    async fn aggregate_perm_codes(&self, role_ids: &[i64]) -> AppResult<Vec<String>> {
+        if role_ids.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let mut merged_codes = BTreeSet::new();
+        for role_id in role_ids.iter().copied().collect::<BTreeSet<_>>() {
+            for code in self.load_role_perm_codes_cached(role_id).await? {
+                merged_codes.insert(code);
+            }
+        }
+
+        Ok(merged_codes.into_iter().collect())
     }
 }

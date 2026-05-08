@@ -88,6 +88,18 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     let system_log_service = Arc::new(SystemLogServiceImpl::new(base_pool.clone()));
     let audit_log_service = Arc::new(AuditLogServiceImpl::new(base_pool.clone()));
     let operation_log_service = Arc::new(OperationLogServiceImpl::new(base_pool.clone()));
+    let user_service = Arc::new(UserServiceImpl::new(base_pool.clone()));
+    let dict_service = Arc::new(DictServiceImpl::new(base_pool.clone()));
+    let tenant_service = Arc::new(TenantServiceImpl::new(base_pool.clone()));
+    let menu_service = Arc::new(MenuServiceImpl::new(base_pool.clone()));
+    let role_service = Arc::new(RoleServiceImpl::new(
+        base_pool.clone(),
+        redis_pool.clone(),
+        cfg.server.prefix.clone(),
+    ));
+    let perm_service = Arc::new(PermServiceImpl::new(base_pool.clone()));
+    let user_tenant_service = Arc::new(UserTenantServiceImpl::new(base_pool.clone()));
+    let user_tenant_role_service = Arc::new(UserTenantRoleServiceImpl::new(base_pool.clone()));
     let auth_service = Arc::new(AuthServiceImpl::new(
         base_pool.clone(),
         redis_pool.clone(),
@@ -100,21 +112,22 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     let base_http_state = BaseHttpState {
         cfg: cfg.clone(),
         redis_pool: redis_pool.clone(),
-        user_service: Arc::new(UserServiceImpl::new(base_pool.clone())),
-        dict_service: Arc::new(DictServiceImpl::new(base_pool.clone())),
-        tenant_service: Arc::new(TenantServiceImpl::new(base_pool.clone())),
-        menu_service: Arc::new(MenuServiceImpl::new(base_pool.clone())),
-        role_service: Arc::new(RoleServiceImpl::new(base_pool.clone())),
-        perm_service: Arc::new(PermServiceImpl::new(base_pool.clone())),
-        user_tenant_service: Arc::new(UserTenantServiceImpl::new(base_pool.clone())),
-        user_tenant_role_service: Arc::new(UserTenantRoleServiceImpl::new(base_pool.clone())),
+        user_service: user_service.clone(),
+        dict_service: dict_service,
+        tenant_service: tenant_service,
+        menu_service: menu_service.clone(),
+        role_service: role_service.clone(),
+        perm_service,
+        user_tenant_service,
+        user_tenant_role_service,
         system_log_service: system_log_service.clone(),
         audit_log_service: audit_log_service.clone(),
         operation_log_service: operation_log_service.clone(),
     };
     let shared_http_state = SharedHttpState {
-        menu_service: Arc::new(MenuServiceImpl::new(base_pool.clone())),
-        user_service: Arc::new(UserServiceImpl::new(base_pool.clone())),
+        menu_service,
+        role_code_service: role_service,
+        user_service,
     };
     let auth_http_state = AuthHttpState {
         auth_service,

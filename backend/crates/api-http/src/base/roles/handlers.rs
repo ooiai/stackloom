@@ -16,10 +16,7 @@ use domain_base::{
 use neocrates::{
     axum::{Extension, Json, extract::State},
     helper::core::{axum_extractor::DetailedJson, hashid},
-    middlewares::{
-        RequestTraceContext,
-        models::{AuthModel, CACHE_MENUS_RID, CACHE_PERMS_RID},
-    },
+    middlewares::{RequestTraceContext, models::AuthModel},
     response::error::{AppError, AppResult},
     serde_json::json,
     tracing,
@@ -345,26 +342,6 @@ pub async fn assign_menus(
     let cmd: AssignRoleMenusCmd = req.into();
     state.role_service.assign_menus(cmd).await?;
 
-    match state.role_service.get_role_menu_codes(role_id).await {
-        Ok(codes) => {
-            if let Ok(json) = neocrates::serde_json::to_string(&codes) {
-                if let Err(e) = state
-                    .redis_pool
-                    .set(
-                        format!("{}{}{}", state.cfg.server.prefix, CACHE_MENUS_RID, role_id),
-                        json,
-                    )
-                    .await
-                {
-                    tracing::warn!(role_id = %role_id, error = %e, "assign_menus: failed to update menu cache");
-                }
-            }
-        }
-        Err(e) => {
-            tracing::warn!(role_id = %role_id, error = %e, "assign_menus: failed to query menu codes for cache");
-        }
-    }
-
     logging::write_mutation_logs(
         &state,
         &trace_context,
@@ -429,26 +406,6 @@ pub async fn assign_perms(
     let role_id = req.role_id;
     let cmd: AssignRolePermsCmd = req.into();
     state.role_service.assign_perms(cmd).await?;
-
-    match state.role_service.get_role_perm_codes(role_id).await {
-        Ok(codes) => {
-            if let Ok(json) = neocrates::serde_json::to_string(&codes) {
-                if let Err(e) = state
-                    .redis_pool
-                    .set(
-                        format!("{}{}{}", state.cfg.server.prefix, CACHE_PERMS_RID, role_id),
-                        json,
-                    )
-                    .await
-                {
-                    tracing::warn!(role_id = %role_id, error = %e, "assign_perms: failed to update perm cache");
-                }
-            }
-        }
-        Err(e) => {
-            tracing::warn!(role_id = %role_id, error = %e, "assign_perms: failed to query perm codes for cache");
-        }
-    }
 
     logging::write_mutation_logs(
         &state,

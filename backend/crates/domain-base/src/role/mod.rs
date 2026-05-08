@@ -2,7 +2,7 @@ pub mod repo;
 pub mod service;
 
 pub use repo::RoleRepository;
-pub use service::RoleService;
+pub use service::{RoleCodeService, RoleService};
 
 use chrono::{DateTime, Utc};
 

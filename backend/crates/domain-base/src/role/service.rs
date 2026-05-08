@@ -146,3 +146,18 @@ pub trait RoleService: Send + Sync {
     /// * `AppResult<()>` - The result of the assign operation.
     async fn assign_perms(&self, cmd: AssignRolePermsCmd) -> AppResult<()>;
 }
+
+#[async_trait]
+pub trait RoleCodeService: Send + Sync {
+    /// Aggregate effective menu codes across the given role IDs.
+    ///
+    /// Implementations may use caching internally, but callers receive the
+    /// deduplicated effective code list for the current role set.
+    async fn aggregate_menu_codes(&self, role_ids: &[i64]) -> AppResult<Vec<String>>;
+
+    /// Aggregate effective permission codes across the given role IDs.
+    ///
+    /// Implementations may use caching internally, but callers receive the
+    /// deduplicated effective code list for the current role set.
+    async fn aggregate_perm_codes(&self, role_ids: &[i64]) -> AppResult<Vec<String>>;
+}

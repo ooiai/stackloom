@@ -104,3 +104,20 @@ impl MenuTreeResp {
         Self { items }
     }
 }
+
+#[derive(Debug, Clone, Serialize)]
+pub struct HeaderContextUserResp {
+    #[serde(serialize_with = "serde_helpers::serialize_i64")]
+    pub id: i64,
+    pub username: String,
+    pub nickname: Option<String>,
+    pub avatar_url: Option<String>,
+    pub tenant_name: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct HeaderContextResp {
+    pub user: HeaderContextUserResp,
+    pub menu_codes: Vec<String>,
+    pub perm_codes: Vec<String>,
+}

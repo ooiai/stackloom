@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use domain_base::{MenuService, UserService};
+use domain_base::{MenuService, RoleCodeService, UserService};
 use neocrates::{
     axum::{Router, middleware},
     middlewares::{interceptor::interceptor, models::MiddlewareConfig},
@@ -13,6 +13,7 @@ pub mod profile;
 #[derive(Clone)]
 pub struct SharedHttpState {
     pub menu_service: Arc<dyn MenuService>,
+    pub role_code_service: Arc<dyn RoleCodeService>,
     pub user_service: Arc<dyn UserService>,
 }
 
