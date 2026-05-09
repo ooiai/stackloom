@@ -69,6 +69,7 @@ import type {
   UpdateDictParam,
   UpdateUserParam,
   HeaderContextData,
+  MyTenantData,
   UserData,
   UserRolesResp,
 } from "@/types/base.types"
@@ -82,11 +83,11 @@ const BASE_PERM_API_PREFIX = "/apiv1/base/perms"
 const SHARED_COMMON_API_PREFIX = "/apiv1/shared/common"
 
 export const userSharedApi = {
-  listCurrentMenus: async (): Promise<MenuTreeNodeData[]> => {
+  listCurrentMenus: async (code?: string): Promise<MenuTreeNodeData[]> => {
     const resp: MenuTreeResp = await post(
       `${SHARED_COMMON_API_PREFIX}/tree_by_code`,
       {
-        code: "BACKEND",
+        code: code || "BACKEND",
         status: 1,
       }
     )
@@ -276,5 +277,8 @@ export const permApi = {
 export const sharedApi = {
   getHeaderContext: async (): Promise<HeaderContextData> => {
     return post(`${SHARED_COMMON_API_PREFIX}/header_context`, {})
+  },
+  getMyTenants: async (): Promise<MyTenantData[]> => {
+    return post(`${SHARED_COMMON_API_PREFIX}/my_tenants`, {})
   },
 }

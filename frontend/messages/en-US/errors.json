@@ -57,6 +57,15 @@
     },
     "perms": {
       "codeExists": "This permission code already exists. Please use a different code."
+    },
+    "members": {
+      "notAdmin": "You don't have admin permissions to perform this action.",
+      "cannotChangeSelf": "Admins cannot change their own membership status.",
+      "notFound": "The target member was not found or does not belong to this team."
+    },
+    "invite": {
+      "codeInvalid": "This invite link is invalid or has expired. Please ask your admin for a new link.",
+      "alreadyMember": "You are already a member of this team."
     }
   }
 }

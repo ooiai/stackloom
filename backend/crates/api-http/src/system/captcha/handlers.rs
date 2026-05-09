@@ -12,6 +12,14 @@ use crate::system::{
     captcha::{req::SliderCaptchaReq, resp::SliderCaptchaResp},
 };
 
+/// Generate a slider captcha for the given account and code. The captcha will be valid for 5 minutes.
+///
+/// # Arguments
+/// * `state` - The system HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<SliderCaptchaResp>>` - The response containing the captcha information.
 pub async fn captcha_slider(
     State(state): State<SysHttpState>,
     DetailedJson(req): DetailedJson<SliderCaptchaReq>,

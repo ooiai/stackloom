@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 
+import { useSearchParams } from "next/navigation"
 import { CheckCircle2Icon } from "lucide-react"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -14,6 +15,13 @@ interface SignupSuccessStateProps {
 
 export function SignupSuccessState({ result }: SignupSuccessStateProps) {
   const { t } = useI18n()
+  const searchParams = useSearchParams()
+  const returnTo = searchParams.get("returnTo")
+  const safeReturnTo = returnTo && returnTo.startsWith("/") ? returnTo : null
+
+  const signinHref = safeReturnTo
+    ? `${result.signin_path}?returnTo=${encodeURIComponent(safeReturnTo)}`
+    : result.signin_path
 
   return (
     <div className="rounded-3xl border border-border/70 bg-background/95 p-6 shadow-sm">
@@ -50,7 +58,7 @@ export function SignupSuccessState({ result }: SignupSuccessStateProps) {
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         <Link
-          href={result.signin_path}
+          href={signinHref}
           className={buttonVariants({ variant: "default", size: "lg" })}
         >
           {t("auth.signup.success.goSignin")}

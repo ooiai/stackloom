@@ -96,4 +96,13 @@ pub trait TenantRepository: Send + Sync {
     /// # Returns
     /// * `AppResult<()>` - Result of the batch hard delete operation
     async fn hard_delete_batch(&self, ids: &[i64]) -> AppResult<()>;
+
+    /// List all active tenants that a user belongs to.
+    ///
+    /// # Arguments
+    /// * `user_id` - The user's ID
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<(Tenant, bool)>>` - All tenants the user is an active member of, with is_default flag
+    async fn list_by_user_id(&self, user_id: i64) -> AppResult<Vec<(Tenant, bool)>>;
 }

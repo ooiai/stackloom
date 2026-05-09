@@ -17,6 +17,7 @@ import type { MenuData } from "@/types/base.types"
 import type { ColumnDef } from "@tanstack/react-table"
 import {
   ArrowRightIcon,
+  CopyIcon,
   Edit3Icon,
   EllipsisIcon,
   FolderOpenIcon,
@@ -32,6 +33,7 @@ export function createMenuColumns({
   onSelectNode,
   onOpenAddChild,
   onOpenEdit,
+  onOpenCopy,
   onDelete,
 }: {
   permissions: {
@@ -44,6 +46,7 @@ export function createMenuColumns({
   onSelectNode: (id: string | null) => void
   onOpenAddChild: (parentId: string) => void
   onOpenEdit: (menu: MenuData) => void
+  onOpenCopy: (menu: MenuData) => void
   onDelete: (menu: MenuData) => void
 }): ColumnDef<MenuData>[] {
   return [
@@ -123,7 +126,7 @@ export function createMenuColumns({
           {row.original.path || t("common.misc.none")}
         </code>
       ),
-      size: 180,
+      size: 220,
       enableSorting: false,
     },
     {
@@ -215,13 +218,19 @@ export function createMenuColumns({
                 {t("common.actions.addChild")}
               </DropdownMenuItem>
             ) : null}
-            {(permissions.canAddChild || permissions.canEdit) ? (
+            {permissions.canAddChild || permissions.canEdit ? (
               <DropdownMenuSeparator />
             ) : null}
             {permissions.canEdit ? (
               <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
                 <Edit3Icon />
                 {t("common.actions.edit")}
+              </DropdownMenuItem>
+            ) : null}
+            {permissions.canAddChild ? (
+              <DropdownMenuItem onClick={() => onOpenCopy(row.original)}>
+                <CopyIcon />
+                {t("common.actions.copy")}
               </DropdownMenuItem>
             ) : null}
             {(permissions.canAddChild || permissions.canEdit) &&

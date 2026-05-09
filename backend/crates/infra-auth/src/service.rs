@@ -431,19 +431,6 @@ where
         })
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
-        // let role = Role::new(CreateRoleCmd {
-        //     id: generate_sonyflake_id() as i64,
-        //     tenant_id: Some(tenant.id),
-        //     parent_id: None,
-        //     code: role_template.code,
-        //     name: role_template.name,
-        //     description: role_template.description,
-        //     status: role_template.status,
-        //     is_builtin: false,
-        //     sort: role_template.sort,
-        // })
-        // .map_err(|err| AppError::ValidationError(err.to_string()))?;
-
         let user_tenant = UserTenant::new(CreateUserTenantCmd {
             id: generate_sonyflake_id() as i64,
             user_id: user.id,
@@ -470,7 +457,6 @@ where
             .create_account_signup_bundle(&AccountSignupBundle {
                 user,
                 tenant,
-                role: role_template,
                 user_tenant,
                 user_tenant_role,
             })

@@ -154,7 +154,16 @@ export function useSigninController() {
         data.refresh_expires_at
       )
       toast.success(t("auth.signin.toast.success"))
-      router.replace(resolveSigninRoute(tenant))
+
+      // If the user arrived via a returnTo link (e.g. from the join invite page),
+      // redirect there; otherwise fall back to the default dashboard route.
+      const searchParams = new URLSearchParams(
+        typeof window !== "undefined" ? window.location.search : ""
+      )
+      const returnTo = searchParams.get("returnTo")
+      const safeReturnTo =
+        returnTo && returnTo.startsWith("/") ? returnTo : null
+      router.replace(safeReturnTo ?? resolveSigninRoute(tenant))
     },
     [accountSigninMutation, captchaFormData, router, t]
   )

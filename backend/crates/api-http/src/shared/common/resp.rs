@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use domain_base::Menu;
+use domain_base::{Menu, Tenant};
 use neocrates::{
     chrono::{DateTime, Utc},
     helper::core::serde_helpers,
@@ -113,6 +113,8 @@ pub struct HeaderContextUserResp {
     pub nickname: Option<String>,
     pub avatar_url: Option<String>,
     pub tenant_name: String,
+    #[serde(serialize_with = "serde_helpers::serialize_i64")]
+    pub tenant_id: i64,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -120,4 +122,32 @@ pub struct HeaderContextResp {
     pub user: HeaderContextUserResp,
     pub menu_codes: Vec<String>,
     pub perm_codes: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct MyTenantResp {
+    #[serde(serialize_with = "serde_helpers::serialize_i64")]
+    pub id: i64,
+    pub name: String,
+    pub slug: String,
+    pub plan_code: Option<String>,
+    pub is_default: bool,
+    pub is_current: bool,
+}
+
+impl MyTenantResp {
+    pub fn from_tenant_with_default(
+        tenant: Tenant,
+        is_default: bool,
+        current_tenant_id: i64,
+    ) -> Self {
+        Self {
+            is_current: tenant.id == current_tenant_id,
+            id: tenant.id,
+            name: tenant.name,
+            slug: tenant.slug,
+            plan_code: tenant.plan_code,
+            is_default,
+        }
+    }
 }

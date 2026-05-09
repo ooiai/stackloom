@@ -1,0 +1,18 @@
+{
+  "page": {
+    "title": "Join a Team",
+    "loading": "Verifying invite link...",
+    "invalidTitle": "Invalid Invite Link",
+    "invalidDescription": "This invite link has expired or is invalid. Please ask your team admin for a new invite link.",
+    "previewTitle": "You've been invited to join a team",
+    "joinButton": "Join {name}",
+    "signinButton": "Sign In",
+    "signupButton": "Create an Account",
+    "authDescription": "Sign in or create an account to join this team",
+    "successTitle": "Welcome aboard!",
+    "successDescription": "You've successfully joined {name}. Taking you to the dashboard...",
+    "goToDashboard": "Go to Dashboard",
+    "alreadyMember": "You're already a member",
+    "alreadyMemberDescription": "You are already a member of {name}. Head to the dashboard to get started."
+  }
+}

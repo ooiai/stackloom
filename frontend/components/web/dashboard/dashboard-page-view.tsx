@@ -119,37 +119,20 @@ export function DashboardPageView() {
   ] as const
 
   return (
-    <main className="flex flex-1 flex-col gap-6 bg-gradient-to-b from-background via-background to-primary/[0.03] p-4 md:p-6">
-      <section className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/[0.16] via-primary/[0.08] to-background p-5 shadow-[0_14px_30px_hsl(var(--primary)/0.22)]">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-1.5">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-                {t("title")}
-              </h1>
-              <Badge variant="primary-light" radius="full">
-                {t("live")}
-              </Badge>
-            </div>
-            <p className="max-w-3xl text-sm text-muted-foreground">
-              {t("description")}
-            </p>
+    <main className="mx-auto flex w-full max-w-360 flex-1 flex-col gap-6 p-4 md:p-6">
+      <section className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+        <div className="space-y-1.5">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+              {t("title")}
+            </h1>
+            <Badge variant="primary-light" radius="full">
+              {t("live")}
+            </Badge>
           </div>
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            {summaryCards.slice(0, 2).map((card) => (
-              <div
-                key={`hero-${card.label}`}
-                className="rounded-xl border border-primary/20 bg-background/80 px-3 py-2 backdrop-blur-sm"
-              >
-                <p className="text-[11px] text-muted-foreground">
-                  {card.label}
-                </p>
-                <p className="text-lg font-semibold text-foreground">
-                  {card.value}
-                </p>
-              </div>
-            ))}
-          </div>
+          <p className="max-w-3xl text-sm text-muted-foreground">
+            {t("description")}
+          </p>
         </div>
       </section>
 
@@ -158,9 +141,9 @@ export function DashboardPageView() {
           <Card
             key={card.label}
             className={cn(
-              "border-border/70 bg-gradient-to-br from-background to-muted/[0.25] shadow-sm transition-transform duration-200 hover:-translate-y-0.5 xl:col-span-4",
+              "border-border/70 bg-gradient-to-br from-background to-muted/[0.25] shadow-sm xl:col-span-4",
               index === 0 &&
-                "border-primary/30 from-primary/[0.08] to-background shadow-[0_12px_26px_hsl(var(--primary)/0.2)]"
+                "border-primary/20 from-primary/[0.05] to-background"
             )}
           >
             <CardHeader>
@@ -170,8 +153,8 @@ export function DashboardPageView() {
                   className={cn(
                     "flex size-9 items-center justify-center rounded-lg border text-primary",
                     index === 0
-                      ? "border-primary/30 bg-primary/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]"
-                      : "border-primary/15 bg-primary/[0.1]"
+                      ? "border-primary/20 bg-primary/[0.12]"
+                      : "border-primary/12 bg-primary/[0.08]"
                   )}
                 >
                   <card.icon className="size-4" />
@@ -206,8 +189,7 @@ export function DashboardPageView() {
                 key={item.title}
                 className={cn(
                   "rounded-xl border border-border/70 bg-muted/20 p-4 transition-[background-color,border-color,box-shadow] duration-200 hover:border-primary/12 hover:bg-primary/[0.03]",
-                  index === 0 &&
-                    "border-primary/30 bg-primary/[0.08] shadow-[0_12px_24px_hsl(var(--primary)/0.16)]"
+                  index === 0 && "border-primary/20 bg-primary/[0.04]"
                 )}
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -259,7 +241,7 @@ export function DashboardPageView() {
               {focusItems.map((item, index) => (
                 <div key={item.title}>
                   <div className="flex gap-3">
-                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg border border-primary/15 bg-primary/10 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]">
+                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg border border-primary/12 bg-primary/[0.08] text-primary">
                       <item.icon className="size-4" />
                     </div>
                     <div className="space-y-1">
@@ -288,7 +270,7 @@ export function DashboardPageView() {
               {updates.map((item, index) => (
                 <div key={item.title}>
                   <div className="flex gap-3">
-                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full border border-primary/15 bg-primary/[0.12] text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]">
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full border border-primary/12 bg-primary/10 text-primary">
                       <Sparkles className="size-4" />
                     </div>
                     <div className="space-y-1">

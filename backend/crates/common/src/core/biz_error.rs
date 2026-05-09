@@ -34,3 +34,17 @@ pub const ROLE_CODE_EXISTS: &str = "errors.biz.roles.codeExists";
 
 // 415xxx: perms
 pub const PERM_CODE_EXISTS: &str = "errors.biz.perms.codeExists";
+
+// 416xxx: members
+/// Caller is not a tenant admin — permission denied for member management.
+pub const MEMBER_NOT_ADMIN: &str = "errors.biz.members.notAdmin";
+/// Admin cannot change their own membership status.
+pub const MEMBER_CANNOT_CHANGE_SELF: &str = "errors.biz.members.cannotChangeSelf";
+/// Target member not found in this tenant.
+pub const MEMBER_NOT_FOUND: &str = "errors.biz.members.notFound";
+
+// 417xxx: invite / join
+/// Invite code does not exist or has expired.
+pub const INVITE_CODE_INVALID: &str = "errors.biz.invite.codeInvalid";
+/// The joining user is already a member of the target tenant.
+pub const INVITE_CODE_ALREADY_MEMBER: &str = "errors.biz.invite.alreadyMember";

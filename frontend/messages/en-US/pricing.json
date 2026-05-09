@@ -1,0 +1,104 @@
+{
+  "meta": {
+    "title": "Stackloom Pricing",
+    "description": "Choose the Stackloom plan that fits your workspace, access needs, and growth pace."
+  },
+  "page": {
+    "eyebrow": "Simple, transparent pricing",
+    "title": "Choose a plan that matches your team",
+    "description": "Start with the essentials, scale up when your workspaces expand, and keep admin, permissions, and collaboration in one place.",
+    "popular": "Most Popular",
+    "billing": {
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "save": "Save {value}%",
+      "perMonth": "/month",
+      "annualNote": "Yearly pricing is billed monthly at the discounted rate."
+    }
+  },
+  "plans": {
+    "starter": {
+      "name": "Starter",
+      "monthlyPrice": "20",
+      "description": "A lightweight plan for small teams that need clean workspace structure and permission basics.",
+      "buttonText": "Start with Starter",
+      "isPopular": "false",
+      "features": {
+        "items": {
+          "f1": {
+            "title": "1 workspace with up to 10 members"
+          },
+          "f2": {
+            "title": "Core tenant, role, and menu management"
+          },
+          "f3": {
+            "title": "Audit logs for recent activity",
+            "tooltip": "Keep a rolling view of recent admin operations and sign-in activity."
+          },
+          "f4": {
+            "title": "Basic approval and onboarding flows"
+          },
+          "f5": {
+            "title": "Email support within 2 business days"
+          }
+        }
+      }
+    },
+    "advanced": {
+      "name": "Advanced",
+      "monthlyPrice": "40",
+      "description": "For growing organizations that need better governance, more members, and richer operational visibility.",
+      "buttonText": "Choose Advanced",
+      "isPopular": "true",
+      "features": {
+        "items": {
+          "f1": {
+            "title": "5 workspaces with up to 50 members"
+          },
+          "f2": {
+            "title": "Reusable permission templates",
+            "tooltip": "Create permission presets once and reuse them across multiple workspaces."
+          },
+          "f3": {
+            "title": "Longer audit retention",
+            "tooltip": "Keep admin, access, and operation logs available for up to 180 days."
+          },
+          "f4": {
+            "title": "Priority issue handling and monitoring alerts"
+          },
+          "f5": {
+            "title": "Workspace-level collaboration controls"
+          }
+        }
+      }
+    },
+    "premium": {
+      "name": "Premium",
+      "monthlyPrice": "80",
+      "description": "For larger teams that need deeper security, stronger automation, and white-glove rollout support.",
+      "buttonText": "Go Premium",
+      "isPopular": "false",
+      "features": {
+        "items": {
+          "f1": {
+            "title": "Unlimited workspaces with up to 200 members"
+          },
+          "f2": {
+            "title": "SSO and directory sync ready",
+            "tooltip": "Support centralized sign-in and directory-based user provisioning for larger organizations."
+          },
+          "f3": {
+            "title": "Custom approval flow design",
+            "tooltip": "Model multi-step approval rules that match your operational process."
+          },
+          "f4": {
+            "title": "Advanced monitoring and incident visibility"
+          },
+          "f5": {
+            "title": "Dedicated onboarding and architecture guidance"
+          }
+        }
+      }
+    }
+  }
+}

@@ -13,6 +13,7 @@ import { MonitorDatabaseGrid } from "./monitor-database-grid"
 import { MonitorDatabaseTopQueries } from "./monitor-database-top-queries"
 import { MonitorLatencyChart } from "./monitor-latency-chart"
 import { MonitorNetworkGrid } from "./monitor-network-grid"
+import { MonitorOverviewStrip } from "./monitor-overview-strip"
 import { MonitorProcessGrid } from "./monitor-process-grid"
 import { MonitorRedisGrid } from "./monitor-redis-grid"
 import { MonitorRequestChart } from "./monitor-request-chart"
@@ -40,7 +41,12 @@ export function MonitorPageContainer({
         title={t("monitor.title")}
         description={t("monitor.description")}
         actions={
-          <Button variant="outline" size="sm" onClick={onRefresh} disabled={isFetching}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onRefresh}
+            disabled={isFetching}
+          >
             {isFetching ? (
               <Spinner className="size-4" />
             ) : (
@@ -51,42 +57,15 @@ export function MonitorPageContainer({
         }
       />
 
-      {/* Group 1: System Resources */}
-      <MonitorSectionGroup title={t("monitor.group_system")}>
-        <MonitorSnapshotGrid snapshot={metrics.snapshot} />
-        <MonitorNetworkGrid snapshot={metrics.snapshot} />
-      </MonitorSectionGroup>
+      <MonitorOverviewStrip metrics={metrics} />
 
-      {/* Group 2: App Runtime */}
-      <MonitorSectionGroup title={t("monitor.group_runtime")}>
-        <MonitorProcessGrid snapshot={metrics.snapshot} />
-      </MonitorSectionGroup>
-
-      {/* Group 3: Database */}
-      <MonitorSectionGroup title={t("monitor.group_database")}>
-        <MonitorDatabaseGrid databaseStats={metrics.database_stats} />
-        <MonitorDatabaseTopQueries databaseStats={metrics.database_stats} />
-      </MonitorSectionGroup>
-
-      {/* Group 4: Redis */}
-      <MonitorSectionGroup title={t("monitor.group_redis")}>
-        <MonitorRedisGrid redisStats={metrics.redis_stats} />
-      </MonitorSectionGroup>
-
-      {/* Group 5: App Performance */}
-      <MonitorSectionGroup title={t("monitor.group_performance")}>
-        <MonitorAppStatsGrid appStats={metrics.app_stats} />
-      </MonitorSectionGroup>
-
-      {/* Group 6: Business Overview */}
-      <MonitorSectionGroup title={t("monitor.group_business")}>
-        <MonitorBusinessSummary businessSummary={metrics.business_summary} />
-      </MonitorSectionGroup>
-
-      {/* Group 7: Request Charts */}
-      <MonitorSectionGroup title={t("monitor.group_charts")}>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+      <MonitorSectionGroup
+        title={t("monitor.group_charts")}
+        description={t("monitor.group_charts_description")}
+        summary={t("monitor.last_24_hours")}
+      >
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-4">
+          <div className="xl:col-span-3">
             <MonitorRequestChart hourlyStats={metrics.hourly_stats} />
           </div>
           <MonitorLatencyChart hourlyStats={metrics.hourly_stats} />
@@ -94,8 +73,61 @@ export function MonitorPageContainer({
         <MonitorStatusChart statusDistribution={metrics.status_distribution} />
       </MonitorSectionGroup>
 
+      {/* Group 1: System Resources */}
+      <MonitorSectionGroup
+        title={t("monitor.group_system")}
+        description={t("monitor.group_system_description")}
+      >
+        <MonitorSnapshotGrid snapshot={metrics.snapshot} />
+        <MonitorNetworkGrid snapshot={metrics.snapshot} />
+      </MonitorSectionGroup>
+
+      {/* Group 2: App Runtime */}
+      <MonitorSectionGroup
+        title={t("monitor.group_runtime")}
+        description={t("monitor.group_runtime_description")}
+      >
+        <MonitorProcessGrid snapshot={metrics.snapshot} />
+      </MonitorSectionGroup>
+
+      {/* Group 3: Database */}
+      <MonitorSectionGroup
+        title={t("monitor.group_database")}
+        description={t("monitor.group_database_description")}
+      >
+        <MonitorDatabaseGrid databaseStats={metrics.database_stats} />
+        <MonitorDatabaseTopQueries databaseStats={metrics.database_stats} />
+      </MonitorSectionGroup>
+
+      {/* Group 4: Redis */}
+      <MonitorSectionGroup
+        title={t("monitor.group_redis")}
+        description={t("monitor.group_redis_description")}
+      >
+        <MonitorRedisGrid redisStats={metrics.redis_stats} />
+      </MonitorSectionGroup>
+
+      {/* Group 5: App Performance */}
+      <MonitorSectionGroup
+        title={t("monitor.group_performance")}
+        description={t("monitor.group_performance_description")}
+      >
+        <MonitorAppStatsGrid appStats={metrics.app_stats} />
+      </MonitorSectionGroup>
+
+      {/* Group 6: Business Overview */}
+      <MonitorSectionGroup
+        title={t("monitor.group_business")}
+        description={t("monitor.group_business_description")}
+      >
+        <MonitorBusinessSummary businessSummary={metrics.business_summary} />
+      </MonitorSectionGroup>
+
       {/* Group 8: Endpoint Analysis */}
-      <MonitorSectionGroup title={t("monitor.group_endpoints")}>
+      <MonitorSectionGroup
+        title={t("monitor.group_endpoints")}
+        description={t("monitor.group_endpoints_description")}
+      >
         <MonitorTopEndpoints
           topSlow={metrics.top_slow_endpoints}
           topError={metrics.top_error_endpoints}

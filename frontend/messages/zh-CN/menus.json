@@ -24,6 +24,11 @@
       "title": "编辑菜单",
       "description": "更新当前菜单项的路由和展示信息",
       "submit": "保存更新"
+    },
+    "copy": {
+      "title": "复制菜单",
+      "description": "基于当前菜单创建一个新菜单，请修改编码以确保唯一",
+      "submit": "创建复制"
     }
   },
   "sections": {

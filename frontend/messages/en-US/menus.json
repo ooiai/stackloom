@@ -24,6 +24,11 @@
       "title": "Edit menu",
       "description": "Update the current menu route and display details",
       "submit": "Save changes"
+    },
+    "copy": {
+      "title": "Copy menu",
+      "description": "Create a new menu based on the current one. Update the code to ensure it is unique.",
+      "submit": "Create copy"
     }
   },
   "sections": {

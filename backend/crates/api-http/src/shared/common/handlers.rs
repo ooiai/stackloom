@@ -2,7 +2,7 @@ use crate::shared::{
     SharedHttpState,
     common::{
         req::TreeByCodeReq,
-        resp::{HeaderContextResp, HeaderContextUserResp, MenuTreeNodeResp, MenuTreeResp},
+        resp::{HeaderContextResp, HeaderContextUserResp, MenuTreeNodeResp, MenuTreeResp, MyTenantResp},
     },
 };
 use neocrates::{
@@ -49,6 +49,7 @@ pub async fn header_context(
             nickname: user.nickname,
             avatar_url: user.avatar_url,
             tenant_name: auth_user.tname,
+            tenant_id: auth_user.tid,
         },
         menu_codes,
         perm_codes,
@@ -82,4 +83,37 @@ pub async fn tree_by_code(
     let cmd = req.into_cmd(auth_user.rids.clone());
     let menus = state.menu_service.tree_by_code(cmd).await?;
     Ok(Json(MenuTreeResp::new(MenuTreeNodeResp::from_flat(menus))))
+}
+
+/// Load the list of tenants the current authenticated user belongs to.
+///
+/// # Arguments
+/// * `state` - The shared HTTP state.
+/// * `auth_user` - The authenticated user.
+///
+/// # Returns
+/// * `AppResult<Json<Vec<MyTenantResp>>>` - Tenants the user is an active member of.
+pub async fn my_tenants(
+    State(state): State<SharedHttpState>,
+    Extension(auth_user): Extension<AuthModel>,
+) -> AppResult<Json<Vec<MyTenantResp>>> {
+    tracing::info!(
+        "...Shared My Tenants Req: uid={}, tid={}...",
+        auth_user.uid,
+        auth_user.tid,
+    );
+
+    let tenants = state
+        .tenant_service
+        .list_by_user_id(auth_user.uid)
+        .await?;
+
+    let resp = tenants
+        .into_iter()
+        .map(|(tenant, is_default)| {
+            MyTenantResp::from_tenant_with_default(tenant, is_default, auth_user.tid)
+        })
+        .collect();
+
+    Ok(Json(resp))
 }

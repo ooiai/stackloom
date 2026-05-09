@@ -5,14 +5,14 @@ export type TenantStatus = 0 | 1 | 2
 export type TenantMutateMode = "create" | "update"
 export type MenuStatus = 0 | 1
 export type MenuType = 1 | 2 | 3
-export type MenuMutateMode = "create" | "update"
+export type MenuMutateMode = "create" | "update" | "copy"
 export type DictStatus = 0 | 1
 export type DictValueType = "string" | "number" | "boolean" | "json"
 export type DictMutateMode = "create" | "update"
 export type RoleStatus = 0 | 1
 export type RoleMutateMode = "create" | "update"
 export type PermStatus = 0 | 1
-export type PermMutateMode = "create" | "update"
+export type PermMutateMode = "create" | "update" | "copy"
 export type PermHttpMethod =
   | "GET"
   | "POST"
@@ -134,12 +134,22 @@ export interface HeaderContextUserData {
   nickname: string | null
   avatar_url: string | null
   tenant_name: string
+  tenant_id: string
 }
 
 export interface HeaderContextData {
   user: HeaderContextUserData
   menu_codes: string[]
   perm_codes: string[]
+}
+
+export interface MyTenantData {
+  id: string
+  name: string
+  slug: string
+  plan_code: string | null
+  is_default: boolean
+  is_current: boolean
 }
 
 export interface TenantData {

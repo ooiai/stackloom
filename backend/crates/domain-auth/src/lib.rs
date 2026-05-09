@@ -4,7 +4,7 @@ pub mod service;
 pub use repo::AuthRepository;
 pub use service::AuthService;
 
-use domain_base::{Role, Tenant, User, UserTenant, UserTenantRole};
+use domain_base::{Tenant, User, UserTenant, UserTenantRole};
 use neocrates::response::error::{AppError, AppResult};
 
 /// Domain projection for an auth-capable user account.
@@ -226,13 +226,15 @@ impl From<neocrates::middlewares::models::AuthTokenResult> for AuthToken {
 
 /// Aggregate persisted during self-service signup.
 ///
-/// Infra stores all of these records in one database transaction so the signup
-/// flow either succeeds as a whole or fails without partial side effects.
+/// Infra stores all newly created records in one database transaction so the
+/// signup flow either succeeds as a whole or fails without partial side effects.
+///
+/// The signup role template is loaded separately and referenced by
+/// `user_tenant_role.role_id`; it is not created during signup.
 #[derive(Debug, Clone)]
 pub struct AccountSignupBundle {
     pub user: User,
     pub tenant: Tenant,
-    pub role: Role,
     pub user_tenant: UserTenant,
     pub user_tenant_role: UserTenantRole,
 }

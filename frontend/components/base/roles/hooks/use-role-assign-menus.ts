@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react"
 
+import { invalidateHeaderSharedQueries } from "@/hooks/use-header-context"
 import { useI18n } from "@/providers/i18n-provider"
 import { roleApi, menuApi } from "@/stores/base-api"
 import type { RoleData } from "@/types/base.types"
@@ -43,6 +44,7 @@ export function useRoleAssignMenus() {
       await queryClient.invalidateQueries({
         queryKey: ["base", "roles", "menus", dialog.role?.id],
       })
+      await invalidateHeaderSharedQueries(queryClient)
       toast.success(t("roles.assignMenus.toast.success"))
       setDialog(DEFAULT_STATE)
     },

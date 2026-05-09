@@ -79,7 +79,7 @@ export function AppHeader() {
         <SidebarTrigger className="-ml-1 self-center" />
         <Separator
           orientation="vertical"
-          className="mx-1 self-center data-[orientation=vertical]:h-4"
+          className="mx-1 data-vertical:h-5 data-vertical:self-center"
         />
         <Breadcrumb className="min-w-0">
           <BreadcrumbList className="min-w-0 flex-nowrap items-center">

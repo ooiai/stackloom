@@ -1,6 +1,6 @@
 use common::core::biz_error::{
-    AUTH_ACCOUNT_EXISTS, AUTH_DEFAULT_TENANT_ROLE_EXISTS, AUTH_RESOURCE_EXISTS, AUTH_TENANT_EXISTS,
-    AUTH_TENANT_MEMBERSHIP_EXISTS, AUTH_TENANT_MEMBERSHIP_ROLE_EXISTS,
+    AUTH_ACCOUNT_EXISTS, AUTH_TENANT_EXISTS, AUTH_TENANT_MEMBERSHIP_EXISTS,
+    AUTH_TENANT_MEMBERSHIP_ROLE_EXISTS,
 };
 use std::{collections::HashMap, sync::Arc};
 
@@ -27,38 +27,47 @@ impl SqlxAuthRepository {
     }
 
     /// Normalize low-level SQL errors into business-facing auth errors.
+    fn map_unique_violation(err: &(dyn sqlx::error::DatabaseError + 'static)) -> AppError {
+        match err.constraint() {
+            Some("uq_users_username") | Some("users_phone_key") | Some("users_email_key") => {
+                AppError::DataError(AUTH_ACCOUNT_EXISTS, "account already exists".to_string())
+            }
+            Some("uq_tenants_slug") => {
+                AppError::DataError(AUTH_TENANT_EXISTS, "tenant already exists".to_string())
+            }
+            Some("uq_user_tenants_user_tenant") => AppError::DataError(
+                AUTH_TENANT_MEMBERSHIP_EXISTS,
+                "tenant membership already exists".to_string(),
+            ),
+            Some("uq_user_tenant_roles") => AppError::DataError(
+                AUTH_TENANT_MEMBERSHIP_ROLE_EXISTS,
+                "tenant membership role already exists".to_string(),
+            ),
+            Some(
+                "users_pkey"
+                | "tenants_pkey"
+                | "roles_pkey"
+                | "user_tenants_pkey"
+                | "user_tenant_roles_pkey",
+            ) => AppError::data_here(format!(
+                "unexpected primary key conflict during auth persistence: {}",
+                err.message()
+            )),
+            Some(constraint) => AppError::data_here(format!(
+                "unexpected unique constraint violation ({constraint}): {}",
+                err.message()
+            )),
+            None => AppError::data_here(format!(
+                "unexpected unique constraint violation: {}",
+                err.message()
+            )),
+        }
+    }
+
     fn map_sqlx_error(err: SqlxError) -> AppError {
         if let SqlxError::Database(db_err) = &err {
             if db_err.code().as_deref() == Some("23505") {
-                return match db_err.constraint() {
-                    Some("uq_users_username")
-                    | Some("users_phone_key")
-                    | Some("users_email_key") => AppError::DataError(
-                        AUTH_ACCOUNT_EXISTS,
-                        "account already exists".to_string(),
-                    ),
-                    Some("uq_tenants_slug") => {
-                        AppError::DataError(AUTH_TENANT_EXISTS, "tenant already exists".to_string())
-                    }
-                    Some("uq_roles_system_code") | Some("uq_roles_tenant_code") => {
-                        AppError::DataError(
-                            AUTH_DEFAULT_TENANT_ROLE_EXISTS,
-                            "default tenant role already exists".to_string(),
-                        )
-                    }
-                    Some("uq_user_tenants_user_tenant") => AppError::DataError(
-                        AUTH_TENANT_MEMBERSHIP_EXISTS,
-                        "tenant membership already exists".to_string(),
-                    ),
-                    Some("uq_user_tenant_roles") => AppError::DataError(
-                        AUTH_TENANT_MEMBERSHIP_ROLE_EXISTS,
-                        "tenant membership role already exists".to_string(),
-                    ),
-                    _ => AppError::DataError(
-                        AUTH_RESOURCE_EXISTS,
-                        "resource already exists".to_string(),
-                    ),
-                };
+                return Self::map_unique_violation(db_err.as_ref());
             }
         }
 
@@ -309,41 +318,6 @@ impl AuthRepository for SqlxAuthRepository {
         .bind(bundle.tenant.created_at)
         .bind(bundle.tenant.updated_at)
         .bind(bundle.tenant.deleted_at)
-        .execute(&mut *tx)
-        .await
-        .map_err(Self::map_sqlx_error)?;
-
-        sqlx::query(
-            r#"
-            INSERT INTO roles (
-                id,
-                tenant_id,
-                parent_id,
-                code,
-                name,
-                description,
-                status,
-                is_builtin,
-                sort,
-                created_at,
-                updated_at,
-                deleted_at
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-            "#,
-        )
-        .bind(bundle.role.id)
-        .bind(bundle.role.tenant_id)
-        .bind(bundle.role.parent_id)
-        .bind(&bundle.role.code)
-        .bind(&bundle.role.name)
-        .bind(&bundle.role.description)
-        .bind(bundle.role.status)
-        .bind(bundle.role.is_builtin)
-        .bind(bundle.role.sort)
-        .bind(bundle.role.created_at)
-        .bind(bundle.role.updated_at)
-        .bind(bundle.role.deleted_at)
         .execute(&mut *tx)
         .await
         .map_err(Self::map_sqlx_error)?;

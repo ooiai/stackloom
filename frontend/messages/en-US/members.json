@@ -5,16 +5,38 @@
     "search": "Search",
     "inviteMembers": "Invite Members",
     "emptyTitle": "No members found",
-    "emptyDescription": "Try adjusting the search keyword."
+    "emptyDescription": "Try adjusting the search keyword.",
+    "yourRole": "Your role"
   },
   "table": {
     "name": "Name",
     "email": "Email",
+    "phone": "Phone",
     "role": "Role",
-    "joined": "Joined"
+    "status": "Status",
+    "joined": "Joined",
+    "actions": "Actions"
   },
   "roles": {
     "admin": "Admin",
     "member": "Member"
+  },
+  "status": {
+    "normal": "Active",
+    "pending": "Pending",
+    "disabled": "Disabled"
+  },
+  "actions": {
+    "enable": "Enable member",
+    "disable": "Disable member"
+  },
+  "invite": {
+    "title": "Invite Members",
+    "description": "Share the invite link to bring new members into your team.",
+    "linkLabel": "Invite link",
+    "copyLink": "Copy Link",
+    "copied": "Copied!",
+    "loading": "Generating link...",
+    "expiry": "Link expires in 30 minutes and will be automatically renewed"
   }
 }

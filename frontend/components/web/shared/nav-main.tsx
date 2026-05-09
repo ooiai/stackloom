@@ -41,13 +41,13 @@ interface WebNavGroup {
 }
 
 const navGroupLabelClass =
-  "px-2 text-[11px] font-semibold tracking-[0.1em] text-primary/70 uppercase"
+  "px-2 text-[11px] font-semibold tracking-[0.08em] text-sidebar-foreground/55 uppercase"
 
 const navTopLevelItemClass =
-  "font-medium text-sidebar-foreground/85 rounded-xl border border-transparent transition-[background-color,color,border-color,box-shadow] duration-200 hover:border-primary/25 hover:bg-primary/15 hover:text-primary data-active:border-primary/40 data-active:bg-primary data-active:text-primary-foreground data-active:shadow-[0_8px_24px_hsl(var(--primary)/0.35)] data-active:ring-1 data-active:ring-inset data-active:ring-white/25 [&_svg]:text-sidebar-foreground/70 hover:[&_svg]:text-primary data-active:[&_svg]:text-primary-foreground"
+  "font-medium text-sidebar-foreground/80 rounded-lg transition-[background-color,color] duration-200 hover:bg-primary/[0.05] hover:text-primary data-active:bg-primary/15 data-active:text-primary [&_svg]:text-sidebar-foreground/65 hover:[&_svg]:text-primary data-active:[&_svg]:text-primary"
 
 const navSubItemClass =
-  "text-[13px] text-sidebar-foreground/75 rounded-lg border border-transparent transition-[background-color,color,border-color,box-shadow] duration-200 hover:border-primary/20 hover:bg-primary/12 hover:text-primary data-active:border-primary/25 data-active:bg-primary/20 data-active:text-primary data-active:ring-1 data-active:ring-inset data-active:ring-primary/20"
+  "text-[13px] text-sidebar-foreground/75 rounded-md transition-[background-color,color] duration-200 hover:bg-primary/[0.04] hover:text-primary data-active:bg-primary/5 data-active:text-primary"
 
 function isItemActive(item: MenuTreeNodeData, pathname: string): boolean {
   if (
@@ -101,7 +101,10 @@ function collectNavigableItems(
   })
 }
 
-function buildNavGroups(nodes: MenuTreeNodeData[], pathname: string): WebNavGroup[] {
+function buildNavGroups(
+  nodes: MenuTreeNodeData[],
+  pathname: string
+): WebNavGroup[] {
   return normalizeRootNodes(nodes).flatMap((node) => {
     if (!node.visible || node.status !== 1 || node.menu_type === 3) {
       return []
@@ -211,13 +214,12 @@ function NavMainItem({ item }: { item: WebNavItem }) {
   )
 }
 
-export function NavMain({
-  items,
-}: {
-  items: MenuTreeNodeData[]
-}) {
+export function NavMain({ items }: { items: MenuTreeNodeData[] }) {
   const pathname = usePathname()
-  const groups = useMemo(() => buildNavGroups(items, pathname), [items, pathname])
+  const groups = useMemo(
+    () => buildNavGroups(items, pathname),
+    [items, pathname]
+  )
 
   if (groups.length === 0) {
     return null

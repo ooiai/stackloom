@@ -70,8 +70,8 @@ where
         )
     }
 
-    fn tree_cache_key(&self, role_id: i64) -> String {
-        self.tree_cache_role_prefix(role_id)
+    fn tree_cache_key(&self, role_id: i64, code: &str) -> String {
+        format!("{}:code:{}", self.tree_cache_role_prefix(role_id), code)
     }
 
     async fn invalidate_tree_cache_prefix(&self, prefix: &str, scope: &str) {
@@ -96,7 +96,7 @@ where
         code: &str,
         status: Option<i16>,
     ) -> AppResult<Vec<Menu>> {
-        let cache_key = self.tree_cache_key(role_id);
+        let cache_key = self.tree_cache_key(role_id, code);
         match self.redis_pool.get::<_, String>(&cache_key).await {
             Ok(Some(json)) => match serde_json::from_str::<Vec<MenuRow>>(&json) {
                 Ok(rows) => {

@@ -6,6 +6,11 @@ use neocrates::{
 };
 
 #[derive(Debug, Clone, Serialize)]
+pub struct InviteCodeResp {
+    pub invite_code: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
 pub struct TenantMemberResp {
     #[serde(serialize_with = "serde_helpers::serialize_i64")]
     pub id: i64,
@@ -14,6 +19,7 @@ pub struct TenantMemberResp {
     pub username: String,
     pub nickname: Option<String>,
     pub email: Option<String>,
+    pub phone: Option<String>,
     pub avatar_url: Option<String>,
     pub display_name: Option<String>,
     pub job_title: Option<String>,
@@ -30,6 +36,7 @@ impl From<TenantMemberView> for TenantMemberResp {
             username: v.username,
             nickname: v.nickname,
             email: v.email,
+            phone: v.phone,
             avatar_url: v.avatar_url,
             display_name: v.display_name,
             job_title: v.job_title,

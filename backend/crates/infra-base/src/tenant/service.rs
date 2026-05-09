@@ -209,4 +209,8 @@ where
 
         self.repository.hard_delete_batch(&descendant_ids).await
     }
+
+    async fn list_by_user_id(&self, user_id: i64) -> AppResult<Vec<(Tenant, bool)>> {
+        self.repository.list_by_user_id(user_id).await
+    }
 }

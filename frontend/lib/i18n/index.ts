@@ -19,6 +19,7 @@ export const LOCALE_MESSAGE_MODULES = [
   "monitor",
   "members",
   "pricing",
+  "join",
 ] as const
 
 export type LocaleMessageModule = (typeof LOCALE_MESSAGE_MODULES)[number]
@@ -71,6 +72,7 @@ const MESSAGE_MODULE_LOADERS: Record<
     monitor: async () => (await import("@/messages/en-US/monitor.json")).default,
     members: async () => (await import("@/messages/en-US/members.json")).default,
     pricing: async () => (await import("@/messages/en-US/pricing.json")).default,
+    join: async () => (await import("@/messages/en-US/join.json")).default,
   },
   "zh-CN": {
     common: async () => (await import("@/messages/zh-CN/common.json")).default,
@@ -91,6 +93,7 @@ const MESSAGE_MODULE_LOADERS: Record<
     monitor: async () => (await import("@/messages/zh-CN/monitor.json")).default,
     members: async () => (await import("@/messages/zh-CN/members.json")).default,
     pricing: async () => (await import("@/messages/zh-CN/pricing.json")).default,
+    join: async () => (await import("@/messages/zh-CN/join.json")).default,
   },
 }
 

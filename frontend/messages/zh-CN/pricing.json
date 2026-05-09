@@ -1,0 +1,104 @@
+{
+  "meta": {
+    "title": "Stackloom 定价",
+    "description": "为你的团队、权限治理需求和增长节奏选择合适的 Stackloom 套餐。"
+  },
+  "page": {
+    "eyebrow": "简单透明的定价",
+    "title": "选择适合团队阶段的方案",
+    "description": "先从基础能力开始，随着工作空间规模增长再逐步升级，把后台管理、权限治理和协作控制统一在一个平台里。",
+    "popular": "最受欢迎",
+    "billing": {
+      "monthly": "月付",
+      "yearly": "年付",
+      "save": "省 {value}%",
+      "perMonth": "/月",
+      "annualNote": "年付按折扣后的月均价格展示，便于直接比较。"
+    }
+  },
+  "plans": {
+    "starter": {
+      "name": "Starter",
+      "monthlyPrice": "20",
+      "description": "适合小团队快速搭建工作空间结构，先把基础权限与成员协作跑起来。",
+      "buttonText": "从 Starter 开始",
+      "isPopular": "false",
+      "features": {
+        "items": {
+          "f1": {
+            "title": "1 个工作空间，最多 10 名成员"
+          },
+          "f2": {
+            "title": "基础租户、角色与菜单管理"
+          },
+          "f3": {
+            "title": "近期审计日志可追溯",
+            "tooltip": "可查看近期后台操作、登录行为和基础审计记录。"
+          },
+          "f4": {
+            "title": "基础审批与成员引导流程"
+          },
+          "f5": {
+            "title": "2 个工作日内邮件支持"
+          }
+        }
+      }
+    },
+    "advanced": {
+      "name": "Advanced",
+      "monthlyPrice": "40",
+      "description": "适合正在增长的组织，需要更细的治理、更长的留痕周期和更稳的运维支撑。",
+      "buttonText": "选择 Advanced",
+      "isPopular": "true",
+      "features": {
+        "items": {
+          "f1": {
+            "title": "5 个工作空间，最多 50 名成员"
+          },
+          "f2": {
+            "title": "可复用权限模板",
+            "tooltip": "一次配置权限模板后，可在多个工作空间中重复使用。"
+          },
+          "f3": {
+            "title": "更长周期的审计留痕",
+            "tooltip": "后台、访问与操作日志最长可保留 180 天。"
+          },
+          "f4": {
+            "title": "优先问题处理与监控告警"
+          },
+          "f5": {
+            "title": "工作空间级协作控制"
+          }
+        }
+      }
+    },
+    "premium": {
+      "name": "Premium",
+      "monthlyPrice": "80",
+      "description": "适合规模更大的团队，需要更强的安全能力、自动化能力和专属落地支持。",
+      "buttonText": "升级到 Premium",
+      "isPopular": "false",
+      "features": {
+        "items": {
+          "f1": {
+            "title": "不限工作空间，最多 200 名成员"
+          },
+          "f2": {
+            "title": "支持单点登录与目录同步",
+            "tooltip": "适合更大组织做统一登录与目录驱动的成员开通。"
+          },
+          "f3": {
+            "title": "自定义审批流设计",
+            "tooltip": "可按业务流程设计多步骤审批规则。"
+          },
+          "f4": {
+            "title": "更深入的监控与事件可见性"
+          },
+          "f5": {
+            "title": "专属 onboarding 与架构指导"
+          }
+        }
+      }
+    }
+  }
+}

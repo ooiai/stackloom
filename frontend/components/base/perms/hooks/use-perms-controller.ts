@@ -236,13 +236,31 @@ export function usePermsController() {
     [guardPerm, selectedNode, tree]
   )
 
+  const openCopy = useCallback(
+    (perm: PermData) => {
+      if (!guardPerm(PERM_ACTION_PERMS.create, { source: "perms.copy.open" })) {
+        return
+      }
+
+      setSheet({
+        mode: "copy",
+        open: true,
+        perm,
+        parent:
+          (perm.parent_id ? findPermNode(tree, perm.parent_id) : null) ??
+          (selectedNode?.id === perm.parent_id ? selectedNode : null),
+      })
+    },
+    [guardPerm, selectedNode, tree]
+  )
+
   const closeSheet = useCallback(() => {
     setSheet(DEFAULT_SHEET_STATE)
   }, [])
 
   const submitSheet = useCallback(
     async (values: PermFormValues) => {
-      if (sheet.mode === "create") {
+      if (sheet.mode === "create" || sheet.mode === "copy") {
         if (
           !guardPerm(PERM_ACTION_PERMS.create, {
             source: "perms.create.submit",
@@ -360,6 +378,7 @@ export function usePermsController() {
       onOpenCreateRoot: openCreateRoot,
       onOpenAddChild: openAddChild,
       onOpenEdit: openEdit,
+      onOpenCopy: openCopy,
       onDelete: removePerm,
     },
     sheet: {

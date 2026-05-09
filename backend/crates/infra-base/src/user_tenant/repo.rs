@@ -319,6 +319,25 @@ impl UserTenantRepository for SqlxUserTenantRepository {
         Ok(())
     }
 
+    async fn update_status(&self, id: i64, status: i16) -> AppResult<()> {
+        let now = Utc::now();
+        sqlx::query(
+            r#"
+            UPDATE user_tenants
+            SET status = $2, updated_at = $3
+            WHERE id = $1 AND deleted_at IS NULL
+            "#,
+        )
+        .bind(id)
+        .bind(status)
+        .bind(now)
+        .execute(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(())
+    }
+
     async fn find_by_user_and_tenant(
         &self,
         user_id: i64,
@@ -398,6 +417,7 @@ impl UserTenantRepository for SqlxUserTenantRepository {
                 u.username,
                 u.nickname,
                 u.email,
+                u.phone,
                 u.avatar_url,
                 ut.display_name,
                 ut.job_title,

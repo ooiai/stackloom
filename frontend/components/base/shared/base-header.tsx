@@ -1,14 +1,15 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 
 import {
   LayoutWidthToggle,
   type LayoutWidthMode,
 } from "@/components/base/shared/layout-width-toggle"
+import { useCurrentMenus } from "@/hooks/use-current-menus"
+import { useHeaderContext } from "@/hooks/use-header-context"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useQuery } from "@tanstack/react-query"
 import { first } from "lodash-es"
 import Image from "next/image"
 
@@ -20,10 +21,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { LucideIcon } from "@/components/topui/icon"
 import type { IconName } from "@/components/topui/icon"
-import { useHeaderContext } from "@/hooks/use-header-context"
 import { useI18n } from "@/providers/i18n-provider"
 import { cn } from "@/lib/utils"
-import { userSharedApi } from "@/stores/base-api"
 import type { MenuTreeNodeData } from "@/types/base.types"
 import {
   BellIcon,
@@ -50,14 +49,17 @@ function ListItem({
   children,
   href,
   icon,
+  onClick,
 }: React.ComponentPropsWithoutRef<"li"> & {
   href: string
   icon?: string | null
+  onClick?: () => void
 }) {
   return (
     <li>
       <Link
         href={href}
+        onClick={onClick}
         aria-label={typeof title === "string" ? title : undefined}
         className="group -mx-2 block rounded-md px-2 py-2 transition hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
       >
@@ -96,6 +98,7 @@ function AdminNavBar({
   pathname: string
   mobile?: boolean
 }) {
+  const [openPopoverId, setOpenPopoverId] = useState<string | null>(null)
   const items = first(data)?.children || []
 
   if (items.length === 0) {
@@ -167,7 +170,13 @@ function AdminNavBar({
           }
 
           return (
-            <Popover key={item.id}>
+            <Popover
+              key={item.id}
+              open={openPopoverId === item.id}
+              onOpenChange={(isOpen) =>
+                setOpenPopoverId(isOpen ? item.id : null)
+              }
+            >
               <PopoverTrigger
                 render={
                   <Button
@@ -196,6 +205,7 @@ function AdminNavBar({
                       title={child.name}
                       href={child.path ?? "#"}
                       icon={child.icon}
+                      onClick={() => setOpenPopoverId(null)}
                     >
                       {child.description || child.name}
                     </ListItem>
@@ -220,12 +230,7 @@ export default function BaseHeader({
   const { t } = useI18n()
   const pathname = usePathname()
   const { user } = useHeaderContext()
-
-  const { data: currentMenus = [] } = useQuery({
-    queryKey: ["listCurrentMenusQuery"],
-    queryFn: () => userSharedApi.listCurrentMenus(),
-    staleTime: Number.POSITIVE_INFINITY,
-  })
+  const { menus: currentMenus } = useCurrentMenus()
 
   const trees = useMemo(() => {
     return currentMenus.map((node) => ({

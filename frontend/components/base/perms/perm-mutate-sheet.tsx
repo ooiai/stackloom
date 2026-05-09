@@ -58,11 +58,17 @@ export function PermMutateSheet({
           description: t("perms.sheet.create.description"),
           submitLabel: t("perms.sheet.create.submit"),
         }
-      : {
-          title: t("perms.sheet.update.title"),
-          description: t("perms.sheet.update.description"),
-          submitLabel: t("perms.sheet.update.submit"),
-        }
+      : mode === "copy"
+        ? {
+            title: t("perms.sheet.copy.title"),
+            description: t("perms.sheet.copy.description"),
+            submitLabel: t("perms.sheet.copy.submit"),
+          }
+        : {
+            title: t("perms.sheet.update.title"),
+            description: t("perms.sheet.update.description"),
+            submitLabel: t("perms.sheet.update.submit"),
+          }
 
   const parentLabel = useMemo(() => {
     if (!parent) {

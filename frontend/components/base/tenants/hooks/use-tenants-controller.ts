@@ -59,6 +59,9 @@ export function useTenantsController() {
     new Set()
   )
   const [sheet, setSheet] = useState<TenantSheetState>(DEFAULT_SHEET_STATE)
+  const [rootPageIndex, setRootPageIndex] = useState(0)
+
+  const PAGINATION_PAGE_SIZE = 10
 
   const treeQuery = useQuery({
     queryKey: ["base", "tenants", "tree", treeSearch.trim()],
@@ -73,6 +76,22 @@ export function useTenantsController() {
     () => treeQuery.data?.items ?? [],
     [treeQuery.data?.items]
   )
+
+  const allRootNodes = useMemo(
+    () =>
+      tree
+        .filter((node) => !node.parent_id)
+        .map((node) => ({ ...node, id: node.id })),
+    [tree]
+  )
+
+  const totalRootPages = Math.ceil(allRootNodes.length / PAGINATION_PAGE_SIZE)
+  const paginatedRootNodes = useMemo(() => {
+    const start = rootPageIndex * PAGINATION_PAGE_SIZE
+    const end = start + PAGINATION_PAGE_SIZE
+    return allRootNodes.slice(start, end)
+  }, [rootPageIndex, allRootNodes])
+
   const selectedNode = useMemo(
     () => (rawSelectedNodeId ? findTenantNode(tree, rawSelectedNodeId) : null),
     [rawSelectedNodeId, tree]
@@ -114,6 +133,11 @@ export function useTenantsController() {
     const nextUrl = queryString ? `${pathname}?${queryString}` : pathname
     router.replace(nextUrl, { scroll: false })
   }, [pathname, router, selectedNodeId, treeSearch])
+
+  const handlePageChange = useCallback((newPageIndex: number) => {
+    setRootPageIndex(newPageIndex)
+    setManualExpandedIds(new Set())
+  }, [])
 
   const createMutation = useMutation({
     mutationFn: async (values: TenantFormValues) => {
@@ -352,7 +376,7 @@ export function useTenantsController() {
     view: {
       permissions,
       treeSearch,
-      tree,
+      tree: paginatedRootNodes.length > 0 ? paginatedRootNodes : tree,
       selectedNodeId,
       selectedNode,
       breadcrumb,
@@ -360,9 +384,16 @@ export function useTenantsController() {
       expandedIds: new Set(manualExpandedIds),
       isFetching: treeQuery.isFetching || childrenQuery.isFetching,
       isInitialLoading: treeQuery.isLoading,
-      onTreeSearchChange: setTreeSearch,
+      rootPageIndex,
+      totalRootPages,
+      onTreeSearchChange: (value: string) => {
+        setTreeSearch(value)
+        setRootPageIndex(0)
+        setManualExpandedIds(new Set())
+      },
       onToggleExpand: toggleExpand,
       onSelectNode: setRawSelectedNodeId,
+      onPageChange: handlePageChange,
       onRefresh: () => {
         void treeQuery.refetch()
         if (selectedNodeId) {

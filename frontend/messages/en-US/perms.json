@@ -24,6 +24,11 @@
       "title": "Edit permission",
       "description": "Update the current permission details and hierarchy position",
       "submit": "Save changes"
+    },
+    "copy": {
+      "title": "Copy permission",
+      "description": "Create a new permission based on the current one. Update the code to ensure it is unique.",
+      "submit": "Create copy"
     }
   },
   "sections": {

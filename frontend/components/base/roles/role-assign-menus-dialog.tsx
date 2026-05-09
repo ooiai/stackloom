@@ -92,56 +92,37 @@ function buildInitialTreeState(
 } {
   const { nodeMap } = buildTreeMaps(menus)
   const initialSelectedIds = new Set<string>()
-  const initialExpandedIds = new Set<string>()
 
-  const selectSubtree = (node: MenuTreeNodeData) => {
-    initialSelectedIds.add(node.id)
-    for (const child of node.children) {
-      selectSubtree(child)
-    }
-  }
-
+  // Add only the exact IDs that exist in the current tree.
+  // Do NOT propagate downward — newly added children must not be auto-selected.
   for (const id of assignedIds) {
-    const node = nodeMap.get(id)
-    if (!node) {
-      continue
+    if (nodeMap.has(id)) {
+      initialSelectedIds.add(id)
     }
-
-    selectSubtree(node)
   }
 
-  const markFullySelectedParents = (nodes: MenuTreeNodeData[]): boolean => {
-    let hasAnySelected = false
-
+  // Post-order reconciliation: a parent is fully selected iff ALL its children
+  // are selected; otherwise remove it so it renders as indeterminate.
+  const reconcileParents = (nodes: MenuTreeNodeData[]) => {
     for (const node of nodes) {
-      const selfSelected = initialSelectedIds.has(node.id)
-      const childHasAnySelected = markFullySelectedParents(node.children)
-      const hasChildren = node.children.length > 0
-      const allChildrenSelected =
-        hasChildren &&
-        node.children.every((child) => initialSelectedIds.has(child.id))
-
+      if (node.children.length === 0) continue
+      reconcileParents(node.children)
+      const allChildrenSelected = node.children.every((c) =>
+        initialSelectedIds.has(c.id)
+      )
       if (allChildrenSelected) {
         initialSelectedIds.add(node.id)
-      }
-
-      if (
-        selfSelected ||
-        childHasAnySelected ||
-        initialSelectedIds.has(node.id)
-      ) {
-        hasAnySelected = true
+      } else {
+        initialSelectedIds.delete(node.id)
       }
     }
-
-    return hasAnySelected
   }
 
-  markFullySelectedParents(menus)
+  reconcileParents(menus)
 
   return {
     initialSelectedIds,
-    initialExpandedIds,
+    initialExpandedIds: new Set<string>(),
   }
 }
 

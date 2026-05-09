@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react"
 
+import { invalidateHeaderSharedQueries } from "@/hooks/use-header-context"
 import { useI18n } from "@/providers/i18n-provider"
 import { roleApi, permApi } from "@/stores/base-api"
 import type { RoleData } from "@/types/base.types"
@@ -43,6 +44,7 @@ export function useRoleAssignPerms() {
       await queryClient.invalidateQueries({
         queryKey: ["base", "roles", "perms", dialog.role?.id],
       })
+      await invalidateHeaderSharedQueries(queryClient)
       toast.success(t("roles.assignPerms.toast.success"))
       setDialog(DEFAULT_STATE)
     },

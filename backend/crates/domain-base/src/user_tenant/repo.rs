@@ -28,6 +28,9 @@ pub trait UserTenantRepository: Send + Sync {
     /// Batch hard delete UserTenants by IDs.
     async fn hard_delete_batch(&self, ids: &[i64]) -> AppResult<()>;
 
+    /// Update the status of a user_tenant record by ID.
+    async fn update_status(&self, id: i64, status: i16) -> AppResult<()>;
+
     /// Find the active membership record for a specific user within a tenant.
     async fn find_by_user_and_tenant(
         &self,

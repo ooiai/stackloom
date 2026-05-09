@@ -28,9 +28,12 @@ interface TenantsPageViewProps {
   expandedIds: Set<string>
   isFetching: boolean
   isInitialLoading: boolean
+  rootPageIndex: number
+  totalRootPages: number
   onTreeSearchChange: (value: string) => void
   onToggleExpand: (id: string) => void
   onSelectNode: (id: string | null) => void
+  onPageChange: (pageIndex: number) => void
   onRefresh: () => void
   onOpenCreateRoot: () => void
   onOpenAddChild: (parentId: string) => void
@@ -49,9 +52,12 @@ export function TenantsPageView({
   expandedIds,
   isFetching,
   isInitialLoading,
+  rootPageIndex,
+  totalRootPages,
   onTreeSearchChange,
   onToggleExpand,
   onSelectNode,
+  onPageChange,
   onRefresh,
   onOpenCreateRoot,
   onOpenAddChild,
@@ -98,9 +104,12 @@ export function TenantsPageView({
           selectedNodeId={selectedNodeId}
           expandedIds={expandedIds}
           isInitialLoading={isInitialLoading}
+          rootPageIndex={rootPageIndex}
+          totalRootPages={totalRootPages}
           onTreeSearchChange={onTreeSearchChange}
           onToggleExpand={onToggleExpand}
           onSelectNode={onSelectNode}
+          onPageChange={onPageChange}
           onOpenCreateRoot={onOpenCreateRoot}
           onOpenAddChild={onOpenAddChild}
           onOpenEdit={onOpenEdit}

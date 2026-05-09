@@ -12,7 +12,8 @@
     "login": "登录",
     "refresh": "刷新",
     "save": "保存",
-    "viewChildren": "查看子级"
+    "viewChildren": "查看子级",
+    "copy": "复制"
   },
   "loading": {
     "default": "加载中...",

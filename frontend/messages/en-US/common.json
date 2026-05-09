@@ -12,7 +12,8 @@
     "login": "Sign in",
     "refresh": "Refresh",
     "save": "Save",
-    "viewChildren": "View children"
+    "viewChildren": "View children",
+    "copy": "Copy"
   },
   "loading": {
     "default": "Loading...",

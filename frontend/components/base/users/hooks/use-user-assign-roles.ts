@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react"
 
+import { invalidateHeaderSharedQueries } from "@/hooks/use-header-context"
 import { useI18n } from "@/providers/i18n-provider"
 import { userApi } from "@/stores/base-api"
 import type { UserData } from "@/types/base.types"
@@ -37,6 +38,7 @@ export function useUserAssignRoles() {
       await queryClient.invalidateQueries({
         queryKey: ["base", "users", "roles", dialog.user?.id],
       })
+      await invalidateHeaderSharedQueries(queryClient)
       toast.success(t("users.assignRoles.toast.success"))
       setDialog(DEFAULT_STATE)
     },

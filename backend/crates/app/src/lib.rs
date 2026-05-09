@@ -1,6 +1,6 @@
 use api_http::{
-    AuthHttpState, BaseHttpState, SharedHttpState, SysHttpState, auth_router, base_router,
-    shared_router, system_router,
+    AuthHttpState, BaseHttpState, SharedHttpState, SysHttpState, WebHttpState, auth_router,
+    base_router, shared_router, system_router, web_router,
 };
 use common::config::env_config::EnvConfig;
 
@@ -115,6 +115,12 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     ));
 
     // build base http state
+    let web_http_state = WebHttpState {
+        user_tenant_service: user_tenant_service.clone(),
+        tenant_service: tenant_service.clone(),
+        redis_pool: redis_pool.clone(),
+        cfg: cfg.clone(),
+    };
     let base_http_state = BaseHttpState {
         cfg: cfg.clone(),
         redis_pool: redis_pool.clone(),
@@ -171,6 +177,10 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         .nest(
             "/shared",
             shared_router(shared_http_state, middleware_config.clone()),
+        )
+        .nest(
+            "/web",
+            web_router(web_http_state, middleware_config.clone()),
         )
         .fallback(handler_404)
         .layer(trace_layer)

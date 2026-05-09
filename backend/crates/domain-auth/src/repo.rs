@@ -40,6 +40,6 @@ pub trait AuthRepository: Send + Sync {
     /// Persist the full signup aggregate in one transaction.
     ///
     /// Implementations should treat the bundle as an atomic write so that user,
-    /// tenant, role, membership, and membership-role binding stay consistent.
+    /// tenant, membership, and membership-role binding stay consistent.
     async fn create_account_signup_bundle(&self, bundle: &AccountSignupBundle) -> AppResult<()>;
 }

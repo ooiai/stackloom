@@ -3,6 +3,8 @@ use std::sync::OnceLock;
 
 pub const CACHE_SIGIN_CODE: &str = ":sigin_code:";
 pub const CACHE_INVITE_CODE: &str = ":invite_code:";
+/// Reverse lookup: invite UUID → tenant_id
+pub const CACHE_INVITE_CODE_LOOKUP: &str = ":invite_code_lookup:";
 pub const CACHE_APPLY_REGISTER_CODE: &str = ":apply_register_code:";
 
 pub static MOBILE_REGEXS: Lazy<Regex> =

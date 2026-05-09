@@ -16,13 +16,15 @@ export function MonitorProcessGrid({ snapshot }: MonitorProcessGridProps) {
 
   const processCpuPercent = Math.round(snapshot.process_cpu_percent)
   return (
-    <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+    <div className="grid grid-cols-2 gap-4 xl:grid-cols-6">
       <MetricCard
         label={t("monitor.process_memory")}
         value={formatBytes(snapshot.process_memory_bytes)}
         hint={t("monitor.process_memory_hint")}
         tone="default"
         icon={<MemoryStickIcon className="size-4" />}
+        className="xl:col-span-2"
+        footer={t("monitor.process_memory_summary")}
       />
       <MetricCard
         label={t("monitor.process_virtual_memory")}
@@ -30,6 +32,7 @@ export function MonitorProcessGrid({ snapshot }: MonitorProcessGridProps) {
         hint={t("monitor.process_virtual_memory_hint")}
         tone="default"
         icon={<MemoryStickIcon className="size-4" />}
+        className="xl:col-span-2"
       />
       <MetricCard
         label={t("monitor.process_cpu")}
@@ -37,6 +40,9 @@ export function MonitorProcessGrid({ snapshot }: MonitorProcessGridProps) {
         hint={t("monitor.process_cpu_hint")}
         tone={processCpuPercent >= 80 ? "warning" : "success"}
         icon={<CpuIcon className="size-4" />}
+        className="xl:col-span-2"
+        size="hero"
+        footer={t("monitor.process_cpu_summary")}
       />
     </div>
   )

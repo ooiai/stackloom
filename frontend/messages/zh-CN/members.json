@@ -5,16 +5,38 @@
     "search": "搜索",
     "inviteMembers": "邀请成员",
     "emptyTitle": "未找到成员",
-    "emptyDescription": "尝试调整搜索关键词。"
+    "emptyDescription": "尝试调整搜索关键词。",
+    "yourRole": "您的角色"
   },
   "table": {
     "name": "姓名",
     "email": "邮箱",
+    "phone": "手机",
     "role": "角色",
-    "joined": "加入时间"
+    "status": "状态",
+    "joined": "加入时间",
+    "actions": "操作"
   },
   "roles": {
     "admin": "管理员",
     "member": "成员"
+  },
+  "status": {
+    "normal": "正常",
+    "pending": "待审核",
+    "disabled": "已禁用"
+  },
+  "actions": {
+    "enable": "启用成员",
+    "disable": "禁用成员"
+  },
+  "invite": {
+    "title": "邀请成员",
+    "description": "分享邀请链接，邀请成员加入您的团队。",
+    "linkLabel": "邀请链接",
+    "copyLink": "复制链接",
+    "copied": "已复制！",
+    "loading": "生成链接中...",
+    "expiry": "链接有效期 30 分钟，过期后将自动重新生成"
   }
 }

@@ -57,6 +57,15 @@
     },
     "perms": {
       "codeExists": "权限编码已存在，请更换后重试"
+    },
+    "members": {
+      "notAdmin": "当前账号无管理员权限，无法执行此操作",
+      "cannotChangeSelf": "管理员不能修改自己的成员状态",
+      "notFound": "目标成员不存在或不属于当前团队"
+    },
+    "invite": {
+      "codeInvalid": "邀请链接无效或已过期，请联系管理员重新生成",
+      "alreadyMember": "您已经是该团队的成员，无需重复加入"
     }
   }
 }

@@ -24,6 +24,11 @@
       "title": "编辑权限",
       "description": "更新当前权限信息与树形位置",
       "submit": "保存更新"
+    },
+    "copy": {
+      "title": "复制权限",
+      "description": "基于当前权限创建一个新权限，请修改编码以确保唯一",
+      "submit": "创建复制"
     }
   },
   "sections": {

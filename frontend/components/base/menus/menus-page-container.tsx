@@ -35,6 +35,7 @@ interface MenusPageViewProps {
   onOpenCreateRoot: () => void
   onOpenAddChild: (parentId: string) => void
   onOpenEdit: (menu: MenuData) => void
+  onOpenCopy: (menu: MenuData) => void
   onDelete: (menu: MenuData) => void
 }
 
@@ -56,6 +57,7 @@ export function MenusPageView({
   onOpenCreateRoot,
   onOpenAddChild,
   onOpenEdit,
+  onOpenCopy,
   onDelete,
 }: MenusPageViewProps) {
   const { t } = useI18n()
@@ -68,9 +70,10 @@ export function MenusPageView({
         onSelectNode,
         onOpenAddChild,
         onOpenEdit,
+        onOpenCopy,
         onDelete,
       }),
-    [onDelete, onOpenAddChild, onOpenEdit, onSelectNode, permissions, t, tree]
+    [onDelete, onOpenAddChild, onOpenCopy, onOpenEdit, onSelectNode, permissions, t, tree]
   )
 
   // eslint-disable-next-line react-hooks/incompatible-library

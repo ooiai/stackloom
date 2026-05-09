@@ -14,6 +14,14 @@ use crate::system::{
     sms::{req::SmsCaptchaReq, resp::SmsCaptchaResp},
 };
 
+/// Send sign-in captcha (SMS verification code).
+///
+/// # Arguments
+/// * `state` - The system HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<SmsCaptchaResp>>` - The response containing the captcha information.
 pub async fn send_signin_captcha(
     State(state): State<SysHttpState>,
     DetailedJson(req): DetailedJson<SmsCaptchaReq>,

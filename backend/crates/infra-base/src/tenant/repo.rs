@@ -12,7 +12,7 @@ use neocrates::{
 };
 use sqlx::QueryBuilder;
 
-use super::TenantRow;
+use super::{TenantRow, TenantWithDefaultRow};
 
 #[derive(Debug, Clone)]
 pub struct SqlxTenantRepository {
@@ -442,5 +442,38 @@ impl TenantRepository for SqlxTenantRepository {
             .map_err(Self::map_sqlx_error)?;
 
         Ok(())
+    }
+
+    async fn list_by_user_id(&self, user_id: i64) -> AppResult<Vec<(Tenant, bool)>> {
+        let rows = sqlx::query_as::<_, TenantWithDefaultRow>(
+            r#"
+            SELECT
+                t.id,
+                t.parent_id,
+                t.slug,
+                t.name,
+                t.description,
+                t.owner_user_id,
+                t.status,
+                t.plan_code,
+                t.expired_at,
+                t.created_at,
+                t.updated_at,
+                t.deleted_at,
+                ut.is_default
+            FROM tenants t
+            INNER JOIN user_tenants ut ON t.id = ut.tenant_id
+            WHERE ut.user_id = $1
+              AND ut.deleted_at IS NULL
+              AND t.deleted_at IS NULL
+            ORDER BY ut.is_default DESC, t.id ASC
+            "#,
+        )
+        .bind(user_id)
+        .fetch_all(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows.into_iter().map(<(Tenant, bool)>::from).collect())
     }
 }

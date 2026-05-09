@@ -236,13 +236,31 @@ export function useMenusController() {
     [guardPerm, selectedNode, tree]
   )
 
+  const openCopy = useCallback(
+    (menu: MenuData) => {
+      if (!guardPerm(MENU_ACTION_PERMS.create, { source: "menus.copy.open" })) {
+        return
+      }
+
+      setSheet({
+        mode: "copy",
+        open: true,
+        menu,
+        parent:
+          (menu.parent_id ? findMenuNode(tree, menu.parent_id) : null) ??
+          (selectedNode?.id === menu.parent_id ? selectedNode : null),
+      })
+    },
+    [guardPerm, selectedNode, tree]
+  )
+
   const closeSheet = useCallback(() => {
     setSheet(DEFAULT_SHEET_STATE)
   }, [])
 
   const submitSheet = useCallback(
     async (values: MenuFormValues) => {
-      if (sheet.mode === "create") {
+      if (sheet.mode === "create" || sheet.mode === "copy") {
         if (
           !guardPerm(MENU_ACTION_PERMS.create, {
             source: "menus.create.submit",
@@ -360,6 +378,7 @@ export function useMenusController() {
       onOpenCreateRoot: openCreateRoot,
       onOpenAddChild: openAddChild,
       onOpenEdit: openEdit,
+      onOpenCopy: openCopy,
       onDelete: removeMenu,
     },
     sheet: {

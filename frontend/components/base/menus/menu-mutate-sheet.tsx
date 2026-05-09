@@ -58,11 +58,17 @@ export function MenuMutateSheet({
           description: t("menus.sheet.create.description"),
           submitLabel: t("menus.sheet.create.submit"),
         }
-      : {
-          title: t("menus.sheet.update.title"),
-          description: t("menus.sheet.update.description"),
-          submitLabel: t("menus.sheet.update.submit"),
-        }
+      : mode === "copy"
+        ? {
+            title: t("menus.sheet.copy.title"),
+            description: t("menus.sheet.copy.description"),
+            submitLabel: t("menus.sheet.copy.submit"),
+          }
+        : {
+            title: t("menus.sheet.update.title"),
+            description: t("menus.sheet.update.description"),
+            submitLabel: t("menus.sheet.update.submit"),
+          }
 
   const parentLabel = useMemo(() => {
     if (!parent) {

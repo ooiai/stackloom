@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use domain_base::{MenuService, RoleCodeService, UserService};
+use domain_base::{MenuService, RoleCodeService, TenantService, UserService};
 use neocrates::{
     axum::{Router, middleware},
     middlewares::{interceptor::interceptor, models::MiddlewareConfig},
@@ -15,6 +15,7 @@ pub struct SharedHttpState {
     pub menu_service: Arc<dyn MenuService>,
     pub role_code_service: Arc<dyn RoleCodeService>,
     pub user_service: Arc<dyn UserService>,
+    pub tenant_service: Arc<dyn TenantService>,
 }
 
 /// The shared router, nested under `/shared`.

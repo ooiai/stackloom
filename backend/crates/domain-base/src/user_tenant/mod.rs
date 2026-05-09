@@ -199,6 +199,7 @@ pub struct TenantMemberView {
     pub username: String,
     pub nickname: Option<String>,
     pub email: Option<String>,
+    pub phone: Option<String>,
     pub avatar_url: Option<String>,
     pub display_name: Option<String>,
     pub job_title: Option<String>,

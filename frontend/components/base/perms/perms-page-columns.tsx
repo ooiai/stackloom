@@ -17,6 +17,7 @@ import type { PermData } from "@/types/base.types"
 import type { ColumnDef } from "@tanstack/react-table"
 import {
   ArrowRightIcon,
+  CopyIcon,
   Edit3Icon,
   EllipsisIcon,
   FolderOpenIcon,
@@ -32,6 +33,7 @@ export function createPermColumns({
   onSelectNode,
   onOpenAddChild,
   onOpenEdit,
+  onOpenCopy,
   onDelete,
 }: {
   permissions: {
@@ -44,6 +46,7 @@ export function createPermColumns({
   onSelectNode: (id: string | null) => void
   onOpenAddChild: (parentId: string) => void
   onOpenEdit: (perm: PermData) => void
+  onOpenCopy: (perm: PermData) => void
   onDelete: (perm: PermData) => void
 }): ColumnDef<PermData>[] {
   return [
@@ -177,7 +180,7 @@ export function createPermColumns({
           {row.original.action || t("common.misc.none")}
         </span>
       ),
-      size: 120,
+      size: 240,
       enableSorting: false,
     },
     {
@@ -233,13 +236,19 @@ export function createPermColumns({
                 {t("common.actions.addChild")}
               </DropdownMenuItem>
             ) : null}
-            {(permissions.canAddChild || permissions.canEdit) ? (
+            {permissions.canAddChild || permissions.canEdit ? (
               <DropdownMenuSeparator />
             ) : null}
             {permissions.canEdit ? (
               <DropdownMenuItem onClick={() => onOpenEdit(row.original)}>
                 <Edit3Icon />
                 {t("common.actions.edit")}
+              </DropdownMenuItem>
+            ) : null}
+            {permissions.canAddChild ? (
+              <DropdownMenuItem onClick={() => onOpenCopy(row.original)}>
+                <CopyIcon />
+                {t("common.actions.copy")}
               </DropdownMenuItem>
             ) : null}
             {(permissions.canAddChild || permissions.canEdit) &&

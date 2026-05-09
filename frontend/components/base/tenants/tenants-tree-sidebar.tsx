@@ -1,5 +1,7 @@
 "use client"
 
+import { useCallback, useEffect, useRef } from "react"
+
 import type { TenantTreeNode } from "@/components/base/tenants/helpers"
 import { Button } from "@/components/ui/button"
 import {
@@ -41,9 +43,12 @@ interface TenantsTreeSidebarProps {
   selectedNodeId: string | null
   expandedIds: Set<string>
   isInitialLoading: boolean
+  rootPageIndex: number
+  totalRootPages: number
   onTreeSearchChange: (value: string) => void
   onToggleExpand: (id: string) => void
   onSelectNode: (id: string | null) => void
+  onPageChange: (pageIndex: number) => void
   onOpenCreateRoot: () => void
   onOpenAddChild: (parentId: string) => void
   onOpenEdit: (tenant: TenantData) => void
@@ -219,15 +224,39 @@ export function TenantsTreeSidebar({
   selectedNodeId,
   expandedIds,
   isInitialLoading,
+  rootPageIndex,
+  totalRootPages,
   onTreeSearchChange,
   onToggleExpand,
   onSelectNode,
+  onPageChange,
   onOpenCreateRoot,
   onOpenAddChild,
   onOpenEdit,
   onDelete,
 }: TenantsTreeSidebarProps) {
   const { t } = useI18n()
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const scrollPositionRef = useRef(0)
+
+  const handlePageChangeWithScroll = useCallback(
+    (newPageIndex: number) => {
+      scrollPositionRef.current = 0
+      onPageChange(newPageIndex)
+    },
+    [onPageChange]
+  )
+
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector(
+        "[data-radix-scroll-area-viewport]"
+      ) as HTMLElement | null
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollPositionRef.current
+      }
+    }
+  }, [tree])
 
   return (
     <aside className="overflow-hidden rounded-lg border border-border bg-background">
@@ -263,7 +292,7 @@ export function TenantsTreeSidebar({
           />
         </div>
       </div>
-      <ScrollArea className="h-140">
+      <ScrollArea ref={scrollAreaRef} className="h-140">
         <div className="space-y-0.5 p-2.5">
           {isInitialLoading ? (
             <div className="flex items-center justify-center py-16 text-sm text-muted-foreground">
@@ -310,6 +339,35 @@ export function TenantsTreeSidebar({
           )}
         </div>
       </ScrollArea>
+      {!treeSearch.trim() && totalRootPages > 1 ? (
+        <div className="flex items-center justify-between border-t border-border/60 px-4 py-3">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={rootPageIndex === 0}
+            onClick={() =>
+              handlePageChangeWithScroll(Math.max(0, rootPageIndex - 1))
+            }
+          >
+            ← Prev
+          </Button>
+          <span className="text-xs text-muted-foreground">
+            Page {rootPageIndex + 1} of {totalRootPages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={rootPageIndex >= totalRootPages - 1}
+            onClick={() =>
+              handlePageChangeWithScroll(
+                Math.min(totalRootPages - 1, rootPageIndex + 1)
+              )
+            }
+          >
+            Next →
+          </Button>
+        </div>
+      ) : null}
     </aside>
   )
 }

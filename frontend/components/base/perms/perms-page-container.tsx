@@ -35,6 +35,7 @@ interface PermsPageViewProps {
   onOpenCreateRoot: () => void
   onOpenAddChild: (parentId: string) => void
   onOpenEdit: (perm: PermData) => void
+  onOpenCopy: (perm: PermData) => void
   onDelete: (perm: PermData) => void
 }
 
@@ -56,6 +57,7 @@ export function PermsPageView({
   onOpenCreateRoot,
   onOpenAddChild,
   onOpenEdit,
+  onOpenCopy,
   onDelete,
 }: PermsPageViewProps) {
   const { t } = useI18n()
@@ -68,9 +70,10 @@ export function PermsPageView({
         onSelectNode,
         onOpenAddChild,
         onOpenEdit,
+        onOpenCopy,
         onDelete,
       }),
-    [onDelete, onOpenAddChild, onOpenEdit, onSelectNode, permissions, t, tree]
+    [onDelete, onOpenAddChild, onOpenCopy, onOpenEdit, onSelectNode, permissions, t, tree]
   )
 
   // eslint-disable-next-line react-hooks/incompatible-library
