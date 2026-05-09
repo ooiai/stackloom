@@ -3,6 +3,7 @@ import CryptUtil from "@/lib/crypt"
 import type { SigninTenantOption } from "@/types/auth.types"
 import type { SliderCaptcha } from "@/types/system.types"
 import { z } from "zod"
+import { ROUTER_ENUM } from "@/lib/config/enums"
 
 export type SigninFormValues = {
   account: string
@@ -15,9 +16,6 @@ export const DEFAULT_SIGNIN_VALUES: SigninFormValues = {
   account: "",
   password: "",
 }
-
-const DASHBOARD_ROUTE = "/upms/users"
-const WEB_HOME_ROUTE = "/"
 
 export function createSigninFormSchema(t: TranslateFn) {
   return z.object({
@@ -50,9 +48,11 @@ export function buildSigninCaptchaPayload(
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function resolveSigninRoute(tenant: SigninTenantOption) {
   // Guest users stay on the website entry flow; elevated roles land in the dashboard.
-  return tenant.role_codes.includes("WEB::GUEST")
-    ? WEB_HOME_ROUTE
-    : DASHBOARD_ROUTE
+  // return tenant.role_codes.includes("WEB::GUEST")
+  //   ? WEB_HOME_ROUTE
+  //   : DASHBOARD_ROUTE
+  return ROUTER_ENUM.DASHBOARD
 }

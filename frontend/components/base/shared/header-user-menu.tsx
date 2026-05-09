@@ -2,7 +2,7 @@
 
 import { useCallback } from "react"
 
-import { IconDotsVertical, IconLogout } from "@tabler/icons-react"
+import { IconLogout } from "@tabler/icons-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -16,6 +16,7 @@ import { ROUTER_ENUM, STORAGE_ENUM } from "@/lib/config/enums"
 import { removeStorageItem } from "@/hooks/use-persisted-state"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/providers/i18n-provider"
+import { useAlertDialog } from "@/providers/dialog-providers"
 import { signinApi } from "@/stores/auth-api"
 import { getNameAbbr } from "@/lib/core"
 import type { HeaderContextUserData } from "@/types/base.types"
@@ -30,16 +31,15 @@ export function HeaderUserMenu({
   mobileMode?: HeaderUserMenuMobileMode
 }) {
   const { t } = useI18n()
+  const dialog = useAlertDialog()
 
   const displayName =
-    user?.nickname ??
-    user?.username ??
-    t("navigation.profile.fallbackName")
+    user?.nickname ?? user?.username ?? t("navigation.profile.fallbackName")
   const tenantName = user?.tenant_name ?? t("navigation.profile.fallbackMeta")
   const detailMeta = user?.username ?? tenantName
   const compactOnMobile = mobileMode === "compact"
 
-  const handleLogout = useCallback(async () => {
+  const executeLogout = useCallback(async () => {
     try {
       await signinApi.logout()
     } finally {
@@ -47,6 +47,17 @@ export function HeaderUserMenu({
       window.location.href = ROUTER_ENUM.SIGNIN
     }
   }, [])
+
+  const handleLogout = useCallback(() => {
+    dialog.show({
+      title: t("navigation.profile.logoutConfirmTitle"),
+      description: t("navigation.profile.logoutConfirmDescription"),
+      cancelText: t("navigation.profile.logoutConfirmCancel"),
+      confirmText: t("navigation.profile.logoutConfirmAction"),
+      autoCloseOnConfirm: true,
+      onConfirm: executeLogout,
+    })
+  }, [dialog, executeLogout, t])
 
   return (
     <DropdownMenu>
@@ -66,20 +77,27 @@ export function HeaderUserMenu({
               alt={displayName}
             />
           )}
-          <AvatarFallback>{getNameAbbr(displayName || "SL")}</AvatarFallback>
+          <AvatarFallback className="bg-primary/5">
+            {getNameAbbr(displayName || "SL")}
+          </AvatarFallback>
         </Avatar>
-        <div className={cn("min-w-0 leading-tight", compactOnMobile && "hidden sm:block")}>
+        {/*<div
+          className={cn(
+            "min-w-0 leading-tight",
+            compactOnMobile && "hidden sm:block"
+          )}
+        >
           <p className="truncate text-xs font-medium text-foreground">
             {displayName}
           </p>
           <p className="text-[11px] text-muted-foreground">{tenantName}</p>
-        </div>
-        <IconDotsVertical
+        </div>*/}
+        {/*<IconDotsVertical
           className={cn(
             "size-3.5 text-muted-foreground",
             compactOnMobile && "hidden sm:block"
           )}
-        />
+        />*/}
       </DropdownMenuTrigger>
 
       <DropdownMenuContent

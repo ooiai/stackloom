@@ -12,10 +12,126 @@
     "fallbackName": "当前用户",
     "fallbackMeta": "当前工作区",
     "emailUnavailable": "暂无邮箱",
-    "logout": "退出登录"
+    "logout": "退出登录",
+    "logoutConfirmTitle": "确认退出登录",
+    "logoutConfirmDescription": "你将从当前设备退出登录。",
+    "logoutConfirmAction": "退出登录",
+    "logoutConfirmCancel": "取消"
   },
   "base-root": {
     "name": "后台管理",
     "remark": "Stackloom 管理后台入口"
+  },
+  "dashboard": {
+    "navUser": {
+      "account": "账户设置",
+      "billing": "账单",
+      "notifications": "通知",
+      "upgrade": "升级计划",
+      "logout": "退出登录",
+      "logoutConfirmTitle": "确认退出登录",
+      "logoutConfirmDescription": "你将从当前设备退出登录。",
+      "logoutConfirmAction": "退出登录",
+      "logoutConfirmCancel": "取消",
+      "planFallback": "Free"
+    },
+    "teamSwitcher": {
+      "switchLabel": "切换工作区",
+      "addTeam": "新建工作区"
+    },
+    "navMain": {
+      "dashboard": "概览",
+      "workspace": "工作区",
+      "members": "成员管理",
+      "settings": "工作区设置",
+      "preferences": "偏好设置",
+      "general": "通用",
+      "billing": "账单"
+    },
+    "page": {
+      "title": "工作台",
+      "live": "刚刚更新",
+      "description": "以更紧凑、满宽的方式呈现当前工作区动态、交付进展与今日需要关注的事项。",
+      "summary": {
+        "workspaces": {
+          "label": "活跃工作区",
+          "hint": "最近 7 天新增了 3 个工作区。",
+          "trend": "较上周提升 12%"
+        },
+        "members": {
+          "label": "协作成员",
+          "hint": "当前有 6 位成员正在等待审核或确认。",
+          "trend": "今天已有 24 项任务推进"
+        },
+        "reliability": {
+          "label": "服务稳定性",
+          "hint": "账单、认证与自动化链路暂无严重故障。",
+          "trend": "本月可用性 99.94%"
+        }
+      },
+      "overview": {
+        "title": "执行概览",
+        "description": "聚焦最接近落地的事项，并优先处理仍需协作推进的环节。",
+        "progressLabel": "进度"
+      },
+      "focus": {
+        "title": "今日重点",
+        "description": "下班前最值得再次确认的几项内容。",
+        "items": {
+          "approvals": {
+            "title": "待审批事项",
+            "description": "还有 2 个工作区邀请与 1 条账单变更等待确认。"
+          },
+          "permissions": {
+            "title": "权限审查",
+            "description": "客服组与财务组的角色调整仍在排队处理中。"
+          },
+          "automation": {
+            "title": "自动化巡检",
+            "description": "有 1 个同步任务的完成耗时高于平时水平。"
+          }
+        }
+      },
+      "updates": {
+        "title": "最近更新",
+        "description": "过去几小时内值得注意的小变化。",
+        "items": {
+          "launch": {
+            "title": "模板库发布覆盖率已达到 78%。",
+            "meta": "14 分钟前"
+          },
+          "billing": {
+            "title": "账单提醒已发送给 18 个工作区。",
+            "meta": "42 分钟前"
+          },
+          "ops": {
+            "title": "本周权限复核已完成，暂无阻塞问题。",
+            "meta": "1 小时前"
+          }
+        }
+      },
+      "projects": {
+        "launch": {
+          "title": "模板库发布",
+          "subtitle": "剩余工作区的 onboarding 与启用流程仍按计划推进。",
+          "status": "按计划进行"
+        },
+        "billing": {
+          "title": "账单自动化刷新",
+          "subtitle": "新提醒流程开启前，最终规则校验仍在审核中。",
+          "status": "审核中"
+        },
+        "permissions": {
+          "title": "权限策略清理",
+          "subtitle": "仍有 3 组继承角色映射需要明确确认。",
+          "status": "需优先关注"
+        },
+        "success": {
+          "title": "Q2 工作区上线清单",
+          "subtitle": "核心配置已完成，当前正在准备最终交接。",
+          "status": "准备收尾"
+        }
+      }
+    }
   }
 }

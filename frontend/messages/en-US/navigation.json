@@ -12,10 +12,126 @@
     "fallbackName": "Current user",
     "fallbackMeta": "Current workspace",
     "emailUnavailable": "No email available",
-    "logout": "Log out"
+    "logout": "Log out",
+    "logoutConfirmTitle": "Confirm logout",
+    "logoutConfirmDescription": "You will be signed out from this device.",
+    "logoutConfirmAction": "Log out",
+    "logoutConfirmCancel": "Cancel"
   },
   "base-root": {
     "name": "Admin",
     "remark": "Stackloom workspace entry"
+  },
+  "dashboard": {
+    "navUser": {
+      "account": "Account Settings",
+      "billing": "Billing",
+      "notifications": "Notifications",
+      "upgrade": "Upgrade Plan",
+      "logout": "Log out",
+      "logoutConfirmTitle": "Confirm logout",
+      "logoutConfirmDescription": "You will be signed out from this device.",
+      "logoutConfirmAction": "Log out",
+      "logoutConfirmCancel": "Cancel",
+      "planFallback": "Free"
+    },
+    "teamSwitcher": {
+      "switchLabel": "Switch workspace",
+      "addTeam": "Add workspace"
+    },
+    "navMain": {
+      "dashboard": "Dashboard",
+      "workspace": "Workspace",
+      "members": "Members",
+      "settings": "Settings",
+      "preferences": "Preferences",
+      "general": "General",
+      "billing": "Billing"
+    },
+    "page": {
+      "title": "Dashboard",
+      "live": "Updated just now",
+      "description": "A tighter, full-width overview of workspace activity, delivery status, and the items that need attention today.",
+      "summary": {
+        "workspaces": {
+          "label": "Active workspaces",
+          "hint": "3 workspaces were added in the last 7 days.",
+          "trend": "+12% vs last week"
+        },
+        "members": {
+          "label": "Collaborating members",
+          "hint": "6 members are waiting on a review or approval.",
+          "trend": "24 tasks moved forward today"
+        },
+        "reliability": {
+          "label": "Service reliability",
+          "hint": "No critical incidents across billing, auth, and automation.",
+          "trend": "99.94% uptime this month"
+        }
+      },
+      "overview": {
+        "title": "Execution overview",
+        "description": "Track the initiatives that are closest to launch and unblock the teams that need action.",
+        "progressLabel": "Progress"
+      },
+      "focus": {
+        "title": "Today's focus",
+        "description": "A short list of items worth checking before the day closes.",
+        "items": {
+          "approvals": {
+            "title": "Pending approvals",
+            "description": "2 workspace invitations and 1 billing change still need confirmation."
+          },
+          "permissions": {
+            "title": "Permission audit",
+            "description": "Role edits are queued for the support and finance groups."
+          },
+          "automation": {
+            "title": "Automation watch",
+            "description": "One sync job is above its usual completion time."
+          }
+        }
+      },
+      "updates": {
+        "title": "Recent updates",
+        "description": "Small signals from the last few hours.",
+        "items": {
+          "launch": {
+            "title": "Template library rollout reached 78% adoption.",
+            "meta": "14 minutes ago"
+          },
+          "billing": {
+            "title": "Billing reminders were sent to 18 workspaces.",
+            "meta": "42 minutes ago"
+          },
+          "ops": {
+            "title": "The weekly permissions review finished without blocking issues.",
+            "meta": "1 hour ago"
+          }
+        }
+      },
+      "projects": {
+        "launch": {
+          "title": "Template library rollout",
+          "subtitle": "Onboarding and enablement are on track for the remaining workspaces.",
+          "status": "On track"
+        },
+        "billing": {
+          "title": "Billing automation refresh",
+          "subtitle": "Final rule checks are in review before turning on the new reminder flow.",
+          "status": "In review"
+        },
+        "permissions": {
+          "title": "Permission policy cleanup",
+          "subtitle": "Three inherited role mappings still need explicit confirmation.",
+          "status": "Needs attention"
+        },
+        "success": {
+          "title": "Q2 workspace launch checklist",
+          "subtitle": "Core setup tasks are complete and handoff prep is underway.",
+          "status": "Ready to close"
+        }
+      }
+    }
   }
 }
