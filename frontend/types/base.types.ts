@@ -164,6 +164,7 @@ export interface TenantData {
   expired_at: string | null
   created_at: string
   updated_at: string
+  has_children: boolean
 }
 
 export interface TenantTreeNodeData extends TenantData {
@@ -271,6 +272,12 @@ export interface ChildrenTenantParam {
   parent_id?: string | null
   keyword?: string
   status?: TenantStatus
+  limit?: number
+  offset?: number
+}
+
+export interface TenantAncestorsParam {
+  id: string
 }
 
 export interface CreateTenantParam {
@@ -592,7 +599,8 @@ export type PaginateDict = PaginateResp<DictData>
 export type PaginateRole = PaginateResp<RoleData>
 export type PaginatePerm = PaginateResp<PermData>
 export type TenantTreeResp = { items: TenantTreeNodeData[] }
-export type TenantChildrenResp = { items: TenantData[] }
+export type TenantChildrenResp = { items: TenantData[]; total: number }
+export type TenantAncestorsResp = { items: TenantData[] }
 export type MenuTreeResp = { items: MenuTreeNodeData[] }
 export type MenuChildrenResp = { items: MenuData[] }
 export type DictTreeResp = { items: DictTreeNodeData[] }

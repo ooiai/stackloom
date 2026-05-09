@@ -22,6 +22,7 @@ pub struct TenantRow {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,
+    pub has_children: bool,
 }
 
 impl From<TenantRow> for Tenant {
@@ -39,6 +40,7 @@ impl From<TenantRow> for Tenant {
             created_at: row.created_at,
             updated_at: row.updated_at,
             deleted_at: row.deleted_at,
+            has_children: row.has_children,
         }
     }
 }
@@ -57,6 +59,7 @@ pub struct TenantWithDefaultRow {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,
+    pub has_children: bool,
     pub is_default: bool,
 }
 
@@ -76,6 +79,7 @@ impl From<TenantWithDefaultRow> for (Tenant, bool) {
             created_at: row.created_at,
             updated_at: row.updated_at,
             deleted_at: row.deleted_at,
+            has_children: row.has_children,
         };
         (tenant, is_default)
     }

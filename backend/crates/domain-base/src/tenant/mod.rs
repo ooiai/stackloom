@@ -22,6 +22,7 @@ pub struct Tenant {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,
+    pub has_children: bool,
 }
 
 impl Tenant {
@@ -43,6 +44,7 @@ impl Tenant {
             created_at: now,
             updated_at: now,
             deleted_at: None,
+            has_children: false,
         })
     }
 
@@ -208,6 +210,8 @@ pub struct ChildrenTenantCmd {
     pub parent_id: Option<i64>,
     pub keyword: Option<String>,
     pub status: Option<i16>,
+    pub limit: Option<i64>,
+    pub offset: Option<i64>,
 }
 
 #[derive(Debug, Clone)]
@@ -233,6 +237,8 @@ pub struct TenantChildrenQuery {
     pub parent_id: Option<i64>,
     pub keyword: Option<String>,
     pub status: Option<i16>,
+    pub limit: Option<i64>,
+    pub offset: Option<i64>,
 }
 
 impl Tenant {

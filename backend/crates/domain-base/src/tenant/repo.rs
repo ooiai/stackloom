@@ -49,8 +49,17 @@ pub trait TenantRepository: Send + Sync {
     /// * `query` - Child list query
     ///
     /// # Returns
-    /// * `AppResult<Vec<Tenant>>` - Direct child tenant items
-    async fn list_by_parent(&self, query: &TenantChildrenQuery) -> AppResult<Vec<Tenant>>;
+    /// * `AppResult<(Vec<Tenant>, i64)>` - Direct child tenant items and total count
+    async fn list_by_parent(&self, query: &TenantChildrenQuery) -> AppResult<(Vec<Tenant>, i64)>;
+
+    /// Load ordered tenant ancestors including the current tenant.
+    ///
+    /// # Arguments
+    /// * `id` - Tenant id
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Tenant>>` - Ordered path from root to current tenant
+    async fn list_ancestors(&self, id: i64) -> AppResult<Vec<Tenant>>;
 
     /// Count direct tenant children by parent id.
     ///

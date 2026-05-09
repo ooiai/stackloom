@@ -145,6 +145,10 @@ export function buildTenantBreadcrumb(
   return null
 }
 
+export function buildTenantPathLabel(items: TenantData[]) {
+  return items.map((item) => item.name).join(" / ")
+}
+
 export function getDefaultTenantFormValues(
   tenant: TenantData | null,
   parent: TenantData | null

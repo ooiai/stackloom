@@ -27,6 +27,54 @@ impl SqlxTenantRepository {
     fn map_sqlx_error(err: sqlx::Error) -> AppError {
         AppError::data_here(err.to_string())
     }
+
+    fn tenant_select_columns() -> &'static str {
+        r#"
+            tenants.id,
+            tenants.parent_id,
+            tenants.slug,
+            tenants.name,
+            tenants.description,
+            tenants.owner_user_id,
+            tenants.status,
+            tenants.plan_code,
+            tenants.expired_at,
+            tenants.created_at,
+            tenants.updated_at,
+            tenants.deleted_at,
+            EXISTS (
+                SELECT 1
+                FROM tenants child
+                WHERE child.parent_id = tenants.id
+                  AND child.deleted_at IS NULL
+            ) AS has_children
+        "#
+    }
+
+    fn tenant_select_columns_with_alias(alias: &str) -> String {
+        format!(
+            r#"
+                {alias}.id,
+                {alias}.parent_id,
+                {alias}.slug,
+                {alias}.name,
+                {alias}.description,
+                {alias}.owner_user_id,
+                {alias}.status,
+                {alias}.plan_code,
+                {alias}.expired_at,
+                {alias}.created_at,
+                {alias}.updated_at,
+                {alias}.deleted_at,
+                EXISTS (
+                    SELECT 1
+                    FROM tenants child
+                    WHERE child.parent_id = {alias}.id
+                      AND child.deleted_at IS NULL
+                ) AS has_children
+            "#
+        )
+    }
 }
 
 #[async_trait]
@@ -61,7 +109,8 @@ impl TenantRepository for SqlxTenantRepository {
                 expired_at,
                 created_at,
                 updated_at,
-                deleted_at
+                deleted_at,
+                false AS has_children
             "#,
         )
         .bind(&tenant.id)
@@ -84,30 +133,22 @@ impl TenantRepository for SqlxTenantRepository {
     }
 
     async fn find_by_id(&self, id: i64) -> AppResult<Option<Tenant>> {
-        let row = sqlx::query_as::<_, TenantRow>(
+        let sql = format!(
             r#"
             SELECT
-                id,
-                parent_id,
-                slug,
-                name,
-                description,
-                owner_user_id,
-                status,
-                plan_code,
-                expired_at,
-                created_at,
-                updated_at,
-                deleted_at
+                {}
             FROM tenants
             WHERE id = $1
               AND deleted_at IS NULL
             "#,
-        )
-        .bind(id)
-        .fetch_optional(self.pool.pool())
-        .await
-        .map_err(Self::map_sqlx_error)?;
+            Self::tenant_select_columns()
+        );
+
+        let row = sqlx::query_as::<_, TenantRow>(&sql)
+            .bind(id)
+            .fetch_optional(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
 
         Ok(row.map(Into::into))
     }
@@ -146,26 +187,16 @@ impl TenantRepository for SqlxTenantRepository {
             .await
             .map_err(Self::map_sqlx_error)?;
 
-        let mut builder = QueryBuilder::new(
+        let mut builder = QueryBuilder::new(&format!(
             r#"
             SELECT
-                id,
-                parent_id,
-                slug,
-                name,
-                description,
-                owner_user_id,
-                status,
-                plan_code,
-                expired_at,
-                created_at,
-                updated_at,
-                deleted_at
+                {}
             FROM tenants
             WHERE 1 = 1
               AND deleted_at IS NULL
             "#,
-        );
+            Self::tenant_select_columns()
+        ));
 
         if let Some(status) = query.status {
             builder.push(" AND status = ");
@@ -207,25 +238,15 @@ impl TenantRepository for SqlxTenantRepository {
     }
 
     async fn list_for_tree(&self, query: &TenantTreeQuery) -> AppResult<Vec<Tenant>> {
-        let mut builder = QueryBuilder::new(
+        let mut builder = QueryBuilder::new(&format!(
             r#"
             SELECT
-                id,
-                parent_id,
-                slug,
-                name,
-                description,
-                owner_user_id,
-                status,
-                plan_code,
-                expired_at,
-                created_at,
-                updated_at,
-                deleted_at
+                {}
             FROM tenants
             WHERE deleted_at IS NULL
             "#,
-        );
+            Self::tenant_select_columns()
+        ));
 
         if let Some(status) = query.status {
             builder.push(" AND status = ");
@@ -243,26 +264,55 @@ impl TenantRepository for SqlxTenantRepository {
         Ok(rows.into_iter().map(Into::into).collect())
     }
 
-    async fn list_by_parent(&self, query: &TenantChildrenQuery) -> AppResult<Vec<Tenant>> {
-        let mut builder = QueryBuilder::new(
+    async fn list_by_parent(&self, query: &TenantChildrenQuery) -> AppResult<(Vec<Tenant>, i64)> {
+        let mut count_builder = QueryBuilder::new(
             r#"
-            SELECT
-                id,
-                parent_id,
-                slug,
-                name,
-                description,
-                owner_user_id,
-                status,
-                plan_code,
-                expired_at,
-                created_at,
-                updated_at,
-                deleted_at
+            SELECT COUNT(*) AS total
             FROM tenants
             WHERE deleted_at IS NULL
             "#,
         );
+
+        if let Some(parent_id) = query.parent_id {
+            count_builder.push(" AND parent_id = ");
+            count_builder.push_bind(parent_id);
+        } else {
+            count_builder.push(" AND parent_id IS NULL");
+        }
+
+        if let Some(status) = query.status {
+            count_builder.push(" AND status = ");
+            count_builder.push_bind(status);
+        }
+
+        if let Some(keyword) = query.keyword.as_ref() {
+            let pattern = format!("%{}%", keyword.trim());
+            count_builder.push(" AND (slug ILIKE ");
+            count_builder.push_bind(pattern.clone());
+            count_builder.push(" OR name ILIKE ");
+            count_builder.push_bind(pattern.clone());
+            count_builder.push(" OR description ILIKE ");
+            count_builder.push_bind(pattern.clone());
+            count_builder.push(" OR plan_code ILIKE ");
+            count_builder.push_bind(pattern.clone());
+            count_builder.push(")");
+        }
+
+        let total: i64 = count_builder
+            .build_query_scalar()
+            .fetch_one(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        let mut builder = QueryBuilder::new(&format!(
+            r#"
+            SELECT
+                {}
+            FROM tenants
+            WHERE deleted_at IS NULL
+            "#,
+            Self::tenant_select_columns()
+        ));
 
         if let Some(parent_id) = query.parent_id {
             builder.push(" AND parent_id = ");
@@ -291,8 +341,66 @@ impl TenantRepository for SqlxTenantRepository {
 
         builder.push(" ORDER BY name ASC, created_at ASC");
 
+        if let Some(limit) = query.limit {
+            builder.push(" LIMIT ");
+            builder.push_bind(limit);
+        }
+
+        if let Some(offset) = query.offset {
+            builder.push(" OFFSET ");
+            builder.push_bind(offset);
+        }
+
         let rows: Vec<TenantRow> = builder
             .build_query_as()
+            .fetch_all(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        Ok((rows.into_iter().map(Into::into).collect(), total))
+    }
+
+    async fn list_ancestors(&self, id: i64) -> AppResult<Vec<Tenant>> {
+        let sql = format!(
+            r#"
+            WITH RECURSIVE tenant_path AS (
+                SELECT
+                    {},
+                    0 AS depth
+                FROM tenants current_tenant
+                WHERE current_tenant.id = $1
+                  AND current_tenant.deleted_at IS NULL
+                UNION ALL
+                SELECT
+                    {},
+                    tenant_path.depth + 1
+                FROM tenants parent_tenant
+                INNER JOIN tenant_path ON parent_tenant.id = tenant_path.parent_id
+                WHERE parent_tenant.deleted_at IS NULL
+            )
+            SELECT
+                id,
+                parent_id,
+                slug,
+                name,
+                description,
+                owner_user_id,
+                status,
+                plan_code,
+                expired_at,
+                created_at,
+                updated_at,
+                deleted_at,
+                has_children
+            FROM tenant_path
+            ORDER BY depth DESC
+            "#,
+            Self::tenant_select_columns_with_alias("current_tenant"),
+            Self::tenant_select_columns_with_alias("parent_tenant")
+        );
+
+        let rows: Vec<TenantRow> = sqlx::query_as::<_, TenantRow>(&sql)
+            .bind(id)
             .fetch_all(self.pool.pool())
             .await
             .map_err(Self::map_sqlx_error)?;
@@ -370,7 +478,13 @@ impl TenantRepository for SqlxTenantRepository {
                 expired_at,
                 created_at,
                 updated_at,
-                deleted_at
+                deleted_at,
+                EXISTS (
+                    SELECT 1
+                    FROM tenants child
+                    WHERE child.parent_id = tenants.id
+                      AND child.deleted_at IS NULL
+                ) AS has_children
             "#,
         )
         .bind(tenant.id)
@@ -460,6 +574,12 @@ impl TenantRepository for SqlxTenantRepository {
                 t.created_at,
                 t.updated_at,
                 t.deleted_at,
+                EXISTS (
+                    SELECT 1
+                    FROM tenants child
+                    WHERE child.parent_id = t.id
+                      AND child.deleted_at IS NULL
+                ) AS has_children,
                 ut.is_default
             FROM tenants t
             INNER JOIN user_tenants ut ON t.id = ut.tenant_id

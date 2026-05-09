@@ -1,10 +1,11 @@
 use super::{
     req::{
         ChildrenTenantReq, CreateTenantReq, DeleteTenantReq, GetTenantReq, PageTenantReq,
-        RemoveCascadeTenantReq, TreeTenantReq, UpdateTenantReq,
+        RemoveCascadeTenantReq, TenantAncestorsReq, TreeTenantReq, UpdateTenantReq,
     },
     resp::{
-        PaginateTenantResp, TenantChildrenResp, TenantResp, TenantTreeNodeResp, TenantTreeResp,
+        PaginateTenantResp, TenantAncestorsResp, TenantChildrenResp, TenantResp,
+        TenantTreeNodeResp, TenantTreeResp,
     },
 };
 use crate::base::{BaseHttpState, logging};
@@ -162,13 +163,42 @@ pub async fn children(
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
     let cmd: ChildrenTenantCmd = req.into();
-    let tenants = state.tenant_service.children(cmd).await?;
+    let (tenants, total) = state.tenant_service.children(cmd).await?;
     let items = tenants
         .into_iter()
         .map(TenantResp::from)
         .collect::<Vec<_>>();
 
-    Ok(Json(TenantChildrenResp::new(items)))
+    Ok(Json(TenantChildrenResp::new(items, total as usize)))
+}
+
+/// Load ordered tenant ancestors including the current tenant.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<TenantAncestorsResp>>` - The tenant ancestors response.
+pub async fn ancestors(
+    State(state): State<TenantsState>,
+    Extension(_auth_user): Extension<AuthModel>,
+    DetailedJson(req): DetailedJson<TenantAncestorsReq>,
+) -> AppResult<Json<TenantAncestorsResp>> {
+    tracing::info!("...Ancestors Tenant Req: {:?}...", req);
+
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let items = state
+        .tenant_service
+        .ancestors(req.id)
+        .await?
+        .into_iter()
+        .map(TenantResp::from)
+        .collect::<Vec<_>>();
+
+    Ok(Json(TenantAncestorsResp::new(items)))
 }
 
 /// Update an existing tenant.

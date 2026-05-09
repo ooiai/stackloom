@@ -12,6 +12,7 @@
     "fallbackName": "当前用户",
     "fallbackMeta": "当前工作区",
     "emailUnavailable": "暂无邮箱",
+    "accountSettings": "账户设置",
     "logout": "退出登录",
     "logoutConfirmTitle": "确认退出登录",
     "logoutConfirmDescription": "你将从当前设备退出登录。",

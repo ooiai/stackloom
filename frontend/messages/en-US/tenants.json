@@ -98,6 +98,8 @@
     "subtitle": "Browse the school, campus, and department hierarchy",
     "addRoot": "Add root tenant",
     "searchPlaceholder": "Search tenant name, slug, or plan code",
+    "searchResults": "Search results",
+    "pageIndicator": "Page {current} / {total}",
     "emptySearchTitle": "No matching tenants",
     "emptyDefaultTitle": "No tenants yet",
     "emptySearchDescription": "Try another keyword or clear the search",
@@ -122,6 +124,7 @@
     "status": "Status",
     "description": "Description",
     "updatedAt": "Updated at",
-    "childCount": "{count} children"
+    "childCount": "{count} children",
+    "hasChildren": "Has children"
   }
 }

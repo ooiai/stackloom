@@ -3,7 +3,6 @@
 import { DetailMetaItem } from "@/components/base/shared/detail-meta-item"
 import { EntityEmptyState } from "@/components/base/shared/entity-empty-state"
 import { TenantStatusBadge } from "@/components/base/tenants/tenant-status-badge"
-import type { TenantTreeNode } from "@/components/base/tenants/helpers"
 import { DataGrid, DataGridContainer } from "@/components/reui/data-grid"
 import { DataGridTable } from "@/components/reui/data-grid-table"
 import { ScrollArea, ScrollBar } from "@/components/reui/scroll-area"
@@ -26,8 +25,8 @@ interface TenantsDetailPanelProps {
     canAddChild: boolean
     canEdit: boolean
   }
-  selectedNode: TenantTreeNode | null
-  breadcrumb: TenantTreeNode[]
+  selectedNode: TenantData | null
+  breadcrumb: TenantData[]
   childItems: TenantData[]
   table: Table<TenantData>
   isFetching: boolean
@@ -97,7 +96,7 @@ export function TenantsDetailPanel({
           <div className="min-w-0 flex-1 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
               <div className="flex items-center gap-2">
-                {selectedNode.children.length > 0 ? (
+                {selectedNode.has_children ? (
                   <FolderOpenIcon className="size-5 text-primary" />
                 ) : (
                   <Building2Icon className="size-4 text-primary" />

@@ -3,17 +3,18 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 
 import {
-  buildCreateTenantParam,
   TENANT_ACTION_PERMS,
-  buildTenantBreadcrumb,
+  buildCreateTenantParam,
+  buildTenantPathLabel,
   buildUpdateTenantParam,
-  findTenantNode,
 } from "@/components/base/tenants/helpers"
+import type { TenantTreeNode } from "@/components/base/tenants/helpers"
 import { usePermissionAccess } from "@/hooks/use-permission-access"
 import { useAlertDialog } from "@/providers/dialog-providers"
 import { useI18n } from "@/providers/i18n-provider"
 import { tenantApi } from "@/stores/base-api"
 import type {
+  PaginateTenant,
   TenantData,
   TenantFormValues,
   TenantMutateMode,
@@ -21,6 +22,7 @@ import type {
 import {
   keepPreviousData,
   useMutation,
+  useQueries,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query"
@@ -34,12 +36,50 @@ interface TenantSheetState {
   parent: TenantData | null
 }
 
+interface LoadedSiblingState {
+  items: TenantData[]
+  total: number
+  pageIndex: number
+  totalPages: number
+  isFetching: boolean
+}
+
 const EMPTY_TENANTS: TenantData[] = []
+const EMPTY_TREE: TenantTreeNode[] = []
 const DEFAULT_SHEET_STATE: TenantSheetState = {
   mode: "create",
   open: false,
   tenant: null,
   parent: null,
+}
+const ROOT_PAGE_SIZE = 10
+const CHILD_PAGE_SIZE = 20
+const SEARCH_PAGE_SIZE = 10
+
+function buildLoadedTree(
+  items: TenantData[],
+  expandedIds: Set<string>,
+  childStateByParent: Map<string, LoadedSiblingState>
+): TenantTreeNode[] {
+  return items.map((item) => ({
+    ...item,
+    children: expandedIds.has(item.id)
+      ? buildLoadedTree(
+          childStateByParent.get(item.id)?.items ?? EMPTY_TENANTS,
+          expandedIds,
+          childStateByParent
+        )
+      : [],
+  }))
+}
+
+function collectKnownTenants(
+  map: Map<string, TenantData>,
+  items: TenantData[] | undefined
+) {
+  for (const item of items ?? EMPTY_TENANTS) {
+    map.set(item.id, item)
+  }
 }
 
 export function useTenantsController() {
@@ -58,53 +98,61 @@ export function useTenantsController() {
   const [manualExpandedIds, setManualExpandedIds] = useState<Set<string>>(
     new Set()
   )
-  const [sheet, setSheet] = useState<TenantSheetState>(DEFAULT_SHEET_STATE)
   const [rootPageIndex, setRootPageIndex] = useState(0)
+  const [searchPageIndex, setSearchPageIndex] = useState(0)
+  const [childPageIndexByParent, setChildPageIndexByParent] = useState<
+    Record<string, number>
+  >({})
+  const [sheet, setSheet] = useState<TenantSheetState>(DEFAULT_SHEET_STATE)
 
-  const PAGINATION_PAGE_SIZE = 10
+  const selectedNodeId = rawSelectedNodeId
+  const searchKeyword = treeSearch.trim()
+  const isSearchMode = searchKeyword.length > 0
+  const expandedIds = useMemo(
+    () => new Set(manualExpandedIds),
+    [manualExpandedIds]
+  )
 
-  const treeQuery = useQuery({
-    queryKey: ["base", "tenants", "tree", treeSearch.trim()],
+  const rootQuery = useQuery({
+    queryKey: ["base", "tenants", "children", null, rootPageIndex, ROOT_PAGE_SIZE],
     queryFn: () =>
-      tenantApi.tree({
-        keyword: treeSearch.trim() || undefined,
+      tenantApi.children({
+        parent_id: null,
+        limit: ROOT_PAGE_SIZE,
+        offset: rootPageIndex * ROOT_PAGE_SIZE,
       }),
+    enabled: !isSearchMode,
     placeholderData: keepPreviousData,
   })
 
-  const tree = useMemo(
-    () => treeQuery.data?.items ?? [],
-    [treeQuery.data?.items]
-  )
+  const searchQuery = useQuery<PaginateTenant>({
+    queryKey: ["base", "tenants", "page", searchKeyword, searchPageIndex, SEARCH_PAGE_SIZE],
+    queryFn: () =>
+      tenantApi.page({
+        keyword: searchKeyword,
+        limit: SEARCH_PAGE_SIZE,
+        offset: searchPageIndex * SEARCH_PAGE_SIZE,
+      }),
+    enabled: isSearchMode,
+    placeholderData: keepPreviousData,
+  })
 
-  const allRootNodes = useMemo(
-    () =>
-      tree
-        .filter((node) => !node.parent_id)
-        .map((node) => ({ ...node, id: node.id })),
-    [tree]
-  )
+  const selectedNodeQuery = useQuery({
+    queryKey: ["base", "tenants", "get", selectedNodeId],
+    queryFn: () => tenantApi.get({ id: selectedNodeId! }),
+    enabled: selectedNodeId !== null,
+    placeholderData: keepPreviousData,
+  })
 
-  const totalRootPages = Math.ceil(allRootNodes.length / PAGINATION_PAGE_SIZE)
-  const paginatedRootNodes = useMemo(() => {
-    const start = rootPageIndex * PAGINATION_PAGE_SIZE
-    const end = start + PAGINATION_PAGE_SIZE
-    return allRootNodes.slice(start, end)
-  }, [rootPageIndex, allRootNodes])
+  const breadcrumbQuery = useQuery({
+    queryKey: ["base", "tenants", "ancestors", selectedNodeId],
+    queryFn: () => tenantApi.ancestors({ id: selectedNodeId! }),
+    enabled: selectedNodeId !== null,
+    placeholderData: keepPreviousData,
+  })
 
-  const selectedNode = useMemo(
-    () => (rawSelectedNodeId ? findTenantNode(tree, rawSelectedNodeId) : null),
-    [rawSelectedNodeId, tree]
-  )
-  const selectedNodeId = selectedNode?.id ?? null
-  const breadcrumb = useMemo(
-    () =>
-      selectedNodeId ? (buildTenantBreadcrumb(tree, selectedNodeId) ?? []) : [],
-    [selectedNodeId, tree]
-  )
-
-  const childrenQuery = useQuery({
-    queryKey: ["base", "tenants", "children", selectedNodeId],
+  const detailChildrenQuery = useQuery({
+    queryKey: ["base", "tenants", "children", selectedNodeId, "detail"],
     queryFn: () =>
       tenantApi.children({
         parent_id: selectedNodeId,
@@ -113,10 +161,120 @@ export function useTenantsController() {
     placeholderData: keepPreviousData,
   })
 
-  const children = useMemo(
-    () => childrenQuery.data?.items ?? EMPTY_TENANTS,
-    [childrenQuery.data?.items]
+  const expandedParentIds = useMemo(
+    () => (isSearchMode ? [] : Array.from(expandedIds).sort()),
+    [expandedIds, isSearchMode]
   )
+
+  const expandedChildQueries = useQueries({
+    queries: expandedParentIds.map((parentId) => {
+      const pageIndex = childPageIndexByParent[parentId] ?? 0
+      return {
+        queryKey: [
+          "base",
+          "tenants",
+          "children",
+          parentId,
+          pageIndex,
+          CHILD_PAGE_SIZE,
+          "tree",
+        ],
+        queryFn: () =>
+          tenantApi.children({
+            parent_id: parentId,
+            limit: CHILD_PAGE_SIZE,
+            offset: pageIndex * CHILD_PAGE_SIZE,
+          }),
+        placeholderData: keepPreviousData,
+      }
+    }),
+  })
+
+  const searchPathQueries = useQueries({
+    queries: (searchQuery.data?.items ?? EMPTY_TENANTS).map((tenant) => ({
+      queryKey: ["base", "tenants", "ancestors", tenant.id, "search"],
+      queryFn: () => tenantApi.ancestors({ id: tenant.id }),
+      enabled: isSearchMode,
+      staleTime: 60_000,
+    })),
+  })
+
+  const childStateByParent = useMemo(() => {
+    const map = new Map<string, LoadedSiblingState>()
+
+    expandedParentIds.forEach((parentId, index) => {
+      const result = expandedChildQueries[index]
+      const total = result.data?.total ?? 0
+      const pageIndex = childPageIndexByParent[parentId] ?? 0
+      map.set(parentId, {
+        items: result.data?.items ?? EMPTY_TENANTS,
+        total,
+        pageIndex,
+        totalPages: Math.max(1, Math.ceil(total / CHILD_PAGE_SIZE)),
+        isFetching: result.isFetching,
+      })
+    })
+
+    return map
+  }, [childPageIndexByParent, expandedChildQueries, expandedParentIds])
+
+  const rootItems = useMemo(
+    () => rootQuery.data?.items ?? EMPTY_TENANTS,
+    [rootQuery.data?.items]
+  )
+  const tree = useMemo(
+    () =>
+      isSearchMode
+        ? EMPTY_TREE
+        : buildLoadedTree(rootItems, expandedIds, childStateByParent),
+    [childStateByParent, expandedIds, isSearchMode, rootItems]
+  )
+
+  const searchResults = useMemo(
+    () => searchQuery.data?.items ?? EMPTY_TENANTS,
+    [searchQuery.data?.items]
+  )
+
+  const searchPathById = useMemo(() => {
+    const map = new Map<string, string>()
+
+    searchResults.forEach((tenant, index) => {
+      const items = searchPathQueries[index]?.data?.items
+      if (items && items.length > 0) {
+        map.set(tenant.id, buildTenantPathLabel(items))
+      }
+    })
+
+    return map
+  }, [searchPathQueries, searchResults])
+
+  const selectedNode = selectedNodeQuery.data ?? null
+  const breadcrumb = useMemo(
+    () => breadcrumbQuery.data?.items ?? (selectedNode ? [selectedNode] : []),
+    [breadcrumbQuery.data?.items, selectedNode]
+  )
+  const children = useMemo(
+    () => detailChildrenQuery.data?.items ?? EMPTY_TENANTS,
+    [detailChildrenQuery.data?.items]
+  )
+
+  const knownTenantsById = useMemo(() => {
+    const map = new Map<string, TenantData>()
+    collectKnownTenants(map, rootItems)
+    collectKnownTenants(map, searchResults)
+    collectKnownTenants(map, children)
+    collectKnownTenants(map, breadcrumb)
+
+    for (const state of childStateByParent.values()) {
+      collectKnownTenants(map, state.items)
+    }
+
+    if (selectedNode) {
+      map.set(selectedNode.id, selectedNode)
+    }
+
+    return map
+  }, [breadcrumb, childStateByParent, children, rootItems, searchResults, selectedNode])
 
   useEffect(() => {
     const params = new URLSearchParams()
@@ -125,28 +283,33 @@ export function useTenantsController() {
       params.set("node", selectedNodeId)
     }
 
-    if (treeSearch.trim()) {
-      params.set("tree", treeSearch.trim())
+    if (searchKeyword) {
+      params.set("tree", searchKeyword)
     }
 
     const queryString = params.toString()
     const nextUrl = queryString ? `${pathname}?${queryString}` : pathname
     router.replace(nextUrl, { scroll: false })
-  }, [pathname, router, selectedNodeId, treeSearch])
+  }, [pathname, router, searchKeyword, selectedNodeId])
 
-  const handlePageChange = useCallback((newPageIndex: number) => {
-    setRootPageIndex(newPageIndex)
-    setManualExpandedIds(new Set())
-  }, [])
+  const invalidateTenantQueries = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ["base", "tenants"] })
+  }, [queryClient])
 
   const createMutation = useMutation({
     mutationFn: async (values: TenantFormValues) => {
       await tenantApi.create(buildCreateTenantParam(values, t))
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["base", "tenants"] })
+      await invalidateTenantQueries()
+      setRootPageIndex(0)
       if (sheet.parent) {
         setRawSelectedNodeId(sheet.parent.id)
+        setManualExpandedIds((prev) => {
+          const next = new Set(prev)
+          next.add(sheet.parent!.id)
+          return next
+        })
       }
       toast.success(t("tenants.toast.created"))
       setSheet(DEFAULT_SHEET_STATE)
@@ -164,7 +327,8 @@ export function useTenantsController() {
       await tenantApi.update(buildUpdateTenantParam(tenant.id, values, t))
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["base", "tenants"] })
+      await invalidateTenantQueries()
+      setRootPageIndex(0)
       toast.success(t("tenants.toast.updated"))
       setSheet(DEFAULT_SHEET_STATE)
     },
@@ -172,16 +336,15 @@ export function useTenantsController() {
 
   const deleteMutation = useMutation({
     mutationFn: async (tenant: TenantData) => {
-      const treeNode = findTenantNode(tree, tenant.id)
-      const hasChildren = (treeNode?.children.length ?? 0) > 0
-      if (hasChildren) {
+      if (tenant.has_children) {
         await tenantApi.removeCascade(tenant.id)
       } else {
         await tenantApi.remove([tenant.id])
       }
     },
     onSuccess: async (_, tenant) => {
-      await queryClient.invalidateQueries({ queryKey: ["base", "tenants"] })
+      await invalidateTenantQueries()
+      setRootPageIndex(0)
       if (selectedNodeId === tenant.id) {
         setRawSelectedNodeId(tenant.parent_id)
       }
@@ -189,15 +352,32 @@ export function useTenantsController() {
     },
   })
 
-  const getDeletePermCode = useCallback(
-    (tenant: TenantData) => {
-      const treeNode = findTenantNode(tree, tenant.id)
-      const hasChildren = (treeNode?.children.length ?? 0) > 0
-      return hasChildren
-        ? TENANT_ACTION_PERMS.removeCascade
-        : TENANT_ACTION_PERMS.remove
-    },
-    [tree]
+  const canDeleteTenant = useCallback(
+    (tenant: TenantData) =>
+      tenant.has_children
+        ? hasPerm(TENANT_ACTION_PERMS.removeCascade)
+        : hasPerm(TENANT_ACTION_PERMS.remove),
+    [hasPerm]
+  )
+
+  const permissions = useMemo(
+    () => ({
+      canCreateRoot: hasPerm(TENANT_ACTION_PERMS.create),
+      canAddChild: hasPerm(TENANT_ACTION_PERMS.create),
+      canEdit: hasPerm(TENANT_ACTION_PERMS.update),
+      canDelete: canDeleteTenant,
+      hasAnyNodeAction:
+        hasPerm(TENANT_ACTION_PERMS.create) ||
+        hasPerm(TENANT_ACTION_PERMS.update) ||
+        hasPerm(TENANT_ACTION_PERMS.remove) ||
+        hasPerm(TENANT_ACTION_PERMS.removeCascade),
+    }),
+    [canDeleteTenant, hasPerm]
+  )
+
+  const resolveTenant = useCallback(
+    (id: string) => knownTenantsById.get(id) ?? null,
+    [knownTenantsById]
   )
 
   const openCreateRoot = useCallback(() => {
@@ -227,10 +407,8 @@ export function useTenantsController() {
         return
       }
 
-      const parentNode =
-        findTenantNode(tree, parentId) ??
-        (selectedNode?.id === parentId ? selectedNode : null)
-      if (!parentNode) {
+      const parent = resolveTenant(parentId)
+      if (!parent) {
         return
       }
 
@@ -239,15 +417,18 @@ export function useTenantsController() {
         next.add(parentId)
         return next
       })
+      setChildPageIndexByParent((prev) =>
+        prev[parentId] !== undefined ? prev : { ...prev, [parentId]: 0 }
+      )
       setRawSelectedNodeId(parentId)
       setSheet({
         mode: "create",
         open: true,
         tenant: null,
-        parent: parentNode,
+        parent,
       })
     },
-    [guardPerm, selectedNode, tree]
+    [guardPerm, resolveTenant]
   )
 
   const openEdit = useCallback(
@@ -264,12 +445,10 @@ export function useTenantsController() {
         mode: "update",
         open: true,
         tenant,
-        parent:
-          (tenant.parent_id ? findTenantNode(tree, tenant.parent_id) : null) ??
-          (selectedNode?.id === tenant.parent_id ? selectedNode : null),
+        parent: tenant.parent_id ? resolveTenant(tenant.parent_id) : null,
       })
     },
-    [guardPerm, selectedNode, tree]
+    [guardPerm, resolveTenant]
   )
 
   const closeSheet = useCallback(() => {
@@ -321,22 +500,25 @@ export function useTenantsController() {
       }
       return next
     })
+    setChildPageIndexByParent((prev) =>
+      prev[id] !== undefined ? prev : { ...prev, [id]: 0 }
+    )
   }, [])
 
   const removeTenant = useCallback(
     (tenant: TenantData) => {
-      const deletePermCode = getDeletePermCode(tenant)
+      const deletePermCode = tenant.has_children
+        ? TENANT_ACTION_PERMS.removeCascade
+        : TENANT_ACTION_PERMS.remove
+
       if (!guardPerm(deletePermCode, { source: "tenants.remove.confirm" })) {
         return
       }
 
-      const treeNode = findTenantNode(tree, tenant.id)
-      const hasChildren = (treeNode?.children.length ?? 0) > 0
-
       dialog.show({
         variant: "destructive",
         title: t("tenants.dialog.deleteTitle"),
-        description: hasChildren
+        description: tenant.has_children
           ? t("tenants.dialog.deleteBranchDescription", { name: tenant.name })
           : t("tenants.dialog.deleteLeafDescription", { name: tenant.name }),
         confirmText: t("common.actions.delete"),
@@ -347,58 +529,78 @@ export function useTenantsController() {
         },
       })
     },
-    [deleteMutation, dialog, getDeletePermCode, guardPerm, t, tree]
+    [deleteMutation, dialog, guardPerm, t]
   )
 
-  const canDeleteTenant = useCallback(
-    (tenant: TenantData) => hasPerm(getDeletePermCode(tenant)),
-    [getDeletePermCode, hasPerm]
+  const handleRootPageChange = useCallback((pageIndex: number) => {
+    setRootPageIndex(pageIndex)
+    setManualExpandedIds(new Set())
+    setChildPageIndexByParent({})
+  }, [])
+
+  const handleChildPageChange = useCallback((parentId: string, pageIndex: number) => {
+    setManualExpandedIds((prev) => {
+      const next = new Set(prev)
+      next.add(parentId)
+      return next
+    })
+    setChildPageIndexByParent((prev) => ({ ...prev, [parentId]: pageIndex }))
+  }, [])
+
+  const totalRootPages = Math.max(
+    1,
+    Math.ceil((rootQuery.data?.total ?? 0) / ROOT_PAGE_SIZE)
+  )
+  const totalSearchPages = Math.max(
+    1,
+    Math.ceil((searchQuery.data?.total ?? 0) / SEARCH_PAGE_SIZE)
   )
 
-  const permissions = useMemo(
-    () => ({
-      canCreateRoot: hasPerm(TENANT_ACTION_PERMS.create),
-      canAddChild: hasPerm(TENANT_ACTION_PERMS.create),
-      canEdit: hasPerm(TENANT_ACTION_PERMS.update),
-      canDeleteLeaf: hasPerm(TENANT_ACTION_PERMS.remove),
-      canDeleteBranch: hasPerm(TENANT_ACTION_PERMS.removeCascade),
-      canDelete: canDeleteTenant,
-      hasAnyNodeAction:
-        hasPerm(TENANT_ACTION_PERMS.create) ||
-        hasPerm(TENANT_ACTION_PERMS.update) ||
-        hasPerm(TENANT_ACTION_PERMS.remove) ||
-        hasPerm(TENANT_ACTION_PERMS.removeCascade),
-    }),
-    [canDeleteTenant, hasPerm]
-  )
+  const handleSelectNode = useCallback((id: string | null) => {
+    setRawSelectedNodeId(id)
+  }, [])
 
   return {
     view: {
       permissions,
       treeSearch,
-      tree: paginatedRootNodes.length > 0 ? paginatedRootNodes : tree,
+      tree,
+      searchResults,
+      searchResultPaths: searchPathById,
       selectedNodeId,
       selectedNode,
       breadcrumb,
       children,
-      expandedIds: new Set(manualExpandedIds),
-      isFetching: treeQuery.isFetching || childrenQuery.isFetching,
-      isInitialLoading: treeQuery.isLoading,
+      expandedIds,
+      childStateByParent,
+      isSearchMode,
+      isFetching:
+        rootQuery.isFetching ||
+        searchQuery.isFetching ||
+        selectedNodeQuery.isFetching ||
+        breadcrumbQuery.isFetching ||
+        detailChildrenQuery.isFetching ||
+        expandedChildQueries.some((query) => query.isFetching),
+      isInitialLoading: isSearchMode ? searchQuery.isLoading : rootQuery.isLoading,
       rootPageIndex,
       totalRootPages,
+      searchPageIndex,
+      totalSearchPages,
       onTreeSearchChange: (value: string) => {
         setTreeSearch(value)
-        setRootPageIndex(0)
-        setManualExpandedIds(new Set())
+        setSearchPageIndex(0)
+        if (value.trim()) {
+          setManualExpandedIds(new Set())
+          setChildPageIndexByParent({})
+        }
       },
       onToggleExpand: toggleExpand,
-      onSelectNode: setRawSelectedNodeId,
-      onPageChange: handlePageChange,
+      onSelectNode: handleSelectNode,
+      onRootPageChange: handleRootPageChange,
+      onSearchPageChange: setSearchPageIndex,
+      onChildPageChange: handleChildPageChange,
       onRefresh: () => {
-        void treeQuery.refetch()
-        if (selectedNodeId) {
-          void childrenQuery.refetch()
-        }
+        void invalidateTenantQueries()
       },
       onOpenCreateRoot: openCreateRoot,
       onOpenAddChild: openAddChild,

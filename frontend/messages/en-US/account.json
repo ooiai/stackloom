@@ -2,10 +2,12 @@
   "settings": {
     "title": "Account Settings",
     "subtitle": "Manage your personal information",
+    "previewTitle": "Profile preview",
+    "previewHint": "Updates appear in the header after saving.",
     "username": "Username",
     "nickname": "Nickname",
     "avatar": "Avatar",
-    "avatarHint": "Paste image URL or click to upload",
+    "avatarHint": "Paste an image URL to update your avatar",
     "nicknamePlaceholder": "Enter your nickname",
     "save": "Save",
     "cancel": "Cancel",

@@ -120,6 +120,8 @@ pub struct ChildrenTenantReq {
     pub parent_id: Option<i64>,
     pub keyword: Option<String>,
     pub status: Option<i16>,
+    pub limit: Option<i64>,
+    pub offset: Option<i64>,
 }
 
 impl From<ChildrenTenantReq> for ChildrenTenantCmd {
@@ -128,8 +130,16 @@ impl From<ChildrenTenantReq> for ChildrenTenantCmd {
             parent_id: req.parent_id,
             keyword: req.keyword,
             status: req.status,
+            limit: req.limit,
+            offset: req.offset,
         }
     }
+}
+
+#[derive(Debug, Clone, Deserialize, Validate, Default)]
+pub struct TenantAncestorsReq {
+    #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
+    pub id: i64,
 }
 
 #[derive(Debug, Clone, Deserialize, Validate, Default)]

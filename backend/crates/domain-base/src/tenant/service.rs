@@ -49,8 +49,17 @@ pub trait TenantService: Send + Sync {
     /// * `cmd` - The command containing parent and filter details.
     ///
     /// # Returns
-    /// * `AppResult<Vec<Tenant>>` - Direct child tenant items.
-    async fn children(&self, cmd: ChildrenTenantCmd) -> AppResult<Vec<Tenant>>;
+    /// * `AppResult<(Vec<Tenant>, i64)>` - Direct child tenant items and total count.
+    async fn children(&self, cmd: ChildrenTenantCmd) -> AppResult<(Vec<Tenant>, i64)>;
+
+    /// Load the ordered ancestor path including the current tenant.
+    ///
+    /// # Arguments
+    /// * `id` - The tenant id.
+    ///
+    /// # Returns
+    /// * `AppResult<Vec<Tenant>>` - Ordered path from root to current tenant.
+    async fn ancestors(&self, id: i64) -> AppResult<Vec<Tenant>>;
 
     /// Update an existing tenant.
     ///

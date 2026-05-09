@@ -2,10 +2,12 @@
   "settings": {
     "title": "账户设置",
     "subtitle": "管理您的个人信息",
+    "previewTitle": "资料预览",
+    "previewHint": "保存后会同步到顶部导航",
     "username": "用户名",
     "nickname": "昵称",
     "avatar": "头像",
-    "avatarHint": "输入图片 URL 或点击上传",
+    "avatarHint": "粘贴图片 URL 以更新头像",
     "nicknamePlaceholder": "输入您的昵称",
     "save": "保存",
     "cancel": "取消",

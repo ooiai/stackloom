@@ -21,19 +21,36 @@ interface TenantsPageViewProps {
   }
   treeSearch: string
   tree: TenantTreeNode[]
+  searchResults: TenantData[]
+  searchResultPaths: Map<string, string>
   selectedNodeId: string | null
-  selectedNode: TenantTreeNode | null
-  breadcrumb: TenantTreeNode[]
+  selectedNode: TenantData | null
+  breadcrumb: TenantData[]
   children: TenantData[]
   expandedIds: Set<string>
+  childStateByParent: Map<
+    string,
+    {
+      items: TenantData[]
+      total: number
+      pageIndex: number
+      totalPages: number
+      isFetching: boolean
+    }
+  >
+  isSearchMode: boolean
   isFetching: boolean
   isInitialLoading: boolean
   rootPageIndex: number
   totalRootPages: number
+  searchPageIndex: number
+  totalSearchPages: number
   onTreeSearchChange: (value: string) => void
   onToggleExpand: (id: string) => void
   onSelectNode: (id: string | null) => void
-  onPageChange: (pageIndex: number) => void
+  onRootPageChange: (pageIndex: number) => void
+  onSearchPageChange: (pageIndex: number) => void
+  onChildPageChange: (parentId: string, pageIndex: number) => void
   onRefresh: () => void
   onOpenCreateRoot: () => void
   onOpenAddChild: (parentId: string) => void
@@ -45,19 +62,27 @@ export function TenantsPageView({
   permissions,
   treeSearch,
   tree,
+  searchResults,
+  searchResultPaths,
   selectedNodeId,
   selectedNode,
   breadcrumb,
   children,
   expandedIds,
+  childStateByParent,
+  isSearchMode,
   isFetching,
   isInitialLoading,
   rootPageIndex,
   totalRootPages,
+  searchPageIndex,
+  totalSearchPages,
   onTreeSearchChange,
   onToggleExpand,
   onSelectNode,
-  onPageChange,
+  onRootPageChange,
+  onSearchPageChange,
+  onChildPageChange,
   onRefresh,
   onOpenCreateRoot,
   onOpenAddChild,
@@ -67,16 +92,15 @@ export function TenantsPageView({
   const { t } = useI18n()
   const columns = useMemo(
     () =>
-        createTenantColumns({
-          permissions,
-          t,
-        tree,
+      createTenantColumns({
+        permissions,
+        t,
         onSelectNode,
         onOpenAddChild,
         onOpenEdit,
         onDelete,
       }),
-    [onDelete, onOpenAddChild, onOpenEdit, onSelectNode, permissions, t, tree]
+    [onDelete, onOpenAddChild, onOpenEdit, onSelectNode, permissions, t]
   )
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -101,15 +125,23 @@ export function TenantsPageView({
           permissions={permissions}
           treeSearch={treeSearch}
           tree={tree}
+          searchResults={searchResults}
+          searchResultPaths={searchResultPaths}
           selectedNodeId={selectedNodeId}
           expandedIds={expandedIds}
+          childStateByParent={childStateByParent}
+          isSearchMode={isSearchMode}
           isInitialLoading={isInitialLoading}
           rootPageIndex={rootPageIndex}
           totalRootPages={totalRootPages}
+          searchPageIndex={searchPageIndex}
+          totalSearchPages={totalSearchPages}
           onTreeSearchChange={onTreeSearchChange}
           onToggleExpand={onToggleExpand}
           onSelectNode={onSelectNode}
-          onPageChange={onPageChange}
+          onRootPageChange={onRootPageChange}
+          onSearchPageChange={onSearchPageChange}
+          onChildPageChange={onChildPageChange}
           onOpenCreateRoot={onOpenCreateRoot}
           onOpenAddChild={onOpenAddChild}
           onOpenEdit={onOpenEdit}

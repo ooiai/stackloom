@@ -98,6 +98,8 @@
     "subtitle": "浏览学校、校区与部门层级",
     "addRoot": "添加租户",
     "searchPlaceholder": "搜索租户名称、标识或方案编码",
+    "searchResults": "搜索结果",
+    "pageIndicator": "第 {current} / {total} 页",
     "emptySearchTitle": "没有匹配的租户",
     "emptyDefaultTitle": "暂无租户",
     "emptySearchDescription": "换个关键词，或清空搜索",
@@ -122,6 +124,7 @@
     "status": "状态",
     "description": "说明",
     "updatedAt": "更新时间",
-    "childCount": "{count} 子项"
+    "childCount": "{count} 子项",
+    "hasChildren": "有子级"
   }
 }

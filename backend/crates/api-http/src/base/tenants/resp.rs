@@ -23,6 +23,7 @@ pub struct TenantResp {
     pub expired_at: Option<DateTime<Utc>>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    pub has_children: bool,
 }
 
 impl From<Tenant> for TenantResp {
@@ -39,6 +40,7 @@ impl From<Tenant> for TenantResp {
             expired_at: tenant.expired_at,
             created_at: tenant.created_at,
             updated_at: tenant.updated_at,
+            has_children: tenant.has_children,
         }
     }
 }
@@ -108,9 +110,21 @@ impl TenantTreeResp {
 #[derive(Debug, Clone, Serialize)]
 pub struct TenantChildrenResp {
     pub items: Vec<TenantResp>,
+    pub total: usize,
 }
 
 impl TenantChildrenResp {
+    pub fn new(items: Vec<TenantResp>, total: usize) -> Self {
+        Self { items, total }
+    }
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct TenantAncestorsResp {
+    pub items: Vec<TenantResp>,
+}
+
+impl TenantAncestorsResp {
     pub fn new(items: Vec<TenantResp>) -> Self {
         Self { items }
     }

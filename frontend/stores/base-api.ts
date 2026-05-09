@@ -1,11 +1,13 @@
 import { post } from "@/lib/http/axios"
 import type {
-  GetRoleMenusParam,
-  AssignRoleMenusParam,
-  GetRolePermsParam,
-  AssignRolePermsParam,
-  AssignUserRolesParam,
-  ChildrenPermParam,
+    GetRoleMenusParam,
+    AssignRoleMenusParam,
+    GetRolePermsParam,
+    AssignRolePermsParam,
+    AssignUserRolesParam,
+    TenantAncestorsParam,
+    TenantAncestorsResp,
+    ChildrenPermParam,
   ChildrenRoleParam,
   ChildrenMenuParam,
   ChildrenTenantParam,
@@ -165,6 +167,9 @@ export const tenantApi = {
     params: ChildrenTenantParam
   ): Promise<TenantChildrenResp> => {
     return post(`${BASE_TENANT_API_PREFIX}/children`, params)
+  },
+  ancestors: async (params: TenantAncestorsParam): Promise<TenantAncestorsResp> => {
+    return post(`${BASE_TENANT_API_PREFIX}/ancestors`, params)
   },
   update: async (params: UpdateTenantParam): Promise<void> => {
     return post(`${BASE_TENANT_API_PREFIX}/update`, params)

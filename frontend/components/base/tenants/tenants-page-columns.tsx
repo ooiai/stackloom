@@ -1,8 +1,6 @@
 "use client"
 
 import { TenantStatusBadge } from "@/components/base/tenants/tenant-status-badge"
-import { findTenantNode } from "@/components/base/tenants/helpers"
-import type { TenantTreeNode } from "@/components/base/tenants/helpers"
 import { DataGridColumnHeader } from "@/components/reui/data-grid-column-header"
 import { Button } from "@/components/ui/button"
 import {
@@ -29,7 +27,6 @@ import {
 export function createTenantColumns({
   permissions,
   t,
-  tree,
   onSelectNode,
   onOpenAddChild,
   onOpenEdit,
@@ -41,7 +38,6 @@ export function createTenantColumns({
     canDelete: (tenant: TenantData) => boolean
   }
   t: TranslateFn
-  tree: TenantTreeNode[]
   onSelectNode: (id: string | null) => void
   onOpenAddChild: (parentId: string) => void
   onOpenEdit: (tenant: TenantData) => void
@@ -59,12 +55,11 @@ export function createTenantColumns({
         />
       ),
       cell: ({ row }) => {
-        const node = findTenantNode(tree, row.original.id)
-        const childCount = node?.children.length ?? 0
+        const hasChildren = row.original.has_children
 
         return (
           <div className="flex items-center gap-2.5">
-            {childCount > 0 ? (
+            {hasChildren ? (
               <FolderOpenIcon className="size-3.5 text-muted-foreground" />
             ) : (
               <Building2Icon className="size-3.5 text-muted-foreground" />
@@ -80,9 +75,9 @@ export function createTenantColumns({
                 {row.original.slug}
               </div>
             </div>
-            {childCount > 0 ? (
+            {hasChildren ? (
               <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                {t("tenants.table.childCount", { count: childCount })}
+                {t("tenants.table.hasChildren")}
               </span>
             ) : null}
           </div>

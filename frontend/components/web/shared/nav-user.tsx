@@ -1,20 +1,15 @@
 "use client"
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+import { useMemo, useState } from "react"
+
+import { ChevronsUpDown, LogOut, Settings2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
+import { AccountSettingsDialog } from "@/components/base/shared/account-settings-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -36,9 +31,17 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
   const { isMobile } = useSidebar()
   const t = useTranslations("navigation.dashboard.navUser")
   const dialog = useAlertDialog()
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   const displayName = user?.nickname ?? user?.username ?? t("account")
   const tenantName = user?.tenant_name ?? t("planFallback")
+  const detailMeta = useMemo(() => {
+    if (!user?.username) {
+      return tenantName
+    }
+
+    return `${user.username} · ${tenantName}`
+  }, [tenantName, user?.username])
 
   async function executeLogout() {
     try {
@@ -61,103 +64,102 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
   }
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <SidebarMenuButton
-                size="lg"
-                className="rounded-lg bg-background transition-[background-color,color] duration-200 hover:bg-primary/[0.05] hover:text-primary data-[state=open]:bg-primary/[0.08] data-[state=open]:text-primary"
-              >
-                <Avatar size="default">
-                  {user?.avatar_url && (
-                    <AvatarImage
-                      className="bg-primary/5"
-                      src={user.avatar_url}
-                      alt={displayName}
-                    />
-                  )}
-                  <AvatarFallback>
-                    {getNameAbbr(displayName || "SL")}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
-                  <p className="truncate text-xs font-medium text-foreground">
-                    {displayName}
-                  </p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {tenantName}
-                  </p>
-                </div>
+    <>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <SidebarMenuButton
+                  size="lg"
+                  className="rounded-lg bg-background transition-[background-color,color] duration-200 hover:bg-primary/[0.05] hover:text-primary data-[state=open]:bg-primary/[0.08] data-[state=open]:text-primary"
+                >
+                  <Avatar size="default">
+                    {user?.avatar_url && (
+                      <AvatarImage
+                        className="bg-primary/5"
+                        src={user.avatar_url}
+                        alt={displayName}
+                      />
+                    )}
+                    <AvatarFallback>
+                      {getNameAbbr(displayName || "SL")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
+                    <p className="truncate text-xs font-medium text-foreground">
+                      {displayName}
+                    </p>
+                    <p className="truncate text-[11px] text-muted-foreground">
+                      {tenantName}
+                    </p>
+                  </div>
 
-                <ChevronsUpDown className="ml-auto size-4 shrink-0" />
-              </SidebarMenuButton>
-            }
-          />
-          <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
-            sideOffset={4}
-          >
-            <div className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar size="default">
-                  {user?.avatar_url && (
-                    <AvatarImage
-                      className="bg-primary/5"
-                      src={user.avatar_url}
-                      alt={displayName}
-                    />
-                  )}
-                  <AvatarFallback>
-                    {getNameAbbr(displayName || "SL")}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
-                  <p className="truncate text-xs font-medium text-foreground">
-                    {displayName}
-                  </p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {tenantName}
-                  </p>
+                  <ChevronsUpDown className="ml-auto size-4 shrink-0" />
+                </SidebarMenuButton>
+              }
+            />
+            <DropdownMenuContent
+              className="w-(--radix-dropdown-menu-trigger-width) min-w-64 rounded-xl p-1.5"
+              side={isMobile ? "bottom" : "right"}
+              align="end"
+              sideOffset={4}
+            >
+              <div className="rounded-lg bg-muted/40 px-3 py-3 ring-1 ring-border/50">
+                <div className="flex items-center gap-3">
+                  <Avatar size="default">
+                    {user?.avatar_url && (
+                      <AvatarImage
+                        className="bg-primary/5"
+                        src={user.avatar_url}
+                        alt={displayName}
+                      />
+                    )}
+                    <AvatarFallback className="bg-primary/5">
+                      {getNameAbbr(displayName || "SL")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid min-w-0 flex-1 text-left leading-tight">
+                    <p className="truncate text-sm font-medium text-foreground">
+                      {displayName}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {detailMeta}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="hover:bg-primary/5 focus:bg-primary/5">
-                <Sparkles />
-                {t("upgrade")}
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="hover:bg-primary/5 focus:bg-primary/5">
-                <BadgeCheck />
+
+              <DropdownMenuSeparator className="my-1" />
+
+              <DropdownMenuItem
+                onSelect={() => setSettingsOpen(true)}
+                className="rounded-md hover:bg-primary/5 focus:bg-primary/5"
+              >
+                <Settings2 className="size-4" />
                 {t("account")}
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:bg-primary/5 focus:bg-primary/5">
-                <CreditCard />
-                {t("billing")}
+
+              <DropdownMenuSeparator className="my-1" />
+
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={handleLogout}
+                className="rounded-md"
+              >
+                <LogOut className="size-4" />
+                {t("logout")}
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:bg-primary/5 focus:bg-primary/5">
-                <Bell />
-                {t("notifications")}
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="hover:bg-primary/5 focus:bg-primary/5"
-            >
-              <LogOut />
-              {t("logout")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+
+      <AccountSettingsDialog
+        user={user}
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+      />
+    </>
   )
 }

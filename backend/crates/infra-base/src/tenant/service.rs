@@ -125,14 +125,25 @@ where
             .collect())
     }
 
-    async fn children(&self, cmd: ChildrenTenantCmd) -> AppResult<Vec<Tenant>> {
+    async fn children(&self, cmd: ChildrenTenantCmd) -> AppResult<(Vec<Tenant>, i64)> {
         self.repository
             .list_by_parent(&TenantChildrenQuery {
                 parent_id: cmd.parent_id,
                 keyword: cmd.keyword,
                 status: cmd.status,
+                limit: cmd.limit,
+                offset: cmd.offset,
             })
             .await
+    }
+
+    async fn ancestors(&self, id: i64) -> AppResult<Vec<Tenant>> {
+        self.repository
+            .find_by_id(id)
+            .await?
+            .ok_or_else(|| AppError::not_found_here(format!("tenant not found: {id}")))?;
+
+        self.repository.list_ancestors(id).await
     }
 
     async fn update(&self, id: i64, cmd: UpdateTenantCmd) -> AppResult<Tenant> {

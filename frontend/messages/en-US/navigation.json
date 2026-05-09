@@ -12,6 +12,7 @@
     "fallbackName": "Current user",
     "fallbackMeta": "Current workspace",
     "emailUnavailable": "No email available",
+    "accountSettings": "Account Settings",
     "logout": "Log out",
     "logoutConfirmTitle": "Confirm logout",
     "logoutConfirmDescription": "You will be signed out from this device.",
