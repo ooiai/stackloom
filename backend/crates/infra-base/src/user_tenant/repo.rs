@@ -1,7 +1,10 @@
 use std::sync::Arc;
 
 use chrono::Utc;
-use domain_base::{UserTenant, UserTenantRepository, user_tenant::UserTenantPageQuery};
+use domain_base::{
+    TenantMemberView, UserTenant, UserTenantRepository,
+    user_tenant::{TenantMemberPageQuery, UserTenantPageQuery},
+};
 use neocrates::{
     async_trait::async_trait,
     response::error::{AppError, AppResult},
@@ -9,7 +12,7 @@ use neocrates::{
 };
 use sqlx::QueryBuilder;
 
-use super::UserTenantRow;
+use super::{TenantMemberViewRow, UserTenantRow};
 
 #[derive(Debug, Clone)]
 pub struct SqlxUserTenantRepository {
@@ -352,5 +355,92 @@ impl UserTenantRepository for SqlxUserTenantRepository {
         .map_err(Self::map_sqlx_error)?;
 
         Ok(row.map(Into::into))
+    }
+
+    async fn page_members_by_tenant(
+        &self,
+        query: &TenantMemberPageQuery,
+    ) -> AppResult<(Vec<TenantMemberView>, i64)> {
+        let mut count_builder = QueryBuilder::new(
+            r#"
+            SELECT COUNT(*) AS total
+            FROM user_tenants ut
+            INNER JOIN users u ON u.id = ut.user_id AND u.deleted_at IS NULL
+            WHERE ut.deleted_at IS NULL
+              AND ut.tenant_id =
+            "#,
+        );
+        count_builder.push_bind(query.tenant_id);
+
+        if let Some(keyword) = query.keyword.as_ref() {
+            let pattern = format!("%{}%", keyword.trim());
+            count_builder.push(" AND (u.username ILIKE ");
+            count_builder.push_bind(pattern.clone());
+            count_builder.push(" OR u.nickname ILIKE ");
+            count_builder.push_bind(pattern.clone());
+            count_builder.push(" OR u.email ILIKE ");
+            count_builder.push_bind(pattern);
+            count_builder.push(")");
+        }
+
+        let total: i64 = count_builder
+            .build_query_scalar()
+            .fetch_one(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        let mut builder = QueryBuilder::new(
+            r#"
+            SELECT
+                ut.id,
+                ut.user_id,
+                ut.tenant_id,
+                u.username,
+                u.nickname,
+                u.email,
+                u.avatar_url,
+                ut.display_name,
+                ut.job_title,
+                ut.status,
+                ut.is_tenant_admin,
+                ut.joined_at
+            FROM user_tenants ut
+            INNER JOIN users u ON u.id = ut.user_id AND u.deleted_at IS NULL
+            WHERE ut.deleted_at IS NULL
+              AND ut.tenant_id =
+            "#,
+        );
+        builder.push_bind(query.tenant_id);
+
+        if let Some(keyword) = query.keyword.as_ref() {
+            let pattern = format!("%{}%", keyword.trim());
+            builder.push(" AND (u.username ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR u.nickname ILIKE ");
+            builder.push_bind(pattern.clone());
+            builder.push(" OR u.email ILIKE ");
+            builder.push_bind(pattern);
+            builder.push(")");
+        }
+
+        builder.push(" ORDER BY ut.joined_at ASC");
+
+        if let Some(limit) = query.limit {
+            builder.push(" LIMIT ");
+            builder.push_bind(limit);
+        }
+
+        if let Some(offset) = query.offset {
+            builder.push(" OFFSET ");
+            builder.push_bind(offset);
+        }
+
+        let rows: Vec<TenantMemberViewRow> = builder
+            .build_query_as()
+            .fetch_all(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        Ok((rows.into_iter().map(Into::into).collect(), total))
     }
 }

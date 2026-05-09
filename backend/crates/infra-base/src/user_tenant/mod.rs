@@ -5,7 +5,7 @@ pub use repo::SqlxUserTenantRepository;
 pub use service::UserTenantServiceImpl;
 
 use chrono::{DateTime, Utc};
-use domain_base::UserTenant;
+use domain_base::{TenantMemberView, UserTenant};
 use sqlx::FromRow;
 
 #[derive(Debug, Clone, FromRow)]
@@ -43,6 +43,42 @@ impl From<UserTenantRow> for UserTenant {
             created_at: row.created_at,
             updated_at: row.updated_at,
             deleted_at: row.deleted_at,
+        }
+    }
+}
+
+/// Flat row from the user_tenants + users JOIN used by the web members endpoint.
+#[derive(Debug, Clone, FromRow)]
+pub struct TenantMemberViewRow {
+    pub id: i64,
+    pub user_id: i64,
+    pub tenant_id: i64,
+    pub username: String,
+    pub nickname: Option<String>,
+    pub email: Option<String>,
+    pub avatar_url: Option<String>,
+    pub display_name: Option<String>,
+    pub job_title: Option<String>,
+    pub status: i16,
+    pub is_tenant_admin: bool,
+    pub joined_at: DateTime<Utc>,
+}
+
+impl From<TenantMemberViewRow> for TenantMemberView {
+    fn from(row: TenantMemberViewRow) -> Self {
+        Self {
+            id: row.id,
+            user_id: row.user_id,
+            tenant_id: row.tenant_id,
+            username: row.username,
+            nickname: row.nickname,
+            email: row.email,
+            avatar_url: row.avatar_url,
+            display_name: row.display_name,
+            job_title: row.job_title,
+            status: row.status,
+            is_tenant_admin: row.is_tenant_admin,
+            joined_at: row.joined_at,
         }
     }
 }

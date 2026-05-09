@@ -1,8 +1,9 @@
 use std::sync::Arc;
 
 use domain_base::{
-    CreateUserTenantCmd, PageUserTenantCmd, UpdateUserTenantCmd, UserTenant, UserTenantRepository,
-    UserTenantService, user_tenant::UserTenantPageQuery,
+    CreateUserTenantCmd, PageTenantMemberCmd, PageUserTenantCmd, TenantMemberView,
+    UpdateUserTenantCmd, UserTenant, UserTenantRepository, UserTenantService,
+    user_tenant::{TenantMemberPageQuery, UserTenantPageQuery},
 };
 use neocrates::{
     async_trait::async_trait,
@@ -109,5 +110,18 @@ where
         self.repository
             .find_by_user_and_tenant(user_id, tenant_id)
             .await
+    }
+
+    async fn page_members(
+        &self,
+        cmd: PageTenantMemberCmd,
+    ) -> AppResult<(Vec<TenantMemberView>, i64)> {
+        let query = TenantMemberPageQuery {
+            tenant_id: cmd.tenant_id,
+            keyword: cmd.keyword,
+            limit: cmd.limit,
+            offset: cmd.offset,
+        };
+        self.repository.page_members_by_tenant(&query).await
     }
 }

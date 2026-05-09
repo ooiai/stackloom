@@ -25,7 +25,7 @@ pub use perm::{CreatePermCmd, PagePermCmd, Perm, UpdatePermCmd};
 pub mod user_tenant;
 pub use user_tenant::repo::UserTenantRepository;
 pub use user_tenant::service::UserTenantService;
-pub use user_tenant::{CreateUserTenantCmd, PageUserTenantCmd, UpdateUserTenantCmd, UserTenant};
+pub use user_tenant::{CreateUserTenantCmd, PageTenantMemberCmd, PageUserTenantCmd, TenantMemberView, UpdateUserTenantCmd, UserTenant};
 pub mod user_tenant_role;
 pub use user_tenant_role::repo::UserTenantRoleRepository;
 pub use user_tenant_role::service::UserTenantRoleService;

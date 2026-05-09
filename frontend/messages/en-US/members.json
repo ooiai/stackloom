@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "Members",
+    "memberCount": "{count} members",
+    "search": "Search",
+    "inviteMembers": "Invite Members",
+    "emptyTitle": "No members found",
+    "emptyDescription": "Try adjusting the search keyword."
+  },
+  "table": {
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "joined": "Joined"
+  },
+  "roles": {
+    "admin": "Admin",
+    "member": "Member"
+  }
+}

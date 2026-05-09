@@ -188,3 +188,39 @@ pub struct UserTenantPageQuery {
     pub limit: Option<i64>,
     pub offset: Option<i64>,
 }
+
+/// Read-only view joining user_tenants with the users table.
+/// Used for the web-facing member list endpoint.
+#[derive(Debug, Clone)]
+pub struct TenantMemberView {
+    pub id: i64,
+    pub user_id: i64,
+    pub tenant_id: i64,
+    pub username: String,
+    pub nickname: Option<String>,
+    pub email: Option<String>,
+    pub avatar_url: Option<String>,
+    pub display_name: Option<String>,
+    pub job_title: Option<String>,
+    pub status: i16,
+    pub is_tenant_admin: bool,
+    pub joined_at: DateTime<Utc>,
+}
+
+/// Command for paginating tenant members via the web API.
+#[derive(Debug, Clone, Default)]
+pub struct PageTenantMemberCmd {
+    pub tenant_id: i64,
+    pub keyword: Option<String>,
+    pub limit: Option<i64>,
+    pub offset: Option<i64>,
+}
+
+/// Internal page query forwarded to the repository layer.
+#[derive(Debug, Clone, Default)]
+pub struct TenantMemberPageQuery {
+    pub tenant_id: i64,
+    pub keyword: Option<String>,
+    pub limit: Option<i64>,
+    pub offset: Option<i64>,
+}

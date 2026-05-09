@@ -16,3 +16,4 @@ pub use base::users::{
 pub use base::{BaseHttpState, router as base_router};
 pub use shared::{SharedHttpState, router as shared_router};
 pub use system::{SysHttpState, router as system_router};
+pub use web::{WebHttpState, router as web_router};
