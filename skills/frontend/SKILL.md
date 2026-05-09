@@ -127,6 +127,7 @@ frontend/components/base/roles/
 ```
 
 When implementing a secondary assign dialog:
+
 1. Create `use-<resource>-assign-<target>.ts` inside the feature `hooks/` directory.
 2. Create `<resource>-assign-<target>-dialog.tsx` for the dialog shell and checkbox list.
 3. Keep the assignment API call in `stores/<group>-api.ts` alongside the primary CRUD calls.
@@ -136,20 +137,21 @@ frontend/components/auth/
 ├── auth-page-shell.tsx
 ├── captcha-slider.tsx
 ├── signin/
-│   ├── hooks/
-│   │   └── use-signin-controller.ts
-│   ├── helpers.ts
-│   ├── signin-form-fields.tsx
-│   ├── signin-page-view.tsx
-│   └── signin-tenant-dialog.tsx
+│ ├── hooks/
+│ │ └── use-signin-controller.ts
+│ ├── helpers.ts
+│ ├── signin-form-fields.tsx
+│ ├── signin-page-view.tsx
+│ └── signin-tenant-dialog.tsx
 └── signup/
-    ├── hooks/
-    │   └── use-signup-controller.ts
-    ├── helpers.ts
-    ├── signup-form-fields.tsx
-    ├── signup-page-view.tsx
-    └── signup-success-state.tsx
-```
+├── hooks/
+│ └── use-signup-controller.ts
+├── helpers.ts
+├── signup-form-fields.tsx
+├── signup-page-view.tsx
+└── signup-success-state.tsx
+
+````
 
 Use the same layering for new features:
 
@@ -183,6 +185,7 @@ These rules are strict:
 
 - Do not edit `frontend/components/ui/**` unless the task explicitly requires changing a shared primitive.
 - Do not edit `frontend/components/reui/**` unless the task explicitly requires changing a shared wrapper.
+- Do not edit `frontend/components/tremor/**` unless the task explicitly requires changing a shared wrapper.
 - Prefer creating or changing feature components under `frontend/components/base/**`, `frontend/components/auth/**`, or `frontend/components/topui/**`.
 - Keep feature-private hooks inside the feature directory, not in `frontend/hooks`.
 - Keep feature-private helpers inside the feature directory, not in `frontend/lib`.
@@ -305,7 +308,7 @@ frontend/
 │   ├── index.ts
 │   └── server.ts
 └── providers/i18n-provider.tsx
-```
+````
 
 Rules:
 
@@ -369,17 +372,17 @@ When changing auth pages, preserve that richer flow instead of collapsing it int
 Auth pages should follow the same thin-route rule as `users` / `menus`:
 
 1. `app/(auth)/<feature>/page.tsx`
-   - call one auth controller hook
-   - render one auth page view
-   - mount one auth dialog when needed
+    - call one auth controller hook
+    - render one auth page view
+    - mount one auth dialog when needed
 2. `components/auth/<feature>/hooks/use-*-controller.ts`
-   - own local form state, mutations, captcha flow, redirects, and success-state switching
+    - own local form state, mutations, captcha flow, redirects, and success-state switching
 3. `components/auth/<feature>/*-page-view.tsx`
-   - compose the branded auth shell and presentation pieces only
+    - compose the branded auth shell and presentation pieces only
 4. `components/auth/<feature>/helpers.ts`
-   - own auth schema and payload shaping
+    - own auth schema and payload shaping
 5. `components/auth/<feature>/*-form-fields.tsx` / `*-dialog.tsx` / `*-success-state.tsx`
-   - keep them presentational
+    - keep them presentational
 
 ## Preferred implementation checklist
 
