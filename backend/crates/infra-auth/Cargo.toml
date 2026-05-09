@@ -20,6 +20,8 @@ neocrates = { workspace = true, features = [
   "auth",
   "captcha",
   "sqlx",
+  "sms",
+  "email",
 ] }
 chrono = { workspace = true, features = ["serde"] }
 bon.workspace = true

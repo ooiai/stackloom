@@ -373,6 +373,18 @@ pub async fn assign_roles(
         .user_tenant_role_service
         .replace_by_membership(membership.id, &role_ids)
         .await?;
+    if let Err(err) = state
+        .shared_context_service
+        .invalidate_by_user_tenant(req.user_id, auth_user.tid)
+        .await
+    {
+        tracing::warn!(
+            user_id = %req.user_id,
+            tenant_id = %auth_user.tid,
+            error = %err,
+            "assign_user_roles: failed to invalidate shared context cache"
+        );
+    }
 
     // Write audit log.
     logging::write_mutation_logs(

@@ -20,18 +20,20 @@ use neocrates::{
 use std::sync::Arc;
 
 use crate::{
-    redis_init::RedisInit, sms_init::SmsInit, sqlx_init::SqlxInit, sqlx_migrations::SqlxMigrations,
+    email_init::EmailInit, redis_init::RedisInit, sms_init::SmsInit, sqlx_init::SqlxInit,
+    sqlx_migrations::SqlxMigrations,
 };
 use infra_auth::AuthServiceImpl;
 use infra_base::{
-    DictServiceImpl, MenuServiceImpl, PermServiceImpl, RoleServiceImpl, TenantServiceImpl,
-    UserServiceImpl, UserTenantRoleServiceImpl, UserTenantServiceImpl,
+    DictServiceImpl, MenuServiceImpl, PermServiceImpl, RoleServiceImpl, SharedContextServiceImpl,
+    TenantServiceImpl, UserServiceImpl, UserTenantRoleServiceImpl, UserTenantServiceImpl,
 };
 use infra_system::{AuditLogServiceImpl, MonitorServiceImpl, SysModule, SystemLogServiceImpl};
 use infra_web::OperationLogServiceImpl;
 
 mod diesel_init;
 mod diesel_migrations;
+mod email_init;
 mod redis_init;
 mod sms_init;
 mod sqlx_init;
@@ -87,6 +89,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     let trace_layer = ServiceBuilder::new().layer(TraceLayer::new_for_http());
     // SMS Config initialization
     let sms_config = SmsInit::init(cfg.clone());
+    // Email Config initialization
+    let email_config = EmailInit::init(cfg.clone());
     let system_log_service = Arc::new(SystemLogServiceImpl::new(base_pool.clone()));
     let audit_log_service = Arc::new(AuditLogServiceImpl::new(base_pool.clone()));
     let operation_log_service = Arc::new(OperationLogServiceImpl::new(base_pool.clone()));
@@ -106,9 +110,21 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     let perm_service = Arc::new(PermServiceImpl::new(base_pool.clone()));
     let user_tenant_service = Arc::new(UserTenantServiceImpl::new(base_pool.clone()));
     let user_tenant_role_service = Arc::new(UserTenantRoleServiceImpl::new(base_pool.clone()));
+    let shared_context_service = Arc::new(SharedContextServiceImpl::new(
+        base_pool.clone(),
+        user_service.clone(),
+        tenant_service.clone(),
+        user_tenant_service.clone(),
+        user_tenant_role_service.clone(),
+        role_service.clone(),
+        redis_pool.clone(),
+        cfg.server.prefix.clone(),
+    ));
     let auth_service = Arc::new(AuthServiceImpl::new(
         base_pool.clone(),
         redis_pool.clone(),
+        sms_config.clone(),
+        email_config.clone(),
         cfg.server.prefix.clone(),
         cfg.auth.expires_at,
         cfg.auth.refresh_expires_at,
@@ -130,21 +146,25 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         menu_service: menu_service.clone(),
         role_service: role_service.clone(),
         perm_service,
-        user_tenant_service,
-        user_tenant_role_service,
+        user_tenant_service: user_tenant_service.clone(),
+        user_tenant_role_service: user_tenant_role_service.clone(),
+        shared_context_service: shared_context_service.clone(),
         system_log_service: system_log_service.clone(),
         audit_log_service: audit_log_service.clone(),
         operation_log_service: operation_log_service.clone(),
     };
     let shared_http_state = SharedHttpState {
         menu_service,
-        role_code_service: role_service,
-        user_service,
+        shared_context_service,
         tenant_service,
     };
     let auth_http_state = AuthHttpState {
         auth_service,
         system_log_service: system_log_service.clone(),
+        sms_config: sms_config.clone(),
+        email_config,
+        redis_pool: redis_pool.clone(),
+        cfg: cfg.clone(),
     };
 
     let sys = SysModule::new(cfg.as_ref().clone(), redis_pool.as_ref().clone());
@@ -155,6 +175,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         aws_sts_service: sys.aws_sts_service.clone(),
         object_storage_service: sys.object_storage_service.clone(),
         sms_config,
+        email_config: EmailInit::init(cfg.clone()),
         system_log_service,
         audit_log_service,
         monitor_service,

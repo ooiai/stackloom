@@ -1,4 +1,7 @@
-use domain_auth::{AccountSigninCmd, QuerySigninTenantsCmd, RefreshAuthCmd};
+use domain_auth::{
+    AccountSigninCmd, QuerySigninTenantsCmd, RecoveryChannel, RefreshAuthCmd, ResetPasswordCmd,
+    SendPasswordResetCodeCmd,
+};
 use neocrates::{helper::core::serde_helpers, serde::Deserialize};
 use validator::Validate;
 
@@ -81,5 +84,52 @@ impl From<RefreshTokenReq> for RefreshAuthCmd {
             access_token: req.access_token,
             refresh_token: req.refresh_token,
         }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Validate)]
+pub struct SendPasswordResetCodeReq {
+    #[validate(length(min = 1))]
+    pub channel: String,
+    #[validate(length(min = 1, max = 100))]
+    pub account: String,
+    #[validate(length(min = 1))]
+    pub code: String,
+}
+
+impl TryFrom<SendPasswordResetCodeReq> for SendPasswordResetCodeCmd {
+    type Error = neocrates::response::error::AppError;
+
+    fn try_from(req: SendPasswordResetCodeReq) -> Result<Self, Self::Error> {
+        Ok(Self {
+            channel: RecoveryChannel::parse(req.channel.as_str())?,
+            account: req.account,
+            code: req.code,
+        })
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Validate)]
+pub struct ResetPasswordReq {
+    #[validate(length(min = 1))]
+    pub channel: String,
+    #[validate(length(min = 1, max = 100))]
+    pub account: String,
+    #[validate(length(min = 6, max = 6))]
+    pub captcha: String,
+    #[validate(length(min = 8))]
+    pub new_password: String,
+}
+
+impl TryFrom<ResetPasswordReq> for ResetPasswordCmd {
+    type Error = neocrates::response::error::AppError;
+
+    fn try_from(req: ResetPasswordReq) -> Result<Self, Self::Error> {
+        Ok(Self {
+            channel: RecoveryChannel::parse(req.channel.as_str())?,
+            account: req.account,
+            captcha: req.captcha,
+            new_password: req.new_password,
+        })
     }
 }

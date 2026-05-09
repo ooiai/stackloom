@@ -62,15 +62,15 @@ impl UserTenant {
         }
 
         if let Some(display_name) = cmd.display_name {
-            self.display_name = Some(display_name);
+            self.display_name = display_name;
         }
 
         if let Some(employee_no) = cmd.employee_no {
-            self.employee_no = Some(employee_no);
+            self.employee_no = employee_no;
         }
 
         if let Some(job_title) = cmd.job_title {
-            self.job_title = Some(job_title);
+            self.job_title = job_title;
         }
 
         if let Some(status) = cmd.status {
@@ -133,9 +133,9 @@ impl CreateUserTenantCmd {
 pub struct UpdateUserTenantCmd {
     pub user_id: Option<i64>,
     pub tenant_id: Option<i64>,
-    pub display_name: Option<String>,
-    pub employee_no: Option<String>,
-    pub job_title: Option<String>,
+    pub display_name: Option<Option<String>>,
+    pub employee_no: Option<Option<String>>,
+    pub job_title: Option<Option<String>>,
     pub status: Option<i16>,
     pub is_default: Option<bool>,
     pub is_tenant_admin: Option<bool>,
@@ -145,26 +145,29 @@ pub struct UpdateUserTenantCmd {
 
 impl UpdateUserTenantCmd {
     pub fn validate(&self) -> AppResult<()> {
-        if let Some(value) = self.display_name.as_ref() {
-            if value.trim().is_empty() {
+        if let Some(Some(value)) = self.display_name.as_ref() {
+            let value = value.trim();
+            if value.is_empty() || value.len() > 100 {
                 return Err(AppError::ValidationError(
-                    "display_name cannot be empty".to_string(),
+                    "display_name must be 1..=100 chars".to_string(),
                 ));
             }
         }
 
-        if let Some(value) = self.employee_no.as_ref() {
-            if value.trim().is_empty() {
+        if let Some(Some(value)) = self.employee_no.as_ref() {
+            let value = value.trim();
+            if value.is_empty() || value.len() > 100 {
                 return Err(AppError::ValidationError(
-                    "employee_no cannot be empty".to_string(),
+                    "employee_no must be 1..=100 chars".to_string(),
                 ));
             }
         }
 
-        if let Some(value) = self.job_title.as_ref() {
-            if value.trim().is_empty() {
+        if let Some(Some(value)) = self.job_title.as_ref() {
+            let value = value.trim();
+            if value.is_empty() || value.len() > 100 {
                 return Err(AppError::ValidationError(
-                    "job_title cannot be empty".to_string(),
+                    "job_title must be 1..=100 chars".to_string(),
                 ));
             }
         }

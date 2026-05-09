@@ -225,6 +225,13 @@ pub async fn update(
         logging::serialize_snapshot(TenantResp::from(state.tenant_service.get(id).await?));
     let cmd: UpdateTenantCmd = req.into();
     let tenant = state.tenant_service.update(id, cmd).await?;
+    if let Err(err) = state.shared_context_service.invalidate_by_tenant(id).await {
+        tracing::warn!(
+            tenant_id = %id,
+            error = %err,
+            "tenants.update: failed to invalidate shared context cache by tenant"
+        );
+    }
     let after_snapshot = logging::serialize_snapshot(TenantResp::from(tenant));
     logging::write_mutation_logs(
         &state,

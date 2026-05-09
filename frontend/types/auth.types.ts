@@ -41,3 +41,18 @@ export interface AccountSignupResult {
   tenant_slug: string
   signin_path: string
 }
+
+export type RecoveryChannel = "phone" | "email"
+
+export interface SendPasswordResetCodeParam {
+  channel: RecoveryChannel
+  account: string
+  code: string
+}
+
+export interface ResetPasswordParam {
+  channel: RecoveryChannel
+  account: string
+  captcha: string
+  new_password: string
+}

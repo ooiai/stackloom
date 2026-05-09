@@ -1,9 +1,15 @@
 use super::{
-    req::{AccountSigninReq, QuerySigninTenantsReq, RefreshTokenReq},
+    req::{
+        AccountSigninReq, QuerySigninTenantsReq, RefreshTokenReq, ResetPasswordReq,
+        SendPasswordResetCodeReq,
+    },
     resp::{AuthTokenResp, SigninTenantOptionResp},
 };
 use crate::auth::AuthHttpState;
-use domain_auth::{AccountSigninCmd, QuerySigninTenantsCmd, RefreshAuthCmd};
+use domain_auth::{
+    AccountSigninCmd, QuerySigninTenantsCmd, RefreshAuthCmd, ResetPasswordCmd,
+    SendPasswordResetCodeCmd,
+};
 use neocrates::{
     axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
@@ -105,5 +111,43 @@ pub async fn logout(
 ) -> AppResult<Json<()>> {
     tracing::info!("logout auth user uid: {}", auth_user.uid);
     state.auth_service.logout(auth_user.uid).await?;
+    Ok(Json(()))
+}
+
+/// Send a password reset captcha code to phone/email.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `req` - The request with account and captcha payload.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the operation.
+pub async fn send_password_reset_code(
+    State(state): State<SigninState>,
+    DetailedJson(req): DetailedJson<SendPasswordResetCodeReq>,
+) -> AppResult<Json<()>> {
+    req.validate()
+        .map_err(|err| AppError::ValidationError(err.to_string()))?;
+    let cmd: SendPasswordResetCodeCmd = req.try_into()?;
+    state.auth_service.send_password_reset_code(cmd).await?;
+    Ok(Json(()))
+}
+
+/// Reset password after captcha verification.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `req` - The request with account, new password, captcha, and captcha key payload.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the operation.
+pub async fn reset_password(
+    State(state): State<SigninState>,
+    DetailedJson(req): DetailedJson<ResetPasswordReq>,
+) -> AppResult<Json<()>> {
+    req.validate()
+        .map_err(|err| AppError::ValidationError(err.to_string()))?;
+    let cmd: ResetPasswordCmd = req.try_into()?;
+    state.auth_service.reset_password(cmd).await?;
     Ok(Json(()))
 }

@@ -39,11 +39,12 @@
       "defaultTenantRoleExists": "Default tenant role already exists. Please contact an administrator.",
       "tenantMembershipExists": "This account is already linked to the tenant. Please sign in directly.",
       "tenantMembershipRoleExists": "This role has already been assigned. No duplicate assignment allowed.",
-      "resourceExists": "The related resource already exists. No duplicate operation allowed.",
-      "accountNotFound": "Account not found. Please check the input or sign up.",
-      "accountDisabled": "Account has been disabled. Please contact an administrator.",
-      "credentialInvalid": "Incorrect password. Please try again."
-    },
+        "resourceExists": "The related resource already exists. No duplicate operation allowed.",
+        "accountNotFound": "Account not found. Please check the input or sign up.",
+        "accountDisabled": "Account has been disabled. Please contact an administrator.",
+        "credentialInvalid": "Incorrect password. Please try again.",
+        "recoveryCodeInvalid": "Verification code is invalid or expired."
+      },
     "users": {
       "usernameExists": "This username is already taken. Please choose a different one.",
       "emailExists": "This email is already registered. Please use a different one or sign in.",

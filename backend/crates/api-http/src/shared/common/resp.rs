@@ -110,8 +110,13 @@ pub struct HeaderContextUserResp {
     #[serde(serialize_with = "serde_helpers::serialize_i64")]
     pub id: i64,
     pub username: String,
+    pub email: Option<String>,
+    pub phone: Option<String>,
     pub nickname: Option<String>,
     pub avatar_url: Option<String>,
+    pub display_name: Option<String>,
+    pub employee_no: Option<String>,
+    pub job_title: Option<String>,
     pub tenant_name: String,
     #[serde(serialize_with = "serde_helpers::serialize_i64")]
     pub tenant_id: i64,
@@ -122,6 +127,28 @@ pub struct HeaderContextResp {
     pub user: HeaderContextUserResp,
     pub menu_codes: Vec<String>,
     pub perm_codes: Vec<String>,
+}
+
+impl From<domain_base::SharedHeaderContext> for HeaderContextResp {
+    fn from(value: domain_base::SharedHeaderContext) -> Self {
+        Self {
+            user: HeaderContextUserResp {
+                id: value.user.id,
+                username: value.user.username,
+                email: value.user.email,
+                phone: value.user.phone,
+                nickname: value.user.nickname,
+                avatar_url: value.user.avatar_url,
+                display_name: value.user.display_name,
+                employee_no: value.user.employee_no,
+                job_title: value.user.job_title,
+                tenant_name: value.user.tenant_name,
+                tenant_id: value.user.tenant_id,
+            },
+            menu_codes: value.menu_codes,
+            perm_codes: value.perm_codes,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize)]

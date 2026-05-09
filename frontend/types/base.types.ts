@@ -131,8 +131,13 @@ export interface PermTreeNodeData extends PermData {
 export interface HeaderContextUserData {
   id: string
   username: string
+  email: string | null
+  phone: string | null
   nickname: string | null
   avatar_url: string | null
+  display_name: string | null
+  employee_no: string | null
+  job_title: string | null
   tenant_name: string
   tenant_id: string
 }
@@ -141,6 +146,30 @@ export interface HeaderContextData {
   user: HeaderContextUserData
   menu_codes: string[]
   perm_codes: string[]
+}
+
+export interface UserProfileData {
+  id: string
+  username: string
+  email: string | null
+  phone: string | null
+  nickname: string | null
+  avatar_url: string | null
+  display_name: string | null
+  employee_no: string | null
+  job_title: string | null
+  tenant_id: string
+  tenant_name: string
+}
+
+export interface UpdateUserProfileParam {
+  email?: string | null
+  phone?: string | null
+  nickname?: string | null
+  avatar_url?: string | null
+  display_name?: string | null
+  employee_no?: string | null
+  job_title?: string | null
 }
 
 export interface MyTenantData {

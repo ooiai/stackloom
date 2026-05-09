@@ -9,6 +9,7 @@ import {
   buildUpdateTenantParam,
 } from "@/components/base/tenants/helpers"
 import type { TenantTreeNode } from "@/components/base/tenants/helpers"
+import { invalidateHeaderSharedQueries } from "@/hooks/use-header-context"
 import { usePermissionAccess } from "@/hooks/use-permission-access"
 import { useAlertDialog } from "@/providers/dialog-providers"
 import { useI18n } from "@/providers/i18n-provider"
@@ -327,7 +328,10 @@ export function useTenantsController() {
       await tenantApi.update(buildUpdateTenantParam(tenant.id, values, t))
     },
     onSuccess: async () => {
-      await invalidateTenantQueries()
+      await Promise.all([
+        invalidateTenantQueries(),
+        invalidateHeaderSharedQueries(queryClient),
+      ])
       setRootPageIndex(0)
       toast.success(t("tenants.toast.updated"))
       setSheet(DEFAULT_SHEET_STATE)

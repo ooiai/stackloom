@@ -1,34 +1,64 @@
 use neocrates::{
     axum::{Extension, Json, extract::State},
+    helper::core::axum_extractor::DetailedJson,
     middlewares::models::AuthModel,
-    response::error::AppResult,
+    response::error::{AppError, AppResult},
     tracing,
 };
+use validator::Validate;
 
-use super::{SharedHttpState, resp::UserProfileResp};
+use super::{SharedHttpState, req::UpdateProfileReq, resp::UserProfileResp};
 
 /// Get the authenticated user's profile.
 ///
 /// # Arguments
-/// * `state` - The shared HTTP state containing the user service.
-/// * `auth_user` - The authenticated user extracted by the JWT middleware.
+/// - `State(state)`: The shared HTTP state containing the shared context service.
+/// - `Extension(auth_user)`: The authenticated user's information extracted from the request context.
 ///
 /// # Returns
-/// A `UserProfileResp` with id, username, nickname, email, avatar_url, and tenant name.
+/// - `AppResult<Json<UserProfileResp>>`: The user's profile information wrapped in a JSON response, or an error if the operation fails.
 pub async fn get(
     State(state): State<SharedHttpState>,
     Extension(auth_user): Extension<AuthModel>,
 ) -> AppResult<Json<UserProfileResp>> {
     tracing::info!("...Get User Profile for uid: {}...", auth_user.uid);
 
-    let user = state.user_service.get(auth_user.uid).await?;
+    let profile = state
+        .shared_context_service
+        .get_profile(auth_user.uid, auth_user.tid)
+        .await?;
 
-    Ok(Json(UserProfileResp {
-        id: user.id,
-        username: user.username,
-        nickname: user.nickname,
-        email: user.email,
-        avatar_url: user.avatar_url,
-        tenant_name: auth_user.tname,
-    }))
+    Ok(Json(UserProfileResp::from(profile)))
+}
+
+/// Update the authenticated user's profile and current tenant membership fields.
+///
+/// # Arguments
+/// - `State(state)`: The shared HTTP state containing the shared context service.
+/// - `Extension(auth_user)`: The authenticated user's information extracted from the request context.
+/// - `DetailedJson(req)`: The request body containing the fields to update, wrapped in a `DetailedJson` extractor for validation and error handling.
+///
+/// # Returns
+/// - `AppResult<Json<UserProfileResp>>`: The updated user's profile information wrapped in a JSON response, or an error if the operation fails.
+pub async fn update(
+    State(state): State<SharedHttpState>,
+    Extension(auth_user): Extension<AuthModel>,
+    DetailedJson(req): DetailedJson<UpdateProfileReq>,
+) -> AppResult<Json<UserProfileResp>> {
+    tracing::info!(
+        "...Update User Profile Req: uid={}, tid={}...",
+        auth_user.uid,
+        auth_user.tid
+    );
+
+    req.validate()
+        .map_err(|err| AppError::ValidationError(err.to_string()))?;
+
+    let cmd = req.into_cmd();
+    let profile = state
+        .shared_context_service
+        .update_profile(auth_user.uid, auth_user.tid, cmd)
+        .await?;
+
+    Ok(Json(UserProfileResp::from(profile)))
 }

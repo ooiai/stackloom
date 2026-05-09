@@ -2,8 +2,8 @@ use std::sync::Arc;
 
 use common::config::env_config::EnvConfig;
 use domain_base::{
-    DictService, MenuService, PermService, RoleService, TenantService, UserService,
-    UserTenantRoleService, UserTenantService,
+    DictService, MenuService, PermService, RoleService, SharedContextService, TenantService,
+    UserService, UserTenantRoleService, UserTenantService,
 };
 use domain_system::{AuditLogService, SystemLogService};
 use domain_web::OperationLogService;
@@ -35,6 +35,7 @@ pub struct BaseHttpState {
     pub perm_service: Arc<dyn PermService>,
     pub user_tenant_service: Arc<dyn UserTenantService>,
     pub user_tenant_role_service: Arc<dyn UserTenantRoleService>,
+    pub shared_context_service: Arc<dyn SharedContextService>,
     pub system_log_service: Arc<dyn SystemLogService>,
     pub audit_log_service: Arc<dyn AuditLogService>,
     pub operation_log_service: Arc<dyn OperationLogService>,

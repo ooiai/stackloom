@@ -35,7 +35,9 @@ export function PricingPlanCard({
   popularLabel,
 }: PricingPlanCardProps) {
   const displayPrice =
-    billingPeriod === "monthly" ? plan.monthlyPrice : getYearlyPrice(plan.monthlyPrice)
+    billingPeriod === "monthly"
+      ? plan.monthlyPrice
+      : getYearlyPrice(plan.monthlyPrice)
 
   return (
     <article
@@ -50,7 +52,7 @@ export function PricingPlanCard({
         <Badge
           variant="primary-light"
           radius="full"
-          className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
+          className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2"
         >
           {popularLabel}
         </Badge>
@@ -65,15 +67,19 @@ export function PricingPlanCard({
               prefix="$"
               className="text-4xl font-semibold tracking-tight text-foreground"
             />
-            <span className="pb-1 text-sm text-muted-foreground">{perMonthLabel}</span>
+            <span className="pb-1 text-sm text-muted-foreground">
+              {perMonthLabel}
+            </span>
           </div>
-          <p className="text-sm leading-6 text-muted-foreground">{plan.description}</p>
+          <p className="text-sm leading-6 text-muted-foreground">
+            {plan.description}
+          </p>
         </div>
 
         <Link
           href="/signup"
           className={buttonVariants({
-            variant: plan.isPopular ? "default" : "outline",
+            variant: plan.isPopular ? "default" : "secondary",
             size: "lg",
             className: "w-full",
           })}
@@ -90,7 +96,9 @@ export function PricingPlanCard({
             <li key={feature.title} className="flex items-start gap-2">
               <CircleCheck className="mt-1 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
               <div className="flex min-w-0 items-start gap-1.5">
-                <span className="text-sm leading-6 text-foreground">{feature.title}</span>
+                <span className="text-sm leading-6 text-foreground">
+                  {feature.title}
+                </span>
                 {feature.tooltip ? (
                   <Tooltip>
                     <TooltipTrigger className="mt-1 shrink-0 cursor-help text-muted-foreground transition-colors hover:text-foreground">

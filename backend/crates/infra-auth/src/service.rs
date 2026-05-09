@@ -4,13 +4,18 @@ use chrono::Utc;
 use common::core::{
     biz_error::{
         AUTH_ACCOUNT_DISABLED, AUTH_ACCOUNT_EXISTS, AUTH_ACCOUNT_NOT_FOUND,
+        AUTH_RECOVERY_CODE_INVALID,
         AUTH_CREDENTIAL_INVALID, AUTH_TENANT_EXISTS,
     },
-    constants::SIGNUP_ADMIN_CODE,
+    constants::{
+        CACHE_PASSWORD_RESET_EMAIL_CODE, CACHE_PASSWORD_RESET_PHONE_CODE,
+        CACHE_PASSWORD_RESET_SEND_COOLDOWN, SIGNUP_ADMIN_CODE, get_email_regex, get_mobile_regex,
+    },
 };
 use domain_auth::{
     AccountSigninCmd, AccountSignupBundle, AccountSignupCmd, AccountSignupResult, AuthRepository,
-    AuthService, AuthToken, QuerySigninTenantsCmd, RefreshAuthCmd,
+    AuthService, AuthToken, QuerySigninTenantsCmd, RecoveryChannel, RefreshAuthCmd,
+    ResetPasswordCmd, SendPasswordResetCodeCmd,
 };
 use domain_base::{
     CreateTenantCmd, CreateUserCmd, CreateUserTenantCmd, CreateUserTenantRoleCmd, Role,
@@ -21,10 +26,12 @@ use neocrates::{
     auth::auth_helper::AuthHelper,
     captcha::CaptchaService,
     crypto::core::Crypto,
+    email::email_service::{EmailConfig, EmailService},
     helper::core::snowflake::generate_sonyflake_id,
     middlewares::models::AuthModel,
     rediscache::RedisPool,
     response::error::{AppError, AppResult},
+    sms::sms_service::{SmsConfig, SmsService},
     sqlxhelper::pool::SqlxPool,
     tracing,
 };
@@ -45,6 +52,8 @@ where
     repository: Arc<R>,
     role_repository: Arc<Rr>,
     redis_pool: Arc<RedisPool>,
+    sms_config: Arc<SmsConfig>,
+    email_config: Arc<EmailConfig>,
     prefix: String,
     expires_at: u64,
     refresh_expires_at: u64,
@@ -55,6 +64,8 @@ impl AuthServiceImpl<SqlxAuthRepository, SqlxRoleRepository> {
     pub fn new(
         pool: Arc<SqlxPool>,
         redis_pool: Arc<RedisPool>,
+        sms_config: Arc<SmsConfig>,
+        email_config: Arc<EmailConfig>,
         prefix: String,
         expires_at: u64,
         refresh_expires_at: u64,
@@ -63,6 +74,8 @@ impl AuthServiceImpl<SqlxAuthRepository, SqlxRoleRepository> {
             repository: Arc::new(SqlxAuthRepository::new(pool.clone())),
             role_repository: Arc::new(SqlxRoleRepository::new(pool)),
             redis_pool,
+            sms_config,
+            email_config,
             prefix,
             expires_at,
             refresh_expires_at,
@@ -80,6 +93,8 @@ where
         repository: Arc<R>,
         role_repository: Arc<Rr>,
         redis_pool: Arc<RedisPool>,
+        sms_config: Arc<SmsConfig>,
+        email_config: Arc<EmailConfig>,
         prefix: String,
         expires_at: u64,
         refresh_expires_at: u64,
@@ -88,10 +103,30 @@ where
             repository,
             role_repository,
             redis_pool,
+            sms_config,
+            email_config,
             prefix,
             expires_at,
             refresh_expires_at,
         }
+    }
+
+    fn password_reset_code_prefix(&self, channel: RecoveryChannel) -> String {
+        match channel {
+            RecoveryChannel::Phone => format!("{}{}", self.prefix, CACHE_PASSWORD_RESET_PHONE_CODE),
+            RecoveryChannel::Email => format!("{}{}", self.prefix, CACHE_PASSWORD_RESET_EMAIL_CODE),
+        }
+    }
+
+    fn password_reset_cooldown_key(&self, channel: RecoveryChannel, account: &str) -> String {
+        let channel_name = match channel {
+            RecoveryChannel::Phone => "phone",
+            RecoveryChannel::Email => "email",
+        };
+        format!(
+            "{}{}:{}:{}",
+            self.prefix, CACHE_PASSWORD_RESET_SEND_COOLDOWN, channel_name, account
+        )
     }
 
     /// Validate the slider captcha bound to the account.
@@ -468,6 +503,134 @@ where
             tenant_name,
             tenant_slug,
         })
+    }
+
+    async fn send_password_reset_code(&self, cmd: SendPasswordResetCodeCmd) -> AppResult<()> {
+        cmd.validate()?;
+        self.validate_slider_captcha(&cmd.account, &cmd.code, true).await?;
+
+        let normalized_account = cmd.account.trim().to_string();
+        let cooldown_key = self.password_reset_cooldown_key(cmd.channel, &normalized_account);
+        if let Ok(true) = self.redis_pool.exists(&cooldown_key).await {
+            return Ok(());
+        }
+
+        let user = self
+            .repository
+            .find_user_by_channel_account(cmd.channel, &normalized_account)
+            .await?;
+        let Some(user) = user else {
+            if let Err(err) = self.redis_pool.setex(&cooldown_key, "1", 60).await {
+                tracing::warn!(error = %err, "failed to set password reset cooldown");
+            }
+            return Ok(());
+        };
+
+        let code_prefix = self.password_reset_code_prefix(cmd.channel);
+        match cmd.channel {
+            RecoveryChannel::Phone => {
+                if let Some(phone) = user.phone.as_ref() {
+                    SmsService::send_captcha(
+                        &self.sms_config,
+                        &self.redis_pool,
+                        phone,
+                        code_prefix.as_str(),
+                        get_mobile_regex(),
+                    )
+                    .await?;
+                } else {
+                    return Ok(());
+                }
+            }
+            RecoveryChannel::Email => {
+                if let Some(email) = user.email.as_ref() {
+                    EmailService::send_captcha(
+                        &self.email_config,
+                        &self.redis_pool,
+                        email,
+                        code_prefix.as_str(),
+                        get_email_regex(),
+                    )
+                    .await?;
+                } else {
+                    return Ok(());
+                }
+            }
+        }
+
+        if let Err(err) = self.redis_pool.setex(&cooldown_key, "1", 60).await {
+            tracing::warn!(error = %err, "failed to set password reset cooldown");
+        }
+
+        Ok(())
+    }
+
+    async fn reset_password(&self, cmd: ResetPasswordCmd) -> AppResult<()> {
+        cmd.validate()?;
+        let normalized_account = cmd.account.trim().to_string();
+        let user = self
+            .repository
+            .find_user_by_channel_account(cmd.channel, &normalized_account)
+            .await?
+            .ok_or_else(|| {
+                AppError::DataError(
+                    AUTH_RECOVERY_CODE_INVALID,
+                    "password reset account not found".to_string(),
+                )
+            })?;
+
+        let code_prefix = self.password_reset_code_prefix(cmd.channel);
+        match cmd.channel {
+            RecoveryChannel::Phone => {
+                let phone = user.phone.as_ref().ok_or_else(|| {
+                    AppError::DataError(
+                        AUTH_RECOVERY_CODE_INVALID,
+                        "password reset phone not bound".to_string(),
+                    )
+                })?;
+                SmsService::valid_auth_captcha(
+                    &self.redis_pool,
+                    phone,
+                    &cmd.captcha,
+                    code_prefix.as_str(),
+                    true,
+                )
+                .await
+                .map_err(|err| {
+                    AppError::DataError(AUTH_RECOVERY_CODE_INVALID, err.to_string())
+                })?;
+            }
+            RecoveryChannel::Email => {
+                let email = user.email.as_ref().ok_or_else(|| {
+                    AppError::DataError(
+                        AUTH_RECOVERY_CODE_INVALID,
+                        "password reset email not bound".to_string(),
+                    )
+                })?;
+                EmailService::valid_auth_captcha(
+                    &self.redis_pool,
+                    email,
+                    &cmd.captcha,
+                    code_prefix.as_str(),
+                    true,
+                )
+                .await
+                .map_err(|err| {
+                    AppError::DataError(AUTH_RECOVERY_CODE_INVALID, err.to_string())
+                })?;
+            }
+        }
+
+        let password_hash = Crypto::hash_password(&cmd.new_password).map_err(|err| {
+            AppError::data_here(format!("failed to hash reset password: {err}"))
+        })?;
+
+        AuthHelper::delete_token(&self.redis_pool, &self.prefix, user.id).await?;
+        self.repository
+            .update_user_password_hash(user.id, &password_hash)
+            .await?;
+
+        Ok(())
     }
 
     /// Delete the current user's cached tokens from the auth store.

@@ -6,6 +6,8 @@ import type {
   AccountSignupParam,
   AccountSignupResult,
   QuerySigninTenantsParam,
+  ResetPasswordParam,
+  SendPasswordResetCodeParam,
   SigninTenantOption,
 } from "@/types/auth.types"
 
@@ -31,6 +33,16 @@ export const signinApi = {
   },
   logout: async (): Promise<void> => {
     await post(`${AUTH_SIGNIN_API_PREFIX}/logout`, {})
+  },
+  sendPasswordResetCode: async (params: SendPasswordResetCodeParam): Promise<void> => {
+    await post(`${AUTH_SIGNIN_API_PREFIX}/recover/send_code`, params, {
+      headers: BASIC_AUTH_HEADER,
+    })
+  },
+  resetPassword: async (params: ResetPasswordParam): Promise<void> => {
+    await post(`${AUTH_SIGNIN_API_PREFIX}/recover/reset`, params, {
+      headers: BASIC_AUTH_HEADER,
+    })
   },
 }
 

@@ -24,6 +24,7 @@ neocrates = { workspace = true, features = [
   "redis",
   "crypto",
   "sms",
+  "email",
 ] }
 serde = { workspace = true, features = ["derive"] }
 validator = { workspace = true, features = ["derive"] }

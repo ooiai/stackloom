@@ -39,3 +39,5 @@ pub mod role;
 pub use role::RoleRow;
 pub use role::repo::SqlxRoleRepository;
 pub use role::service::RoleServiceImpl;
+pub mod shared_context;
+pub use shared_context::service::SharedContextServiceImpl;

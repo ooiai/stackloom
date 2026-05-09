@@ -15,6 +15,7 @@ interface SigninFormFieldsProps {
   errors: SigninFormErrors
   isLoading: boolean
   onValueChange: (key: keyof SigninFormValues, value: string) => void
+  onForgotPassword: () => void
 }
 
 export function SigninFormFields({
@@ -22,6 +23,7 @@ export function SigninFormFields({
   errors,
   isLoading,
   onValueChange,
+  onForgotPassword,
 }: SigninFormFieldsProps) {
   const { t } = useI18n()
 
@@ -48,9 +50,13 @@ export function SigninFormFields({
           <FieldLabel htmlFor="form-signin-password">
             {t("auth.signin.passwordLabel")}
           </FieldLabel>
-          <a href="#" className="ml-auto text-sm underline-offset-4 hover:underline">
+          <button
+            type="button"
+            onClick={onForgotPassword}
+            className="ml-auto text-sm underline-offset-4 hover:underline"
+          >
             {t("auth.signin.forgotPassword")}
-          </a>
+          </button>
         </div>
         <PasswordStrengthInput
           id="form-signin-password"

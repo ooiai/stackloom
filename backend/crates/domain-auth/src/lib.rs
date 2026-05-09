@@ -15,6 +15,7 @@ use neocrates::response::error::{AppError, AppResult};
 pub struct AuthUserAccount {
     pub id: i64,
     pub username: String,
+    pub email: Option<String>,
     pub phone: Option<String>,
     pub nickname: Option<String>,
     pub password_hash: String,
@@ -136,6 +137,76 @@ impl RefreshAuthCmd {
         if self.refresh_token.trim().is_empty() {
             return Err(AppError::ValidationError(
                 "refresh_token cannot be empty".to_string(),
+            ));
+        }
+        Ok(())
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RecoveryChannel {
+    Phone,
+    Email,
+}
+
+impl RecoveryChannel {
+    pub fn parse(value: &str) -> AppResult<Self> {
+        match value.trim().to_ascii_lowercase().as_str() {
+            "phone" => Ok(Self::Phone),
+            "email" => Ok(Self::Email),
+            _ => Err(AppError::ValidationError(
+                "channel must be one of: phone, email".to_string(),
+            )),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct SendPasswordResetCodeCmd {
+    pub channel: RecoveryChannel,
+    pub account: String,
+    pub code: String,
+}
+
+impl SendPasswordResetCodeCmd {
+    pub fn validate(&self) -> AppResult<()> {
+        if self.account.trim().is_empty() {
+            return Err(AppError::ValidationError(
+                "account cannot be empty".to_string(),
+            ));
+        }
+        if self.code.trim().is_empty() {
+            return Err(AppError::ValidationError(
+                "code cannot be empty".to_string(),
+            ));
+        }
+        Ok(())
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct ResetPasswordCmd {
+    pub channel: RecoveryChannel,
+    pub account: String,
+    pub captcha: String,
+    pub new_password: String,
+}
+
+impl ResetPasswordCmd {
+    pub fn validate(&self) -> AppResult<()> {
+        if self.account.trim().is_empty() {
+            return Err(AppError::ValidationError(
+                "account cannot be empty".to_string(),
+            ));
+        }
+        if self.captcha.trim().is_empty() {
+            return Err(AppError::ValidationError(
+                "captcha cannot be empty".to_string(),
+            ));
+        }
+        if self.new_password.trim().len() < 8 {
+            return Err(AppError::ValidationError(
+                "new_password must be at least 8 characters".to_string(),
             ));
         }
         Ok(())

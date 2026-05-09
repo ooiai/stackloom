@@ -12,6 +12,7 @@ use neocrates::sqlx::FromRow;
 pub struct AuthUserAccountRow {
     pub id: i64,
     pub username: String,
+    pub email: Option<String>,
     pub phone: Option<String>,
     pub nickname: Option<String>,
     pub password_hash: String,
@@ -24,6 +25,7 @@ impl From<AuthUserAccountRow> for AuthUserAccount {
         Self {
             id: value.id,
             username: value.username,
+            email: value.email,
             phone: value.phone,
             nickname: value.nickname,
             password_hash: value.password_hash,

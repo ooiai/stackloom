@@ -24,6 +24,7 @@ interface SigninPageViewProps {
   showSlider: boolean
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
   onFieldChange: (key: keyof SigninFormValues, value: string) => void
+  onForgotPassword: () => void
   onVerifySuccess: (data: VerifyParam) => Promise<void> | void
   onVerifyError: () => void
 }
@@ -35,6 +36,7 @@ export function SigninPageView({
   showSlider,
   onSubmit,
   onFieldChange,
+  onForgotPassword,
   onVerifySuccess,
   onVerifyError,
 }: SigninPageViewProps) {
@@ -61,6 +63,7 @@ export function SigninPageView({
             errors={errors}
             isLoading={isLoading}
             onValueChange={onFieldChange}
+            onForgotPassword={onForgotPassword}
           />
 
           {showSlider ? (

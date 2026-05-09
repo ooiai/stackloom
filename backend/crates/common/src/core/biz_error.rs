@@ -20,6 +20,7 @@ pub const AUTH_ACCOUNT_NOT_FOUND: &str = "errors.biz.auth.accountNotFound";
 pub const AUTH_ACCOUNT_DISABLED: &str = "errors.biz.auth.accountDisabled";
 /// `errors.biz.auth.credentialInvalid` — password verification failed
 pub const AUTH_CREDENTIAL_INVALID: &str = "errors.biz.auth.credentialInvalid";
+pub const AUTH_RECOVERY_CODE_INVALID: &str = "errors.biz.auth.recoveryCodeInvalid";
 
 // 412xxx: users
 pub const USER_USERNAME_EXISTS: &str = "errors.biz.users.usernameExists";

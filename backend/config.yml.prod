@@ -75,6 +75,16 @@ sms:
   tencent_sign_name: your_sign_name
   tencent_template_id: your_template_id
 
+email:
+  debug: false
+  smtp_host: smtp.example.com
+  smtp_port: 587
+  smtp_username: your_smtp_username
+  smtp_password: your_smtp_password
+  from_email: no-reply@example.com
+  from_name: StackLoom
+  subject_prefix: "[StackLoom]"
+
 auth:
   # Whether to enable authentication
   enabled: true
@@ -101,6 +111,9 @@ pms-ignore-urls:
   - /signin/refresh_token
   - /signin/account
   - /signin/tenants
+  - /signin/recover/send_code
+  - /signin/recover/reset
   - /signup/account
   - /sms/signin
+  - /email/captcha
   - /captcha/slider

@@ -4,7 +4,7 @@ use common::core::biz_error::{
 };
 use std::{collections::HashMap, sync::Arc};
 
-use domain_auth::{AccountSignupBundle, AuthRepository, SigninTenantOption};
+use domain_auth::{AccountSignupBundle, AuthRepository, RecoveryChannel, SigninTenantOption};
 use neocrates::{
     async_trait::async_trait,
     response::error::{AppError, AppResult},
@@ -87,6 +87,7 @@ impl AuthRepository for SqlxAuthRepository {
             SELECT
                 id,
                 username,
+                email,
                 phone,
                 nickname,
                 password_hash,
@@ -383,6 +384,66 @@ impl AuthRepository for SqlxAuthRepository {
         .map_err(Self::map_sqlx_error)?;
 
         tx.commit().await.map_err(Self::map_sqlx_error)?;
+
+        Ok(())
+    }
+
+    async fn find_user_by_channel_account(
+        &self,
+        channel: RecoveryChannel,
+        account: &str,
+    ) -> AppResult<Option<domain_auth::AuthUserAccount>> {
+        let row = match channel {
+            RecoveryChannel::Phone => {
+                sqlx::query_as::<_, AuthUserAccountRow>(
+                    r#"
+                    SELECT id, username, email, phone, nickname, password_hash, status
+                    FROM users
+                    WHERE deleted_at IS NULL
+                      AND phone = $1
+                    LIMIT 1
+                    "#,
+                )
+                .bind(account)
+                .fetch_optional(self.pool.pool())
+                .await
+                .map_err(Self::map_sqlx_error)?
+            }
+            RecoveryChannel::Email => {
+                sqlx::query_as::<_, AuthUserAccountRow>(
+                    r#"
+                    SELECT id, username, email, phone, nickname, password_hash, status
+                    FROM users
+                    WHERE deleted_at IS NULL
+                      AND LOWER(email) = LOWER($1)
+                    LIMIT 1
+                    "#,
+                )
+                .bind(account)
+                .fetch_optional(self.pool.pool())
+                .await
+                .map_err(Self::map_sqlx_error)?
+            }
+        };
+
+        Ok(row.map(Into::into))
+    }
+
+    async fn update_user_password_hash(&self, user_id: i64, password_hash: &str) -> AppResult<()> {
+        sqlx::query(
+            r#"
+            UPDATE users
+            SET password_hash = $1,
+                updated_at = NOW()
+            WHERE id = $2
+              AND deleted_at IS NULL
+            "#,
+        )
+        .bind(password_hash)
+        .bind(user_id)
+        .execute(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
 
         Ok(())
     }

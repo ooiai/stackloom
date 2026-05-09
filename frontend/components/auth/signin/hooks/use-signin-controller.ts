@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { useMutation } from "@tanstack/react-query"
 import type { VerifyParam } from "rc-slider-captcha"
@@ -14,18 +14,25 @@ import { signinApi } from "@/stores/auth-api"
 import type {
   AccountSigninParam,
   QuerySigninTenantsParam,
+  ResetPasswordParam,
   SigninTenantOption,
 } from "@/types/auth.types"
 import type { SliderCaptcha } from "@/types/system.types"
 import {
+  createForgotPasswordSchema,
   buildSigninCaptchaPayload,
   createSigninFormSchema,
   DEFAULT_SIGNIN_VALUES,
+  DEFAULT_FORGOT_PASSWORD_VALUES,
+  getForgotPasswordFormErrors,
   getSigninFormErrors,
   resolveSigninRoute,
+  type ForgotPasswordFormErrors,
+  type ForgotPasswordFormValues,
   type SigninFormErrors,
   type SigninFormValues,
 } from "../helpers"
+import CryptUtil from "@/lib/crypt"
 
 export function useSigninController() {
   const { t } = useI18n()
@@ -39,7 +46,15 @@ export function useSigninController() {
     null
   )
   const [tenants, setTenants] = useState<SigninTenantOption[]>([])
+  const [forgotOpen, setForgotOpen] = useState(false)
+  const [forgotValues, setForgotValues] = useState<ForgotPasswordFormValues>(
+    DEFAULT_FORGOT_PASSWORD_VALUES
+  )
+  const [forgotErrors, setForgotErrors] = useState<ForgotPasswordFormErrors>({})
+  const [showRecoverySlider, setShowRecoverySlider] = useState(false)
+  const [resendCooldownSeconds, setResendCooldownSeconds] = useState(0)
   const formSchema = useMemo(() => createSigninFormSchema(t), [t])
+  const forgotSchema = useMemo(() => createForgotPasswordSchema(t), [t])
 
   const queryTenantsMutation = useMutation({
     // Signin is intentionally two-step: verify captcha first, then load available memberships.
@@ -57,7 +72,46 @@ export function useSigninController() {
     },
   })
 
+  const sendResetCodeMutation = useMutation({
+    mutationFn: (params: {
+      channel: "phone" | "email"
+      account: string
+      code: string
+    }) => signinApi.sendPasswordResetCode(params),
+    onSuccess: () => {
+      setShowRecoverySlider(false)
+      setResendCooldownSeconds(60)
+      toast.success(t("auth.recovery.toast.codeSent"))
+    },
+    onError: () => {
+      setShowRecoverySlider(false)
+    },
+  })
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: (params: ResetPasswordParam) => signinApi.resetPassword(params),
+    onSuccess: () => {
+      toast.success(t("auth.recovery.toast.resetSuccess"))
+      setForgotOpen(false)
+      setForgotValues(DEFAULT_FORGOT_PASSWORD_VALUES)
+      setForgotErrors({})
+      setShowRecoverySlider(false)
+    },
+  })
+
   const isLoading = queryTenantsMutation.isPending || accountSigninMutation.isPending
+
+  useEffect(() => {
+    if (resendCooldownSeconds <= 0) {
+      return
+    }
+
+    const timer = window.setTimeout(() => {
+      setResendCooldownSeconds((current) => Math.max(0, current - 1))
+    }, 1000)
+
+    return () => window.clearTimeout(timer)
+  }, [resendCooldownSeconds])
 
   const handleFieldChange = useCallback(
     (key: keyof SigninFormValues, value: string) => {
@@ -131,6 +185,78 @@ export function useSigninController() {
     setShowTenantDialog(open)
   }, [])
 
+  const handleForgotValueChange = useCallback(
+    (key: keyof ForgotPasswordFormValues, value: string) => {
+      setForgotValues((current) => ({ ...current, [key]: value }))
+      setForgotErrors((current) => {
+        if (!current[key]) {
+          return current
+        }
+        return { ...current, [key]: undefined }
+      })
+    },
+    []
+  )
+
+  const handleOpenForgotPassword = useCallback(() => {
+    setForgotOpen(true)
+  }, [])
+
+  const handleForgotOpenChange = useCallback((open: boolean) => {
+    setForgotOpen(open)
+    if (!open) {
+      setShowRecoverySlider(false)
+    }
+  }, [])
+
+  const handleSendRecoveryCode = useCallback(() => {
+    const account = forgotValues.account.trim()
+    if (!account) {
+      setForgotErrors((current) => ({
+        ...current,
+        account: t("auth.recovery.validation.accountRequired"),
+      }))
+      return
+    }
+    setShowRecoverySlider(true)
+  }, [forgotValues.account, t])
+
+  const handleRecoveryVerifySuccess = useCallback(
+    async (verifyData: VerifyParam) => {
+      await sendResetCodeMutation.mutateAsync({
+        channel: forgotValues.channel,
+        account: forgotValues.account.trim(),
+        code: JSON.stringify(verifyData),
+      })
+    },
+    [forgotValues.account, forgotValues.channel, sendResetCodeMutation]
+  )
+
+  const handleRecoveryVerifyError = useCallback(() => {
+    setShowRecoverySlider(false)
+  }, [])
+
+  const handleForgotSubmit = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault()
+
+      const parsed = forgotSchema.safeParse(forgotValues)
+      if (!parsed.success) {
+        setForgotErrors(getForgotPasswordFormErrors(parsed.error))
+        return
+      }
+
+      setForgotErrors({})
+      await resetPasswordMutation.mutateAsync({
+        channel: forgotValues.channel,
+        account: forgotValues.account.trim(),
+        captcha: forgotValues.captcha.trim(),
+        new_password: CryptUtil.md5Double(forgotValues.new_password),
+      })
+    },
+    [forgotSchema, forgotValues, resetPasswordMutation]
+  )
+
   const handleTenantSubmit = useCallback(
     async (tenant: SigninTenantOption) => {
       if (!captchaFormData) {
@@ -176,6 +302,7 @@ export function useSigninController() {
       showSlider,
       onSubmit: handleSubmit,
       onFieldChange: handleFieldChange,
+      onForgotPassword: handleOpenForgotPassword,
       onVerifySuccess: handleVerifySuccess,
       onVerifyError: handleVerifyError,
     },
@@ -185,6 +312,21 @@ export function useSigninController() {
       loading: accountSigninMutation.isPending,
       onOpenChange: handleTenantDialogOpenChange,
       onSubmit: handleTenantSubmit,
+    },
+    recovery: {
+      open: forgotOpen,
+      values: forgotValues,
+      errors: forgotErrors,
+      isSendingCode: sendResetCodeMutation.isPending,
+      isResetting: resetPasswordMutation.isPending,
+      resendCooldownSeconds,
+      showSlider: showRecoverySlider,
+      onOpenChange: handleForgotOpenChange,
+      onValueChange: handleForgotValueChange,
+      onSendCode: handleSendRecoveryCode,
+      onSubmit: handleForgotSubmit,
+      onVerifySuccess: handleRecoveryVerifySuccess,
+      onVerifyError: handleRecoveryVerifyError,
     },
   }
 }

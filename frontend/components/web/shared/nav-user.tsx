@@ -37,14 +37,7 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
   const [settingsOpen, setSettingsOpen] = useState(false)
 
   const displayName = user?.nickname ?? user?.username ?? t("account")
-  const tenantName = user?.tenant_name ?? t("planFallback")
-  const detailMeta = useMemo(() => {
-    if (!user?.username) {
-      return tenantName
-    }
-
-    return `${user.username} · ${tenantName}`
-  }, [tenantName, user?.username])
+  const username = user?.username ?? t("planFallback")
 
   async function executeLogout() {
     try {
@@ -112,7 +105,7 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
                       {displayName}
                     </p>
                     <p className="truncate text-[11px] text-muted-foreground">
-                      {tenantName}
+                      {username}
                     </p>
                   </div>
 
@@ -144,8 +137,8 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
                     <p className="truncate text-sm font-medium text-foreground">
                       {displayName}
                     </p>
-                    <p className="truncate text-xs text-muted-foreground">
-                      {detailMeta}
+                    <p className="truncate text-[11px] text-muted-foreground">
+                      {username}
                     </p>
                   </div>
                 </div>
@@ -155,7 +148,7 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
 
               <DropdownMenuItem
                 onClick={handleOpenSettings}
-                className="rounded-md hover:bg-primary/5 focus:bg-primary/5"
+                className="gap-1.5 rounded-md px-2 py-2 hover:bg-primary/5 focus:bg-primary/5"
               >
                 <Settings2 className="size-4" />
                 {t("account")}
@@ -163,7 +156,7 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
 
               <DropdownMenuItem
                 onClick={handleOpenPricing}
-                className="rounded-md hover:bg-primary/5 focus:bg-primary/5"
+                className="gap-1.5 rounded-md px-2 py-2 hover:bg-primary/5 focus:bg-primary/5"
               >
                 <Sparkles className="size-4" />
                 {t("upgrade")}

@@ -2,7 +2,7 @@ use crate::shared::{
     SharedHttpState,
     common::{
         req::TreeByCodeReq,
-        resp::{HeaderContextResp, HeaderContextUserResp, MenuTreeNodeResp, MenuTreeResp, MyTenantResp},
+        resp::{HeaderContextResp, MenuTreeNodeResp, MenuTreeResp, MyTenantResp},
     },
 };
 use neocrates::{
@@ -17,70 +17,52 @@ use validator::Validate;
 /// Load the current authenticated header context.
 ///
 /// # Arguments
-/// * `state` - The shared HTTP state.
-/// * `auth_user` - The authenticated user whose current role ids drive the menu and permission codes.
+/// - `state`: The shared HTTP state containing necessary services.
+/// - `auth_user`: The authenticated user information extracted from the request context.
 ///
 /// # Returns
-/// * `AppResult<Json<HeaderContextResp>>` - Compact user info plus aggregated menu and permission codes.
+/// - `AppResult<Json<HeaderContextResp>>`: The header context response wrapped in a JSON response and application result.
 pub async fn header_context(
     State(state): State<SharedHttpState>,
     Extension(auth_user): Extension<AuthModel>,
 ) -> AppResult<Json<HeaderContextResp>> {
-    tracing::info!(
-        "...Shared Header Context Req: uid={}, role_ids={:?}...",
-        auth_user.uid,
-        auth_user.rids
-    );
+    tracing::info!("...Shared Header Context Req: uid={}...", auth_user.uid);
 
-    let user = state.user_service.get(auth_user.uid).await?;
-    let menu_codes = state
-        .role_code_service
-        .aggregate_menu_codes(&auth_user.rids)
+    let context = state
+        .shared_context_service
+        .get_header_context(auth_user.uid, auth_user.tid)
         .await?;
-    let perm_codes = state
-        .role_code_service
-        .aggregate_perm_codes(&auth_user.rids)
-        .await?;
-
-    Ok(Json(HeaderContextResp {
-        user: HeaderContextUserResp {
-            id: user.id,
-            username: user.username,
-            nickname: user.nickname,
-            avatar_url: user.avatar_url,
-            tenant_name: auth_user.tname,
-            tenant_id: auth_user.tid,
-        },
-        menu_codes,
-        perm_codes,
-    }))
+    Ok(Json(HeaderContextResp::from(context)))
 }
 
 /// Load the current user's visible menu subtree rooted at the given code.
 ///
 /// # Arguments
-/// * `state` - The shared HTTP state.
-/// * `auth_user` - The authenticated user whose role ids determine visibility.
-/// * `req` - The request body containing the root code and optional status filter.
+/// - `state`: The shared HTTP state containing necessary services.
+/// - `auth_user`: The authenticated user information extracted from the request context.
+/// - `req`: The request containing the code for which to load the menu subtree, wrapped in a `DetailedJson` extractor for validation and error handling.
 ///
 /// # Returns
-/// * `AppResult<Json<MenuTreeResp>>` - The current user's visible subtree response.
+/// - `AppResult<Json<MenuTreeResp>>`: The menu tree response wrapped in a JSON response and application result.
 pub async fn tree_by_code(
     State(state): State<SharedHttpState>,
     Extension(auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<TreeByCodeReq>,
 ) -> AppResult<Json<MenuTreeResp>> {
     tracing::info!(
-        "...Shared Common Tree By Code Req: code={}, uid={}, role_ids={:?}...",
+        "...Shared Common Tree By Code Req: code={}, uid={}...",
         req.code,
-        auth_user.uid,
-        auth_user.rids
+        auth_user.uid
     );
 
     req.validate()
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
-    let cmd = req.into_cmd(auth_user.rids.clone());
+    let context = state
+        .shared_context_service
+        .get_header_context(auth_user.uid, auth_user.tid)
+        .await?;
+    let cmd = req.into_cmd(context.role_ids);
     let menus = state.menu_service.tree_by_code(cmd).await?;
     Ok(Json(MenuTreeResp::new(MenuTreeNodeResp::from_flat(menus))))
 }
@@ -88,11 +70,11 @@ pub async fn tree_by_code(
 /// Load the list of tenants the current authenticated user belongs to.
 ///
 /// # Arguments
-/// * `state` - The shared HTTP state.
-/// * `auth_user` - The authenticated user.
+/// - `state`: The shared HTTP state containing necessary services.
+/// - `auth_user`: The authenticated user information extracted from the request context.
 ///
 /// # Returns
-/// * `AppResult<Json<Vec<MyTenantResp>>>` - Tenants the user is an active member of.
+/// - `AppResult<Json<Vec<MyTenantResp>>>`: A list of tenant responses wrapped in a JSON response and application result.
 pub async fn my_tenants(
     State(state): State<SharedHttpState>,
     Extension(auth_user): Extension<AuthModel>,
@@ -103,10 +85,7 @@ pub async fn my_tenants(
         auth_user.tid,
     );
 
-    let tenants = state
-        .tenant_service
-        .list_by_user_id(auth_user.uid)
-        .await?;
+    let tenants = state.tenant_service.list_by_user_id(auth_user.uid).await?;
 
     let resp = tenants
         .into_iter()

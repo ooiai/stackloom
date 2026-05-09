@@ -3,6 +3,7 @@ use domain_system::aws::{AwsStsService, ObjectStorageService};
 use domain_system::{AuditLogService, MonitorService, SystemLogService};
 use neocrates::{
     axum::{Router, middleware},
+    email::email_service::EmailConfig,
     middlewares::{interceptor::interceptor, models::MiddlewareConfig},
     rediscache::RedisPool,
     sms::sms_service::SmsConfig,
@@ -11,6 +12,7 @@ use std::sync::Arc;
 
 pub mod aws;
 pub mod captcha;
+pub mod email;
 pub mod logs;
 pub mod monitor;
 pub mod sms;
@@ -22,6 +24,7 @@ pub struct SysHttpState {
     pub redis_pool: Arc<RedisPool>,
     pub cfg: Arc<EnvConfig>,
     pub sms_config: Arc<SmsConfig>,
+    pub email_config: Arc<EmailConfig>,
     pub system_log_service: Arc<dyn SystemLogService>,
     pub audit_log_service: Arc<dyn AuditLogService>,
     pub monitor_service: Arc<dyn MonitorService>,
@@ -30,6 +33,7 @@ pub struct SysHttpState {
 pub fn router(state: SysHttpState, mw: Arc<MiddlewareConfig>) -> Router {
     let aws_router = aws::router(state.clone());
     let captcha_router = captcha::router(state.clone());
+    let email_router = email::router(state.clone());
     let sms_router = sms::router(state.clone());
     let logs_router = logs::router(state.clone());
     let monitor_router = monitor::router(state.clone());
@@ -38,6 +42,7 @@ pub fn router(state: SysHttpState, mw: Arc<MiddlewareConfig>) -> Router {
         .with_state(state.clone())
         .nest("/aws", aws_router)
         .nest("/captcha", captcha_router)
+        .nest("/email", email_router)
         .nest("/sms", sms_router)
         .nest("/logs", logs_router)
         .nest("/monitor", monitor_router)

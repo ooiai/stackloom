@@ -2,7 +2,7 @@ use neocrates::{async_trait::async_trait, response::error::AppResult};
 
 use crate::{
     AccountSigninCmd, AccountSignupCmd, AccountSignupResult, AuthToken, QuerySigninTenantsCmd,
-    RefreshAuthCmd, SigninTenantOption,
+    RefreshAuthCmd, ResetPasswordCmd, SendPasswordResetCodeCmd, SigninTenantOption,
 };
 
 /// Domain service contract for auth flows.
@@ -43,4 +43,10 @@ pub trait AuthService: Send + Sync {
     /// Implementations usually revoke or delete the tokens associated with the
     /// supplied user id.
     async fn logout(&self, uid: i64) -> AppResult<()>;
+
+    /// Send a password reset captcha to the selected recovery channel.
+    async fn send_password_reset_code(&self, cmd: SendPasswordResetCodeCmd) -> AppResult<()>;
+
+    /// Reset account password by validating recovery captcha.
+    async fn reset_password(&self, cmd: ResetPasswordCmd) -> AppResult<()>;
 }

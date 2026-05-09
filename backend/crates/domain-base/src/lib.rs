@@ -44,3 +44,6 @@ pub mod role;
 pub use role::repo::RoleRepository;
 pub use role::service::{RoleCodeService, RoleService};
 pub use role::{CreateRoleCmd, PageRoleCmd, Role, UpdateRoleCmd};
+pub mod shared_context;
+pub use shared_context::service::SharedContextService;
+pub use shared_context::{SharedHeaderContext, SharedHeaderUser, UpdateProfileCmd, UserProfileView};

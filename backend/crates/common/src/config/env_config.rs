@@ -23,6 +23,8 @@ pub struct EnvConfig {
     pub aws_cos: AwsCosConfig,
     /// SMS service provider configuration.
     pub sms: SmsConfig,
+    /// Email service provider configuration.
+    pub email: EmailConfig,
     /// Authentication token configuration.
     pub auth: AuthConfig,
     /// Basic authentication credentials or identifiers.
@@ -64,6 +66,8 @@ struct EnvConfigRaw {
 
     /// SMS configuration section.
     sms: SmsConfig,
+    /// Email configuration section.
+    email: EmailConfig,
 
     /// Authentication configuration section.
     auth: AuthConfig,
@@ -98,6 +102,7 @@ impl<'de> Deserialize<'de> for EnvConfig {
             apalis: raw.apalis,
             aws_cos: raw.aws_cos,
             sms: raw.sms,
+            email: raw.email,
             auth: raw.auth,
             auth_basics: raw.auth_basics,
             ignore_urls: raw.ignore_urls,
@@ -267,6 +272,27 @@ pub struct SmsConfig {
     pub tencent_sign_name: Option<String>,
     /// Optional Tencent SMS template ID.
     pub tencent_template_id: Option<String>,
+}
+
+/// Email SMTP configuration.
+#[derive(Debug, Clone, Deserialize)]
+pub struct EmailConfig {
+    /// Enables debug mode. When true, email is not actually sent.
+    pub debug: bool,
+    /// SMTP host.
+    pub smtp_host: String,
+    /// SMTP port.
+    pub smtp_port: u16,
+    /// Optional SMTP username.
+    pub smtp_username: Option<String>,
+    /// Optional SMTP password.
+    pub smtp_password: Option<String>,
+    /// Sender email address.
+    pub from_email: String,
+    /// Optional sender display name.
+    pub from_name: Option<String>,
+    /// Optional subject prefix.
+    pub subject_prefix: Option<String>,
 }
 
 /// Authentication token expiration configuration.

@@ -69,11 +69,13 @@ import type {
   UpdateTenantParam,
   TreeDictParam,
   UpdateDictParam,
-  UpdateUserParam,
-  HeaderContextData,
-  MyTenantData,
-  UserData,
-  UserRolesResp,
+   UpdateUserParam,
+    HeaderContextData,
+    UserProfileData,
+    MyTenantData,
+    UpdateUserProfileParam,
+    UserData,
+    UserRolesResp,
 } from "@/types/base.types"
 
 const BASE_USER_API_PREFIX = "/apiv1/base/users"
@@ -83,6 +85,7 @@ const BASE_DICT_API_PREFIX = "/apiv1/base/dicts"
 const BASE_ROLE_API_PREFIX = "/apiv1/base/roles"
 const BASE_PERM_API_PREFIX = "/apiv1/base/perms"
 const SHARED_COMMON_API_PREFIX = "/apiv1/shared/common"
+const SHARED_PROFILE_API_PREFIX = "/apiv1/shared/profile"
 
 export const userSharedApi = {
   listCurrentMenus: async (code?: string): Promise<MenuTreeNodeData[]> => {
@@ -285,5 +288,14 @@ export const sharedApi = {
   },
   getMyTenants: async (): Promise<MyTenantData[]> => {
     return post(`${SHARED_COMMON_API_PREFIX}/my_tenants`, {})
+  },
+}
+
+export const profileApi = {
+  get: async (): Promise<UserProfileData> => {
+    return post(`${SHARED_PROFILE_API_PREFIX}/get`, {})
+  },
+  update: async (params: UpdateUserProfileParam): Promise<UserProfileData> => {
+    return post(`${SHARED_PROFILE_API_PREFIX}/update`, params)
   },
 }

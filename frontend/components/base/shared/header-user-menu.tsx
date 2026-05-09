@@ -144,7 +144,7 @@ export function HeaderUserMenu({
 
           <DropdownMenuItem
             onClick={handleOpenSettings}
-            className="rounded-md hover:bg-primary/5 focus:bg-primary/5"
+            className="gap-1.5 rounded-md px-2 py-2 hover:bg-primary/5 focus:bg-primary/5"
           >
             <IconSettings className="size-4" />
             {t("navigation.profile.accountSettings")}
@@ -152,7 +152,11 @@ export function HeaderUserMenu({
 
           <DropdownMenuSeparator className="my-1" />
 
-          <DropdownMenuItem variant="destructive" onClick={handleLogout}>
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={handleLogout}
+            className="rounded-md"
+          >
             <IconLogout className="size-4" />
             {t("navigation.profile.logout")}
           </DropdownMenuItem>
