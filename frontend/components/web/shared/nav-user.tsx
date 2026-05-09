@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react"
 
-import { ChevronsUpDown, LogOut, Settings2 } from "lucide-react"
+import { ChevronsUpDown, LogOut, Settings2, Sparkles } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 
 import { AccountSettingsDialog } from "@/components/base/shared/account-settings-dialog"
@@ -29,8 +30,10 @@ import { getNameAbbr } from "@/lib/core"
 
 export function NavUser({ user }: { user: HeaderContextUserData | null }) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
   const t = useTranslations("navigation.dashboard.navUser")
   const dialog = useAlertDialog()
+  const [menuOpen, setMenuOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
 
   const displayName = user?.nickname ?? user?.username ?? t("account")
@@ -63,11 +66,29 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
     })
   }
 
+  function handleOpenSettings() {
+    setMenuOpen(false)
+
+    if (typeof window === "undefined") {
+      setSettingsOpen(true)
+      return
+    }
+
+    window.setTimeout(() => {
+      setSettingsOpen(true)
+    }, 0)
+  }
+
+  function handleOpenPricing() {
+    setMenuOpen(false)
+    router.push(ROUTER_ENUM.PRICING)
+  }
+
   return (
     <>
       <SidebarMenu>
         <SidebarMenuItem>
-          <DropdownMenu>
+          <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger
               render={
                 <SidebarMenuButton
@@ -133,11 +154,19 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
               <DropdownMenuSeparator className="my-1" />
 
               <DropdownMenuItem
-                onSelect={() => setSettingsOpen(true)}
+                onClick={handleOpenSettings}
                 className="rounded-md hover:bg-primary/5 focus:bg-primary/5"
               >
                 <Settings2 className="size-4" />
                 {t("account")}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={handleOpenPricing}
+                className="rounded-md hover:bg-primary/5 focus:bg-primary/5"
+              >
+                <Sparkles className="size-4" />
+                {t("upgrade")}
               </DropdownMenuItem>
 
               <DropdownMenuSeparator className="my-1" />

@@ -36,6 +36,7 @@ export function HeaderUserMenu({
 }) {
   const { t } = useI18n()
   const dialog = useAlertDialog()
+  const [menuOpen, setMenuOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
 
   const displayName =
@@ -70,9 +71,22 @@ export function HeaderUserMenu({
     })
   }, [dialog, executeLogout, t])
 
+  const handleOpenSettings = useCallback(() => {
+    setMenuOpen(false)
+
+    if (typeof window === "undefined") {
+      setSettingsOpen(true)
+      return
+    }
+
+    window.setTimeout(() => {
+      setSettingsOpen(true)
+    }, 0)
+  }, [])
+
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger
           className={cn(
             "cursor-pointer items-center gap-3 rounded-md border-s border-border/60 p-2 ps-3 pe-2 text-start transition-colors outline-none hover:bg-accent/60 focus-visible:bg-accent/60 data-[state=open]:bg-accent/70",
@@ -129,7 +143,7 @@ export function HeaderUserMenu({
           <DropdownMenuSeparator className="my-1" />
 
           <DropdownMenuItem
-            onSelect={() => setSettingsOpen(true)}
+            onClick={handleOpenSettings}
             className="rounded-md hover:bg-primary/5 focus:bg-primary/5"
           >
             <IconSettings className="size-4" />

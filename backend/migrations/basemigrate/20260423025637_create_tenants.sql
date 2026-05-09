@@ -36,3 +36,6 @@ CREATE INDEX idx_tenants_status ON tenants (status);
 CREATE INDEX idx_tenants_deleted_at ON tenants (deleted_at);
 CREATE INDEX idx_tenants_owner_user_id ON tenants (owner_user_id);
 CREATE INDEX idx_tenants_parent_id ON tenants(parent_id);
+CREATE INDEX idx_tenants_parent_name_created_id
+    ON tenants (parent_id, name, created_at, id)
+    WHERE deleted_at IS NULL;

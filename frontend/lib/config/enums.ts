@@ -29,6 +29,7 @@ export enum ROUTER_ENUM {
   DASHBOARD = "/dashboard",
   SIGNIN = "/signin",
   SIGNUP = "/signup",
+  PRICING = "/pricing",
 }
 
 export enum OSS_ENUM {
