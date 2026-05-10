@@ -1,5 +1,4 @@
 use std::sync::Arc;
-use std::time::Instant;
 
 use domain_system::{
     AppStats, BusinessSummary, DatabaseStats, ErrorEndpoint, HourlyRequestStat, MonitorRepository,
@@ -10,10 +9,9 @@ use neocrates::{
     rediscache::RedisPool,
     response::error::{AppError, AppResult},
     sqlxhelper::pool::SqlxPool,
-    tokio,
 };
-use sysinfo::{Disks, Networks, System, get_current_pid};
 
+use super::collector::SystemMetricsCollector;
 use super::repo::SqlxMonitorRepository;
 
 #[derive(Clone)]
@@ -23,18 +21,27 @@ where
 {
     repository: Arc<R>,
     pool: Arc<SqlxPool>,
-    start_time: Arc<Instant>,
     redis_pool: Arc<RedisPool>,
+    metrics_collector: Arc<SystemMetricsCollector>,
 }
 
 impl MonitorServiceImpl<SqlxMonitorRepository> {
-    pub fn new(pool: Arc<SqlxPool>, redis_pool: Arc<RedisPool>, start_time: Arc<Instant>) -> Self {
-        Self {
+    pub fn new(
+        pool: Arc<SqlxPool>,
+        redis_pool: Arc<RedisPool>,
+        start_time: Arc<std::time::Instant>,
+    ) -> (Self, neocrates::tokio::task::JoinHandle<()>) {
+        let (collector, task_handle) = SystemMetricsCollector::new(start_time);
+        let metrics_collector = Arc::new(collector);
+
+        let service = Self {
             repository: Arc::new(SqlxMonitorRepository::new(pool.clone())),
             pool,
-            start_time,
             redis_pool,
-        }
+            metrics_collector,
+        };
+
+        (service, task_handle)
     }
 }
 
@@ -46,13 +53,13 @@ where
         repository: Arc<R>,
         pool: Arc<SqlxPool>,
         redis_pool: Arc<RedisPool>,
-        start_time: Arc<Instant>,
+        metrics_collector: Arc<SystemMetricsCollector>,
     ) -> Self {
         Self {
             repository,
             pool,
-            start_time,
             redis_pool,
+            metrics_collector,
         }
     }
 }
@@ -72,57 +79,14 @@ where
     R: MonitorRepository,
 {
     async fn get_metrics(&self) -> AppResult<SystemSnapshot> {
-        let uptime_secs = self.start_time.elapsed().as_secs();
+        let mut snapshot = self.metrics_collector.get_snapshot().await;
+
+        // Update database pool info which comes from the current state
         let db_pool_size = self.pool.pool().size();
         let db_pool_idle = self.pool.pool().num_idle() as u32;
 
-        let snapshot = tokio::task::spawn_blocking(move || {
-            let mut sys = System::new_all();
-            sys.refresh_all();
-
-            let cpu_usage = sys.global_cpu_usage();
-            let memory_used = sys.used_memory();
-            let memory_total = sys.total_memory();
-
-            let disks = Disks::new_with_refreshed_list();
-            let (disk_used, disk_total) = disks.iter().fold((0u64, 0u64), |(used, total), d| {
-                let d_total = d.total_space();
-                let d_avail = d.available_space();
-                let d_used = d_total.saturating_sub(d_avail);
-                (used + d_used, total + d_total)
-            });
-
-            let networks = Networks::new_with_refreshed_list();
-            let (net_rx_bytes, net_tx_bytes) =
-                networks.iter().fold((0u64, 0u64), |(rx, tx), (_, data)| {
-                    (rx + data.total_received(), tx + data.total_transmitted())
-                });
-
-            let (process_memory_bytes, process_virtual_memory_bytes, process_cpu_percent) =
-                get_current_pid()
-                    .ok()
-                    .and_then(|pid| sys.process(pid))
-                    .map(|p| (p.memory(), p.virtual_memory(), p.cpu_usage()))
-                    .unwrap_or((0, 0, 0.0));
-
-            SystemSnapshot {
-                cpu_usage,
-                memory_used,
-                memory_total,
-                disk_used,
-                disk_total,
-                net_rx_bytes,
-                net_tx_bytes,
-                uptime_secs,
-                process_memory_bytes,
-                process_virtual_memory_bytes,
-                process_cpu_percent,
-                db_pool_size,
-                db_pool_idle,
-            }
-        })
-        .await
-        .map_err(|e| AppError::data_here(format!("monitor metrics error: {e}")))?;
+        snapshot.db_pool_size = db_pool_size;
+        snapshot.db_pool_idle = db_pool_idle;
 
         Ok(snapshot)
     }

@@ -84,6 +84,8 @@ backend/
 
 **IMPORTANT: The completed `users` backend module is the main reference implementation. If you are unsure how to structure a new backend module, match the `users` pattern first instead of inventing a new architecture or transport style.**
 
+**IMPORTANT: Do not create git commits after making changes unless the user explicitly asks for a commit. Leave the work uncommitted so the user can inspect the diff.**
+
 ## Backend Rules Navigation
 
 Use the backend rules directory as a focused reference map when working on specific parts of the backend.

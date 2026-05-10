@@ -193,6 +193,7 @@ These rules are strict:
 - Use `frontend/lib/**` only for true cross-feature utilities.
 - In feature/business code, do not use raw `<button>` when the shared `@/components/ui/button` primitive fits.
 - Raw `<button>` is acceptable inside `frontend/components/ui/**` or `frontend/components/reui/**` when implementing a shared primitive/wrapper and the low-level DOM element is intentional.
+- Do not create git commits after making changes unless the user explicitly asks for a commit. Leave the work uncommitted so the user can inspect the diff.
 
 ## Shared infrastructure
 

@@ -168,7 +168,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     };
 
     let sys = SysModule::new(cfg.as_ref().clone(), redis_pool.as_ref().clone());
-    let monitor_service = Arc::new(MonitorServiceImpl::new(base_pool.clone(), redis_pool.clone(), start_time));
+    let (monitor_service, _metrics_task) = MonitorServiceImpl::new(base_pool.clone(), redis_pool.clone(), start_time);
+    let monitor_service = Arc::new(monitor_service);
     let sys_http_state = SysHttpState {
         cfg: cfg.clone(),
         redis_pool: redis_pool.clone(),

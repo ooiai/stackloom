@@ -11,6 +11,7 @@ pub use audit_log::repo::SqlxAuditLogRepository;
 pub use audit_log::service::AuditLogServiceImpl;
 pub use monitor::MonitorServiceImpl;
 pub use monitor::SqlxMonitorRepository;
+pub use monitor::SystemMetricsCollector;
 pub use system_log::SystemLogRow;
 pub use system_log::repo::SqlxSystemLogRepository;
 pub use system_log::service::SystemLogServiceImpl;
