@@ -27,6 +27,7 @@ export enum API_ENUM {
 export enum ROUTER_ENUM {
   HOME = "/",
   DASHBOARD = "/dashboard",
+  MEMBER = "/member",
   SIGNIN = "/signin",
   SIGNUP = "/signup",
   PRICING = "/pricing",

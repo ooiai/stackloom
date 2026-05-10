@@ -43,6 +43,38 @@ export type UploadFileOptions = {
   partSizeBytes?: number
 }
 
+function getUploadErrorSummary(error: unknown) {
+  if (typeof error !== "object" || error === null) {
+    return {
+      name: undefined,
+      message: String(error),
+      httpStatusCode: undefined,
+      code: undefined,
+    }
+  }
+
+  const record = error as Record<string, unknown>
+  const metadata =
+    typeof record.$metadata === "object" && record.$metadata !== null
+      ? (record.$metadata as Record<string, unknown>)
+      : null
+
+  return {
+    name: typeof record.name === "string" ? record.name : undefined,
+    message: typeof record.message === "string" ? record.message : undefined,
+    httpStatusCode:
+      typeof metadata?.httpStatusCode === "number"
+        ? metadata.httpStatusCode
+        : undefined,
+    code:
+      typeof record.Code === "string"
+        ? record.Code
+        : typeof record.code === "string"
+          ? record.code
+          : undefined,
+  }
+}
+
 export const createAwsS3Uploader = () => {
   const Client = (stsToken: AwsS3Token) => {
     return new S3Client({
@@ -138,7 +170,24 @@ export const createAwsS3Uploader = () => {
       options.onProgress(percent)
     })
 
-    const result = await uploader.done()
+    let result: Awaited<ReturnType<typeof uploader.done>>
+    try {
+      result = await uploader.done()
+    } catch (error) {
+      const errorSummary = getUploadErrorSummary(error)
+      console.error("[aws upload failed]", {
+        endpoint: token.endpoint,
+        bucket: bucketName,
+        key: uploadKey,
+        contentType: file.type || "application/octet-stream",
+        fileSize: file.size,
+        partSizeBytes: options.partSizeBytes,
+        forcePathStyle: token.forcePathStyle,
+        ...errorSummary,
+      })
+      throw error
+    }
+
     return {
       path: uploadKey,
       checksum: checksum,

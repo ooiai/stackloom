@@ -4,11 +4,11 @@ pub mod resp;
 
 use super::AuthHttpState;
 pub use handlers::{
-    SigninState, account_signin, logout, query_tenants, refresh_token, reset_password,
-    send_password_reset_code,
+    SigninState, account_signin, change_password, logout, query_tenants, refresh_token,
+    reset_password, send_password_reset_code,
 };
 pub use req::{
-    AccountSigninReq, QuerySigninTenantsReq, RefreshTokenReq, ResetPasswordReq,
+    AccountSigninReq, ChangePasswordReq, QuerySigninTenantsReq, RefreshTokenReq, ResetPasswordReq,
     SendPasswordResetCodeReq,
 };
 pub use resp::{AuthTokenResp, SigninTenantOptionResp};
@@ -28,6 +28,7 @@ pub fn router(state: AuthHttpState) -> Router {
         .route("/account", post(account_signin))
         .route("/refresh_token", post(refresh_token))
         .route("/logout", post(logout))
+        .route("/change_password", post(change_password))
         .route("/recover/send_code", post(send_password_reset_code))
         .route("/recover/reset", post(reset_password))
         .with_state(state)

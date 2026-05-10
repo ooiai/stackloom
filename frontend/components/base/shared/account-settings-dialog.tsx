@@ -1,6 +1,12 @@
 "use client"
 
-import { type ChangeEvent, type KeyboardEvent, useMemo, useRef, useState } from "react"
+import {
+  type ChangeEvent,
+  type KeyboardEvent,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
 
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -19,9 +25,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useAwsS3 } from "@/hooks/use-aws-s3"
 import { invalidateHeaderSharedQueries } from "@/hooks/use-header-context"
-import { uploadAwsObject } from "@/lib/aws"
+import {
+  SINGLE_REQUEST_UPLOAD_PART_SIZE_BYTES,
+  uploadAwsObject,
+} from "@/lib/aws"
 import { OSS_ENUM } from "@/lib/config/enums"
 import { getNameAbbr } from "@/lib/core"
+import { AVATAR_IMAGE_COMPRESSION_OPTIONS, cropImageToFile } from "@/lib/image"
 import { useI18n } from "@/providers/i18n-provider"
 import { profileApi } from "@/stores/base-api"
 import { awsApi } from "@/stores/system-api"
@@ -62,49 +72,9 @@ function createCenteredAspectCrop(
   )
 }
 
-async function cropImageToFile(
-  image: HTMLImageElement,
-  pixelCrop: PixelCrop
-): Promise<File> {
-  const canvas = document.createElement("canvas")
-  const ctx = canvas.getContext("2d")
-
-  if (!ctx) {
-    throw new Error("Canvas context is not available")
-  }
-
-  const scaleX = image.naturalWidth / image.width
-  const scaleY = image.naturalHeight / image.height
-
-  canvas.width = Math.floor(pixelCrop.width * scaleX)
-  canvas.height = Math.floor(pixelCrop.height * scaleY)
-
-  ctx.drawImage(
-    image,
-    pixelCrop.x * scaleX,
-    pixelCrop.y * scaleY,
-    pixelCrop.width * scaleX,
-    pixelCrop.height * scaleY,
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  )
-
-  const blob = await new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob((result) => {
-      if (result) {
-        resolve(result)
-      } else {
-        reject(new Error("Unable to generate cropped image"))
-      }
-    }, "image/png")
-  })
-
-  return new File([blob], `avatar-${Date.now()}.png`, { type: "image/png" })
-}
-
-function buildFallbackProfile(user: HeaderContextUserData | null): UserProfileData | null {
+function buildFallbackProfile(
+  user: HeaderContextUserData | null
+): UserProfileData | null {
   if (!user) {
     return null
   }
@@ -260,12 +230,18 @@ function AccountSettingsDialogForm({
 
     try {
       setIsUploadingAvatar(true)
-      const croppedFile = await cropImageToFile(image, completedCrop)
+      const croppedFile = await cropImageToFile(image, completedCrop, {
+        ...AVATAR_IMAGE_COMPRESSION_OPTIONS,
+        fileName: `avatar-${Date.now()}.png`,
+      })
       const url = await uploadAwsObject({
         file: croppedFile,
         folder: OSS_ENUM.IMAGES,
         uploadFile,
         getSts: () => awsApi.getSts({}),
+        uploadOptions: {
+          partSizeBytes: SINGLE_REQUEST_UPLOAD_PART_SIZE_BYTES,
+        },
       })
       setAvatarUrl(url)
       toast.success(t("account.settings.avatarUploaded"))
@@ -348,7 +324,10 @@ function AccountSettingsDialogForm({
         </div>
       </div>
 
-      <DialogPrimitive.Root open={isCropperOpen} onOpenChange={handleCropperOpenChange}>
+      <DialogPrimitive.Root
+        open={isCropperOpen}
+        onOpenChange={handleCropperOpenChange}
+      >
         <DialogPrimitive.Portal>
           <DialogPrimitive.Backdrop className="fixed inset-0 z-[70] bg-black/30 backdrop-blur-xs" />
           <DialogPrimitive.Popup className="fixed top-1/2 left-1/2 z-[80] flex w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 flex-col gap-4 rounded-2xl border border-border/70 bg-background p-5 shadow-2xl outline-none">
@@ -528,7 +507,11 @@ function AccountSettingsDialogForm({
         >
           {t("account.settings.cancel")}
         </DialogPrimitive.Close>
-        <Button type="submit" disabled={isSaveDisabled} className="min-w-28 gap-2">
+        <Button
+          type="submit"
+          disabled={isSaveDisabled}
+          className="min-w-28 gap-2"
+        >
           {updateMutation.isPending ? (
             <Loader2Icon className="size-4 animate-spin" />
           ) : null}
@@ -615,9 +598,13 @@ function AccountSettingsDialogContent({
           />
         ) : (
           <div className="space-y-3 px-6 pb-6">
-            <p className="text-sm text-muted-foreground">{t("account.settings.error")}</p>
+            <p className="text-sm text-muted-foreground">
+              {t("account.settings.error")}
+            </p>
             <div className="flex justify-end">
-              <DialogPrimitive.Close render={<Button type="button" variant="outline" />}>
+              <DialogPrimitive.Close
+                render={<Button type="button" variant="outline" />}
+              >
                 {t("account.settings.cancel")}
               </DialogPrimitive.Close>
             </div>

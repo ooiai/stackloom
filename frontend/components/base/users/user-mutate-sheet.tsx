@@ -13,8 +13,15 @@ import {
   UserMutateSheetFooter,
 } from "@/components/base/users/user-mutate-sheet-sections"
 import { useAwsS3 } from "@/hooks/use-aws-s3"
-import { uploadAwsObject } from "@/lib/aws"
+import {
+  SINGLE_REQUEST_UPLOAD_PART_SIZE_BYTES,
+  uploadAwsObject,
+} from "@/lib/aws"
 import { OSS_ENUM } from "@/lib/config/enums"
+import {
+  AVATAR_IMAGE_COMPRESSION_OPTIONS,
+  compressImageFile,
+} from "@/lib/image"
 import { getUserDisplayName } from "./helpers"
 import { useI18n } from "@/providers/i18n-provider"
 import { awsApi } from "@/stores/system-api"
@@ -106,11 +113,18 @@ export function UserMutateSheet({
 
     try {
       setIsUploadingAvatar(true)
-      const avatarUrl = await uploadAwsObject({
+      const compressedFile = await compressImageFile(
         file,
+        AVATAR_IMAGE_COMPRESSION_OPTIONS
+      )
+      const avatarUrl = await uploadAwsObject({
+        file: compressedFile,
         folder: OSS_ENUM.IMAGES,
         uploadFile,
         getSts: () => awsApi.getSts({}),
+        uploadOptions: {
+          partSizeBytes: SINGLE_REQUEST_UPLOAD_PART_SIZE_BYTES,
+        },
       })
       form.setFieldValue("avatar_url", avatarUrl)
       form.setFieldMeta("avatar_url", (prev) => ({

@@ -13,8 +13,8 @@ use common::core::{
 };
 use domain_auth::{
     AccountSigninCmd, AccountSignupBundle, AccountSignupCmd, AccountSignupResult, AuthRepository,
-    AuthService, AuthToken, QuerySigninTenantsCmd, RecoveryChannel, RefreshAuthCmd,
-    ResetPasswordCmd, SendPasswordResetCodeCmd,
+    AuthService, AuthToken, ChangePasswordCmd, QuerySigninTenantsCmd, RecoveryChannel,
+    RefreshAuthCmd, ResetPasswordCmd, SendPasswordResetCodeCmd,
 };
 use domain_base::{
     CreateTenantCmd, CreateUserCmd, CreateUserTenantCmd, CreateUserTenantRoleCmd, Role,
@@ -619,6 +619,50 @@ where
 
         let password_hash = Crypto::hash_password(&cmd.new_password)
             .map_err(|err| AppError::data_here(format!("failed to hash reset password: {err}")))?;
+
+        AuthHelper::delete_token(&self.redis_pool, &self.prefix, user.id).await?;
+        self.repository
+            .update_user_password_hash(user.id, &password_hash)
+            .await?;
+
+        Ok(())
+    }
+
+    async fn change_password(&self, uid: i64, cmd: ChangePasswordCmd) -> AppResult<()> {
+        cmd.validate()?;
+        let user = match self.repository.find_user_by_id(uid).await? {
+            Some(user) => user,
+            None => {
+                tracing::warn!(user_id = %uid, "change password failed: account not found");
+                return Err(AppError::DataError(
+                    AUTH_ACCOUNT_NOT_FOUND,
+                    "account not found".to_string(),
+                ));
+            }
+        };
+
+        if user.status != 1 {
+            tracing::warn!(
+                user_id = %uid,
+                status = %user.status,
+                "change password failed: account status not active"
+            );
+            return Err(AppError::DataError(
+                AUTH_ACCOUNT_DISABLED,
+                "account is disabled".to_string(),
+            ));
+        }
+
+        if !Crypto::verify_password(&cmd.current_password, &user.password_hash) {
+            tracing::warn!(user_id = %uid, "change password failed: password mismatch");
+            return Err(AppError::DataError(
+                AUTH_CREDENTIAL_INVALID,
+                "invalid credentials".to_string(),
+            ));
+        }
+
+        let password_hash = Crypto::hash_password(&cmd.new_password)
+            .map_err(|err| AppError::data_here(format!("failed to hash change password: {err}")))?;
 
         AuthHelper::delete_token(&self.redis_pool, &self.prefix, user.id).await?;
         self.repository

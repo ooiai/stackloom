@@ -26,6 +26,8 @@
   "dashboard": {
     "navUser": {
       "account": "账户设置",
+      "members": "成员管理",
+      "changePassword": "修改密码",
       "billing": "账单",
       "notifications": "通知",
       "upgrade": "升级计划",

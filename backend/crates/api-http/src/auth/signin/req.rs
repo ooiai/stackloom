@@ -1,6 +1,6 @@
 use domain_auth::{
-    AccountSigninCmd, QuerySigninTenantsCmd, RecoveryChannel, RefreshAuthCmd, ResetPasswordCmd,
-    SendPasswordResetCodeCmd,
+    AccountSigninCmd, ChangePasswordCmd, QuerySigninTenantsCmd, RecoveryChannel, RefreshAuthCmd,
+    ResetPasswordCmd, SendPasswordResetCodeCmd,
 };
 use neocrates::{helper::core::serde_helpers, serde::Deserialize};
 use validator::Validate;
@@ -131,5 +131,22 @@ impl TryFrom<ResetPasswordReq> for ResetPasswordCmd {
             captcha: req.captcha,
             new_password: req.new_password,
         })
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Validate)]
+pub struct ChangePasswordReq {
+    #[validate(length(min = 8))]
+    pub current_password: String,
+    #[validate(length(min = 8))]
+    pub new_password: String,
+}
+
+impl From<ChangePasswordReq> for ChangePasswordCmd {
+    fn from(req: ChangePasswordReq) -> Self {
+        Self {
+            current_password: req.current_password,
+            new_password: req.new_password,
+        }
     }
 }

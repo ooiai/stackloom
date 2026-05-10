@@ -3,6 +3,7 @@ import CryptUtil from "@/lib/crypt"
 import { AuthTokenResult, post } from "@/lib/http/axios"
 import type {
   AccountSigninParam,
+  ChangePasswordParam,
   AccountSignupParam,
   AccountSignupResult,
   QuerySigninTenantsParam,
@@ -43,6 +44,9 @@ export const signinApi = {
     await post(`${AUTH_SIGNIN_API_PREFIX}/recover/reset`, params, {
       headers: BASIC_AUTH_HEADER,
     })
+  },
+  changePassword: async (params: ChangePasswordParam): Promise<void> => {
+    await post(`${AUTH_SIGNIN_API_PREFIX}/change_password`, params)
   },
 }
 

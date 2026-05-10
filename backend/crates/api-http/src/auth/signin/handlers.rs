@@ -1,13 +1,13 @@
 use super::{
     req::{
-        AccountSigninReq, QuerySigninTenantsReq, RefreshTokenReq, ResetPasswordReq,
-        SendPasswordResetCodeReq,
+        AccountSigninReq, ChangePasswordReq, QuerySigninTenantsReq, RefreshTokenReq,
+        ResetPasswordReq, SendPasswordResetCodeReq,
     },
     resp::{AuthTokenResp, SigninTenantOptionResp},
 };
 use crate::auth::AuthHttpState;
 use domain_auth::{
-    AccountSigninCmd, QuerySigninTenantsCmd, RefreshAuthCmd, ResetPasswordCmd,
+    AccountSigninCmd, ChangePasswordCmd, QuerySigninTenantsCmd, RefreshAuthCmd, ResetPasswordCmd,
     SendPasswordResetCodeCmd,
 };
 use neocrates::{
@@ -149,5 +149,32 @@ pub async fn reset_password(
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
     let cmd: ResetPasswordCmd = req.try_into()?;
     state.auth_service.reset_password(cmd).await?;
+    Ok(Json(()))
+}
+
+/// Change password for the current authenticated user.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `auth_user` - The current authenticated user context.
+/// * `req` - The request with old password and new password payload.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - The result of the operation.
+pub async fn change_password(
+    State(state): State<SigninState>,
+    Extension(auth_user): Extension<AuthModel>,
+    DetailedJson(req): DetailedJson<ChangePasswordReq>,
+) -> AppResult<Json<()>> {
+    tracing::info!("change password auth user uid: {}", auth_user.uid);
+
+    req.validate()
+        .map_err(|err| AppError::ValidationError(err.to_string()))?;
+
+    let cmd: ChangePasswordCmd = req.into();
+    state
+        .auth_service
+        .change_password(auth_user.uid, cmd)
+        .await?;
     Ok(Json(()))
 }

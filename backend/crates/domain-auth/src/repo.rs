@@ -16,6 +16,9 @@ pub trait AuthRepository: Send + Sync {
     /// which currently means username or phone number.
     async fn find_user_by_account(&self, account: &str) -> AppResult<Option<AuthUserAccount>>;
 
+    /// Find one user account by id.
+    async fn find_user_by_id(&self, user_id: i64) -> AppResult<Option<AuthUserAccount>>;
+
     /// Find one tenant by slug.
     ///
     /// This is mainly used when generating or checking tenant slugs during

@@ -213,6 +213,33 @@ impl ResetPasswordCmd {
     }
 }
 
+#[derive(Debug, Clone)]
+pub struct ChangePasswordCmd {
+    pub current_password: String,
+    pub new_password: String,
+}
+
+impl ChangePasswordCmd {
+    pub fn validate(&self) -> AppResult<()> {
+        if self.current_password.trim().len() < 8 {
+            return Err(AppError::ValidationError(
+                "current_password must be at least 8 characters".to_string(),
+            ));
+        }
+        if self.new_password.trim().len() < 8 {
+            return Err(AppError::ValidationError(
+                "new_password must be at least 8 characters".to_string(),
+            ));
+        }
+        if self.current_password == self.new_password {
+            return Err(AppError::ValidationError(
+                "new_password must differ from current_password".to_string(),
+            ));
+        }
+        Ok(())
+    }
+}
+
 /// Domain command for self-service signup.
 ///
 /// The signup flow creates a user, tenant, default role, and initial

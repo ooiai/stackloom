@@ -32,5 +32,26 @@
     "success": "设置已保存",
     "error": "保存失败，请稍后重试",
     "loading": "保存中..."
+  },
+  "passwordDialog": {
+    "title": "修改密码",
+    "description": "输入当前密码并设置一个新的登录密码。",
+    "currentPasswordLabel": "原始密码",
+    "currentPasswordPlaceholder": "输入当前密码",
+    "newPasswordLabel": "新密码",
+    "newPasswordPlaceholder": "输入新密码",
+    "confirmPasswordLabel": "确认密码",
+    "confirmPasswordPlaceholder": "再次输入新密码",
+    "cancel": "取消",
+    "submit": "更新密码",
+    "submitting": "更新中",
+    "success": "密码已更新，请重新登录",
+    "validation": {
+      "currentPasswordRequired": "请输入至少 8 位原始密码",
+      "newPasswordMin": "请输入至少 8 位新密码",
+      "confirmPasswordRequired": "请再次输入新密码",
+      "passwordMismatch": "两次输入的新密码不一致",
+      "passwordSameAsCurrent": "新密码不能与原始密码相同"
+    }
   }
 }

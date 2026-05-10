@@ -3,16 +3,8 @@
 import { createContext, useCallback, useContext, useMemo } from "react"
 
 import { LOCALE_COOKIE_NAME } from "@/lib/config/constants"
-import {
-  type AppLocale,
-  DEFAULT_TIME_ZONE,
-  type TranslateFn,
-} from "@/lib/i18n"
-import {
-  NextIntlClientProvider,
-  useLocale,
-  useTranslations,
-} from "next-intl"
+import { type AppLocale, DEFAULT_TIME_ZONE, type TranslateFn } from "@/lib/i18n"
+import { NextIntlClientProvider, useLocale, useTranslations } from "next-intl"
 
 const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365
 

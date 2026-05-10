@@ -1,5 +1,7 @@
-import type { AwsS3Token } from "@/hooks/use-aws-s3"
+import type { AwsS3Token, UploadFileOptions } from "@/hooks/use-aws-s3"
 import type { AwsStsResp } from "@/types/system.types"
+
+export const SINGLE_REQUEST_UPLOAD_PART_SIZE_BYTES = 100 * 1024 * 1024
 
 type UploadAwsObjectParams = {
   file: File
@@ -7,9 +9,11 @@ type UploadAwsObjectParams = {
   uploadFile: (
     file: File,
     pathPrefix: string,
-    token: AwsS3Token
+    token: AwsS3Token,
+    options?: UploadFileOptions
   ) => Promise<{ path: string }>
   getSts: () => Promise<AwsStsResp>
+  uploadOptions?: UploadFileOptions
 }
 
 const pick = (...values: Array<string | undefined>) =>
@@ -33,17 +37,42 @@ function normalizeEndpoint(endpoint: string): string {
   return `https://${trimmed}`
 }
 
+function resolveForcePathStyle(sts: AwsStsResp, endpoint: string) {
+  const explicitForcePathStyle = sts.force_path_style ?? sts.forcePathStyle
+  if (typeof explicitForcePathStyle === "boolean") {
+    return explicitForcePathStyle
+  }
+
+  try {
+    const endpointUrl = new URL(endpoint)
+
+    if (endpointUrl.pathname && endpointUrl.pathname !== "/") {
+      return true
+    }
+
+    if (endpointUrl.hostname.endsWith(".aliyuncs.com")) {
+      return false
+    }
+  } catch {
+    return true
+  }
+
+  return true
+}
+
 export function mapStsToAwsS3Token(sts: AwsStsResp): AwsS3Token {
+  const endpoint = normalizeEndpoint(pick(sts.endpoint))
+
   return {
     region: pick(sts.region),
-    endpoint: normalizeEndpoint(pick(sts.endpoint)),
+    endpoint,
     accessKeyId: pick(sts.access_key_id, sts.accessKeyId),
     accessKeySecret: pick(sts.access_key_secret, sts.accessKeySecret),
     bucket: pick(sts.bucket),
     sessionToken: pick(sts.security_token, sts.securityToken),
     credentialScope: sts.credential_scope ?? sts.credentialScope,
     accountId: sts.account_id ?? sts.accountId,
-    forcePathStyle: sts.force_path_style ?? sts.forcePathStyle ?? true,
+    forcePathStyle: resolveForcePathStyle(sts, endpoint),
   }
 }
 
@@ -72,10 +101,11 @@ export async function uploadAwsObject({
   folder,
   uploadFile,
   getSts,
+  uploadOptions,
 }: UploadAwsObjectParams) {
   const sts = await getSts()
   const token = mapStsToAwsS3Token(sts)
-  const result = await uploadFile(file, folder, token)
+  const result = await uploadFile(file, folder, token, uploadOptions)
 
   return buildAwsObjectUrl(token, result.path)
 }

@@ -30,4 +30,6 @@ pnpm add @tanstack/react-form @tanstack/react-query @tanstack/react-table @tanst
 
 ```
 #432dd7
+
+PWD: Ooi@6572
 ```

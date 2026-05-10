@@ -56,3 +56,8 @@ export interface ResetPasswordParam {
   captcha: string
   new_password: string
 }
+
+export interface ChangePasswordParam {
+  current_password: string
+  new_password: string
+}

@@ -26,6 +26,8 @@
   "dashboard": {
     "navUser": {
       "account": "Account Settings",
+      "members": "Member Management",
+      "changePassword": "Change Password",
       "billing": "Billing",
       "notifications": "Notifications",
       "upgrade": "Upgrade Plan",

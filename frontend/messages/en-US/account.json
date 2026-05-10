@@ -32,5 +32,26 @@
     "success": "Settings saved successfully",
     "error": "Failed to save settings, please try again",
     "loading": "Saving..."
+  },
+  "passwordDialog": {
+    "title": "Change Password",
+    "description": "Enter your current password and choose a new sign-in password.",
+    "currentPasswordLabel": "Current password",
+    "currentPasswordPlaceholder": "Enter your current password",
+    "newPasswordLabel": "New password",
+    "newPasswordPlaceholder": "Enter your new password",
+    "confirmPasswordLabel": "Confirm password",
+    "confirmPasswordPlaceholder": "Enter your new password again",
+    "cancel": "Cancel",
+    "submit": "Update password",
+    "submitting": "Updating",
+    "success": "Password updated. Please sign in again.",
+    "validation": {
+      "currentPasswordRequired": "Enter a current password with at least 8 characters",
+      "newPasswordMin": "Enter a new password with at least 8 characters",
+      "confirmPasswordRequired": "Confirm your new password",
+      "passwordMismatch": "The new passwords do not match",
+      "passwordSameAsCurrent": "The new password must differ from the current password"
+    }
   }
 }

@@ -106,6 +106,31 @@ impl AuthRepository for SqlxAuthRepository {
         Ok(row.map(Into::into))
     }
 
+    async fn find_user_by_id(&self, user_id: i64) -> AppResult<Option<domain_auth::AuthUserAccount>> {
+        let row = sqlx::query_as::<_, AuthUserAccountRow>(
+            r#"
+            SELECT
+                id,
+                username,
+                email,
+                phone,
+                nickname,
+                password_hash,
+                status
+            FROM users
+            WHERE deleted_at IS NULL
+              AND id = $1
+            LIMIT 1
+            "#,
+        )
+        .bind(user_id)
+        .fetch_optional(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(row.map(Into::into))
+    }
+
     /// Check whether a tenant slug already exists before signup persists data.
     async fn find_tenant_by_slug(
         &self,

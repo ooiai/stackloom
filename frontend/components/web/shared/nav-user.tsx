@@ -1,12 +1,20 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState } from "react"
 
-import { ChevronsUpDown, LogOut, Settings2, Sparkles } from "lucide-react"
+import {
+  ChevronsUpDown,
+  KeyRound,
+  LogOut,
+  Settings2,
+  Sparkles,
+  Users,
+} from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 
 import { AccountSettingsDialog } from "@/components/base/shared/account-settings-dialog"
+import { ChangePasswordDialog } from "@/components/base/shared/change-password-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -35,6 +43,7 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
   const dialog = useAlertDialog()
   const [menuOpen, setMenuOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false)
 
   const displayName = user?.nickname ?? user?.username ?? t("account")
   const username = user?.username ?? t("planFallback")
@@ -75,6 +84,24 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
   function handleOpenPricing() {
     setMenuOpen(false)
     router.push(ROUTER_ENUM.PRICING)
+  }
+
+  function handleOpenMembers() {
+    setMenuOpen(false)
+    router.push(ROUTER_ENUM.MEMBER)
+  }
+
+  function handleOpenChangePassword() {
+    setMenuOpen(false)
+
+    if (typeof window === "undefined") {
+      setChangePasswordOpen(true)
+      return
+    }
+
+    window.setTimeout(() => {
+      setChangePasswordOpen(true)
+    }, 0)
   }
 
   return (
@@ -155,6 +182,22 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
               </DropdownMenuItem>
 
               <DropdownMenuItem
+                onClick={handleOpenMembers}
+                className="gap-1.5 rounded-md px-2 py-2 hover:bg-primary/5 focus:bg-primary/5"
+              >
+                <Users className="size-4" />
+                {t("members")}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={handleOpenChangePassword}
+                className="gap-1.5 rounded-md px-2 py-2 hover:bg-primary/5 focus:bg-primary/5"
+              >
+                <KeyRound className="size-4" />
+                {t("changePassword")}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
                 onClick={handleOpenPricing}
                 className="gap-1.5 rounded-md px-2 py-2 hover:bg-primary/5 focus:bg-primary/5"
               >
@@ -181,6 +224,10 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
         user={user}
         open={settingsOpen}
         onOpenChange={setSettingsOpen}
+      />
+      <ChangePasswordDialog
+        open={changePasswordOpen}
+        onOpenChange={setChangePasswordOpen}
       />
     </>
   )
