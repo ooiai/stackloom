@@ -36,7 +36,7 @@ function normalizeEndpoint(endpoint: string): string {
 export function mapStsToAwsS3Token(sts: AwsStsResp): AwsS3Token {
   return {
     region: pick(sts.region),
-    endpoint: pick(sts.endpoint),
+    endpoint: normalizeEndpoint(pick(sts.endpoint)),
     accessKeyId: pick(sts.access_key_id, sts.accessKeyId),
     accessKeySecret: pick(sts.access_key_secret, sts.accessKeySecret),
     bucket: pick(sts.bucket),

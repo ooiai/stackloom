@@ -8,8 +8,7 @@ pub use handlers::{
 };
 pub use req::{
     ChildrenTenantReq, CreateTenantReq, DeleteTenantReq, GetTenantReq, PageTenantReq,
-    RemoveCascadeTenantReq, TreeTenantReq, UpdateTenantReq,
-    TenantAncestorsReq,
+    RemoveCascadeTenantReq, TenantAncestorsReq, TreeTenantReq, UpdateTenantReq,
 };
 pub use resp::{
     DeleteTenantResp, PaginateTenantResp, TenantAncestorsResp, TenantChildrenResp, TenantResp,

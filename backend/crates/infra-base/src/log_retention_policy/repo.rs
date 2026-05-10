@@ -1,6 +1,7 @@
 use chrono::Utc;
 use neocrates::{
     async_trait::async_trait,
+    helper::core::snowflake::generate_sonyflake_id,
     response::error::{AppError, AppResult},
     sqlxhelper::pool::SqlxPool,
 };
@@ -50,11 +51,16 @@ impl LogRetentionPolicyRepository for SqlxLogRetentionPolicyRepository {
     ) -> AppResult<LogRetentionPolicy> {
         let now = Utc::now();
         let policy = sqlx::query_as::<_, (i64, String, Option<i32>, Option<chrono::DateTime<Utc>>)>(
-            "UPDATE log_retention_policies SET retention_days = $1, updated_at = $2 WHERE log_type = $3 RETURNING id, log_type, retention_days, last_cleanup_at"
+            "INSERT INTO log_retention_policies (id, log_type, retention_days, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, $4)
+             ON CONFLICT (log_type) DO UPDATE
+             SET retention_days = EXCLUDED.retention_days, updated_at = EXCLUDED.updated_at
+             RETURNING id, log_type, retention_days, last_cleanup_at"
         )
+        .bind(generate_sonyflake_id() as i64)
+        .bind(log_type)
         .bind(retention_days)
         .bind(now)
-        .bind(log_type)
         .fetch_one(self.pool.pool())
         .await
         .map_err(Self::map_sqlx_error)?;

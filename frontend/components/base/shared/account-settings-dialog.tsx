@@ -271,6 +271,7 @@ function AccountSettingsDialogForm({
       toast.success(t("account.settings.avatarUploaded"))
       handleCropperOpenChange(false)
     } catch (error) {
+      console.error("[avatar upload]", error)
       toast.error(
         error instanceof Error
           ? error.message

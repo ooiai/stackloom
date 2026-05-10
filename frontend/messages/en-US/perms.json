@@ -47,7 +47,11 @@
   },
   "form": {
     "parent": {
-      "label": "Parent node"
+      "label": "Parent permission",
+      "root": "Set as root permission",
+      "title": "Choose parent permission",
+      "description": "Expand the permission tree and choose a new parent node",
+      "empty": "No parent permissions are currently available"
     },
     "code": {
       "label": "Permission code",

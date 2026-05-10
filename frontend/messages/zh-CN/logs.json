@@ -184,5 +184,6 @@
   "cancel": "取消",
   "saving": "正在保存...",
   "settings": "设置",
-  "retention_updated": "保留策略已更新"
+  "retention_updated": "保留策略已更新",
+  "selected": "已选"
 }

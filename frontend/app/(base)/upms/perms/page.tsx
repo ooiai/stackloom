@@ -17,6 +17,8 @@ export default function PermsPage() {
         mode={sheet.mode}
         perm={sheet.perm}
         parent={sheet.parent}
+        parentTree={sheet.parentTree}
+        isParentTreeLoading={sheet.isParentTreeLoading}
         isPending={sheet.isSubmitting}
         onOpenChange={(open) => {
           if (!open) {

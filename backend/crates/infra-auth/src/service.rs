@@ -4,8 +4,7 @@ use chrono::Utc;
 use common::core::{
     biz_error::{
         AUTH_ACCOUNT_DISABLED, AUTH_ACCOUNT_EXISTS, AUTH_ACCOUNT_NOT_FOUND,
-        AUTH_RECOVERY_CODE_INVALID,
-        AUTH_CREDENTIAL_INVALID, AUTH_TENANT_EXISTS,
+        AUTH_CREDENTIAL_INVALID, AUTH_RECOVERY_CODE_INVALID, AUTH_TENANT_EXISTS,
     },
     constants::{
         CACHE_PASSWORD_RESET_EMAIL_CODE, CACHE_PASSWORD_RESET_PHONE_CODE,
@@ -507,7 +506,8 @@ where
 
     async fn send_password_reset_code(&self, cmd: SendPasswordResetCodeCmd) -> AppResult<()> {
         cmd.validate()?;
-        self.validate_slider_captcha(&cmd.account, &cmd.code, true).await?;
+        self.validate_slider_captcha(&cmd.account, &cmd.code, true)
+            .await?;
 
         let normalized_account = cmd.account.trim().to_string();
         let cooldown_key = self.password_reset_cooldown_key(cmd.channel, &normalized_account);
@@ -596,9 +596,7 @@ where
                     true,
                 )
                 .await
-                .map_err(|err| {
-                    AppError::DataError(AUTH_RECOVERY_CODE_INVALID, err.to_string())
-                })?;
+                .map_err(|err| AppError::DataError(AUTH_RECOVERY_CODE_INVALID, err.to_string()))?;
             }
             RecoveryChannel::Email => {
                 let email = user.email.as_ref().ok_or_else(|| {
@@ -615,15 +613,12 @@ where
                     true,
                 )
                 .await
-                .map_err(|err| {
-                    AppError::DataError(AUTH_RECOVERY_CODE_INVALID, err.to_string())
-                })?;
+                .map_err(|err| AppError::DataError(AUTH_RECOVERY_CODE_INVALID, err.to_string()))?;
             }
         }
 
-        let password_hash = Crypto::hash_password(&cmd.new_password).map_err(|err| {
-            AppError::data_here(format!("failed to hash reset password: {err}"))
-        })?;
+        let password_hash = Crypto::hash_password(&cmd.new_password)
+            .map_err(|err| AppError::data_here(format!("failed to hash reset password: {err}")))?;
 
         AuthHelper::delete_token(&self.redis_pool, &self.prefix, user.id).await?;
         self.repository

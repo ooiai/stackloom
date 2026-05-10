@@ -302,15 +302,14 @@ export const profileApi = {
   },
 }
 
-// 日志保留策略 API
 export const logRetentionApi = {
   getPolicy: (logType: string) => 
-    post<LogRetentionPolicy>(`/base/log-retention-policies/get`, {
+    post<LogRetentionPolicy>(`${BASE_LOGS_API_PREFIX}/retention/get`, {
       log_type: logType,
     }),
   
   updatePolicy: (logType: string, retentionDays: number | null) =>
-    post<LogRetentionPolicy>(`/base/log-retention-policies/update`, {
+    post<LogRetentionPolicy>(`${BASE_LOGS_API_PREFIX}/retention/update`, {
       log_type: logType,
       retention_days: retentionDays,
     }),

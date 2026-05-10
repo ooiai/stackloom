@@ -2,7 +2,7 @@ pub mod handlers;
 pub mod req;
 pub mod resp;
 
-use super::BaseHttpState;
+use crate::base::BaseHttpState;
 pub use handlers::get_policy;
 pub use handlers::update_policy;
 pub use req::{GetLogRetentionPolicyReq, UpdateLogRetentionPolicyReq};

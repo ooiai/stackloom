@@ -14,7 +14,10 @@ pub trait UserTenantService: Send + Sync {
     async fn page(&self, cmd: PageUserTenantCmd) -> AppResult<(Vec<UserTenant>, i64)>;
 
     /// Paginate members of a tenant with joined user data.
-    async fn page_members(&self, cmd: PageTenantMemberCmd) -> AppResult<(Vec<TenantMemberView>, i64)>;
+    async fn page_members(
+        &self,
+        cmd: PageTenantMemberCmd,
+    ) -> AppResult<(Vec<TenantMemberView>, i64)>;
 
     async fn update(&self, id: i64, cmd: UpdateUserTenantCmd) -> AppResult<UserTenant>;
 

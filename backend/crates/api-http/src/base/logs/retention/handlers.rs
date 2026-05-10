@@ -1,14 +1,26 @@
-use super::resp::LogRetentionPolicyResp;
 use super::req::{GetLogRetentionPolicyReq, UpdateLogRetentionPolicyReq};
+use super::resp::LogRetentionPolicyResp;
 use crate::base::BaseHttpState;
+use axum::Extension;
 use domain_base::LogRetentionPolicy;
+use neocrates::middlewares::models::AuthModel;
 use neocrates::{
-    axum::{extract::State, Json},
+    axum::{Json, extract::State},
     response::error::{AppError, AppResult},
 };
 
+/// Get log retention policy for a specific log type.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `_auth_user` - The authenticated user.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<LogRetentionPolicyResp>>` - The log retention policy response.
 pub async fn get_policy(
     State(state): State<BaseHttpState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Json(req): Json<GetLogRetentionPolicyReq>,
 ) -> AppResult<Json<LogRetentionPolicyResp>> {
     let repo = state.log_retention_repo.clone();
@@ -28,12 +40,25 @@ pub async fn get_policy(
     }))
 }
 
+/// Update log retention policy for a specific log type.
+///
+/// # Arguments
+/// * `state` - The base HTTP state.
+/// * `_auth_user` - The authenticated user.
+/// * `req` - The request body.
+///
+/// # Returns
+/// * `AppResult<Json<LogRetentionPolicyResp>>` - The updated log retention policy response.
 pub async fn update_policy(
     State(state): State<BaseHttpState>,
+    Extension(_auth_user): Extension<AuthModel>,
     Json(req): Json<UpdateLogRetentionPolicyReq>,
 ) -> AppResult<Json<LogRetentionPolicyResp>> {
     if !["system_log", "audit_log", "operation_log"].contains(&req.log_type.as_str()) {
-        return Err(AppError::data_here(format!("Invalid log type: {}", req.log_type)));
+        return Err(AppError::data_here(format!(
+            "Invalid log type: {}",
+            req.log_type
+        )));
     }
 
     let repo = state.log_retention_repo.clone();

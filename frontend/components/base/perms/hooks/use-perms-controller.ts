@@ -6,6 +6,8 @@ import {
   buildCreatePermParam,
   buildPermBreadcrumb,
   buildUpdatePermParam,
+  collectPermSubtreeIds,
+  filterPermTree,
   findPermNode,
   PERM_ACTION_PERMS,
 } from "@/components/base/perms/helpers"
@@ -73,6 +75,11 @@ export function usePermsController() {
     () => treeQuery.data?.items ?? [],
     [treeQuery.data?.items]
   )
+  const parentTreeQuery = useQuery({
+    queryKey: ["base", "perms", "tree", "picker"],
+    queryFn: () => permApi.tree({}),
+    enabled: sheet.open,
+  })
   const selectedNode = useMemo(
     () => (rawSelectedNodeId ? findPermNode(tree, rawSelectedNodeId) : null),
     [rawSelectedNodeId, tree]
@@ -98,6 +105,24 @@ export function usePermsController() {
     () => childrenQuery.data?.items ?? EMPTY_MENUS,
     [childrenQuery.data?.items]
   )
+  const parentTree = useMemo(() => {
+    if (!sheet.open) {
+      return []
+    }
+
+    if (sheet.mode !== "update" || !sheet.perm) {
+      return parentTreeQuery.data?.items ?? []
+    }
+
+    const excludedIds = collectPermSubtreeIds(
+      findPermNode(parentTreeQuery.data?.items ?? [], sheet.perm.id)
+    )
+    if (excludedIds.size === 0) {
+      excludedIds.add(sheet.perm.id)
+    }
+
+    return filterPermTree(parentTreeQuery.data?.items ?? [], excludedIds)
+  }, [parentTreeQuery.data?.items, sheet.mode, sheet.open, sheet.perm])
 
   useEffect(() => {
     const params = new URLSearchParams()
@@ -119,11 +144,9 @@ export function usePermsController() {
     mutationFn: async (values: PermFormValues) => {
       await permApi.create(buildCreatePermParam(values, t))
     },
-    onSuccess: async () => {
+    onSuccess: async (_, values) => {
       await queryClient.invalidateQueries({ queryKey: ["base", "perms"] })
-      if (sheet.parent) {
-        setRawSelectedNodeId(sheet.parent.id)
-      }
+      setRawSelectedNodeId(values.parent_id ?? null)
       toast.success(t("perms.toast.created"))
       setSheet(DEFAULT_SHEET_STATE)
     },
@@ -383,6 +406,8 @@ export function usePermsController() {
     },
     sheet: {
       ...sheet,
+      parentTree,
+      isParentTreeLoading: parentTreeQuery.isLoading,
       isSubmitting:
         createMutation.isPending ||
         updateMutation.isPending ||

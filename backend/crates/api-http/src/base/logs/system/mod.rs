@@ -2,7 +2,7 @@ pub mod handlers;
 pub mod req;
 pub mod resp;
 
-use super::BaseHttpState;
+use crate::base::BaseHttpState;
 use neocrates::axum::{Router, routing::post};
 
 pub fn router(state: BaseHttpState) -> Router {

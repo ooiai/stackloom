@@ -152,6 +152,42 @@ export function findPermNode(
   return null
 }
 
+export function collectPermSubtreeIds(node: PermTreeNode | null): Set<string> {
+  const ids = new Set<string>()
+
+  if (!node) {
+    return ids
+  }
+
+  const visit = (current: PermTreeNode) => {
+    ids.add(current.id)
+    for (const child of current.children) {
+      visit(child)
+    }
+  }
+
+  visit(node)
+  return ids
+}
+
+export function filterPermTree(
+  nodes: PermTreeNode[],
+  excludedIds: Set<string> = new Set()
+): PermTreeNode[] {
+  return nodes.flatMap((node) => {
+    if (excludedIds.has(node.id)) {
+      return []
+    }
+
+    return [
+      {
+        ...node,
+        children: filterPermTree(node.children, excludedIds),
+      },
+    ]
+  })
+}
+
 export function buildPermBreadcrumb(
   nodes: PermTreeNode[],
   targetId: string,
@@ -171,6 +207,18 @@ export function buildPermBreadcrumb(
   }
 
   return null
+}
+
+export function buildPermExpandedPathIds(
+  nodes: PermTreeNode[],
+  targetId: string | null
+): Set<string> {
+  if (!targetId) {
+    return new Set()
+  }
+
+  const breadcrumb = buildPermBreadcrumb(nodes, targetId) ?? []
+  return new Set(breadcrumb.map((node) => node.id))
 }
 
 export function getDefaultPermFormValues(

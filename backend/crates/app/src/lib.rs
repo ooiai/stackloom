@@ -25,11 +25,12 @@ use crate::{
 };
 use infra_auth::AuthServiceImpl;
 use infra_base::{
-    DictServiceImpl, MenuServiceImpl, PermServiceImpl, RoleServiceImpl, SharedContextServiceImpl,
-    TenantServiceImpl, UserServiceImpl, UserTenantRoleServiceImpl, UserTenantServiceImpl,
-    OperationLogServiceImpl, LogRetentionService, SqlxLogRetentionPolicyRepository,
+    AuditLogServiceImpl, DictServiceImpl, LogRetentionService, MenuServiceImpl,
+    OperationLogServiceImpl, PermServiceImpl, RoleServiceImpl, SharedContextServiceImpl,
+    SqlxLogRetentionPolicyRepository, SystemLogServiceImpl, TenantServiceImpl, UserServiceImpl,
+    UserTenantRoleServiceImpl, UserTenantServiceImpl,
 };
-use infra_system::{AuditLogServiceImpl, MonitorServiceImpl, SysModule, SystemLogServiceImpl};
+use infra_system::{MonitorServiceImpl, SysModule};
 
 mod diesel_init;
 mod diesel_migrations;
@@ -181,7 +182,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     };
 
     let sys = SysModule::new(cfg.as_ref().clone(), redis_pool.as_ref().clone());
-    let (monitor_service, _metrics_task) = MonitorServiceImpl::new(base_pool.clone(), redis_pool.clone(), start_time);
+    let (monitor_service, _metrics_task) =
+        MonitorServiceImpl::new(base_pool.clone(), redis_pool.clone(), start_time);
     let monitor_service = Arc::new(monitor_service);
     let sys_http_state = SysHttpState {
         cfg: cfg.clone(),
@@ -191,7 +193,6 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         sms_config,
         email_config: EmailInit::init(cfg.clone()),
         system_log_service,
-        audit_log_service,
         monitor_service,
     };
 
@@ -227,8 +228,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     let log_retention_service_clone = log_retention_service.clone();
 
     tokio::spawn(async move {
-        use std::time::Duration;
         use neocrates::chrono::Timelike;
+        use std::time::Duration;
 
         loop {
             // Check if current time is around 5 AM UTC

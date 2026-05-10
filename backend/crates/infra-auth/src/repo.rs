@@ -394,36 +394,32 @@ impl AuthRepository for SqlxAuthRepository {
         account: &str,
     ) -> AppResult<Option<domain_auth::AuthUserAccount>> {
         let row = match channel {
-            RecoveryChannel::Phone => {
-                sqlx::query_as::<_, AuthUserAccountRow>(
-                    r#"
+            RecoveryChannel::Phone => sqlx::query_as::<_, AuthUserAccountRow>(
+                r#"
                     SELECT id, username, email, phone, nickname, password_hash, status
                     FROM users
                     WHERE deleted_at IS NULL
                       AND phone = $1
                     LIMIT 1
                     "#,
-                )
-                .bind(account)
-                .fetch_optional(self.pool.pool())
-                .await
-                .map_err(Self::map_sqlx_error)?
-            }
-            RecoveryChannel::Email => {
-                sqlx::query_as::<_, AuthUserAccountRow>(
-                    r#"
+            )
+            .bind(account)
+            .fetch_optional(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?,
+            RecoveryChannel::Email => sqlx::query_as::<_, AuthUserAccountRow>(
+                r#"
                     SELECT id, username, email, phone, nickname, password_hash, status
                     FROM users
                     WHERE deleted_at IS NULL
                       AND LOWER(email) = LOWER($1)
                     LIMIT 1
                     "#,
-                )
-                .bind(account)
-                .fetch_optional(self.pool.pool())
-                .await
-                .map_err(Self::map_sqlx_error)?
-            }
+            )
+            .bind(account)
+            .fetch_optional(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?,
         };
 
         Ok(row.map(Into::into))

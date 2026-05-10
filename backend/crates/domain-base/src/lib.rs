@@ -25,7 +25,10 @@ pub use perm::{CreatePermCmd, PagePermCmd, Perm, UpdatePermCmd};
 pub mod user_tenant;
 pub use user_tenant::repo::UserTenantRepository;
 pub use user_tenant::service::UserTenantService;
-pub use user_tenant::{CreateUserTenantCmd, PageTenantMemberCmd, PageUserTenantCmd, TenantMemberView, UpdateUserTenantCmd, UserTenant};
+pub use user_tenant::{
+    CreateUserTenantCmd, PageTenantMemberCmd, PageUserTenantCmd, TenantMemberView,
+    UpdateUserTenantCmd, UserTenant,
+};
 pub mod user_tenant_role;
 pub use user_tenant_role::repo::UserTenantRoleRepository;
 pub use user_tenant_role::service::UserTenantRoleService;
@@ -46,7 +49,9 @@ pub use role::service::{RoleCodeService, RoleService};
 pub use role::{CreateRoleCmd, PageRoleCmd, Role, UpdateRoleCmd};
 pub mod shared_context;
 pub use shared_context::service::SharedContextService;
-pub use shared_context::{SharedHeaderContext, SharedHeaderUser, UpdateProfileCmd, UserProfileView};
+pub use shared_context::{
+    SharedHeaderContext, SharedHeaderUser, UpdateProfileCmd, UserProfileView,
+};
 pub mod operation_log;
 pub use operation_log::repo::OperationLogRepository;
 pub use operation_log::service::OperationLogService;

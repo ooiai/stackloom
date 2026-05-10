@@ -120,6 +120,7 @@ export function UserMutateSheet({
       }))
       toast.success(t("users.toast.avatarUploaded"))
     } catch (error) {
+      console.error("[avatar upload]", error)
       toast.error(
         error instanceof Error
           ? error.message

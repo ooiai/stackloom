@@ -48,6 +48,14 @@ pub struct Perm {
     pub deleted_at: Option<DateTime<Utc>>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub enum PermParentUpdate {
+    #[default]
+    Unchanged,
+    Root,
+    Parent(i64),
+}
+
 impl Perm {
     pub fn new(cmd: CreatePermCmd) -> AppResult<Self> {
         cmd.validate()?;
@@ -79,8 +87,14 @@ impl Perm {
             self.tenant_id = Some(tenant_id);
         }
 
-        if let Some(parent_id) = cmd.parent_id {
-            self.parent_id = Some(parent_id);
+        match cmd.parent_id {
+            PermParentUpdate::Unchanged => {}
+            PermParentUpdate::Root => {
+                self.parent_id = None;
+            }
+            PermParentUpdate::Parent(parent_id) => {
+                self.parent_id = Some(parent_id);
+            }
         }
 
         if let Some(code) = cmd.code {
@@ -180,7 +194,7 @@ impl CreatePermCmd {
 #[derive(Debug, Clone, Default)]
 pub struct UpdatePermCmd {
     pub tenant_id: Option<i64>,
-    pub parent_id: Option<i64>,
+    pub parent_id: PermParentUpdate,
     pub code: Option<String>,
     pub name: Option<String>,
     pub resource: Option<String>,
@@ -312,5 +326,58 @@ impl Perm {
                 .unwrap_or_default()
                 .to_lowercase()
                 .contains(&keyword)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Perm, PermParentUpdate, UpdatePermCmd};
+    use chrono::Utc;
+
+    fn sample_perm() -> Perm {
+        let now = Utc::now();
+        Perm {
+            id: 1,
+            tenant_id: None,
+            parent_id: Some(10),
+            code: "BACKEND::PERM::UPDATE".to_string(),
+            name: "Update perm".to_string(),
+            resource: Some("perm".to_string()),
+            action: Some("update".to_string()),
+            method: Some("POST".to_string()),
+            description: Some("update permission".to_string()),
+            status: 1,
+            sort: 10,
+            created_at: now,
+            updated_at: now,
+            deleted_at: None,
+        }
+    }
+
+    #[test]
+    fn apply_update_can_move_perm_to_root() {
+        let mut perm = sample_perm();
+
+        perm.apply_update(UpdatePermCmd {
+            parent_id: PermParentUpdate::Root,
+            ..Default::default()
+        })
+        .expect("move to root should succeed");
+
+        assert_eq!(perm.parent_id, None);
+    }
+
+    #[test]
+    fn apply_update_keeps_parent_when_parent_is_unchanged() {
+        let mut perm = sample_perm();
+
+        perm.apply_update(UpdatePermCmd {
+            name: Some("Renamed".to_string()),
+            ..Default::default()
+        })
+        .expect("update should succeed");
+
+        assert_eq!(perm.parent_id, Some(10));
+        assert_eq!(perm.name, "Renamed");
     }
 }

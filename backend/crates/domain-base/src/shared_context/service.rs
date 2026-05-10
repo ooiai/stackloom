@@ -5,7 +5,11 @@ use crate::shared_context::{SharedHeaderContext, UpdateProfileCmd, UserProfileVi
 #[async_trait]
 pub trait SharedContextService: Send + Sync {
     /// Load shared header context by user and tenant.
-    async fn get_header_context(&self, user_id: i64, tenant_id: i64) -> AppResult<SharedHeaderContext>;
+    async fn get_header_context(
+        &self,
+        user_id: i64,
+        tenant_id: i64,
+    ) -> AppResult<SharedHeaderContext>;
 
     /// Load user profile data for account settings by user and tenant.
     async fn get_profile(&self, user_id: i64, tenant_id: i64) -> AppResult<UserProfileView>;

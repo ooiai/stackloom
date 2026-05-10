@@ -5,8 +5,8 @@ use domain_base::{
     DictService, MenuService, PermService, RoleService, SharedContextService, TenantService,
     UserService, UserTenantRoleService, UserTenantService,
 };
-use domain_system::{AuditLogService, SystemLogService};
 use domain_base::{LogRetentionPolicyRepository, OperationLogService};
+use domain_system::{AuditLogService, SystemLogService};
 use neocrates::{
     axum::{Router, middleware},
     middlewares::{interceptor::interceptor, models::MiddlewareConfig},
@@ -15,9 +15,8 @@ use neocrates::{
 
 pub mod dicts;
 mod logging;
-pub mod log_retention_policies;
+pub mod logs;
 pub mod menus;
-pub mod operation_logs;
 pub mod perms;
 pub mod roles;
 pub mod tenants;
@@ -59,8 +58,7 @@ pub fn router(state: BaseHttpState, mw: Arc<MiddlewareConfig>) -> Router {
     let menu_router = menus::router(state.clone());
     let role_router = roles::router(state.clone());
     let perm_router = perms::router(state.clone());
-    let operation_log_router = operation_logs::router(state.clone());
-    let log_retention_policies_router = log_retention_policies::router(state.clone());
+    let logs_router = logs::router(state.clone());
 
     Router::new()
         .with_state(state.clone())
@@ -70,8 +68,7 @@ pub fn router(state: BaseHttpState, mw: Arc<MiddlewareConfig>) -> Router {
         .nest("/menus", menu_router)
         .nest("/roles", role_router)
         .nest("/perms", perm_router)
-        .nest("/operation_logs", operation_log_router)
-        .nest("/log-retention-policies", log_retention_policies_router)
+        .nest("/logs", logs_router)
         .layer(middleware::from_fn_with_state(
             state,
             crate::request_logging::base_request_trace_middleware,

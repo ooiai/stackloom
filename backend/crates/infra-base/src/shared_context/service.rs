@@ -1,14 +1,15 @@
 use std::sync::Arc;
 
 use common::core::{
-    biz_error::{USER_EMAIL_EXISTS, USER_PHONE_EXISTS},
     biz_error::MEMBER_NOT_FOUND,
+    biz_error::{USER_EMAIL_EXISTS, USER_PHONE_EXISTS},
     constants::{CACHE_SHARED_CTX_TID_PREFIX, CACHE_SHARED_CTX_UID_SEGMENT},
 };
 use domain_base::{
     RoleCodeService, SharedContextService, SharedHeaderContext, SharedHeaderUser, TenantService,
     UpdateProfileCmd, UserProfileView, UserService, UserTenantRoleService, UserTenantService,
 };
+use neocrates::rediscache::RedisPool;
 use neocrates::{
     async_trait::async_trait,
     response::error::{AppError, AppResult},
@@ -16,7 +17,6 @@ use neocrates::{
     sqlxhelper::pool::SqlxPool,
     tracing,
 };
-use neocrates::rediscache::RedisPool;
 use sqlx::Error as SqlxError;
 
 const SHARED_CONTEXT_CACHE_TTL_SECONDS: u64 = 120;
@@ -165,7 +165,11 @@ impl SharedContextServiceImpl {
         )
     }
 
-    async fn build_header_context(&self, user_id: i64, tenant_id: i64) -> AppResult<SharedHeaderContext> {
+    async fn build_header_context(
+        &self,
+        user_id: i64,
+        tenant_id: i64,
+    ) -> AppResult<SharedHeaderContext> {
         let user = self.user_service.get(user_id).await?;
         let tenant = self.tenant_service.get(tenant_id).await?;
         let membership = self
@@ -180,8 +184,14 @@ impl SharedContextServiceImpl {
             .into_iter()
             .map(|binding| binding.role_id)
             .collect::<Vec<_>>();
-        let menu_codes = self.role_code_service.aggregate_menu_codes(&role_ids).await?;
-        let perm_codes = self.role_code_service.aggregate_perm_codes(&role_ids).await?;
+        let menu_codes = self
+            .role_code_service
+            .aggregate_menu_codes(&role_ids)
+            .await?;
+        let perm_codes = self
+            .role_code_service
+            .aggregate_perm_codes(&role_ids)
+            .await?;
 
         Ok(SharedHeaderContext {
             user: SharedHeaderUser {
@@ -206,7 +216,11 @@ impl SharedContextServiceImpl {
 
 #[async_trait]
 impl SharedContextService for SharedContextServiceImpl {
-    async fn get_header_context(&self, user_id: i64, tenant_id: i64) -> AppResult<SharedHeaderContext> {
+    async fn get_header_context(
+        &self,
+        user_id: i64,
+        tenant_id: i64,
+    ) -> AppResult<SharedHeaderContext> {
         let cache_key = self.user_tenant_cache_key(user_id, tenant_id);
 
         if let Ok(Some(raw)) = self.redis_pool.get::<_, String>(&cache_key).await {
@@ -224,7 +238,9 @@ impl SharedContextService for SharedContextServiceImpl {
         }
 
         let context = self.build_header_context(user_id, tenant_id).await?;
-        if let Ok(raw) = neocrates::serde_json::to_string(&HeaderContextCachePayload::from(context.clone())) {
+        if let Ok(raw) =
+            neocrates::serde_json::to_string(&HeaderContextCachePayload::from(context.clone()))
+        {
             if let Err(err) = self
                 .redis_pool
                 .setex(&cache_key, &raw, SHARED_CONTEXT_CACHE_TTL_SECONDS)
@@ -287,12 +303,9 @@ impl SharedContextService for SharedContextServiceImpl {
             return self.get_profile(user_id, tenant_id).await;
         }
 
-        let mut tx = self
-            .pool
-            .pool()
-            .begin()
-            .await
-            .map_err(|err| AppError::data_here(format!("failed to begin update profile transaction: {err}")))?;
+        let mut tx = self.pool.pool().begin().await.map_err(|err| {
+            AppError::data_here(format!("failed to begin update profile transaction: {err}"))
+        })?;
 
         if need_update_user {
             let result = sqlx::query(
@@ -323,7 +336,9 @@ impl SharedContextService for SharedContextServiceImpl {
             .map_err(Self::map_user_sqlx_error)?;
 
             if result.rows_affected() == 0 {
-                return Err(AppError::not_found_here(format!("user not found: {user_id}")));
+                return Err(AppError::not_found_here(format!(
+                    "user not found: {user_id}"
+                )));
             }
         }
 
@@ -352,16 +367,20 @@ impl SharedContextService for SharedContextServiceImpl {
             .bind(chrono::Utc::now())
             .execute(&mut *tx)
             .await
-            .map_err(|err| AppError::data_here(format!("failed to update tenant membership profile: {err}")))?;
+            .map_err(|err| {
+                AppError::data_here(format!("failed to update tenant membership profile: {err}"))
+            })?;
 
             if result.rows_affected() == 0 {
                 return Err(Self::member_not_found_error(user_id, tenant_id));
             }
         }
 
-        tx.commit()
-            .await
-            .map_err(|err| AppError::data_here(format!("failed to commit update profile transaction: {err}")))?;
+        tx.commit().await.map_err(|err| {
+            AppError::data_here(format!(
+                "failed to commit update profile transaction: {err}"
+            ))
+        })?;
 
         self.invalidate_by_user_tenant(user_id, tenant_id).await?;
         self.get_profile(user_id, tenant_id).await
@@ -369,19 +388,17 @@ impl SharedContextService for SharedContextServiceImpl {
 
     async fn invalidate_by_tenant(&self, tenant_id: i64) -> AppResult<()> {
         let prefix = self.tenant_cache_prefix(tenant_id);
-        self.redis_pool
-            .del_prefix(&prefix)
-            .await
-            .map_err(|err| AppError::data_here(format!("failed to invalidate tenant cache: {err}")))?;
+        self.redis_pool.del_prefix(&prefix).await.map_err(|err| {
+            AppError::data_here(format!("failed to invalidate tenant cache: {err}"))
+        })?;
         Ok(())
     }
 
     async fn invalidate_by_user_tenant(&self, user_id: i64, tenant_id: i64) -> AppResult<()> {
         let cache_key = self.user_tenant_cache_key(user_id, tenant_id);
-        self.redis_pool
-            .del(&cache_key)
-            .await
-            .map_err(|err| AppError::data_here(format!("failed to invalidate user-tenant cache: {err}")))?;
+        self.redis_pool.del(&cache_key).await.map_err(|err| {
+            AppError::data_here(format!("failed to invalidate user-tenant cache: {err}"))
+        })?;
         Ok(())
     }
 }

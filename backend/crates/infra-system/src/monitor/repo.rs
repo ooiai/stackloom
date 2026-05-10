@@ -84,9 +84,8 @@ impl SqlxMonitorRepository {
             "#
         );
 
-        let rows: Vec<(String, i64, f64, f64, i64, i64, i64)> = sqlx::query_as(&sql)
-            .fetch_all(self.pool.pool())
-            .await?;
+        let rows: Vec<(String, i64, f64, f64, i64, i64, i64)> =
+            sqlx::query_as(&sql).fetch_all(self.pool.pool()).await?;
 
         Ok(rows
             .into_iter()
@@ -113,12 +112,14 @@ impl SqlxMonitorRepository {
     }
 
     async fn get_pg_stat_statements_stats(&self) -> PgStatStatementsStats {
-        let installed = sqlx::query("SELECT EXISTS(SELECT 1 FROM pg_extension WHERE extname = 'pg_stat_statements')")
-            .fetch_one(self.pool.pool())
-            .await
-            .ok()
-            .and_then(|row| row.try_get::<bool, _>(0).ok())
-            .unwrap_or(false);
+        let installed = sqlx::query(
+            "SELECT EXISTS(SELECT 1 FROM pg_extension WHERE extname = 'pg_stat_statements')",
+        )
+        .fetch_one(self.pool.pool())
+        .await
+        .ok()
+        .and_then(|row| row.try_get::<bool, _>(0).ok())
+        .unwrap_or(false);
 
         if !installed {
             return PgStatStatementsStats {
@@ -134,14 +135,16 @@ impl SqlxMonitorRepository {
             Err(err) => {
                 return PgStatStatementsStats {
                     available: false,
-                    unavailable_reason_key: Some(match Self::sql_state(&err).as_deref() {
-                        Some("42501") => "monitor.db_pgss_permission_denied",
-                        Some("55000") => "monitor.db_pgss_not_loaded",
-                        Some("42P01") => "monitor.db_pgss_not_installed",
-                        Some("42703") => "monitor.db_pgss_unsupported_version",
-                        _ => "monitor.db_pgss_query_failed",
-                    }
-                    .to_string()),
+                    unavailable_reason_key: Some(
+                        match Self::sql_state(&err).as_deref() {
+                            Some("42501") => "monitor.db_pgss_permission_denied",
+                            Some("55000") => "monitor.db_pgss_not_loaded",
+                            Some("42P01") => "monitor.db_pgss_not_installed",
+                            Some("42703") => "monitor.db_pgss_unsupported_version",
+                            _ => "monitor.db_pgss_query_failed",
+                        }
+                        .to_string(),
+                    ),
                     top_by_total_time: Vec::new(),
                     top_by_mean_time: Vec::new(),
                 };
@@ -153,14 +156,16 @@ impl SqlxMonitorRepository {
             Err(err) => {
                 return PgStatStatementsStats {
                     available: false,
-                    unavailable_reason_key: Some(match Self::sql_state(&err).as_deref() {
-                        Some("42501") => "monitor.db_pgss_permission_denied",
-                        Some("55000") => "monitor.db_pgss_not_loaded",
-                        Some("42P01") => "monitor.db_pgss_not_installed",
-                        Some("42703") => "monitor.db_pgss_unsupported_version",
-                        _ => "monitor.db_pgss_query_failed",
-                    }
-                    .to_string()),
+                    unavailable_reason_key: Some(
+                        match Self::sql_state(&err).as_deref() {
+                            Some("42501") => "monitor.db_pgss_permission_denied",
+                            Some("55000") => "monitor.db_pgss_not_loaded",
+                            Some("42P01") => "monitor.db_pgss_not_installed",
+                            Some("42703") => "monitor.db_pgss_unsupported_version",
+                            _ => "monitor.db_pgss_query_failed",
+                        }
+                        .to_string(),
+                    ),
                     top_by_total_time: Vec::new(),
                     top_by_mean_time: Vec::new(),
                 };

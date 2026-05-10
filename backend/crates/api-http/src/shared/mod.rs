@@ -1,8 +1,6 @@
 use std::sync::Arc;
 
-use domain_base::{
-    MenuService, SharedContextService, TenantService,
-};
+use domain_base::{MenuService, SharedContextService, TenantService};
 use neocrates::{
     axum::{Router, middleware},
     middlewares::{interceptor::interceptor, models::MiddlewareConfig},

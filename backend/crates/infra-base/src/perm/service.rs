@@ -7,8 +7,8 @@ use common::core::biz_error::PERM_CODE_EXISTS;
 use domain_base::{
     CreatePermCmd, PagePermCmd, Perm, PermRepository, PermService, UpdatePermCmd,
     perm::{
-        ChildrenPermCmd, PermChildrenQuery, PermPageQuery, PermTreeQuery, RemoveCascadePermCmd,
-        TreePermCmd,
+        ChildrenPermCmd, PermChildrenQuery, PermPageQuery, PermParentUpdate, PermTreeQuery,
+        RemoveCascadePermCmd, TreePermCmd,
     },
 };
 use neocrates::{
@@ -158,7 +158,8 @@ where
             }
         }
 
-        if let Some(parent_id) = cmd.parent_id {
+        if let PermParentUpdate::Parent(parent_id) = &cmd.parent_id {
+            let parent_id = *parent_id;
             if parent_id == id {
                 return Err(AppError::ValidationError(
                     "perm cannot set itself as parent".to_string(),

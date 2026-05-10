@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
+import { useEffect } from "react"
 
 import { PermMutateFormFields } from "@/components/base/perms/perm-mutate-form-fields"
+import type { PermTreeNode } from "@/components/base/perms/helpers"
 import { usePermMutateForm } from "@/components/base/perms/hooks/use-perm-mutate-form"
 import { PermMutateSheetHeader } from "@/components/base/perms/perm-mutate-sheet-header"
 import { PermMutateSheetFooter } from "@/components/base/perms/perm-mutate-sheet-sections"
@@ -20,6 +21,8 @@ interface PermMutateSheetProps {
   mode: PermMutateMode
   perm: PermData | null
   parent: PermData | null
+  parentTree: PermTreeNode[]
+  isParentTreeLoading: boolean
   isPending: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (values: PermFormValues) => Promise<void>
@@ -46,6 +49,8 @@ export function PermMutateSheet({
   mode,
   perm,
   parent,
+  parentTree,
+  isParentTreeLoading,
   isPending,
   onOpenChange,
   onSubmit,
@@ -70,13 +75,6 @@ export function PermMutateSheet({
             submitLabel: t("perms.sheet.update.submit"),
           }
 
-  const parentLabel = useMemo(() => {
-    if (!parent) {
-      return t("common.misc.rootDirectory")
-    }
-
-    return parent.name
-  }, [parent, t])
   const { defaultValues, form } = usePermMutateForm({
     mode,
     perm,
@@ -133,7 +131,12 @@ export function PermMutateSheet({
         >
           <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
             <FieldGroup>
-              <PermMutateFormFields form={form} parentLabel={parentLabel} />
+              <PermMutateFormFields
+                form={form}
+                parent={parent}
+                parentTree={parentTree}
+                isParentTreeLoading={isParentTreeLoading}
+              />
             </FieldGroup>
           </div>
 

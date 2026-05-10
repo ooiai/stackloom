@@ -184,5 +184,6 @@
   "cancel": "Cancel",
   "saving": "Saving...",
   "settings": "Settings",
-  "retention_updated": "Retention policy updated"
+  "retention_updated": "Retention policy updated",
+  "selected": "Selected"
 }

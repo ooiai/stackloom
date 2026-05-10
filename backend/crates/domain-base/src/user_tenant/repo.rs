@@ -1,6 +1,9 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
-use crate::{UserTenant, user_tenant::{TenantMemberPageQuery, TenantMemberView, UserTenantPageQuery}};
+use crate::{
+    UserTenant,
+    user_tenant::{TenantMemberPageQuery, TenantMemberView, UserTenantPageQuery},
+};
 
 #[async_trait]
 pub trait UserTenantRepository: Send + Sync {

@@ -1,9 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import { CheckIcon } from "lucide-react"
+import { toast } from "sonner"
 import { useI18n } from "@/providers/i18n-provider"
 import { logRetentionApi } from "@/stores/base-api"
 import type { LogRetentionPolicy } from "@/types/logs.types"
+import { Button } from "@/components/ui/button"
 import {
   Sheet,
   SheetContent,
@@ -34,7 +37,7 @@ export function LogRetentionSettingsSheet({
 }: LogRetentionSettingsSheetProps) {
   const { t } = useI18n()
   const [policy, setPolicy] = useState<LogRetentionPolicy | null>(null)
-  const [selectedDays, setSelectedDays] = useState<number | null | string>("")
+  const [selectedDays, setSelectedDays] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -46,7 +49,7 @@ export function LogRetentionSettingsSheet({
       try {
         const data = await logRetentionApi.getPolicy(logType)
         setPolicy(data)
-        setSelectedDays(data.retentionDays ?? "")
+        setSelectedDays(data.retentionDays ?? null)
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load policy")
       } finally {
@@ -56,15 +59,13 @@ export function LogRetentionSettingsSheet({
   }
 
   const handleSave = async () => {
-    if (!policy) return
-
     setIsLoading(true)
     setError(null)
     try {
-      const retentionDays =
-        selectedDays === "" ? null : (selectedDays as number)
-      const updated = await logRetentionApi.updatePolicy(logType, retentionDays)
+      const updated = await logRetentionApi.updatePolicy(logType, selectedDays)
       setPolicy(updated)
+      setSelectedDays(updated.retentionDays ?? null)
+      toast.success(t("logs.retention_updated"))
       onOpenChange(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update policy")
@@ -90,29 +91,40 @@ export function LogRetentionSettingsSheet({
             </label>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {RETENTION_OPTIONS.map((option) => (
-                <button
+                <Button
                   key={option.label}
+                  type="button"
                   onClick={() => setSelectedDays(option.value)}
                   disabled={isLoading}
-                  className={`flex items-center gap-2 rounded-lg border-2 px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                  variant="outline"
+                  className={`h-auto min-h-14 w-full justify-between rounded-xl border-2 px-4 py-3 text-left transition-colors ${
                     selectedDays === option.value
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-input bg-background hover:border-primary/50 hover:bg-muted/30"
-                  } ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                      ? "border-primary bg-primary/10 text-primary hover:bg-primary/15"
+                      : "border-border bg-background text-foreground hover:border-primary/40 hover:bg-muted/30"
+                  }`}
                 >
-                  <span
-                    className={`flex h-5 w-5 items-center justify-center rounded border ${
-                      selectedDays === option.value
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-input bg-background"
-                    }`}
-                  >
-                    {selectedDays === option.value && (
-                      <span className="text-xs font-bold">✓</span>
-                    )}
+                  <span className="flex items-center gap-3">
+                    <span
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+                        selectedDays === option.value
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-muted-foreground/40 bg-background"
+                      }`}
+                    >
+                      {selectedDays === option.value && (
+                        <CheckIcon className="h-3 w-3" />
+                      )}
+                    </span>
+                    <span className="text-sm font-medium leading-none">
+                      {t(option.i18nKey)}
+                    </span>
                   </span>
-                  <span className="flex-1 text-left">{t(option.i18nKey)}</span>
-                </button>
+                  {selectedDays === option.value && (
+                    <span className="text-xs font-medium text-primary/80">
+                      {t("logs.selected")}
+                    </span>
+                  )}
+                </Button>
               ))}
             </div>
           </div>
@@ -136,20 +148,23 @@ export function LogRetentionSettingsSheet({
         </div>
 
         <div className="mt-6 flex gap-2 border-t pt-4">
-          <button
+          <Button
+            type="button"
+            variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isLoading}
-            className="flex-1 rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex-1"
           >
             {t("logs.cancel")}
-          </button>
-          <button
+          </Button>
+          <Button
+            type="button"
             onClick={handleSave}
             disabled={isLoading}
-            className="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex-1"
           >
             {isLoading ? t("logs.saving") : t("logs.save")}
-          </button>
+          </Button>
         </div>
       </SheetContent>
     </Sheet>

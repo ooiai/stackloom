@@ -93,7 +93,11 @@ pub async fn invite_code(
         state.cfg.server.prefix, CACHE_INVITE_CODE_LOOKUP, code
     );
     let tid_str = auth_user.tid.to_string();
-    if let Err(e) = state.redis_pool.setex(&lookup_key, &tid_str, INVITE_TTL).await {
+    if let Err(e) = state
+        .redis_pool
+        .setex(&lookup_key, &tid_str, INVITE_TTL)
+        .await
+    {
         tracing::warn!(tenant_id = %auth_user.tid, error = %e, "invite_code: failed to cache invite code lookup");
     }
 
