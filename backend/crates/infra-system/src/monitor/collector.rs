@@ -3,7 +3,7 @@ use std::time::Duration;
 
 use domain_system::SystemSnapshot;
 use neocrates::tokio;
-use sysinfo::{Disks, Networks, System, get_current_pid};
+use sysinfo::{Components, Disks, Networks, System, get_current_pid};
 
 /// SystemMetricsCollector manages background collection of system metrics
 /// 
@@ -25,6 +25,11 @@ impl SystemMetricsCollector {
     pub fn new(start_time: Arc<std::time::Instant>) -> (Self, tokio::task::JoinHandle<()>) {
         let latest_snapshot = Arc::new(tokio::sync::RwLock::new(SystemSnapshot {
             cpu_usage: 0.0,
+            cpu_count: 0,
+            cpu_usage_cores: 0.0,
+            per_core_usage: vec![],
+            cpu_temp_celsius: None,
+            cpu_freq_mhz: vec![],
             memory_used: 0,
             memory_total: 0,
             disk_used: 0,
@@ -86,8 +91,36 @@ impl SystemMetricsCollector {
                         .map(|p| (p.memory(), p.virtual_memory(), p.cpu_usage()))
                         .unwrap_or((0, 0, 0.0));
 
+                // Collect CPU core info
+                let cpus = sys.cpus();
+                let cpu_count = cpus.len() as u32;
+                let per_core_usage = cpus.iter().map(|cpu| cpu.cpu_usage()).collect();
+                let cpu_usage = sys.global_cpu_usage();
+                let cpu_usage_cores = if cpu_count > 0 {
+                    (cpu_usage * cpu_count as f32) / 100.0
+                } else {
+                    0.0
+                };
+
+                // Collect CPU frequency (in MHz)
+                let cpu_freq_mhz = cpus.iter().map(|cpu| cpu.frequency()).collect();
+
+                // Attempt to collect CPU temperature (if available)
+                let cpu_temp_celsius = {
+                    let components = Components::new_with_refreshed_list();
+                    components
+                        .iter()
+                        .find(|c| c.label().to_lowercase().contains("package"))
+                        .and_then(|c| c.temperature())
+                };
+
                 let snapshot = SystemSnapshot {
-                    cpu_usage: sys.global_cpu_usage(),
+                    cpu_usage,
+                    cpu_count,
+                    cpu_usage_cores,
+                    per_core_usage,
+                    cpu_temp_celsius,
+                    cpu_freq_mhz,
                     memory_used: sys.used_memory(),
                     memory_total: sys.total_memory(),
                     disk_used,

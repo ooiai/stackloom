@@ -8,6 +8,16 @@ pub use service::MonitorService;
 pub struct SystemSnapshot {
     /// Global CPU usage in percent (0–100).
     pub cpu_usage: f32,
+    /// Number of CPU cores.
+    pub cpu_count: u32,
+    /// Estimated number of cores in use (cpu_usage * cpu_count / 100).
+    pub cpu_usage_cores: f32,
+    /// Per-core CPU usage in percent (0–100) for each core.
+    pub per_core_usage: Vec<f32>,
+    /// CPU temperature in Celsius (if available).
+    pub cpu_temp_celsius: Option<f32>,
+    /// Per-core CPU frequency in MHz.
+    pub cpu_freq_mhz: Vec<u64>,
     /// Used memory in bytes.
     pub memory_used: u64,
     /// Total memory in bytes.

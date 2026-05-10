@@ -3,6 +3,11 @@ use serde::Serialize;
 #[derive(Debug, Serialize)]
 pub struct SystemSnapshotResp {
     pub cpu_usage: f32,
+    pub cpu_count: u32,
+    pub cpu_usage_cores: f32,
+    pub per_core_usage: Vec<f32>,
+    pub cpu_temp_celsius: Option<f32>,
+    pub cpu_freq_mhz: Vec<u64>,
     pub memory_used: u64,
     pub memory_total: u64,
     pub disk_used: u64,

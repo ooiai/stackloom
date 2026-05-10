@@ -15,15 +15,19 @@ export function MonitorSnapshotGrid({ snapshot }: MonitorSnapshotGridProps) {
   const { t } = useI18n()
 
   const cpuPercent = Math.round(snapshot.cpu_usage)
+  const cpuCoresUsed = Math.round(snapshot.cpu_usage_cores * 10) / 10
   const memPercent = formatPercent(snapshot.memory_used, snapshot.memory_total)
   const diskPercent = formatPercent(snapshot.disk_used, snapshot.disk_total)
+
+  const cpuValue = `${cpuPercent}%`
+  const cpuHint = `${cpuCoresUsed} of ${snapshot.cpu_count} cores`
 
   return (
     <div className="grid grid-cols-2 gap-4 xl:grid-cols-6">
       <MetricCard
         label={t("monitor.cpu")}
-        value={`${cpuPercent}%`}
-        hint={t("monitor.cpu_hint")}
+        value={cpuValue}
+        hint={cpuHint}
         tone={cpuPercent >= 90 ? "warning" : cpuPercent >= 70 ? "warning" : "success"}
         icon={<CpuIcon className="size-4" />}
         className="xl:col-span-2"

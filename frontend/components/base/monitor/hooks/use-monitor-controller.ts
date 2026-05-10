@@ -9,6 +9,11 @@ import type { MonitorMetrics } from "@/types/monitor.types"
 const EMPTY_METRICS: MonitorMetrics = {
   snapshot: {
     cpu_usage: 0,
+    cpu_count: 0,
+    cpu_usage_cores: 0,
+    per_core_usage: [],
+    cpu_temp_celsius: null,
+    cpu_freq_mhz: [],
     memory_used: 0,
     memory_total: 0,
     disk_used: 0,

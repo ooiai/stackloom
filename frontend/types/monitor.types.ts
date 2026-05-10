@@ -1,5 +1,10 @@
 export interface SystemSnapshot {
   cpu_usage: number
+  cpu_count: number
+  cpu_usage_cores: number
+  per_core_usage: number[]
+  cpu_temp_celsius: number | null
+  cpu_freq_mhz: number[]
   memory_used: number
   memory_total: number
   disk_used: number

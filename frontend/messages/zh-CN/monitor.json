@@ -129,5 +129,13 @@
   "group_charts": "请求图表",
   "group_charts_description": "把请求量、延迟和状态分布放在视觉中心，先看趋势再看细节。",
   "group_endpoints": "端点分析",
-  "group_endpoints_description": "用最慢接口和最高错误接口快速锁定重点排查目标。"
+  "group_endpoints_description": "用最慢接口和最高错误接口快速锁定重点排查目标。",
+  "per_core_usage": "每核 CPU 使用率",
+  "core": "核",
+  "cpu_temperature": "CPU 温度",
+  "temperature_normal": "正常",
+  "temperature_moderate": "中等",
+  "temperature_high": "偏高",
+  "cpu_frequency": "CPU 频率",
+  "showing_first_8_cores": "仅显示前 8 个核心"
 }

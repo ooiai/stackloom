@@ -9,6 +9,7 @@ import { useI18n } from "@/providers/i18n-provider"
 import type { MonitorMetrics } from "@/types/monitor.types"
 import { MonitorAppStatsGrid } from "./monitor-app-stats-grid"
 import { MonitorBusinessSummary } from "./monitor-business-summary"
+import { MonitorCpuCoresGrid } from "./monitor-cpu-cores-grid"
 import { MonitorDatabaseGrid } from "./monitor-database-grid"
 import { MonitorDatabaseTopQueries } from "./monitor-database-top-queries"
 import { MonitorLatencyChart } from "./monitor-latency-chart"
@@ -79,6 +80,7 @@ export function MonitorPageContainer({
         description={t("monitor.group_system_description")}
       >
         <MonitorSnapshotGrid snapshot={metrics.snapshot} />
+        <MonitorCpuCoresGrid snapshot={metrics.snapshot} />
         <MonitorNetworkGrid snapshot={metrics.snapshot} />
       </MonitorSectionGroup>
 

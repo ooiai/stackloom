@@ -1,0 +1,72 @@
+   stackloom
+ ├╴  backend
+ │ ├╴  bin
+ │ ├╴  crates
+ │ │ ├╴  api-grpc
+ │ │ ├╴  api-http
+ │ │ ├╴  app
+ │ │ │ ├╴  src
+ │ │ │ │ ├╴  diesel_init.rs
+ │ │ │ │ ├╴  diesel_migrations.rs
+ │ │ │ │ ├╴  email_init.rs
+ │ │ │ │ ├╴  lib.rs
+ │ │ │ │ ├╴  redis_init.rs
+ │ │ │ │ ├╴  sms_init.rs
+ │ │ │ │ ├╴  sqlx_init.rs
+ │ │ │ │ └╴  sqlx_migrations.rs
+ │ │ │ └╴  Cargo.toml
+ │ │ ├╴  common
+ │ │ ├╴  domain-auth
+ │ │ ├╴  domain-base
+ │ │ ├╴  domain-system
+ │ │ ├╴  domain-web
+ │ │ ├╴  infra-auth
+ │ │ ├╴  infra-base
+ │ │ ├╴  infra-system
+ │ │ └╴  infra-web
+ │ ├╴  migrations
+ │ ├╴  schemas
+ │ ├╴  scripts
+ │ ├╴  sql
+ │ ├╴  Cargo.lock
+ │ ├╴  Cargo.toml
+ │ └╴  config.yml.prod
+ ├╴  docker
+ ├╴  docs
+ ├╴  frontend
+ ├╴  skills
+ ├╴  spec
+ ├╴  AGENTS.md
+ ├╴  LICENSE
+ ├╴  Makefile
+ ├╴  README.md
+ └╴  README.zh-CN.md
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

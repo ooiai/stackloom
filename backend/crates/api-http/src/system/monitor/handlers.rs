@@ -50,6 +50,11 @@ pub async fn metrics(
     let resp = MonitorMetricsResp {
         snapshot: SystemSnapshotResp {
             cpu_usage: snapshot.cpu_usage,
+            cpu_count: snapshot.cpu_count,
+            cpu_usage_cores: snapshot.cpu_usage_cores,
+            per_core_usage: snapshot.per_core_usage,
+            cpu_temp_celsius: snapshot.cpu_temp_celsius,
+            cpu_freq_mhz: snapshot.cpu_freq_mhz,
             memory_used: snapshot.memory_used,
             memory_total: snapshot.memory_total,
             disk_used: snapshot.disk_used,

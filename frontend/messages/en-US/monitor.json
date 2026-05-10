@@ -129,5 +129,13 @@
   "group_charts": "Request Charts",
   "group_charts_description": "Keep request, latency, and status trends in the visual center first.",
   "group_endpoints": "Endpoint Analysis",
-  "group_endpoints_description": "Use slowest and noisiest endpoints to focus investigation quickly."
+  "group_endpoints_description": "Use slowest and noisiest endpoints to focus investigation quickly.",
+  "per_core_usage": "Per-Core CPU Usage",
+  "core": "Core",
+  "cpu_temperature": "CPU Temperature",
+  "temperature_normal": "Normal",
+  "temperature_moderate": "Moderate",
+  "temperature_high": "High",
+  "cpu_frequency": "CPU Frequency",
+  "showing_first_8_cores": "Showing first 8 cores only"
 }
