@@ -96,3 +96,9 @@ export interface PageOperationLogParam {
 export type PaginateSystemLog = PaginateResp<SystemLogData>
 export type PaginateAuditLog = PaginateResp<AuditLogData>
 export type PaginateOperationLog = PaginateResp<OperationLogData>
+
+export interface LogRetentionPolicy {
+  logType: string
+  retentionDays: number | null  // null = 保留所有日志，数值 = 保留天数
+  lastCleanupAt?: string        // ISO 8601 格式
+}

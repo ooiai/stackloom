@@ -17,14 +17,14 @@ pg-database:
   max_size: 20
 
 base-database:
-  url: postgres://postgres:postgres@localhost:5432/stackloom
+  url: postgres://postgres:postgres@localhost:5432/db
   max_size: 20
 
 redis:
-  url: redis://:smartredis@127.0.0.1:6379/0
+  url: redis://:pwd@127.0.0.1:6379/0
 
 apalis:
-  url: redis://:smartredis@127.0.0.1:6379/1
+  url: redis://:pwd@127.0.0.1:6379/1
   concurrency: 10
 
 aws-cos:
@@ -41,23 +41,21 @@ aws-cos:
   aliyun_bucket: your_bucket
   aliyun_base_url: https://your_bucket.oss-cn-hangzhou.aliyuncs.com
   # RustFS
-  rustfs_accesskey_id: xxxxxxxxxx
-  # rustfs_accesskey_id: xxxxxxxxxxxxxxxx
-  rustfs_accesskey_secret: xxxxxxxxxxxxxx
-  # rustfs_accesskey_secret: xxxxxxxxxxxxx
-  rustfs_endpoint: http://xx.xx.xx.xx
+  rustfs_accesskey_id: your_access_key_id
+  rustfs_accesskey_secret: your_access_key_secret
+  rustfs_endpoint: http://fs.rustfs.com
   rustfs_region_id: us-east-1
   rustfs_bucket: topedu
   rustfs_expiration: 3600
-  rustfs_base_url: http://rustfs.dev.topedu.school
+  rustfs_base_url: http://rustfs.rustfs.com
   # MinIO
   minio_accesskey_id: your_access_key_id
   minio_accesskey_secret: your_access_key_secret
-  minio_endpoint: http://xx.xx.xx/rustfs/upload
+  minio_endpoint: http://xx.xx.xx/minio/upload
   minio_region_id: us-east-1
   minio_bucket: your_bucket
   minio_expiration: 3600
-  minio_base_url: http://xx.xx.xxx/rustfs/upload/your_bucket
+  minio_base_url: http://xx.xx.xxx/minio/upload/your_bucket
 
 sms:
   debug: true

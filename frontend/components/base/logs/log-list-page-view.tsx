@@ -41,6 +41,7 @@ interface LogListPageViewProps<TData extends { id: string }> {
   pagination: PaginationState
   onPaginationChange: (pagination: PaginationState) => void
   onRefresh: () => void
+  actions?: React.ReactNode
 }
 
 export function LogListPageView<TData extends { id: string }>({
@@ -57,6 +58,7 @@ export function LogListPageView<TData extends { id: string }>({
   pagination,
   onPaginationChange,
   onRefresh,
+  actions,
 }: LogListPageViewProps<TData>) {
   const { t } = useI18n()
   const [columnOrder, setColumnOrder] = useState<string[]>(
@@ -96,17 +98,19 @@ export function LogListPageView<TData extends { id: string }>({
         title={title}
         description={description}
         actions={
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onRefresh}
-            disabled={isFetching}
-          >
-            <RefreshCwIcon
-              className={isFetching ? "animate-spin" : undefined}
-            />
-            {t("common.actions.refresh")}
-          </Button>
+          actions || (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onRefresh}
+              disabled={isFetching}
+            >
+              <RefreshCwIcon
+                className={isFetching ? "animate-spin" : undefined}
+              />
+              {t("common.actions.refresh")}
+            </Button>
+          )
         }
       >
         <div className="grid gap-3 md:grid-cols-3">

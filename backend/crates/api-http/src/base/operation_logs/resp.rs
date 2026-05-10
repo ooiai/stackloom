@@ -1,4 +1,4 @@
-use domain_web::OperationLog;
+use domain_base::OperationLog;
 use neocrates::{
     chrono::{DateTime, Utc},
     helper::core::serde_helpers,

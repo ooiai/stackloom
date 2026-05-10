@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
-use domain_web::{
+use chrono::{DateTime, Utc};
+use domain_base::{
     OperationLog, OperationLogRepository,
     operation_log::{OperationLogFilter, OperationLogListQuery, OperationLogPageQuery},
 };
@@ -253,6 +254,16 @@ impl OperationLogRepository for SqlxOperationLogRepository {
             .map_err(Self::map_sqlx_error)?;
 
         Ok(rows.into_iter().map(Into::into).collect())
+    }
+
+    async fn delete_by_created_before(&self, cutoff: DateTime<Utc>) -> AppResult<i64> {
+        let result = sqlx::query("DELETE FROM operation_logs WHERE created_at < $1")
+            .bind(cutoff)
+            .execute(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        Ok(result.rows_affected() as i64)
     }
 }
 

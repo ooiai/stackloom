@@ -1,11 +1,18 @@
 "use client"
 
-import { type ChangeEvent, useMemo, useRef, useState } from "react"
+import { type ChangeEvent, type KeyboardEvent, useMemo, useRef, useState } from "react"
 
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { CameraIcon, Loader2Icon, SettingsIcon, XIcon } from "lucide-react"
+import ReactCrop, {
+  centerCrop,
+  makeAspectCrop,
+  type Crop,
+  type PixelCrop,
+} from "react-image-crop"
 import { toast } from "sonner"
+import "react-image-crop/dist/ReactCrop.css"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -28,10 +35,73 @@ interface AccountSettingsDialogProps {
 }
 
 const ACCOUNT_PROFILE_QUERY_KEY = ["shared", "profile", "self"] as const
+const AVATAR_CROP_ASPECT = 1
 
 function normalizeNullable(value: string) {
   const trimmed = value.trim()
   return trimmed.length > 0 ? trimmed : null
+}
+
+function createCenteredAspectCrop(
+  mediaWidth: number,
+  mediaHeight: number,
+  aspect: number
+) {
+  return centerCrop(
+    makeAspectCrop(
+      {
+        unit: "%",
+        width: 90,
+      },
+      aspect,
+      mediaWidth,
+      mediaHeight
+    ),
+    mediaWidth,
+    mediaHeight
+  )
+}
+
+async function cropImageToFile(
+  image: HTMLImageElement,
+  pixelCrop: PixelCrop
+): Promise<File> {
+  const canvas = document.createElement("canvas")
+  const ctx = canvas.getContext("2d")
+
+  if (!ctx) {
+    throw new Error("Canvas context is not available")
+  }
+
+  const scaleX = image.naturalWidth / image.width
+  const scaleY = image.naturalHeight / image.height
+
+  canvas.width = Math.floor(pixelCrop.width * scaleX)
+  canvas.height = Math.floor(pixelCrop.height * scaleY)
+
+  ctx.drawImage(
+    image,
+    pixelCrop.x * scaleX,
+    pixelCrop.y * scaleY,
+    pixelCrop.width * scaleX,
+    pixelCrop.height * scaleY,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  )
+
+  const blob = await new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((result) => {
+      if (result) {
+        resolve(result)
+      } else {
+        reject(new Error("Unable to generate cropped image"))
+      }
+    }, "image/png")
+  })
+
+  return new File([blob], `avatar-${Date.now()}.png`, { type: "image/png" })
 }
 
 function buildFallbackProfile(user: HeaderContextUserData | null): UserProfileData | null {
@@ -67,7 +137,12 @@ function AccountSettingsDialogForm({
   const queryClient = useQueryClient()
   const { uploadFile } = useAwsS3()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const cropImageRef = useRef<HTMLImageElement | null>(null)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+  const [isCropperOpen, setIsCropperOpen] = useState(false)
+  const [cropSrc, setCropSrc] = useState<string | null>(null)
+  const [crop, setCrop] = useState<Crop>()
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop | null>(null)
   const [nickname, setNickname] = useState(profile.nickname ?? "")
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url ?? "")
   const [email, setEmail] = useState(profile.email ?? "")
@@ -119,6 +194,15 @@ function AccountSettingsDialogForm({
     },
   })
 
+  const triggerAvatarFileInput = () => fileInputRef.current?.click()
+
+  const handleAvatarKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      triggerAvatarFileInput()
+    }
+  }
+
   const handleAvatarFileChange = async (
     event: ChangeEvent<HTMLInputElement>
   ) => {
@@ -133,16 +217,59 @@ function AccountSettingsDialogForm({
       return
     }
 
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (typeof reader.result !== "string") {
+        toast.error(t("account.settings.avatarUploadFailed"))
+        return
+      }
+      setCropSrc(reader.result)
+      setCrop(undefined)
+      setCompletedCrop(null)
+      setIsCropperOpen(true)
+    }
+    reader.onerror = () => {
+      toast.error(t("account.settings.avatarUploadFailed"))
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handleCropperOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen && isUploadingAvatar) {
+      return
+    }
+    setIsCropperOpen(nextOpen)
+    if (!nextOpen) {
+      setCropSrc(null)
+      setCrop(undefined)
+      setCompletedCrop(null)
+    }
+  }
+
+  const handleCropConfirm = async () => {
+    const image = cropImageRef.current
+    if (
+      !image ||
+      !completedCrop ||
+      completedCrop.width <= 0 ||
+      completedCrop.height <= 0
+    ) {
+      toast.error(t("account.settings.avatarCropRequired"))
+      return
+    }
+
     try {
       setIsUploadingAvatar(true)
+      const croppedFile = await cropImageToFile(image, completedCrop)
       const url = await uploadAwsObject({
-        file,
+        file: croppedFile,
         folder: OSS_ENUM.IMAGES,
         uploadFile,
         getSts: () => awsApi.getSts({}),
       })
       setAvatarUrl(url)
       toast.success(t("account.settings.avatarUploaded"))
+      handleCropperOpenChange(false)
     } catch (error) {
       toast.error(
         error instanceof Error
@@ -171,56 +298,45 @@ function AccountSettingsDialogForm({
         updateMutation.mutate()
       }}
     >
-      <div className="rounded-xl bg-muted/40 p-4 ring-1 ring-border/50">
-        <p className="text-xs font-medium tracking-wide text-muted-foreground">
-          {t("account.settings.previewTitle")}
-        </p>
-        <div className="mt-3 flex items-center gap-3">
-          <Avatar className="size-14">
-            {normalizedAvatarUrl && (
-              <AvatarImage src={normalizedAvatarUrl} alt={previewName} />
-            )}
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 flex-1">
+      <div className="rounded-xl border border-border/60 bg-muted/30 p-4">
+        <div className="flex items-center gap-4">
+          <div
+            className="group relative cursor-pointer rounded-full ring-offset-2 ring-offset-background transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            role="button"
+            tabIndex={0}
+            aria-label={t("account.settings.avatarUpload")}
+            onClick={triggerAvatarFileInput}
+            onKeyDown={handleAvatarKeyDown}
+          >
+            <Avatar className="size-16 ring-2 ring-border/70 ring-offset-2 ring-offset-background transition-all duration-300 group-hover:ring-primary/60">
+              {normalizedAvatarUrl && (
+                <AvatarImage src={normalizedAvatarUrl} alt={previewName} />
+              )}
+              <AvatarFallback className="text-base font-semibold">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 transition-all duration-300 group-hover:bg-black/35">
+              <CameraIcon className="size-5 translate-y-1 text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" />
+            </div>
+            {isUploadingAvatar ? (
+              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 backdrop-blur-[1px]">
+                <Loader2Icon className="size-5 animate-spin text-white" />
+              </div>
+            ) : null}
+          </div>
+
+          <div className="min-w-0 flex-1 space-y-1.5">
             <p className="truncate text-sm font-semibold text-foreground">
               {previewName}
             </p>
             <p className="truncate text-xs text-muted-foreground">
-              {profile.username}
+              @{profile.username}
             </p>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
-                {profile.tenant_name}
-              </span>
-            </div>
+            <p className="text-[11px] leading-5 text-muted-foreground">
+              {t("account.settings.avatarHint")}
+            </p>
           </div>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-sm font-medium">{t("account.settings.avatar")}</label>
-        <div className="flex items-center gap-3 rounded-lg border border-border/60 bg-muted/20 p-3">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            disabled={isBusy}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            {isUploadingAvatar ? (
-              <Loader2Icon className="size-3.5 animate-spin" />
-            ) : (
-              <CameraIcon className="size-3.5" />
-            )}
-            {isUploadingAvatar
-              ? t("account.settings.avatarUploading")
-              : t("account.settings.avatarUpload")}
-          </Button>
-          <p className="text-xs text-muted-foreground">
-            {t("account.settings.avatarHint")}
-          </p>
           <input
             ref={fileInputRef}
             type="file"
@@ -230,6 +346,77 @@ function AccountSettingsDialogForm({
           />
         </div>
       </div>
+
+      <DialogPrimitive.Root open={isCropperOpen} onOpenChange={handleCropperOpenChange}>
+        <DialogPrimitive.Portal>
+          <DialogPrimitive.Backdrop className="fixed inset-0 z-[70] bg-black/30 backdrop-blur-xs" />
+          <DialogPrimitive.Popup className="fixed top-1/2 left-1/2 z-[80] flex w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 flex-col gap-4 rounded-2xl border border-border/70 bg-background p-5 shadow-2xl outline-none">
+            <div className="space-y-1">
+              <DialogPrimitive.Title className="text-sm font-semibold text-foreground">
+                {t("account.settings.avatarCropTitle")}
+              </DialogPrimitive.Title>
+              <DialogPrimitive.Description className="text-xs text-muted-foreground">
+                {t("account.settings.avatarCropDescription")}
+              </DialogPrimitive.Description>
+            </div>
+            <div className="overflow-hidden rounded-lg border border-border/60 bg-muted/20 p-3">
+              {cropSrc ? (
+                <ReactCrop
+                  crop={crop}
+                  onChange={(_, percentCrop) => setCrop(percentCrop)}
+                  onComplete={(pixelCrop) => setCompletedCrop(pixelCrop)}
+                  aspect={AVATAR_CROP_ASPECT}
+                  circularCrop
+                  keepSelection
+                  minWidth={120}
+                >
+                  {/* react-image-crop requires a native HTMLImageElement reference */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    ref={cropImageRef}
+                    src={cropSrc}
+                    alt={t("account.settings.avatarCropTitle")}
+                    className="max-h-[52vh] w-auto object-contain"
+                    onLoad={(event) => {
+                      const { width, height } = event.currentTarget
+                      setCrop(
+                        createCenteredAspectCrop(
+                          width,
+                          height,
+                          AVATAR_CROP_ASPECT
+                        )
+                      )
+                    }}
+                  />
+                </ReactCrop>
+              ) : null}
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleCropperOpenChange(false)}
+                disabled={isUploadingAvatar}
+              >
+                {t("account.settings.cancel")}
+              </Button>
+              <Button
+                type="button"
+                className="min-w-28 gap-2"
+                onClick={() => void handleCropConfirm()}
+                disabled={isUploadingAvatar}
+              >
+                {isUploadingAvatar ? (
+                  <Loader2Icon className="size-4 animate-spin" />
+                ) : null}
+                {isUploadingAvatar
+                  ? t("account.settings.avatarUploading")
+                  : t("account.settings.avatarCropApply")}
+              </Button>
+            </div>
+          </DialogPrimitive.Popup>
+        </DialogPrimitive.Portal>
+      </DialogPrimitive.Root>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">

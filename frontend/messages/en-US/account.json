@@ -2,7 +2,6 @@
   "settings": {
     "title": "Account Settings",
     "subtitle": "Manage your profile and membership details",
-    "previewTitle": "Profile preview",
     "company": "Company",
     "username": "Username",
     "nickname": "Nickname",
@@ -20,6 +19,10 @@
     "avatarHint": "Supports JPG/PNG/WebP. Avatar updates after upload.",
     "avatarUpload": "Upload avatar",
     "avatarUploading": "Uploading",
+    "avatarCropTitle": "Crop avatar",
+    "avatarCropDescription": "Adjust the crop area and save to upload the cropped image",
+    "avatarCropApply": "Crop & upload",
+    "avatarCropRequired": "Please select a crop area first",
     "avatarInvalid": "Please choose an image file",
     "avatarUploaded": "Avatar uploaded",
     "avatarUploadFailed": "Avatar upload failed, please try again",

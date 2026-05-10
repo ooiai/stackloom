@@ -1,13 +1,17 @@
 "use client"
 
-import { useMemo } from "react"
+import { useState, useMemo } from "react"
 
 import { createSystemLogColumns } from "@/components/base/logs/system-logs-page-columns"
 import { SystemLogsPageFilters } from "@/components/base/logs/system-logs-page-filters"
 import { LogListPageView } from "@/components/base/logs/log-list-page-view"
+import { LogRetentionSettingsSheet } from "@/components/base/logs/log-retention-settings-sheet"
 import { useI18n } from "@/providers/i18n-provider"
 import type { SystemLogData } from "@/types/logs.types"
 import type { PaginationState } from "@tanstack/react-table"
+import { Button } from "@/components/ui/button"
+import { SettingsIcon } from "lucide-react"
+import { RefreshCwIcon } from "lucide-react"
 
 interface SystemLogsPageViewProps {
   filters: import("@/components/reui/filters").Filter<
@@ -41,6 +45,7 @@ export function SystemLogsPageView({
   onOpenDetail,
 }: SystemLogsPageViewProps) {
   const { t } = useI18n()
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const columns = useMemo(
     () => createSystemLogColumns({ t, onOpenDetail }),
     [onOpenDetail, t]
@@ -61,43 +66,73 @@ export function SystemLogsPageView({
   }, [logs])
 
   return (
-    <LogListPageView
-      title={t("logs.system.page.title")}
-      description={t("logs.system.page.subtitle")}
-      emptyTitle={t("logs.system.page.emptyTitle")}
-      emptyDescription={t("logs.system.page.emptyDescription")}
-      metrics={[
-        {
-          label: t("logs.system.metrics.totalLabel"),
-          value: total,
-          hint: t("logs.system.metrics.totalHint"),
-        },
-        {
-          label: t("logs.system.metrics.failureLabel"),
-          value: failureCount,
-          hint: t("logs.system.metrics.failureHint"),
-          tone: failureCount > 0 ? "warning" : "success",
-        },
-        {
-          label: t("logs.system.metrics.latencyLabel"),
-          value: `${averageLatency} ms`,
-          hint: t("logs.system.metrics.latencyHint"),
-        },
-      ]}
-      filters={
-        <SystemLogsPageFilters
-          filters={filters}
-          onFiltersChange={onFiltersChange}
-          onClearFilters={onClearFilters}
-        />
-      }
-      columns={columns}
-      items={logs}
-      total={total}
-      isFetching={isFetching}
-      pagination={pagination}
-      onPaginationChange={onPaginationChange}
-      onRefresh={onRefresh}
-    />
+    <>
+      <LogListPageView
+        title={t("logs.system.page.title")}
+        description={t("logs.system.page.subtitle")}
+        emptyTitle={t("logs.system.page.emptyTitle")}
+        emptyDescription={t("logs.system.page.emptyDescription")}
+        metrics={[
+          {
+            label: t("logs.system.metrics.totalLabel"),
+            value: total,
+            hint: t("logs.system.metrics.totalHint"),
+          },
+          {
+            label: t("logs.system.metrics.failureLabel"),
+            value: failureCount,
+            hint: t("logs.system.metrics.failureHint"),
+            tone: failureCount > 0 ? "warning" : "success",
+          },
+          {
+            label: t("logs.system.metrics.latencyLabel"),
+            value: `${averageLatency} ms`,
+            hint: t("logs.system.metrics.latencyHint"),
+          },
+        ]}
+        filters={
+          <SystemLogsPageFilters
+            filters={filters}
+            onFiltersChange={onFiltersChange}
+            onClearFilters={onClearFilters}
+          />
+        }
+        columns={columns}
+        items={logs}
+        total={total}
+        isFetching={isFetching}
+        pagination={pagination}
+        onPaginationChange={onPaginationChange}
+        onRefresh={onRefresh}
+        actions={
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onRefresh}
+              disabled={isFetching}
+            >
+              <RefreshCwIcon
+                className={isFetching ? "animate-spin" : undefined}
+              />
+              {t("common.actions.refresh")}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSettingsOpen(true)}
+            >
+              <SettingsIcon />
+              {t("logs.settings")}
+            </Button>
+          </div>
+        }
+      />
+      <LogRetentionSettingsSheet
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        logType="system_log"
+      />
+    </>
   )
 }

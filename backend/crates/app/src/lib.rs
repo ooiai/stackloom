@@ -12,7 +12,7 @@ use neocrates::{
     },
     middlewares::{models::MiddlewareConfig, token_store},
     rediscache::RedisPool,
-    tokio::net::TcpListener,
+    tokio::{self, net::TcpListener},
     tower::ServiceBuilder,
     tower_http::{cors::CorsLayer, trace::TraceLayer},
     tracing,
@@ -27,9 +27,9 @@ use infra_auth::AuthServiceImpl;
 use infra_base::{
     DictServiceImpl, MenuServiceImpl, PermServiceImpl, RoleServiceImpl, SharedContextServiceImpl,
     TenantServiceImpl, UserServiceImpl, UserTenantRoleServiceImpl, UserTenantServiceImpl,
+    OperationLogServiceImpl, LogRetentionService, SqlxLogRetentionPolicyRepository,
 };
 use infra_system::{AuditLogServiceImpl, MonitorServiceImpl, SysModule, SystemLogServiceImpl};
-use infra_web::OperationLogServiceImpl;
 
 mod diesel_init;
 mod diesel_migrations;
@@ -38,6 +38,7 @@ mod redis_init;
 mod sms_init;
 mod sqlx_init;
 mod sqlx_migrations;
+pub mod jobs;
 
 /// Start the HTTP server
 ///
@@ -137,6 +138,18 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         redis_pool: redis_pool.clone(),
         cfg: cfg.clone(),
     };
+    let log_retention_repo = Arc::new(SqlxLogRetentionPolicyRepository::new(base_pool.clone()));
+    
+    // Initialize LogRetentionService for scheduled cleanup jobs  
+    tracing::info!("Monolith initializing LogRetentionService...");
+    let pg_pool: sqlx::PgPool = sqlx::PgPool::connect(&cfg.base_database.url)
+        .await
+        .expect("Failed to create PgPool for LogRetentionService");
+    let log_retention_service = Arc::new(LogRetentionService::new(
+        Box::new(SqlxLogRetentionPolicyRepository::new(base_pool.clone())),
+        pg_pool,
+    ));
+    
     let base_http_state = BaseHttpState {
         cfg: cfg.clone(),
         redis_pool: redis_pool.clone(),
@@ -152,6 +165,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         system_log_service: system_log_service.clone(),
         audit_log_service: audit_log_service.clone(),
         operation_log_service: operation_log_service.clone(),
+        log_retention_repo,
     };
     let shared_http_state = SharedHttpState {
         menu_service,
@@ -207,6 +221,59 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         .fallback(handler_404)
         .layer(trace_layer)
         .layer(cors);
+
+    // Schedule the LogCleanupJob to run daily at 5 AM UTC
+    // For now, we'll use a simple scheduled task that runs every 24 hours
+    tracing::info!("Monolith scheduling log cleanup job (daily at 5 AM UTC)...");
+    let log_retention_service_clone = log_retention_service.clone();
+    
+    tokio::spawn(async move {
+        use std::time::Duration;
+        use neocrates::chrono::Timelike;
+        
+        loop {
+            // Check if current time is around 5 AM UTC
+            let now = neocrates::chrono::Utc::now();
+            
+            // Calculate next run time (5 AM UTC)
+            let mut next_run = now
+                .with_hour(5)
+                .unwrap()
+                .with_minute(0)
+                .unwrap()
+                .with_second(0)
+                .unwrap();
+            
+            // If we're past 5 AM today, schedule for tomorrow
+            if next_run <= now {
+                next_run = (next_run + neocrates::chrono::Duration::days(1))
+                    .with_hour(5)
+                    .unwrap()
+                    .with_minute(0)
+                    .unwrap()
+                    .with_second(0)
+                    .unwrap();
+            }
+            
+            // Calculate sleep duration
+            let sleep_duration = next_run.signed_duration_since(now);
+            if sleep_duration.num_seconds() > 0 {
+                tokio::time::sleep(Duration::from_secs(sleep_duration.num_seconds() as u64)).await;
+            }
+            
+            // Execute cleanup job
+            tracing::info!("Executing scheduled log cleanup job...");
+            if let Err(e) = log_retention_service_clone.cleanup_all_logs().await {
+                tracing::error!("Log cleanup job failed: {:?}", e);
+            } else {
+                tracing::info!("Log cleanup job completed successfully");
+            }
+            
+            // Sleep for 1 minute to avoid immediate re-execution
+            tokio::time::sleep(Duration::from_secs(60)).await;
+        }
+    });
+
     let listener = TcpListener::bind(format!("{}:{}", cfg.server.host, cfg.server.port))
         .await
         .expect("TcpListener unable to bind port");

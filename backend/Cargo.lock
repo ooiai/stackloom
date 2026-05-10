@@ -247,6 +247,8 @@ dependencies = [
 name = "app"
 version = "0.1.0"
 dependencies = [
+ "apalis",
+ "apalis-redis",
  "api-http",
  "common",
  "diesel",
@@ -257,6 +259,7 @@ dependencies = [
  "infra-system",
  "infra-web",
  "neocrates",
+ "serde",
  "sqlx",
 ]
 

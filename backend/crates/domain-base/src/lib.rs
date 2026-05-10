@@ -47,3 +47,12 @@ pub use role::{CreateRoleCmd, PageRoleCmd, Role, UpdateRoleCmd};
 pub mod shared_context;
 pub use shared_context::service::SharedContextService;
 pub use shared_context::{SharedHeaderContext, SharedHeaderUser, UpdateProfileCmd, UserProfileView};
+pub mod operation_log;
+pub use operation_log::repo::OperationLogRepository;
+pub use operation_log::service::OperationLogService;
+pub use operation_log::{
+    CreateOperationLogCmd, ListOperationLogCmd, OperationLog, PageOperationLogCmd,
+};
+pub mod log_retention_policy;
+pub use log_retention_policy::repo::LogRetentionPolicyRepository;
+pub use log_retention_policy::{LogRetentionPolicy, UpdateLogRetentionPolicyCmd};

@@ -6,7 +6,7 @@ use neocrates::tokio;
 use sysinfo::{Components, Disks, Networks, System, get_current_pid};
 
 /// SystemMetricsCollector manages background collection of system metrics
-/// 
+///
 /// This collector runs a background task that periodically samples system metrics
 /// using the sysinfo library. By maintaining a continuous System instance and
 /// refreshing it at regular intervals, we ensure accurate CPU usage readings
@@ -132,7 +132,7 @@ impl SystemMetricsCollector {
                     process_virtual_memory_bytes,
                     process_cpu_percent,
                     db_pool_size: 0, // Will be updated by the service layer
-                    db_pool_idle: 0,  // Will be updated by the service layer
+                    db_pool_idle: 0, // Will be updated by the service layer
                 };
 
                 *snapshot_clone.write().await = snapshot;
@@ -143,7 +143,7 @@ impl SystemMetricsCollector {
     }
 
     /// Get the latest system snapshot without blocking
-    /// 
+    ///
     /// # Returns
     /// A cloned copy of the latest SystemSnapshot
     pub async fn get_snapshot(&self) -> SystemSnapshot {
@@ -167,7 +167,7 @@ mod tests {
         // Wait for the collector to update
         tokio::time::sleep(Duration::from_millis(200)).await;
 
-        let snapshot2 = collector.get_snapshot().await;
+        let _snapshot2 = collector.get_snapshot().await;
         // After the initial delay and first real refresh, values should be available
         // (though they might still be low on idle systems)
         assert!(true); // Just verify no panic

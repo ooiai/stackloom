@@ -3,7 +3,7 @@ use super::{
     resp::{OperationLogResp, PaginateOperationLogResp},
 };
 use crate::base::BaseHttpState;
-use domain_web::PageOperationLogCmd;
+use domain_base::PageOperationLogCmd;
 use neocrates::{
     axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,

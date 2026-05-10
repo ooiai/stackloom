@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use domain_web::{
+use domain_base::{
     CreateOperationLogCmd, ListOperationLogCmd, OperationLog, OperationLogRepository,
     OperationLogService, PageOperationLogCmd,
     operation_log::{OperationLogFilter, OperationLogListQuery, OperationLogPageQuery},

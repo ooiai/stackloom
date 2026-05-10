@@ -5,7 +5,7 @@ pub use repo::SqlxOperationLogRepository;
 pub use service::OperationLogServiceImpl;
 
 use chrono::{DateTime, Utc};
-use domain_web::OperationLog;
+use domain_base::OperationLog;
 use serde_json::Value;
 use sqlx::FromRow;
 

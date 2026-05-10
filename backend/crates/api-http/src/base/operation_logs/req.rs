@@ -1,4 +1,4 @@
-use domain_web::PageOperationLogCmd;
+use domain_base::PageOperationLogCmd;
 use neocrates::{
     chrono::{DateTime, Utc},
     helper::core::serde_helpers,

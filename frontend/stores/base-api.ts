@@ -1,4 +1,4 @@
-import { post } from "@/lib/http/axios"
+import { post, get } from "@/lib/http/axios"
 import type {
     GetRoleMenusParam,
     AssignRoleMenusParam,
@@ -77,6 +77,7 @@ import type {
     UserData,
     UserRolesResp,
 } from "@/types/base.types"
+import type { LogRetentionPolicy } from "@/types/logs.types"
 
 const BASE_USER_API_PREFIX = "/apiv1/base/users"
 const BASE_TENANT_API_PREFIX = "/apiv1/base/tenants"
@@ -84,6 +85,7 @@ const BASE_MENU_API_PREFIX = "/apiv1/base/menus"
 const BASE_DICT_API_PREFIX = "/apiv1/base/dicts"
 const BASE_ROLE_API_PREFIX = "/apiv1/base/roles"
 const BASE_PERM_API_PREFIX = "/apiv1/base/perms"
+const BASE_LOGS_API_PREFIX = "/apiv1/base/logs"
 const SHARED_COMMON_API_PREFIX = "/apiv1/shared/common"
 const SHARED_PROFILE_API_PREFIX = "/apiv1/shared/profile"
 
@@ -298,4 +300,17 @@ export const profileApi = {
   update: async (params: UpdateUserProfileParam): Promise<UserProfileData> => {
     return post(`${SHARED_PROFILE_API_PREFIX}/update`, params)
   },
+}
+
+// 日志保留策略 API
+export const logRetentionApi = {
+  // 获取指定日志类型的保留策略
+  getPolicy: (logType: string) => 
+    get<LogRetentionPolicy>(`/base/log-retention-policies/${logType}`),
+  
+  // 更新日志保留策略
+  updatePolicy: (logType: string, retentionDays: number | null) =>
+    post<LogRetentionPolicy>(`/base/log-retention-policies/${logType}`, {
+      retention_days: retentionDays,
+    }),
 }

@@ -1,5 +1,5 @@
 use domain_system::CreateAuditLogCmd;
-use domain_web::CreateOperationLogCmd;
+use domain_base::CreateOperationLogCmd;
 use neocrates::{
     middlewares::RequestTraceContext,
     serde::Serialize,

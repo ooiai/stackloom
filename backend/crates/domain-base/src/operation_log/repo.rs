@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
 use crate::{
@@ -15,4 +16,7 @@ pub trait OperationLogRepository: Send + Sync {
 
     /// Get a filtered list of operation logs.
     async fn list(&self, query: &OperationLogListQuery) -> AppResult<Vec<OperationLog>>;
+
+    /// Delete operation logs created before the specified timestamp.
+    async fn delete_by_created_before(&self, cutoff: DateTime<Utc>) -> AppResult<i64>;
 }
