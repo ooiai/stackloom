@@ -60,7 +60,7 @@ export function LogDetailSheet({
                 <p className="text-[11px] font-medium tracking-[0.12em] text-muted-foreground uppercase">
                   {field.label}
                 </p>
-                <div className="break-all text-sm leading-6 text-foreground">
+                <div className="text-sm leading-6 break-all text-foreground">
                   {field.value}
                 </div>
               </div>

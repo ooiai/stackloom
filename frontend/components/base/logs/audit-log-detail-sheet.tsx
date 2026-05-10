@@ -31,7 +31,10 @@ export function AuditLogDetailSheet({
       description={t("logs.audit.detail.description")}
       fields={[
         { label: t("logs.common.fields.id"), value: log.id },
-        { label: t("logs.common.fields.traceId"), value: formatLogValue(log.trace_id) },
+        {
+          label: t("logs.common.fields.traceId"),
+          value: formatLogValue(log.trace_id),
+        },
         {
           label: t("logs.common.fields.tenantId"),
           value: formatLogValue(log.tenant_id),
@@ -47,7 +50,10 @@ export function AuditLogDetailSheet({
         { label: t("logs.common.fields.targetId"), value: log.target_id },
         { label: t("logs.common.fields.action"), value: log.action },
         { label: t("logs.common.fields.result"), value: log.result },
-        { label: t("logs.common.fields.reason"), value: formatLogValue(log.reason) },
+        {
+          label: t("logs.common.fields.reason"),
+          value: formatLogValue(log.reason),
+        },
         { label: t("logs.common.fields.ip"), value: formatLogValue(log.ip) },
         {
           label: t("logs.common.fields.userAgent"),

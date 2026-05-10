@@ -53,11 +53,13 @@ export function AuditLogsPageView({
 
   const failureCount = useMemo(
     () =>
-      logs.filter((log) => log.result.trim().toLowerCase() === "failure").length,
+      logs.filter((log) => log.result.trim().toLowerCase() === "failure")
+        .length,
     [logs]
   )
   const uniqueTargetCount = useMemo(
-    () => new Set(logs.map((log) => `${log.target_type}:${log.target_id}`)).size,
+    () =>
+      new Set(logs.map((log) => `${log.target_type}:${log.target_id}`)).size,
     [logs]
   )
 

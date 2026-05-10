@@ -41,11 +41,17 @@ export function OperationLogDetailSheet({
         },
         { label: t("logs.common.fields.module"), value: log.module },
         { label: t("logs.common.fields.bizType"), value: log.biz_type },
-        { label: t("logs.common.fields.bizId"), value: formatLogValue(log.biz_id) },
+        {
+          label: t("logs.common.fields.bizId"),
+          value: formatLogValue(log.biz_id),
+        },
         { label: t("logs.common.fields.operation"), value: log.operation },
         { label: t("logs.common.fields.summary"), value: log.summary },
         { label: t("logs.common.fields.result"), value: String(log.result) },
-        { label: t("logs.common.fields.traceId"), value: formatLogValue(log.trace_id) },
+        {
+          label: t("logs.common.fields.traceId"),
+          value: formatLogValue(log.trace_id),
+        },
         {
           label: t("logs.common.fields.createdAt"),
           value: formatDateTimeAt(log.created_at),

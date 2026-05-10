@@ -83,7 +83,7 @@ export function LogRetentionSettingsSheet({
           </SheetDescription>
         </SheetHeader>
 
-        <div className="space-y-6 py-4">
+        <div className="grid flex-1 auto-rows-min gap-6 px-4">
           <div>
             <label className="mb-4 block text-sm font-medium">
               {t("logs.retention_period")}
@@ -107,7 +107,9 @@ export function LogRetentionSettingsSheet({
                         : "border-input bg-background"
                     }`}
                   >
-                    {selectedDays === option.value && <span className="text-xs font-bold">✓</span>}
+                    {selectedDays === option.value && (
+                      <span className="text-xs font-bold">✓</span>
+                    )}
                   </span>
                   <span className="flex-1 text-left">{t(option.i18nKey)}</span>
                 </button>

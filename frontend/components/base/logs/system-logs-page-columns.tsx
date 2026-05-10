@@ -131,7 +131,9 @@ export function createSystemLogColumns({
           column={column}
         />
       ),
-      cell: ({ row }) => <span>{formatDateTimeAt(row.original.created_at)}</span>,
+      cell: ({ row }) => (
+        <span>{formatDateTimeAt(row.original.created_at)}</span>
+      ),
       size: 180,
       enableSorting: false,
     },

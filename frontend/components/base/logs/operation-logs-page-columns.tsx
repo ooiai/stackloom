@@ -39,7 +39,9 @@ export function createOperationLogColumns({
       cell: ({ row }) => (
         <div className="space-y-1">
           <p className="font-medium text-foreground">{row.original.module}</p>
-          <p className="text-xs text-muted-foreground">{row.original.biz_type}</p>
+          <p className="text-xs text-muted-foreground">
+            {row.original.biz_type}
+          </p>
         </div>
       ),
       size: 220,
@@ -61,7 +63,9 @@ export function createOperationLogColumns({
           <p className="line-clamp-2 font-medium text-foreground">
             {row.original.summary}
           </p>
-          <p className="text-xs text-muted-foreground">{row.original.operation}</p>
+          <p className="text-xs text-muted-foreground">
+            {row.original.operation}
+          </p>
         </div>
       ),
       size: 320,
@@ -114,7 +118,9 @@ export function createOperationLogColumns({
           column={column}
         />
       ),
-      cell: ({ row }) => <span>{row.original.biz_id || t("common.misc.none")}</span>,
+      cell: ({ row }) => (
+        <span>{row.original.biz_id || t("common.misc.none")}</span>
+      ),
       size: 160,
       enableSorting: false,
     },
@@ -128,7 +134,9 @@ export function createOperationLogColumns({
           column={column}
         />
       ),
-      cell: ({ row }) => <span>{formatDateTimeAt(row.original.created_at)}</span>,
+      cell: ({ row }) => (
+        <span>{formatDateTimeAt(row.original.created_at)}</span>
+      ),
       size: 180,
       enableSorting: false,
     },

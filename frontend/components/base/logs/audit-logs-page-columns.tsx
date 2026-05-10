@@ -38,7 +38,9 @@ export function createAuditLogColumns({
       ),
       cell: ({ row }) => (
         <div className="space-y-1">
-          <p className="font-medium text-foreground">{row.original.target_type}</p>
+          <p className="font-medium text-foreground">
+            {row.original.target_type}
+          </p>
           <p className="font-mono text-xs text-muted-foreground">
             {row.original.target_id}
           </p>
@@ -58,7 +60,9 @@ export function createAuditLogColumns({
           column={column}
         />
       ),
-      cell: ({ row }) => <span className="font-medium">{row.original.action}</span>,
+      cell: ({ row }) => (
+        <span className="font-medium">{row.original.action}</span>
+      ),
       size: 180,
       enableSorting: false,
     },
@@ -124,7 +128,9 @@ export function createAuditLogColumns({
           column={column}
         />
       ),
-      cell: ({ row }) => <span>{formatDateTimeAt(row.original.created_at)}</span>,
+      cell: ({ row }) => (
+        <span>{formatDateTimeAt(row.original.created_at)}</span>
+      ),
       size: 180,
       enableSorting: false,
     },

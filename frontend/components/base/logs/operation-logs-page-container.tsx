@@ -55,9 +55,10 @@ export function OperationLogsPageView({
     () => logs.filter((log) => log.result === 1).length,
     [logs]
   )
-  const moduleCount = useMemo(() => new Set(logs.map((log) => log.module)).size, [
-    logs,
-  ])
+  const moduleCount = useMemo(
+    () => new Set(logs.map((log) => log.module)).size,
+    [logs]
+  )
 
   return (
     <>

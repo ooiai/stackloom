@@ -53,7 +53,8 @@ export function SystemLogsPageView({
 
   const failureCount = useMemo(
     () =>
-      logs.filter((log) => log.result.trim().toLowerCase() === "failure").length,
+      logs.filter((log) => log.result.trim().toLowerCase() === "failure")
+        .length,
     [logs]
   )
   const averageLatency = useMemo(() => {

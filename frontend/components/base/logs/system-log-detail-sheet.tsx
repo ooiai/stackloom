@@ -31,16 +31,28 @@ export function SystemLogDetailSheet({
       description={t("logs.system.detail.description")}
       fields={[
         { label: t("logs.common.fields.id"), value: log.id },
-        { label: t("logs.common.fields.traceId"), value: formatLogValue(log.trace_id) },
+        {
+          label: t("logs.common.fields.traceId"),
+          value: formatLogValue(log.trace_id),
+        },
         {
           label: t("logs.common.fields.requestId"),
           value: formatLogValue(log.request_id),
         },
         { label: t("logs.common.fields.method"), value: log.method },
         { label: t("logs.common.fields.path"), value: log.path },
-        { label: t("logs.common.fields.module"), value: formatLogValue(log.module) },
-        { label: t("logs.common.fields.action"), value: formatLogValue(log.action) },
-        { label: t("logs.common.fields.result"), value: formatLogValue(log.result) },
+        {
+          label: t("logs.common.fields.module"),
+          value: formatLogValue(log.module),
+        },
+        {
+          label: t("logs.common.fields.action"),
+          value: formatLogValue(log.action),
+        },
+        {
+          label: t("logs.common.fields.result"),
+          value: formatLogValue(log.result),
+        },
         {
           label: t("logs.common.fields.statusCode"),
           value: String(log.status_code),
