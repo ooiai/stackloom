@@ -15,6 +15,24 @@ type UploadAwsObjectParams = {
 const pick = (...values: Array<string | undefined>) =>
   values.find((value) => typeof value === "string" && value.length > 0) ?? ""
 
+/**
+ * Normalize endpoint for safe URL construction
+ * - Trims whitespace and trailing slashes
+ * - Auto-detects missing protocol and prepends https:// if needed
+ * - Supports formats: "host", "host/path", "http(s)://..."
+ */
+function normalizeEndpoint(endpoint: string): string {
+  const trimmed = endpoint.trim().replace(/\/$/, "")
+  
+  // Check if protocol is already present
+  if (/^https?:\/\//.test(trimmed)) {
+    return trimmed
+  }
+  
+  // Prepend https:// if missing
+  return `https://${trimmed}`
+}
+
 export function mapStsToAwsS3Token(sts: AwsStsResp): AwsS3Token {
   return {
     region: pick(sts.region),
@@ -30,7 +48,7 @@ export function mapStsToAwsS3Token(sts: AwsStsResp): AwsS3Token {
 }
 
 export function buildAwsObjectUrl(token: AwsS3Token, path: string) {
-  const normalizedEndpoint = token.endpoint.replace(/\/$/, "")
+  const normalizedEndpoint = normalizeEndpoint(token.endpoint)
   const normalizedBucket = token.bucket.trim()
   const normalizedPath = path.replace(/^\//, "")
 
@@ -38,8 +56,15 @@ export function buildAwsObjectUrl(token: AwsS3Token, path: string) {
     return `${normalizedEndpoint}/${normalizedBucket}/${normalizedPath}`
   }
 
-  const endpointUrl = new URL(normalizedEndpoint)
-  return `${endpointUrl.protocol}//${normalizedBucket}.${endpointUrl.host}/${normalizedPath}`
+  try {
+    const endpointUrl = new URL(normalizedEndpoint)
+    return `${endpointUrl.protocol}//${normalizedBucket}.${endpointUrl.host}/${normalizedPath}`
+  } catch {
+    throw new Error(
+      `Invalid endpoint URL: ${normalizedEndpoint}. ` +
+      `Endpoint must be a valid domain or URL. Got: ${token.endpoint}`
+    )
+  }
 }
 
 export async function uploadAwsObject({

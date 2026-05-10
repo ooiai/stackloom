@@ -304,13 +304,14 @@ export const profileApi = {
 
 // 日志保留策略 API
 export const logRetentionApi = {
-  // 获取指定日志类型的保留策略
   getPolicy: (logType: string) => 
-    get<LogRetentionPolicy>(`/base/log-retention-policies/${logType}`),
+    post<LogRetentionPolicy>(`/base/log-retention-policies/get`, {
+      log_type: logType,
+    }),
   
-  // 更新日志保留策略
   updatePolicy: (logType: string, retentionDays: number | null) =>
-    post<LogRetentionPolicy>(`/base/log-retention-policies/${logType}`, {
+    post<LogRetentionPolicy>(`/base/log-retention-policies/update`, {
+      log_type: logType,
       retention_days: retentionDays,
     }),
 }

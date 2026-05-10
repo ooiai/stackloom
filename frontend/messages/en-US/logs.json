@@ -169,22 +169,20 @@
       "description": "Inspect the business summary and before/after snapshots."
     }
   },
-  "logs": {
-    "retention_settings": "Log Retention Settings",
-    "retention_period": "Retention Period",
-    "retention_period_description": "Select how long to keep logs. Logs older than the retention period will be automatically deleted at 5 AM daily.",
-    "keep_all": "Keep all logs",
-    "one_week": "1 week",
-    "one_month": "1 month",
-    "three_months": "3 months",
-    "six_months": "6 months",
-    "one_year": "1 year",
-    "last_cleanup": "Last cleanup",
-    "select_retention": "Select retention period",
-    "save": "Save",
-    "cancel": "Cancel",
-    "saving": "Saving...",
-    "settings": "Settings",
-    "retention_updated": "Retention policy updated"
-  }
+  "retention_settings": "Log Retention Settings",
+  "retention_period": "Retention Period",
+  "retention_period_description": "Select how long to keep logs. Logs older than the retention period will be automatically deleted at 5 AM daily.",
+  "keep_all": "Keep all logs",
+  "one_week": "1 week",
+  "one_month": "1 month",
+  "three_months": "3 months",
+  "six_months": "6 months",
+  "one_year": "1 year",
+  "last_cleanup": "Last cleanup",
+  "select_retention": "Select retention period",
+  "save": "Save",
+  "cancel": "Cancel",
+  "saving": "Saving...",
+  "settings": "Settings",
+  "retention_updated": "Retention policy updated"
 }

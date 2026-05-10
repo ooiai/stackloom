@@ -169,22 +169,20 @@
       "description": "查看业务操作摘要与前后快照。"
     }
   },
-  "logs": {
-    "retention_settings": "日志保留设置",
-    "retention_period": "保留周期",
-    "retention_period_description": "选择要保留多久的日志。超过保留期限的日志将在每天凌晨5点自动删除。",
-    "keep_all": "保留所有日志",
-    "one_week": "1周",
-    "one_month": "1个月",
-    "three_months": "3个月",
-    "six_months": "6个月",
-    "one_year": "1年",
-    "last_cleanup": "最后清理时间",
-    "select_retention": "选择保留期限",
-    "save": "保存",
-    "cancel": "取消",
-    "saving": "正在保存...",
-    "settings": "设置",
-    "retention_updated": "保留策略已更新"
-  }
+  "retention_settings": "日志保留设置",
+  "retention_period": "保留周期",
+  "retention_period_description": "选择要保留多久的日志。超过保留期限的日志将在每天凌晨5点自动删除。",
+  "keep_all": "保留所有日志",
+  "one_week": "1周",
+  "one_month": "1个月",
+  "three_months": "3个月",
+  "six_months": "6个月",
+  "one_year": "1年",
+  "last_cleanup": "最后清理时间",
+  "select_retention": "选择保留期限",
+  "save": "保存",
+  "cancel": "取消",
+  "saving": "正在保存...",
+  "settings": "设置",
+  "retention_updated": "保留策略已更新"
 }

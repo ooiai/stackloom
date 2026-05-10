@@ -10,10 +10,7 @@ pub struct LogRetentionService {
 }
 
 impl LogRetentionService {
-    pub fn new(
-        policy_repo: Box<dyn LogRetentionPolicyRepository>,
-        pool: PgPool,
-    ) -> Self {
+    pub fn new(policy_repo: Box<dyn LogRetentionPolicyRepository>, pool: PgPool) -> Self {
         Self { policy_repo, pool }
     }
 
@@ -23,41 +20,41 @@ impl LogRetentionService {
         for policy in policies {
             if let Some(days) = policy.retention_days {
                 let cutoff_date = Utc::now() - chrono::Duration::days(days as i64);
-                
+
                 match policy.log_type.as_str() {
                     "system_log" => {
-                        sqlx::query(
-                            "DELETE FROM system_logs WHERE created_at < $1"
-                        )
-                        .bind(cutoff_date)
-                        .execute(&self.pool)
-                        .await
-                        .map_err(|e| neocrates::response::error::AppError::data_here(e.to_string()))?;
+                        sqlx::query("DELETE FROM system_logs WHERE created_at < $1")
+                            .bind(cutoff_date)
+                            .execute(&self.pool)
+                            .await
+                            .map_err(|e| {
+                                neocrates::response::error::AppError::data_here(e.to_string())
+                            })?;
                     }
                     "audit_log" => {
-                        sqlx::query(
-                            "DELETE FROM audit_logs WHERE created_at < $1"
-                        )
-                        .bind(cutoff_date)
-                        .execute(&self.pool)
-                        .await
-                        .map_err(|e| neocrates::response::error::AppError::data_here(e.to_string()))?;
+                        sqlx::query("DELETE FROM audit_logs WHERE created_at < $1")
+                            .bind(cutoff_date)
+                            .execute(&self.pool)
+                            .await
+                            .map_err(|e| {
+                                neocrates::response::error::AppError::data_here(e.to_string())
+                            })?;
                     }
                     "operation_log" => {
-                        sqlx::query(
-                            "DELETE FROM operation_logs WHERE created_at < $1"
-                        )
-                        .bind(cutoff_date)
-                        .execute(&self.pool)
-                        .await
-                        .map_err(|e| neocrates::response::error::AppError::data_here(e.to_string()))?;
+                        sqlx::query("DELETE FROM operation_logs WHERE created_at < $1")
+                            .bind(cutoff_date)
+                            .execute(&self.pool)
+                            .await
+                            .map_err(|e| {
+                                neocrates::response::error::AppError::data_here(e.to_string())
+                            })?;
                     }
                     _ => {}
                 }
 
                 // Update last_cleanup_at
                 sqlx::query(
-                    "UPDATE log_retention_policies SET last_cleanup_at = $1 WHERE log_type = $2"
+                    "UPDATE log_retention_policies SET last_cleanup_at = $1 WHERE log_type = $2",
                 )
                 .bind(Utc::now())
                 .bind(&policy.log_type)

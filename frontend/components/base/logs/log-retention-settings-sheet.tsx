@@ -11,22 +11,20 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { Button } from "@/components/ui/button"
 
-// 保留期限选项
 const RETENTION_OPTIONS = [
-  { label: 'Keep all', value: null },
-  { label: '1 week', value: 7 },
-  { label: '1 month', value: 30 },
-  { label: '3 months', value: 90 },
-  { label: '6 months', value: 180 },
-  { label: '1 year', value: 365 },
+  { label: "Keep all", value: null, i18nKey: "logs.keep_all" },
+  { label: "1 week", value: 7, i18nKey: "logs.one_week" },
+  { label: "1 month", value: 30, i18nKey: "logs.one_month" },
+  { label: "3 months", value: 90, i18nKey: "logs.three_months" },
+  { label: "6 months", value: 180, i18nKey: "logs.six_months" },
+  { label: "1 year", value: 365, i18nKey: "logs.one_year" },
 ] as const
 
 interface LogRetentionSettingsSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  logType: 'system_log' | 'audit_log' | 'operation_log'
+  logType: "system_log" | "audit_log" | "operation_log"
 }
 
 export function LogRetentionSettingsSheet({
@@ -36,11 +34,10 @@ export function LogRetentionSettingsSheet({
 }: LogRetentionSettingsSheetProps) {
   const { t } = useI18n()
   const [policy, setPolicy] = useState<LogRetentionPolicy | null>(null)
-  const [selectedDays, setSelectedDays] = useState<number | null | string>('')
+  const [selectedDays, setSelectedDays] = useState<number | null | string>("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // 打开 Sheet 时加载当前策略
   const handleOpenChange = async (newOpen: boolean) => {
     onOpenChange(newOpen)
     if (newOpen) {
@@ -49,9 +46,9 @@ export function LogRetentionSettingsSheet({
       try {
         const data = await logRetentionApi.getPolicy(logType)
         setPolicy(data)
-        setSelectedDays(data.retentionDays ?? '')
+        setSelectedDays(data.retentionDays ?? "")
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load policy')
+        setError(err instanceof Error ? err.message : "Failed to load policy")
       } finally {
         setIsLoading(false)
       }
@@ -60,17 +57,17 @@ export function LogRetentionSettingsSheet({
 
   const handleSave = async () => {
     if (!policy) return
-    
+
     setIsLoading(true)
     setError(null)
     try {
-      const retentionDays = selectedDays === '' ? null : (selectedDays as number)
+      const retentionDays =
+        selectedDays === "" ? null : (selectedDays as number)
       const updated = await logRetentionApi.updatePolicy(logType, retentionDays)
       setPolicy(updated)
       onOpenChange(false)
-      // 可选：显示成功提示
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update policy')
+      setError(err instanceof Error ? err.message : "Failed to update policy")
     } finally {
       setIsLoading(false)
     }
@@ -80,66 +77,77 @@ export function LogRetentionSettingsSheet({
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>{t('logs.retention_settings')}</SheetTitle>
+          <SheetTitle>{t("logs.retention_settings")}</SheetTitle>
           <SheetDescription>
-            {t('logs.retention_period_description')}
+            {t("logs.retention_period_description")}
           </SheetDescription>
         </SheetHeader>
 
-        <div className="space-y-4 py-4">
-          {/* 下拉选择框 - 使用按钮组样式 */}
+        <div className="space-y-6 py-4">
           <div>
-            <label className="text-sm font-medium">
-              {t('logs.retention_period')}
+            <label className="mb-4 block text-sm font-medium">
+              {t("logs.retention_period")}
             </label>
-            <div className="mt-2 space-y-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {RETENTION_OPTIONS.map((option) => (
-                <Button
+                <button
                   key={option.label}
-                  variant={selectedDays === option.value ? 'default' : 'outline'}
-                  className="w-full justify-start"
                   onClick={() => setSelectedDays(option.value)}
                   disabled={isLoading}
+                  className={`flex items-center gap-2 rounded-lg border-2 px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                    selectedDays === option.value
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-input bg-background hover:border-primary/50 hover:bg-muted/30"
+                  } ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                 >
-                  {t(`logs.retention_${option.label.toLowerCase().replace(/\s+/g, '_')}`)}
-                </Button>
+                  <span
+                    className={`flex h-5 w-5 items-center justify-center rounded border ${
+                      selectedDays === option.value
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-input bg-background"
+                    }`}
+                  >
+                    {selectedDays === option.value && <span className="text-xs font-bold">✓</span>}
+                  </span>
+                  <span className="flex-1 text-left">{t(option.i18nKey)}</span>
+                </button>
               ))}
             </div>
           </div>
 
-          {/* 最后清理时间显示 */}
           {policy?.lastCleanupAt && (
-            <div className="text-sm">
-              <span className="font-medium">{t('logs.last_cleanup')}: </span>
-              <span className="text-gray-600">
+            <div className="rounded-lg bg-muted/50 p-3">
+              <div className="text-xs text-muted-foreground">
+                {t("logs.last_cleanup")}
+              </div>
+              <div className="mt-1 text-sm font-medium">
                 {new Date(policy.lastCleanupAt).toLocaleString()}
-              </span>
+              </div>
             </div>
           )}
 
-          {/* 错误提示 */}
           {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
-              {error}
+            <div className="rounded-lg bg-destructive/10 p-3">
+              <div className="text-sm text-destructive">{error}</div>
             </div>
           )}
         </div>
 
-        {/* 按钮 */}
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
+        <div className="mt-6 flex gap-2 border-t pt-4">
+          <button
             onClick={() => onOpenChange(false)}
             disabled={isLoading}
+            className="flex-1 rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {t('logs.cancel')}
-          </Button>
-          <Button
+            {t("logs.cancel")}
+          </button>
+          <button
             onClick={handleSave}
             disabled={isLoading}
+            className="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isLoading ? t('logs.saving') : t('logs.save')}
-          </Button>
+            {isLoading ? t("logs.saving") : t("logs.save")}
+          </button>
         </div>
       </SheetContent>
     </Sheet>
