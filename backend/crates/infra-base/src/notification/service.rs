@@ -1,19 +1,27 @@
-use std::sync::Arc;
+use std::{str::FromStr, sync::Arc};
 
+use apalis::prelude::Storage;
+use apalis_redis::RedisStorage;
+use chrono::{DateTime, Datelike, Duration, LocalResult, NaiveDateTime, NaiveTime, TimeZone, Utc};
+use chrono_tz::Tz;
 use common::core::biz_error::{
     NOTIFICATION_EVENT_ACTOR_REQUIRED, NOTIFICATION_RECIPIENT_EMPTY,
     NOTIFICATION_TEMPLATE_CODE_EXISTS,
 };
+use croner::Cron;
 use domain_base::{
     CreateNotificationRuleCmd, CreateNotificationTemplateCmd, NotificationDispatch,
     NotificationEvent, NotificationRecipientSelector, NotificationRepository, NotificationRule,
-    NotificationService, NotificationStreamSignal, NotificationTemplate,
+    NotificationRuleFire, NotificationService, NotificationStreamSignal, NotificationTemplate,
     PageNotificationDispatchCmd, PageNotificationRuleCmd, PageNotificationTemplateCmd,
     PageUserNotificationCmd, PublishNotificationCmd, UpdateNotificationRuleCmd,
     UpdateNotificationTemplateCmd, UserNotification,
     notification::{
+        NOTIFICATION_SCHEDULE_DAILY, NOTIFICATION_SCHEDULE_WEEKLY,
         NOTIFICATION_STREAM_REASON_CREATED, NOTIFICATION_STREAM_REASON_REFRESH,
-        NOTIFICATION_TRIGGER_DIRECT, NOTIFICATION_TRIGGER_EVENT, NotificationDispatchPageQuery,
+        NOTIFICATION_TRIGGER_CRON_EXPRESSION, NOTIFICATION_TRIGGER_DELAY_ONCE,
+        NOTIFICATION_TRIGGER_DIRECT, NOTIFICATION_TRIGGER_EVENT,
+        NOTIFICATION_TRIGGER_FIXED_SCHEDULE, NotificationDispatchPageQuery,
         NotificationRulePageQuery, NotificationTemplatePageQuery, UserNotificationPageQuery,
     },
 };
@@ -21,6 +29,7 @@ use neocrates::{
     async_trait::async_trait,
     helper::core::snowflake::generate_sonyflake_id,
     response::error::{AppError, AppResult},
+    serde::{Deserialize, Serialize},
     serde_json::{Value, json},
     sqlxhelper::pool::SqlxPool,
     tokio::sync::broadcast,
@@ -29,6 +38,37 @@ use neocrates::{
 
 use super::repo::SqlxNotificationRepository;
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NotificationRuleFireJob {
+    pub tenant_id: i64,
+    pub rule_id: i64,
+    pub scheduled_at: DateTime<Utc>,
+}
+
+#[derive(Clone)]
+pub struct NotificationRuleJobScheduler {
+    storage: RedisStorage<NotificationRuleFireJob>,
+}
+
+impl NotificationRuleJobScheduler {
+    pub fn new(storage: RedisStorage<NotificationRuleFireJob>) -> Self {
+        Self { storage }
+    }
+
+    pub async fn schedule(
+        &self,
+        job: NotificationRuleFireJob,
+        run_at: DateTime<Utc>,
+    ) -> AppResult<()> {
+        let mut storage = self.storage.clone();
+        storage
+            .schedule(job, run_at.timestamp())
+            .await
+            .map(|_| ())
+            .map_err(|err| AppError::data_here(err.to_string()))
+    }
+}
+
 #[derive(Clone)]
 pub struct NotificationServiceImpl<R>
 where
@@ -36,14 +76,16 @@ where
 {
     repository: Arc<R>,
     broadcaster: broadcast::Sender<NotificationStreamSignal>,
+    scheduler: Option<Arc<NotificationRuleJobScheduler>>,
 }
 
 impl NotificationServiceImpl<SqlxNotificationRepository> {
-    pub fn new(pool: Arc<SqlxPool>) -> Self {
+    pub fn new(pool: Arc<SqlxPool>, scheduler: Option<Arc<NotificationRuleJobScheduler>>) -> Self {
         let (broadcaster, _) = broadcast::channel(256);
         Self {
             repository: Arc::new(SqlxNotificationRepository::new(pool)),
             broadcaster,
+            scheduler,
         }
     }
 }
@@ -57,6 +99,7 @@ where
         Self {
             repository,
             broadcaster,
+            scheduler: None,
         }
     }
 
@@ -233,6 +276,255 @@ where
 
         Ok(Some(template))
     }
+
+    async fn schedule_rule_if_needed(&self, rule: &NotificationRule) -> AppResult<()> {
+        if !rule.enabled || !is_time_rule(rule.trigger_mode.as_str()) {
+            return Ok(());
+        }
+
+        let Some(run_at) = rule.next_run_at else {
+            return Ok(());
+        };
+
+        let Some(scheduler) = self.scheduler.as_ref() else {
+            return Ok(());
+        };
+
+        scheduler
+            .schedule(
+                NotificationRuleFireJob {
+                    tenant_id: rule.tenant_id,
+                    rule_id: rule.id,
+                    scheduled_at: run_at,
+                },
+                run_at,
+            )
+            .await
+    }
+
+    fn prepare_rule_for_save(
+        &self,
+        rule: &mut NotificationRule,
+        reference: DateTime<Utc>,
+    ) -> AppResult<()> {
+        if !rule.enabled || rule.trigger_mode == NOTIFICATION_TRIGGER_EVENT {
+            rule.next_run_at = None;
+            return Ok(());
+        }
+
+        rule.last_run_at = None;
+        rule.last_fired_for = None;
+        rule.next_run_at = calculate_initial_next_run_at(rule, reference)?;
+        Ok(())
+    }
+
+    pub async fn sync_time_rule_jobs(&self) -> AppResult<()> {
+        let rules = self.repository.list_enabled_time_rules().await?;
+        for rule in rules {
+            self.schedule_rule_if_needed(&rule).await?;
+        }
+        Ok(())
+    }
+
+    pub async fn fire_rule_job(&self, job: NotificationRuleFireJob) -> AppResult<()> {
+        let Some(rule) = self
+            .repository
+            .find_rule_by_id(job.tenant_id, job.rule_id)
+            .await?
+        else {
+            return Ok(());
+        };
+
+        if !rule.enabled
+            || !is_time_rule(rule.trigger_mode.as_str())
+            || rule.next_run_at != Some(job.scheduled_at)
+        {
+            return Ok(());
+        }
+
+        let fire_id = generate_sonyflake_id() as i64;
+        let mut fire_record = NotificationRuleFire {
+            id: fire_id,
+            tenant_id: rule.tenant_id,
+            rule_id: rule.id,
+            scheduled_at: job.scheduled_at,
+            fired_at: None,
+            status: "processing".to_string(),
+            error_message: None,
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
+        };
+        let _ = self.repository.upsert_rule_fire(&fire_record).await?;
+
+        let Some(template) = self.load_template_or_skip(rule.tenant_id, &rule).await? else {
+            self.repository
+                .update_rule_schedule_state(
+                    rule.tenant_id,
+                    rule.id,
+                    rule.next_run_at,
+                    None,
+                    None,
+                    Some("notification template unavailable".to_string()),
+                    rule.consecutive_failure_count + 1,
+                )
+                .await?;
+            fire_record.status = "failed".to_string();
+            fire_record.error_message = Some("notification template unavailable".to_string());
+            fire_record.updated_at = Utc::now();
+            let _ = self.repository.upsert_rule_fire(&fire_record).await?;
+            self.retry_rule_job(job).await?;
+            return Ok(());
+        };
+
+        let selector = match rule.recipient_selector() {
+            Ok(selector) => selector,
+            Err(err) => {
+                self.repository
+                    .update_rule_schedule_state(
+                        rule.tenant_id,
+                        rule.id,
+                        rule.next_run_at,
+                        None,
+                        None,
+                        Some(err.to_string()),
+                        rule.consecutive_failure_count + 1,
+                    )
+                    .await?;
+                fire_record.status = "failed".to_string();
+                fire_record.error_message = Some(err.to_string());
+                fire_record.updated_at = Utc::now();
+                let _ = self.repository.upsert_rule_fire(&fire_record).await?;
+                self.retry_rule_job(job).await?;
+                return Ok(());
+            }
+        };
+
+        if matches!(selector, NotificationRecipientSelector::Actor) {
+            self.repository
+                .update_rule_schedule_state(
+                    rule.tenant_id,
+                    rule.id,
+                    rule.next_run_at,
+                    None,
+                    None,
+                    Some(NOTIFICATION_EVENT_ACTOR_REQUIRED.to_string()),
+                    rule.consecutive_failure_count + 1,
+                )
+                .await?;
+            fire_record.status = "failed".to_string();
+            fire_record.error_message = Some(
+                "actor selector is not supported for time-driven notification rules".to_string(),
+            );
+            fire_record.updated_at = Utc::now();
+            let _ = self.repository.upsert_rule_fire(&fire_record).await?;
+            return Ok(());
+        }
+
+        let rendered_vars = json!({});
+        let title = render_template(&template.title_template, &rendered_vars);
+        let body = render_template(&template.body_template, &rendered_vars);
+        let action_url = template
+            .action_url_template
+            .as_ref()
+            .map(|value| render_template(value, &rendered_vars));
+        let idempotency_key = Some(format!(
+            "rule:{}:fire:{}",
+            rule.id,
+            job.scheduled_at.to_rfc3339()
+        ));
+        let payload = json!({
+            "rule_id": rule.id,
+            "scheduled_at": job.scheduled_at,
+            "trigger_mode": rule.trigger_mode,
+        });
+
+        match self
+            .publish_internal(
+                rule.trigger_mode.as_str(),
+                Some(template.id),
+                rule.event_code.clone(),
+                PublishNotificationCmd {
+                    tenant_id: rule.tenant_id,
+                    trigger_type: None,
+                    template_id: Some(template.id),
+                    title,
+                    body,
+                    action_url,
+                    recipient_selector: selector,
+                    payload,
+                    idempotency_key,
+                    created_by: rule.created_by,
+                },
+            )
+            .await
+        {
+            Ok(_) => {
+                let fired_at = Utc::now();
+                let next_run_at = calculate_next_run_after_fire(&rule, job.scheduled_at)?;
+                self.repository
+                    .update_rule_schedule_state(
+                        rule.tenant_id,
+                        rule.id,
+                        next_run_at,
+                        Some(fired_at),
+                        Some(job.scheduled_at),
+                        None,
+                        0,
+                    )
+                    .await?;
+                fire_record.fired_at = Some(fired_at);
+                fire_record.status = "succeeded".to_string();
+                fire_record.error_message = None;
+                fire_record.updated_at = fired_at;
+                let _ = self.repository.upsert_rule_fire(&fire_record).await?;
+                if let Some(next_run_at) = next_run_at {
+                    if let Some(scheduler) = self.scheduler.as_ref() {
+                        scheduler
+                            .schedule(
+                                NotificationRuleFireJob {
+                                    tenant_id: rule.tenant_id,
+                                    rule_id: rule.id,
+                                    scheduled_at: next_run_at,
+                                },
+                                next_run_at,
+                            )
+                            .await?;
+                    }
+                }
+            }
+            Err(err) => {
+                let error_message = err.to_string();
+                self.repository
+                    .update_rule_schedule_state(
+                        rule.tenant_id,
+                        rule.id,
+                        rule.next_run_at,
+                        None,
+                        None,
+                        Some(error_message.clone()),
+                        rule.consecutive_failure_count + 1,
+                    )
+                    .await?;
+                fire_record.status = "failed".to_string();
+                fire_record.error_message = Some(error_message);
+                fire_record.updated_at = Utc::now();
+                let _ = self.repository.upsert_rule_fire(&fire_record).await?;
+                self.retry_rule_job(job).await?;
+            }
+        }
+
+        Ok(())
+    }
+
+    async fn retry_rule_job(&self, job: NotificationRuleFireJob) -> AppResult<()> {
+        let Some(scheduler) = self.scheduler.as_ref() else {
+            return Ok(());
+        };
+
+        scheduler
+            .schedule(job, Utc::now() + Duration::minutes(1))
+            .await
+    }
 }
 
 #[async_trait]
@@ -332,9 +624,12 @@ where
             })?;
 
         cmd.id = generate_sonyflake_id() as i64;
-        let rule =
+        let mut rule =
             NotificationRule::new(cmd).map_err(|err| AppError::ValidationError(err.to_string()))?;
-        self.repository.create_rule(&rule).await
+        self.prepare_rule_for_save(&mut rule, Utc::now())?;
+        let rule = self.repository.create_rule(&rule).await?;
+        self.schedule_rule_if_needed(&rule).await?;
+        Ok(rule)
     }
 
     async fn update_rule(
@@ -366,7 +661,10 @@ where
 
         rule.apply_update(cmd)
             .map_err(|err| AppError::ValidationError(err.to_string()))?;
-        self.repository.update_rule(&rule).await
+        self.prepare_rule_for_save(&mut rule, Utc::now())?;
+        let rule = self.repository.update_rule(&rule).await?;
+        self.schedule_rule_if_needed(&rule).await?;
+        Ok(rule)
     }
 
     async fn page_rules(
@@ -386,11 +684,22 @@ where
     }
 
     async fn publish(&self, cmd: PublishNotificationCmd) -> AppResult<NotificationDispatch> {
+        if let Some(template_id) = cmd.template_id {
+            self.repository
+                .find_template_by_id(cmd.tenant_id, template_id)
+                .await?
+                .ok_or_else(|| {
+                    AppError::not_found_here(format!(
+                        "notification template not found: {template_id}"
+                    ))
+                })?;
+        }
+
         let trigger_type = cmd
             .trigger_type
             .clone()
             .unwrap_or_else(|| NOTIFICATION_TRIGGER_DIRECT.to_string());
-        self.publish_internal(trigger_type.as_str(), None, None, cmd)
+        self.publish_internal(trigger_type.as_str(), cmd.template_id, None, cmd)
             .await
     }
 
@@ -457,6 +766,7 @@ where
                     PublishNotificationCmd {
                         tenant_id: event.tenant_id,
                         trigger_type: None,
+                        template_id: Some(template.id),
                         title,
                         body,
                         action_url,
@@ -603,4 +913,168 @@ fn scalar_to_string(value: &Value) -> String {
             .join(", "),
         Value::Object(value) => Value::Object(value.clone()).to_string(),
     }
+}
+
+fn is_time_rule(trigger_mode: &str) -> bool {
+    matches!(
+        trigger_mode,
+        NOTIFICATION_TRIGGER_DELAY_ONCE
+            | NOTIFICATION_TRIGGER_FIXED_SCHEDULE
+            | NOTIFICATION_TRIGGER_CRON_EXPRESSION
+    )
+}
+
+fn calculate_initial_next_run_at(
+    rule: &NotificationRule,
+    reference: DateTime<Utc>,
+) -> AppResult<Option<DateTime<Utc>>> {
+    match rule.trigger_mode.as_str() {
+        NOTIFICATION_TRIGGER_EVENT => Ok(None),
+        NOTIFICATION_TRIGGER_DELAY_ONCE => {
+            let delay_seconds = rule.delay_seconds.ok_or_else(|| {
+                AppError::ValidationError("delay_seconds is required".to_string())
+            })?;
+            let base = rule.start_at.unwrap_or(reference);
+            let next_run_at = base + Duration::seconds(delay_seconds);
+            if exceeds_end_at(rule, next_run_at) {
+                return Ok(None);
+            }
+            Ok(Some(next_run_at))
+        }
+        NOTIFICATION_TRIGGER_FIXED_SCHEDULE => calculate_fixed_schedule_next_run(rule, reference),
+        NOTIFICATION_TRIGGER_CRON_EXPRESSION => calculate_cron_next_run(rule, reference),
+        _ => Err(AppError::ValidationError(format!(
+            "unsupported notification trigger mode: {}",
+            rule.trigger_mode
+        ))),
+    }
+}
+
+fn calculate_next_run_after_fire(
+    rule: &NotificationRule,
+    scheduled_at: DateTime<Utc>,
+) -> AppResult<Option<DateTime<Utc>>> {
+    match rule.trigger_mode.as_str() {
+        NOTIFICATION_TRIGGER_DELAY_ONCE => Ok(None),
+        NOTIFICATION_TRIGGER_FIXED_SCHEDULE => {
+            calculate_fixed_schedule_next_run(rule, scheduled_at + Duration::seconds(1))
+        }
+        NOTIFICATION_TRIGGER_CRON_EXPRESSION => {
+            calculate_cron_next_run(rule, scheduled_at + Duration::seconds(1))
+        }
+        NOTIFICATION_TRIGGER_EVENT => Ok(None),
+        _ => Err(AppError::ValidationError(format!(
+            "unsupported notification trigger mode: {}",
+            rule.trigger_mode
+        ))),
+    }
+}
+
+fn calculate_fixed_schedule_next_run(
+    rule: &NotificationRule,
+    reference: DateTime<Utc>,
+) -> AppResult<Option<DateTime<Utc>>> {
+    let timezone = parse_rule_timezone(rule)?;
+    let schedule_time = parse_schedule_time(rule)?;
+    let reference = rule
+        .start_at
+        .map_or(reference, |start_at| reference.max(start_at));
+    let reference_local = reference.with_timezone(&timezone);
+
+    for day_offset in 0..=370 {
+        let candidate_date = reference_local.date_naive() + Duration::days(day_offset);
+        if !matches_schedule_date(rule, candidate_date.weekday())? {
+            continue;
+        }
+
+        let local_datetime =
+            resolve_local_datetime(timezone, NaiveDateTime::new(candidate_date, schedule_time))?;
+        if local_datetime <= reference_local {
+            continue;
+        }
+
+        let candidate_utc = local_datetime.with_timezone(&Utc);
+        if exceeds_end_at(rule, candidate_utc) {
+            return Ok(None);
+        }
+        return Ok(Some(candidate_utc));
+    }
+
+    Ok(None)
+}
+
+fn calculate_cron_next_run(
+    rule: &NotificationRule,
+    reference: DateTime<Utc>,
+) -> AppResult<Option<DateTime<Utc>>> {
+    let timezone = parse_rule_timezone(rule)?;
+    let cron_expression = rule
+        .cron_expression
+        .as_ref()
+        .ok_or_else(|| AppError::ValidationError("cron_expression is required".to_string()))?;
+    let reference = rule
+        .start_at
+        .map_or(reference, |start_at| reference.max(start_at));
+    let reference_local = reference.with_timezone(&timezone);
+    let cron = Cron::from_str(cron_expression)
+        .map_err(|err| AppError::ValidationError(err.to_string()))?;
+    let next_local = cron
+        .find_next_occurrence(&reference_local, false)
+        .map_err(|err| AppError::ValidationError(err.to_string()))?;
+    let next_utc = next_local.with_timezone(&Utc);
+
+    if exceeds_end_at(rule, next_utc) {
+        return Ok(None);
+    }
+
+    Ok(Some(next_utc))
+}
+
+fn parse_rule_timezone(rule: &NotificationRule) -> AppResult<Tz> {
+    Tz::from_str(rule.timezone.trim()).map_err(|err| AppError::ValidationError(err.to_string()))
+}
+
+fn parse_schedule_time(rule: &NotificationRule) -> AppResult<NaiveTime> {
+    let schedule_time = rule
+        .schedule_time
+        .as_deref()
+        .ok_or_else(|| AppError::ValidationError("schedule_time is required".to_string()))?;
+    NaiveTime::parse_from_str(schedule_time, "%H:%M")
+        .map_err(|err| AppError::ValidationError(err.to_string()))
+}
+
+fn matches_schedule_date(rule: &NotificationRule, weekday: chrono::Weekday) -> AppResult<bool> {
+    match rule.schedule_kind.as_deref() {
+        Some(NOTIFICATION_SCHEDULE_DAILY) => Ok(true),
+        Some(NOTIFICATION_SCHEDULE_WEEKLY) => {
+            let weekdays = &rule.schedule_weekdays;
+            if weekdays.is_empty() {
+                return Err(AppError::ValidationError(
+                    "schedule_weekdays is required".to_string(),
+                ));
+            }
+            let weekday_value = weekday.number_from_monday() as i16;
+            Ok(weekdays.iter().any(|value| *value == weekday_value))
+        }
+        Some(other) => Err(AppError::ValidationError(format!(
+            "unsupported notification schedule kind: {other}"
+        ))),
+        None => Err(AppError::ValidationError(
+            "schedule_kind is required".to_string(),
+        )),
+    }
+}
+
+fn resolve_local_datetime(timezone: Tz, naive: NaiveDateTime) -> AppResult<DateTime<Tz>> {
+    match timezone.from_local_datetime(&naive) {
+        LocalResult::Single(value) => Ok(value),
+        LocalResult::Ambiguous(first, _) => Ok(first),
+        LocalResult::None => Err(AppError::ValidationError(format!(
+            "invalid local datetime: {naive}"
+        ))),
+    }
+}
+
+fn exceeds_end_at(rule: &NotificationRule, candidate: DateTime<Utc>) -> bool {
+    rule.end_at.is_some_and(|end_at| candidate > end_at)
 }

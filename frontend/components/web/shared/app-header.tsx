@@ -6,6 +6,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb"
+import { ROUTER_ENUM } from "@/lib/config/enums"
 import { usePathname } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
@@ -14,6 +15,7 @@ import { useWebCurrentMenus } from "./hooks/use-web-current-menus"
 import type { MenuTreeNodeData } from "@/types/base.types"
 import type { NotificationBellData } from "@/components/base/notifications/hooks/use-notification-bell"
 import { WebHeaderNotificationBell } from "./web-notification-bell"
+import { useI18n } from "@/providers/i18n-provider"
 
 function isMenuMatched(pathname: string, path: string | null) {
   if (!path || path === "/") {
@@ -71,16 +73,30 @@ export function AppHeader({
 }: {
   notificationBellData: NotificationBellData
 }) {
+  const { t } = useI18n()
   const pathname = usePathname()
   const { menus } = useWebCurrentMenus()
   const currentMenuTitle = React.useMemo(
     () => resolveCurrentMenuTitle(menus, pathname),
     [menus, pathname]
   )
-  const title = currentMenuTitle ?? fallbackTitleFromPathname(pathname)
+
+  const ROUTE_TITLE_KEYS: Partial<Record<string, string>> = React.useMemo(
+    () => ({
+      [ROUTER_ENUM.NOTIFICATIONS]: "notifications.inboxPage.title",
+      [ROUTER_ENUM.DASHBOARD]: "navigation.dashboard.page.title",
+      [ROUTER_ENUM.MEMBER]: "members.page.title",
+    }),
+    []
+  )
+
+  const routeKey = ROUTE_TITLE_KEYS[pathname]
+  const title = routeKey
+    ? t(routeKey)
+    : (currentMenuTitle ?? fallbackTitleFromPathname(pathname))
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b bg-background/95 px-4 backdrop-blur transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 supports-[backdrop-filter]:bg-background/80">
       <div className="flex min-w-0 items-center gap-2">
         <SidebarTrigger className="-ml-1 self-center" />
         <Separator

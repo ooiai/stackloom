@@ -2,14 +2,7 @@
 
 import { useState } from "react"
 
-import {
-  Dot,
-  MoreHorizontal,
-  Phone,
-  Search,
-  UserPlus,
-  Users2,
-} from "lucide-react"
+import { Dot, MoreHorizontal, Search, UserPlus, Users2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { UseMutationResult } from "@tanstack/react-query"
 
@@ -333,7 +326,31 @@ export function MembersPageView({
                               <MoreHorizontal className="size-4" />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              {member.status !== 1 ? (
+                              {member.status === 2 ? (
+                                <>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      updateStatusMutation.mutate({
+                                        member_id: member.id,
+                                        status: 1,
+                                      })
+                                    }
+                                  >
+                                    {t("actions.approve")}
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    className="text-destructive focus:text-destructive"
+                                    onClick={() =>
+                                      updateStatusMutation.mutate({
+                                        member_id: member.id,
+                                        status: 0,
+                                      })
+                                    }
+                                  >
+                                    {t("actions.reject")}
+                                  </DropdownMenuItem>
+                                </>
+                              ) : member.status !== 1 ? (
                                 <DropdownMenuItem
                                   onClick={() =>
                                     updateStatusMutation.mutate({

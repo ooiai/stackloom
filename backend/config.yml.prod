@@ -101,17 +101,20 @@ auth-basics:
 
 # Ignore urls no Basic token and Bearer token
 ignore-urls:
-  - /health
-  - /metrics
+    - /health
+    - /metrics
+    - /join/validate
 
 # Permission Ignore Urls with Basic token no Bearer token
 pms-ignore-urls:
-  - /signin/refresh_token
-  - /signin/account
-  - /signin/tenants
-  - /signin/recover/send_code
-  - /signin/recover/reset
-  - /signup/account
-  - /sms/signin
-  - /email/captcha
-  - /captcha/slider
+    - /signin/refresh_token
+    - /signin/account
+    - /signin/tenants
+    - /signin/recover/send_code
+    - /signin/recover/reset
+    - /signup/send_code
+    - /signup/account
+    - /signup/invite
+    - /sms/signin
+    - /email/captcha
+    - /captcha/slider

@@ -32,6 +32,8 @@ impl SystemMetricsCollector {
             cpu_freq_mhz: vec![],
             memory_used: 0,
             memory_total: 0,
+            swap_used: 0,
+            swap_total: 0,
             disk_used: 0,
             disk_total: 0,
             net_rx_bytes: 0,
@@ -42,6 +44,9 @@ impl SystemMetricsCollector {
             process_cpu_percent: 0.0,
             db_pool_size: 0,
             db_pool_idle: 0,
+            load_avg_1: 0.0,
+            load_avg_5: 0.0,
+            load_avg_15: 0.0,
         }));
 
         let snapshot_clone = latest_snapshot.clone();
@@ -114,6 +119,13 @@ impl SystemMetricsCollector {
                         .and_then(|c| c.temperature())
                 };
 
+                // Swap memory
+                let swap_used = sys.used_swap();
+                let swap_total = sys.total_swap();
+
+                // Load average
+                let load = System::load_average();
+
                 let snapshot = SystemSnapshot {
                     cpu_usage,
                     cpu_count,
@@ -123,6 +135,8 @@ impl SystemMetricsCollector {
                     cpu_freq_mhz,
                     memory_used: sys.used_memory(),
                     memory_total: sys.total_memory(),
+                    swap_used,
+                    swap_total,
                     disk_used,
                     disk_total,
                     net_rx_bytes,
@@ -133,6 +147,9 @@ impl SystemMetricsCollector {
                     process_cpu_percent,
                     db_pool_size: 0, // Will be updated by the service layer
                     db_pool_idle: 0, // Will be updated by the service layer
+                    load_avg_1: load.one,
+                    load_avg_5: load.five,
+                    load_avg_15: load.fifteen,
                 };
 
                 *snapshot_clone.write().await = snapshot;

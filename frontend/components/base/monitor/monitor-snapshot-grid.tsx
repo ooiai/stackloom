@@ -18,6 +18,10 @@ export function MonitorSnapshotGrid({ snapshot }: MonitorSnapshotGridProps) {
   const cpuCoresUsed = Math.round(snapshot.cpu_usage_cores * 10) / 10
   const memPercent = formatPercent(snapshot.memory_used, snapshot.memory_total)
   const diskPercent = formatPercent(snapshot.disk_used, snapshot.disk_total)
+  const swapPercent =
+    snapshot.swap_total > 0
+      ? formatPercent(snapshot.swap_used, snapshot.swap_total)
+      : 0
 
   const cpuValue = `${cpuPercent}%`
   const cpuHint = `${cpuCoresUsed} of ${snapshot.cpu_count} cores`
@@ -59,6 +63,17 @@ export function MonitorSnapshotGrid({ snapshot }: MonitorSnapshotGridProps) {
         icon={<TimerIcon className="size-4" />}
         footer={t("monitor.runtime_summary")}
       />
+      {snapshot.swap_total > 0 && (
+        <MetricCard
+          label={t("monitor.swap")}
+          value={`${swapPercent}%`}
+          hint={`${formatBytes(snapshot.swap_used)} / ${formatBytes(snapshot.swap_total)}`}
+          tone={swapPercent >= 80 ? "warning" : "default"}
+          icon={<MemoryStickIcon className="size-4" />}
+          footer={t("monitor.swap_hint")}
+          className="xl:col-span-2"
+        />
+      )}
     </div>
   )
 }

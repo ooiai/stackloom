@@ -1,3 +1,6 @@
+use apalis::layers::WorkerBuilderExt;
+use apalis::prelude::{Data, Monitor, WorkerBuilder, WorkerFactoryFn};
+use apalis_redis::{RedisStorage, connect as connect_apalis_redis};
 use api_http::{
     AuthHttpState, BaseHttpState, SharedHttpState, SysHttpState, WebHttpState, auth_router,
     base_router, shared_router, system_router, web_router,
@@ -26,8 +29,9 @@ use crate::{
 use infra_auth::AuthServiceImpl;
 use infra_base::{
     AuditLogServiceImpl, DictServiceImpl, LogRetentionService, MenuServiceImpl,
-    NotificationServiceImpl, OperationLogServiceImpl, PermServiceImpl, RoleServiceImpl,
-    SharedContextServiceImpl, SqlxLogRetentionPolicyRepository, SystemLogServiceImpl,
+    NotificationRuleFireJob, NotificationRuleJobScheduler, NotificationServiceImpl,
+    OperationLogServiceImpl, PermServiceImpl, RoleServiceImpl, SharedContextServiceImpl,
+    SqlxLogRetentionPolicyRepository, SqlxNotificationRepository, SystemLogServiceImpl,
     TenantServiceImpl, UserServiceImpl, UserTenantRoleServiceImpl, UserTenantServiceImpl,
 };
 use infra_system::{MonitorServiceImpl, StorageBrowseServiceImpl, SysModule};
@@ -111,7 +115,38 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     let perm_service = Arc::new(PermServiceImpl::new(base_pool.clone()));
     let user_tenant_service = Arc::new(UserTenantServiceImpl::new(base_pool.clone()));
     let user_tenant_role_service = Arc::new(UserTenantRoleServiceImpl::new(base_pool.clone()));
-    let notification_service = Arc::new(NotificationServiceImpl::new(base_pool.clone()));
+    let apalis_connection = connect_apalis_redis(cfg.apalis.url.as_str())
+        .await
+        .expect("Failed to connect notification Apalis Redis");
+    let notification_job_storage = RedisStorage::new(apalis_connection);
+    let notification_job_scheduler = Arc::new(NotificationRuleJobScheduler::new(
+        notification_job_storage.clone(),
+    ));
+    let notification_service = Arc::new(NotificationServiceImpl::new(
+        base_pool.clone(),
+        Some(notification_job_scheduler),
+    ));
+    notification_service
+        .sync_time_rule_jobs()
+        .await
+        .expect("Failed to sync notification time rule jobs");
+    let notification_worker_service = notification_service.clone();
+    let notification_worker_storage = notification_job_storage.clone();
+    let notification_worker_name = format!("notification-rule-fires-{}", cfg.server.port);
+    let notification_worker_concurrency = cfg.apalis.concurrency;
+    tokio::spawn(async move {
+        let monitor = Monitor::new().register(
+            WorkerBuilder::new(notification_worker_name)
+                .concurrency(notification_worker_concurrency)
+                .data(notification_worker_service)
+                .backend(notification_worker_storage)
+                .build_fn(process_notification_rule_fire_job),
+        );
+
+        if let Err(err) = monitor.run().await {
+            tracing::error!(error = %err, "notification rule fire worker exited");
+        }
+    });
     let shared_context_service = Arc::new(SharedContextServiceImpl::new(
         base_pool.clone(),
         user_service.clone(),
@@ -136,6 +171,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     let web_http_state = WebHttpState {
         user_tenant_service: user_tenant_service.clone(),
         tenant_service: tenant_service.clone(),
+        shared_context_service: shared_context_service.clone(),
         redis_pool: redis_pool.clone(),
         cfg: cfg.clone(),
         notification_service: notification_service.clone(),
@@ -180,10 +216,11 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         shared_context_service,
         tenant_service,
         object_storage_service: sys.object_storage_service.clone(),
-        notification_service,
+        notification_service: notification_service.clone(),
     };
     let auth_http_state = AuthHttpState {
         auth_service,
+        notification_service: notification_service.clone(),
         system_log_service: system_log_service.clone(),
         sms_config: sms_config.clone(),
         email_config,
@@ -298,6 +335,16 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
 
 pub async fn ping() -> Result<String, StatusCode> {
     Ok("The ping work well...".to_owned())
+}
+
+async fn process_notification_rule_fire_job(
+    job: NotificationRuleFireJob,
+    service: Data<Arc<NotificationServiceImpl<SqlxNotificationRepository>>>,
+) -> Result<(), apalis::prelude::Error> {
+    if let Err(err) = service.fire_rule_job(job).await {
+        tracing::error!(error = %err, "failed to process notification rule fire job");
+    }
+    Ok(())
 }
 
 async fn handler_404() -> (StatusCode, &'static str) {

@@ -14,8 +14,11 @@ pub trait AuthRepository: Send + Sync {
     /// Find one user account by login identifier.
     ///
     /// Implementations should support the account formats accepted by signin,
-    /// which currently means username or phone number.
+    /// which currently means username, phone number, or email address.
     async fn find_user_by_account(&self, account: &str) -> AppResult<Option<AuthUserAccount>>;
+
+    /// Find one user account by username only.
+    async fn find_user_by_username(&self, username: &str) -> AppResult<Option<AuthUserAccount>>;
 
     /// Find one user account by id.
     async fn find_user_by_id(&self, user_id: i64) -> AppResult<Option<AuthUserAccount>>;

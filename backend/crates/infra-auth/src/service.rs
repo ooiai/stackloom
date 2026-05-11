@@ -4,18 +4,20 @@ use chrono::Utc;
 use common::core::{
     biz_error::{
         AUTH_ACCOUNT_DISABLED, AUTH_ACCOUNT_EXISTS, AUTH_ACCOUNT_NOT_FOUND,
-        AUTH_CREDENTIAL_INVALID, AUTH_RECOVERY_CODE_INVALID, AUTH_TENANT_EXISTS,
+        AUTH_CREDENTIAL_INVALID, AUTH_RECOVERY_CODE_INVALID, AUTH_SIGNUP_CODE_INVALID,
+        AUTH_TENANT_EXISTS,
     },
     constants::{
         CACHE_INVITE_CODE_LOOKUP, CACHE_PASSWORD_RESET_EMAIL_CODE, CACHE_PASSWORD_RESET_PHONE_CODE,
-        CACHE_PASSWORD_RESET_SEND_COOLDOWN, SIGNUP_ADMIN_CODE, get_email_regex, get_mobile_regex,
+        CACHE_PASSWORD_RESET_SEND_COOLDOWN, CACHE_SIGNUP_EMAIL_CODE, CACHE_SIGNUP_PHONE_CODE,
+        CACHE_SIGNUP_SEND_COOLDOWN, SIGNUP_ADMIN_CODE, get_email_regex, get_mobile_regex,
     },
 };
 use domain_auth::{
     AccountSigninCmd, AccountSignupBundle, AccountSignupCmd, AccountSignupResult, AuthRepository,
     AuthService, AuthToken, ChangePasswordCmd, InviteSignupBundle, InviteSignupCmd,
     QuerySigninTenantsCmd, RecoveryChannel, RefreshAuthCmd, ResetPasswordCmd,
-    SendPasswordResetCodeCmd,
+    SendPasswordResetCodeCmd, SendSignupCodeCmd,
 };
 use domain_base::{
     CreateTenantCmd, CreateUserCmd, CreateUserTenantCmd, CreateUserTenantRoleCmd, Role,
@@ -118,6 +120,13 @@ where
         }
     }
 
+    fn signup_code_prefix(&self, channel: RecoveryChannel) -> String {
+        match channel {
+            RecoveryChannel::Phone => format!("{}{}", self.prefix, CACHE_SIGNUP_PHONE_CODE),
+            RecoveryChannel::Email => format!("{}{}", self.prefix, CACHE_SIGNUP_EMAIL_CODE),
+        }
+    }
+
     fn password_reset_cooldown_key(&self, channel: RecoveryChannel, account: &str) -> String {
         let channel_name = match channel {
             RecoveryChannel::Phone => "phone",
@@ -126,6 +135,17 @@ where
         format!(
             "{}{}:{}:{}",
             self.prefix, CACHE_PASSWORD_RESET_SEND_COOLDOWN, channel_name, account
+        )
+    }
+
+    fn signup_cooldown_key(&self, channel: RecoveryChannel, contact: &str) -> String {
+        let channel_name = match channel {
+            RecoveryChannel::Phone => "phone",
+            RecoveryChannel::Email => "email",
+        };
+        format!(
+            "{}{}:{}:{}",
+            self.prefix, CACHE_SIGNUP_SEND_COOLDOWN, channel_name, contact
         )
     }
 
@@ -188,19 +208,98 @@ where
         Ok(user)
     }
 
-    /// Derive username/phone values from the signup account input.
-    fn build_signup_identity(account: &str) -> (String, Option<String>) {
-        let normalized = account.trim().to_string();
-        if Self::looks_like_phone(&normalized) {
-            (normalized.clone(), Some(normalized))
-        } else {
-            (normalized, None)
+    fn normalize_signup_contact(channel: RecoveryChannel, contact: &str) -> AppResult<String> {
+        let normalized = match channel {
+            RecoveryChannel::Phone => contact.trim().to_string(),
+            RecoveryChannel::Email => contact.trim().to_ascii_lowercase(),
+        };
+
+        let is_valid = match channel {
+            RecoveryChannel::Phone => get_mobile_regex().is_match(&normalized),
+            RecoveryChannel::Email => get_email_regex().is_match(&normalized),
+        };
+
+        if !is_valid {
+            let field = match channel {
+                RecoveryChannel::Phone => "phone",
+                RecoveryChannel::Email => "email",
+            };
+            return Err(AppError::ValidationError(format!("invalid signup {field}")));
+        }
+
+        Ok(normalized)
+    }
+
+    fn split_signup_identity(
+        channel: RecoveryChannel,
+        contact: &str,
+    ) -> (Option<String>, Option<String>) {
+        match channel {
+            RecoveryChannel::Phone => (None, Some(contact.to_string())),
+            RecoveryChannel::Email => (Some(contact.to_string()), None),
         }
     }
 
-    /// Determine whether the raw account should be treated as a phone number.
-    fn looks_like_phone(value: &str) -> bool {
-        value.len() == 11 && value.chars().all(|ch| ch.is_ascii_digit())
+    fn encode_base36(mut value: u64) -> String {
+        const ALPHABET: &[u8; 36] = b"0123456789abcdefghijklmnopqrstuvwxyz";
+        if value == 0 {
+            return "0".to_string();
+        }
+
+        let mut chars = Vec::new();
+        while value > 0 {
+            let remainder = (value % 36) as usize;
+            chars.push(ALPHABET[remainder] as char);
+            value /= 36;
+        }
+        chars.iter().rev().collect()
+    }
+
+    async fn generate_unique_username(&self) -> AppResult<String> {
+        for _ in 0..20 {
+            let candidate = format!("u{}", Self::encode_base36(generate_sonyflake_id() as u64));
+            if self
+                .repository
+                .find_user_by_username(candidate.as_str())
+                .await?
+                .is_none()
+            {
+                return Ok(candidate);
+            }
+        }
+
+        Err(AppError::data_here(
+            "failed to generate unique signup username".to_string(),
+        ))
+    }
+
+    async fn validate_signup_captcha(
+        &self,
+        channel: RecoveryChannel,
+        contact: &str,
+        captcha: &str,
+    ) -> AppResult<()> {
+        let code_prefix = self.signup_code_prefix(channel);
+        match channel {
+            RecoveryChannel::Phone => SmsService::valid_auth_captcha(
+                &self.redis_pool,
+                contact,
+                captcha,
+                code_prefix.as_str(),
+                true,
+            )
+            .await
+            .map_err(|err| AppError::DataError(AUTH_SIGNUP_CODE_INVALID, err.to_string())),
+            RecoveryChannel::Email => EmailService::valid_auth_captcha(
+                &self.redis_pool,
+                contact,
+                captcha,
+                code_prefix.as_str(),
+                true,
+            )
+            .await
+            .map_err(|err| AppError::DataError(AUTH_SIGNUP_CODE_INVALID, err.to_string())),
+        }
     }
 
     /// Normalize free-form text into a slug-friendly seed.
@@ -402,13 +501,10 @@ where
     /// Create the full self-service signup aggregate and return the created identity.
     async fn account_signup(&self, cmd: AccountSignupCmd) -> AppResult<AccountSignupResult> {
         cmd.validate()?;
-        self.validate_slider_captcha(&cmd.account, &cmd.code, true)
-            .await?;
-
-        let normalized_account = cmd.account.trim().to_string();
+        let normalized_contact = Self::normalize_signup_contact(cmd.channel, &cmd.contact)?;
         if self
             .repository
-            .find_user_by_account(&normalized_account)
+            .find_user_by_account(&normalized_contact)
             .await?
             .is_some()
         {
@@ -417,14 +513,24 @@ where
                 "account already exists".to_string(),
             ));
         }
+        self.validate_signup_captcha(cmd.channel, &normalized_contact, &cmd.captcha)
+            .await?;
 
-        // Use the provided tenant name when available, otherwise fall back to the account.
+        let username = self.generate_unique_username().await?;
+        let nickname = cmd
+            .nickname
+            .as_ref()
+            .map(|value| value.trim().to_string())
+            .filter(|value| !value.is_empty());
+        let tenant_name_seed = nickname.clone().unwrap_or_else(|| username.clone());
+
+        // Use the provided tenant name when available, otherwise fall back to the generated identity.
         let tenant_name = cmd
             .tenant_name
             .as_ref()
             .map(|value| value.trim().to_string())
             .filter(|value| !value.is_empty())
-            .unwrap_or_else(|| normalized_account.clone());
+            .unwrap_or_else(|| tenant_name_seed.clone());
 
         // Prefer a deterministic slug from the tenant name, and fall back to auto generation.
         let tenant_slug = if cmd
@@ -436,7 +542,7 @@ where
             let slug = {
                 let sanitized = Self::sanitize_slug_seed(&tenant_name);
                 if sanitized.is_empty() {
-                    self.generate_auto_tenant_slug(&tenant_name, &normalized_account)
+                    self.generate_auto_tenant_slug(&tenant_name, &username)
                         .await?
                 } else {
                     sanitized
@@ -457,36 +563,28 @@ where
 
             slug
         } else {
-            self.generate_auto_tenant_slug(&tenant_name, &normalized_account)
+            self.generate_auto_tenant_slug(&tenant_name, &username)
                 .await?
         };
 
         // Build the records that will be stored transactionally by the repository.
         let password_hash = Crypto::hash_password(&cmd.password)
             .map_err(|err| AppError::data_here(format!("failed to hash signup password: {err}")))?;
-        let nickname = cmd
-            .nickname
-            .as_ref()
-            .map(|value| value.trim().to_string())
-            .filter(|value| !value.is_empty());
-        let display_name = nickname
-            .clone()
-            .or_else(|| Some(normalized_account.clone()));
-
-        let (username, phone) = Self::build_signup_identity(&normalized_account);
+        let display_name = nickname.clone().or_else(|| Some(username.clone()));
+        let (email, phone) = Self::split_signup_identity(cmd.channel, &normalized_contact);
         let role_template = self.load_signup_role_template().await?;
 
         let user = User::new(CreateUserCmd {
             id: generate_sonyflake_id() as i64,
             username: username.clone(),
-            email: None,
+            email,
             phone,
             password_hash,
             nickname: nickname.clone(),
             avatar_url: None,
             gender: 0,
-            // Initial signup users are disabled by default and can be enabled by tenant admins after email/phone verification.
-            status: 0,
+            // Signup codes already verify the contact channel, so the tenant creator can sign in immediately.
+            status: 1,
             bio: None,
         })
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
@@ -525,6 +623,9 @@ where
             role_id: role_template.id,
         })
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
+        let user_id = user.id;
+        let membership_id = user_tenant.id;
+        let tenant_id = tenant.id;
 
         self.repository
             .create_account_signup_bundle(&AccountSignupBundle {
@@ -536,23 +637,65 @@ where
             .await?;
 
         Ok(AccountSignupResult {
-            account: normalized_account,
+            user_id,
+            membership_id,
+            tenant_id,
+            account: normalized_contact,
             username,
             tenant_name,
             tenant_slug,
         })
     }
 
+    async fn send_signup_code(&self, cmd: SendSignupCodeCmd) -> AppResult<()> {
+        cmd.validate()?;
+        let normalized_contact = Self::normalize_signup_contact(cmd.channel, &cmd.contact)?;
+        self.validate_slider_captcha(&normalized_contact, &cmd.code, true)
+            .await?;
+
+        let cooldown_key = self.signup_cooldown_key(cmd.channel, &normalized_contact);
+        if let Ok(true) = self.redis_pool.exists(&cooldown_key).await {
+            return Ok(());
+        }
+
+        let code_prefix = self.signup_code_prefix(cmd.channel);
+        match cmd.channel {
+            RecoveryChannel::Phone => {
+                SmsService::send_captcha(
+                    &self.sms_config,
+                    &self.redis_pool,
+                    &normalized_contact,
+                    code_prefix.as_str(),
+                    get_mobile_regex(),
+                )
+                .await?;
+            }
+            RecoveryChannel::Email => {
+                EmailService::send_captcha(
+                    &self.email_config,
+                    &self.redis_pool,
+                    &normalized_contact,
+                    code_prefix.as_str(),
+                    get_email_regex(),
+                )
+                .await?;
+            }
+        }
+
+        if let Err(err) = self.redis_pool.setex(&cooldown_key, "1", 60).await {
+            tracing::warn!(error = %err, "failed to set signup cooldown");
+        }
+
+        Ok(())
+    }
+
     /// Create a new account directly inside the tenant referenced by the invite.
     async fn invite_signup(&self, cmd: InviteSignupCmd) -> AppResult<AccountSignupResult> {
         cmd.validate()?;
-        self.validate_slider_captcha(&cmd.account, &cmd.code, true)
-            .await?;
-
-        let normalized_account = cmd.account.trim().to_string();
+        let normalized_contact = Self::normalize_signup_contact(cmd.channel, &cmd.contact)?;
         if self
             .repository
-            .find_user_by_account(&normalized_account)
+            .find_user_by_account(&normalized_contact)
             .await?
             .is_some()
         {
@@ -561,24 +704,25 @@ where
                 "account already exists".to_string(),
             ));
         }
+        self.validate_signup_captcha(cmd.channel, &normalized_contact, &cmd.captcha)
+            .await?;
 
         let tenant = self.resolve_invited_tenant(cmd.invite_code.trim()).await?;
         let password_hash = Crypto::hash_password(&cmd.password)
             .map_err(|err| AppError::data_here(format!("failed to hash signup password: {err}")))?;
+        let username = self.generate_unique_username().await?;
         let nickname = cmd
             .nickname
             .as_ref()
             .map(|value| value.trim().to_string())
             .filter(|value| !value.is_empty());
-        let display_name = nickname
-            .clone()
-            .or_else(|| Some(normalized_account.clone()));
+        let display_name = nickname.clone().or_else(|| Some(username.clone()));
 
-        let (username, phone) = Self::build_signup_identity(&normalized_account);
+        let (email, phone) = Self::split_signup_identity(cmd.channel, &normalized_contact);
         let user = User::new(CreateUserCmd {
             id: generate_sonyflake_id() as i64,
             username: username.clone(),
-            email: None,
+            email,
             phone,
             password_hash,
             nickname: nickname.clone(),
@@ -597,23 +741,31 @@ where
             display_name,
             employee_no: None,
             job_title: None,
-            status: 1,
+            status: 2,
             is_default: true,
             is_tenant_admin: false,
             joined_at: Utc::now(),
             invited_by: None,
         })
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
+        let user_id = user.id;
+        let membership_id = user_tenant.id;
+        let tenant_id = tenant.id;
+        let tenant_name = tenant.name.clone();
+        let tenant_slug = tenant.slug.clone();
 
         self.repository
             .create_invite_signup_bundle(&InviteSignupBundle { user, user_tenant })
             .await?;
 
         Ok(AccountSignupResult {
-            account: normalized_account,
+            user_id,
+            membership_id,
+            tenant_id,
+            account: normalized_contact,
             username,
-            tenant_name: tenant.name,
-            tenant_slug: tenant.slug,
+            tenant_name,
+            tenant_slug,
         })
     }
 

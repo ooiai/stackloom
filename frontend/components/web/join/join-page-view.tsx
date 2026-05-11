@@ -5,6 +5,7 @@ import {
   ArrowRight,
   Building2,
   CheckCircle2,
+  Clock3,
   LogIn,
   UserPlus,
 } from "lucide-react"
@@ -28,7 +29,9 @@ export function JoinPageView({
   isJoining,
   isJoinSuccess,
   alreadyMember,
+  alreadyPending,
   handleJoin,
+  handleGoToDashboard,
   handleSignup,
 }: JoinPageViewProps) {
   const { t } = useI18n()
@@ -92,8 +95,37 @@ export function JoinPageView({
           </Card>
         )}
 
+        {/* Existing pending request */}
+        {!isValidating && !isInvalidCode && alreadyPending && tenantInfo && (
+          <Card>
+            <CardContent className="flex flex-col items-center gap-4 py-10 text-center">
+              <div className="flex size-16 items-center justify-center rounded-full bg-warning/10">
+                <Clock3 className="size-8 text-warning" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold">
+                  {t("join.page.pendingTitle")}
+                </h2>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  {t("join.page.pendingDescription", {
+                    name: tenantInfo.tenant_name,
+                  })}
+                </p>
+              </div>
+              <Button onClick={handleGoToDashboard} className="mt-2 gap-2">
+                {t("join.page.goToDashboard")}
+                <ArrowRight className="size-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Success state */}
-        {!isValidating && isJoinSuccess && tenantInfo && !alreadyMember && (
+        {!isValidating &&
+          isJoinSuccess &&
+          tenantInfo &&
+          !alreadyMember &&
+          !alreadyPending && (
           <Card>
             <CardContent className="flex flex-col items-center gap-4 py-10 text-center">
               <div className="flex size-16 items-center justify-center rounded-full bg-success/10">
@@ -119,6 +151,7 @@ export function JoinPageView({
           !isInvalidCode &&
           !isJoinSuccess &&
           !alreadyMember &&
+          !alreadyPending &&
           tenantInfo && (
             <Card>
               <CardContent className="py-10">

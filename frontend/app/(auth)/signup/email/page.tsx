@@ -5,8 +5,8 @@ import { useSignupController } from "@/components/auth/signup/hooks/use-signup-c
 import { SignupPageView } from "@/components/auth/signup/signup-page-view"
 import { Suspense, useSyncExternalStore } from "react"
 
-export default function SignupPage() {
-  const { view } = useSignupController("phone")
+export default function EmailSignupPage() {
+  const { view } = useSignupController("email")
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,

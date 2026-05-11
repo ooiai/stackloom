@@ -22,6 +22,10 @@ pub struct SystemSnapshot {
     pub memory_used: u64,
     /// Total memory in bytes.
     pub memory_total: u64,
+    /// Used swap in bytes.
+    pub swap_used: u64,
+    /// Total swap in bytes.
+    pub swap_total: u64,
     /// Used disk space in bytes (aggregate across all mounted disks).
     pub disk_used: u64,
     /// Total disk space in bytes (aggregate across all mounted disks).
@@ -42,6 +46,48 @@ pub struct SystemSnapshot {
     pub db_pool_size: u32,
     /// DB connection pool idle connections.
     pub db_pool_idle: u32,
+    /// 1-minute load average.
+    pub load_avg_1: f64,
+    /// 5-minute load average.
+    pub load_avg_5: f64,
+    /// 15-minute load average.
+    pub load_avg_15: f64,
+}
+
+/// A single GPU device's current metrics.
+#[derive(Debug, Clone)]
+pub struct GpuDeviceInfo {
+    /// GPU index (0-based).
+    pub index: u32,
+    /// GPU product name (e.g. "NVIDIA GeForce RTX 4090").
+    pub name: String,
+    /// GPU core utilization in percent (0–100).
+    pub utilization_gpu: u32,
+    /// GPU memory controller utilization in percent (0–100).
+    pub utilization_memory: u32,
+    /// Used GPU memory in bytes.
+    pub memory_used_bytes: u64,
+    /// Total GPU memory in bytes.
+    pub memory_total_bytes: u64,
+    /// GPU die temperature in Celsius (None if unavailable).
+    pub temperature_celsius: Option<u32>,
+    /// Current power draw in watts (None if unavailable).
+    pub power_usage_watts: Option<f32>,
+    /// Power limit in watts (None if unavailable).
+    pub power_limit_watts: Option<f32>,
+    /// Fan speed in percent (None if unavailable or passive cooling).
+    pub fan_speed_percent: Option<u32>,
+    /// Performance state string (e.g. "P0", "P8"; None if unavailable).
+    pub pstate: Option<String>,
+}
+
+/// GPU monitoring summary returned by `get_gpu_stats()`.
+#[derive(Debug, Clone)]
+pub struct GpuStats {
+    /// `true` when at least one GPU was detected via nvidia-smi.
+    pub available: bool,
+    /// Per-device metrics (empty when `available` is false).
+    pub devices: Vec<GpuDeviceInfo>,
 }
 
 #[derive(Debug, Clone)]

@@ -216,10 +216,7 @@ function NavMainItem({ item }: { item: WebNavItem }) {
 
 export function NavMain({ items }: { items: MenuTreeNodeData[] }) {
   const pathname = usePathname()
-  const groups = useMemo(
-    () => buildNavGroups(items, pathname),
-    [items, pathname]
-  )
+  const groups = useMemo(() => buildNavGroups(items, pathname), [items, pathname])
 
   if (groups.length === 0) {
     return null

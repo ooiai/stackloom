@@ -1,8 +1,9 @@
+use chrono::{DateTime, Utc};
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
 use crate::{
-    NotificationDispatch, NotificationRecipientSelector, NotificationRule, NotificationTemplate,
-    UserNotification,
+    NotificationDispatch, NotificationRecipientSelector, NotificationRule, NotificationRuleFire,
+    NotificationTemplate, UserNotification,
     notification::{
         NotificationDispatchPageQuery, NotificationRulePageQuery, NotificationTemplatePageQuery,
         UserNotificationPageQuery,
@@ -47,7 +48,22 @@ pub trait NotificationRepository: Send + Sync {
         tenant_id: i64,
         event_code: &str,
     ) -> AppResult<Vec<NotificationRule>>;
+    async fn list_enabled_time_rules(&self) -> AppResult<Vec<NotificationRule>>;
     async fn update_rule(&self, rule: &NotificationRule) -> AppResult<NotificationRule>;
+    async fn update_rule_schedule_state(
+        &self,
+        tenant_id: i64,
+        id: i64,
+        next_run_at: Option<DateTime<Utc>>,
+        fired_at: Option<DateTime<Utc>>,
+        fired_for: Option<DateTime<Utc>>,
+        last_error: Option<String>,
+        consecutive_failure_count: i32,
+    ) -> AppResult<()>;
+    async fn upsert_rule_fire(
+        &self,
+        fire: &NotificationRuleFire,
+    ) -> AppResult<NotificationRuleFire>;
 
     async fn find_dispatch_by_idempotency_key(
         &self,

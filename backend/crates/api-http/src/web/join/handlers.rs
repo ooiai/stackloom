@@ -16,9 +16,12 @@ use neocrates::{
 
 /// Validate an invite code and return basic tenant information.
 ///
-/// This is a public endpoint (no authentication required). It looks up the
-/// invite code in Redis and returns the associated tenant's name and slug so
-/// the join page can display a preview before the user authenticates.
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `req` - The request payload containing the invite code to validate.
+///
+/// # Returns
+/// * `AppResult<Json<ValidateInviteResp>>` - On success, returns the tenant information associated with the invite code. On failure, returns an error indicating that the code is invalid or expired.
 pub async fn validate_invite(
     State(state): State<WebHttpState>,
     DetailedJson(req): DetailedJson<ValidateInviteReq>,
@@ -59,11 +62,15 @@ pub async fn validate_invite(
     }))
 }
 
-/// Join a tenant via an invite code (authenticated).
+/// Submit a tenant join request via an invite code (authenticated).
 ///
-/// Looks up the invite code, resolves the target tenant, and creates a
-/// membership record for the calling user. Returns an error if the code is
-/// invalid or the user is already a member.
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `auth_user` - The authenticated user making the join request.
+/// * `req` - The request payload containing the invite code to join with.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - On success, returns an empty JSON object. On failure, returns an error indicating that the code is invalid, expired, or that the join request could not be processed.
 pub async fn join(
     State(state): State<WebHttpState>,
     Extension(auth_user): Extension<AuthModel>,
@@ -100,7 +107,7 @@ pub async fn join(
         )
     })?;
 
-    state
+    let membership = state
         .user_tenant_service
         .join_by_invite_code(auth_user.uid, tenant_id, None)
         .await?;
@@ -123,10 +130,10 @@ pub async fn join(
     let notification_service = state.notification_service.clone();
     let event = NotificationEvent {
         tenant_id,
-        event_code: "member.joined".to_string(),
+        event_code: "member.join_requested".to_string(),
         actor_user_id: Some(user_id),
         source_type: Some("member".to_string()),
-        source_id: Some(user_id),
+        source_id: Some(membership.id),
         template_vars: json!({
             "member": {
                 "id": user_id,
@@ -138,13 +145,16 @@ pub async fn join(
                 "name": tenant_name,
             },
         }),
-        idempotency_key: Some(format!("member.joined:{tenant_id}:{user_id}")),
+        idempotency_key: Some(format!(
+            "member.join_requested:{tenant_id}:{user_id}:{}",
+            membership.id
+        )),
         created_by: Some(user_id),
     };
 
     tokio::spawn(async move {
         if let Err(err) = notification_service.publish_event(event).await {
-            tracing::warn!(tenant_id, user_id, error = %err, "failed to publish member.joined notification");
+            tracing::warn!(tenant_id, user_id, error = %err, "failed to publish member.join_requested notification");
         }
     });
 

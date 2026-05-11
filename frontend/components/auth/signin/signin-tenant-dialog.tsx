@@ -14,6 +14,16 @@ import type { SigninTenantOption } from "@/types/auth.types"
 
 const isTenantSelectable = (tenant: SigninTenantOption) => tenant.status === 1
 
+const getTenantStatusLabel = (
+  tenant: SigninTenantOption,
+  t: (key: string) => string
+) => {
+  if (tenant.status === 2) {
+    return t("auth.tenantDialog.pending")
+  }
+  return t("auth.tenantDialog.unavailable")
+}
+
 const getDefaultSelectedMembershipId = (tenants: SigninTenantOption[]) => {
   return (
     tenants.find(isTenantSelectable)?.membership_id || tenants[0]?.membership_id || ""
@@ -115,7 +125,7 @@ export function SigninTenantDialog({
                     </p>
                     {!selectable ? (
                       <p className="text-xs text-amber-600">
-                        {t("auth.tenantDialog.unavailable")}
+                        {getTenantStatusLabel(tenant, t)}
                       </p>
                     ) : null}
                   </div>

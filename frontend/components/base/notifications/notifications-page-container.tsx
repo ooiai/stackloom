@@ -2,15 +2,10 @@
 
 import { ManagementPageHeader } from "@/components/base/shared/management-page-header"
 import { EntityEmptyState } from "@/components/base/shared/entity-empty-state"
+import { Badge } from "@/components/reui/badge"
 import { LabelTooltip } from "@/components/topui/tooltip"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Table,
   TableBody,
@@ -25,7 +20,14 @@ import type {
   NotificationRuleData,
   NotificationTemplateData,
 } from "@/types/base.types"
-import { PlusIcon, RefreshCwIcon } from "lucide-react"
+import {
+  BellRingIcon,
+  FileTextIcon,
+  PlusIcon,
+  RefreshCwIcon,
+  SendHorizonalIcon,
+  WorkflowIcon,
+} from "lucide-react"
 
 import {
   buildNotificationSummary,
@@ -33,6 +35,8 @@ import {
   formatNotificationDisplayText,
   formatNotificationLocaleLabel,
   formatRecipientSelectorLabel,
+  formatRuleScheduleSummary,
+  formatRuleTriggerModeLabel,
   formatTriggerTypeLabel,
   type NotificationsPanel,
 } from "./helpers"
@@ -60,6 +64,12 @@ interface NotificationsPageContainerProps {
   onOpenEditRule: (item: NotificationRuleData) => void
 }
 
+const PANEL_ICONS = {
+  dispatches: BellRingIcon,
+  templates: FileTextIcon,
+  rules: WorkflowIcon,
+} as const
+
 export function NotificationsPageContainer({
   locale,
   activePanel,
@@ -86,12 +96,38 @@ export function NotificationsPageContainer({
     ruleCount,
   }
 
+  const primaryAction =
+    activePanel === "dispatches"
+      ? {
+          icon: SendHorizonalIcon,
+          label: t("notifications.actions.send"),
+          onClick: onOpenSend,
+        }
+      : activePanel === "templates"
+        ? {
+            icon: PlusIcon,
+            label: t("notifications.actions.newTemplate"),
+            onClick: onOpenCreateTemplate,
+          }
+        : {
+            icon: PlusIcon,
+            label: t("notifications.actions.newRule"),
+            onClick: onOpenCreateRule,
+          }
+
   return (
-    <div className="w-full space-y-5">
+    <Tabs
+      value={activePanel}
+      onValueChange={(value) =>
+        value ? onPanelChange(value as NotificationsPanel) : undefined
+      }
+      className="w-full gap-5"
+    >
       <ManagementPageHeader
         eyebrow={t("notifications.page.eyebrow")}
         title={t("notifications.page.title")}
         description={t("notifications.page.description")}
+        className="rounded-none border-0 bg-transparent shadow-none"
         actions={
           <>
             <Button
@@ -102,47 +138,64 @@ export function NotificationsPageContainer({
               <RefreshCwIcon className="size-4" />
               {t("common.actions.refresh")}
             </Button>
-            <Button onClick={onOpenSend}>
-              <PlusIcon className="size-4" />
-              {t("notifications.actions.send")}
+            <Button onClick={primaryAction.onClick}>
+              <primaryAction.icon className="size-4" />
+              {primaryAction.label}
             </Button>
           </>
         }
       >
-        <div className="flex flex-wrap gap-2">
-          {panelOptions.map((item) => (
-            <Button
-              key={item.value}
-              variant={activePanel === item.value ? "default" : "outline"}
-              size="sm"
-              onClick={() => onPanelChange(item.value)}
-            >
-              {t(`notifications.panels.${item.value}`)}
-              <span className="ms-1 rounded-full bg-background/70 px-1.5 text-xs text-muted-foreground">
-                {countMap[item.countKey]}
-              </span>
-            </Button>
-          ))}
-        </div>
-      </ManagementPageHeader>
+          <TabsList
+            variant="line"
+            className="h-auto w-full flex-wrap justify-start gap-2 p-0"
+          >
+            {panelOptions.map((item) => {
+              const Icon = PANEL_ICONS[item.value]
 
-      {activePanel === "dispatches" ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              <LabelTooltip
-                label={t("notifications.dispatches.title")}
-                content={t("notifications.dispatches.description")}
-                align="start"
-                className="gap-2"
-              />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+              return (
+                <TabsTrigger
+                  key={item.value}
+                  value={item.value}
+                  className="h-9 rounded-lg border border-border/70 px-3 data-active:border-primary/25 data-active:bg-primary/6"
+                >
+                  <Icon className="size-4" />
+                  <span>{t(`notifications.panels.${item.value}`)}</span>
+                  <Badge
+                    variant={
+                      activePanel === item.value ? "primary-light" : "outline"
+                    }
+                    size="sm"
+                    radius="full"
+                  >
+                    {countMap[item.countKey]}
+                  </Badge>
+                </TabsTrigger>
+              )
+            })}
+          </TabsList>
+      </ManagementPageHeader>
+      <TabsContent value="dispatches" className="mt-0 space-y-3">
+          <div className="flex items-center gap-2">
+            <LabelTooltip
+              label={t("notifications.dispatches.title")}
+              content={t("notifications.dispatches.description")}
+              align="start"
+              className="gap-2"
+            />
+          </div>
+
+          <div className="overflow-hidden rounded-xl border border-border/70 bg-card">
             {dispatches.length === 0 ? (
               <EntityEmptyState
+                compact
                 title={t("notifications.empty.dispatchesTitle")}
                 description={t("notifications.empty.dispatchesDescription")}
+                action={
+                  <Button size="sm" onClick={onOpenSend}>
+                    <SendHorizonalIcon className="size-4" />
+                    {t("notifications.actions.send")}
+                  </Button>
+                }
               />
             ) : (
               <Table>
@@ -151,27 +204,32 @@ export function NotificationsPageContainer({
                     <TableHead>{t("notifications.table.summary")}</TableHead>
                     <TableHead>{t("notifications.table.trigger")}</TableHead>
                     <TableHead>{t("notifications.table.recipient")}</TableHead>
-                    <TableHead>
-                      {t("notifications.table.recipientCount")}
-                    </TableHead>
                     <TableHead>{t("notifications.table.createdAt")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {dispatches.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell className="whitespace-normal">
+                      <TableCell className="min-w-[320px] whitespace-normal">
                         <div className="space-y-1">
                           <p className="font-medium">
                             {buildNotificationSummary(item)}
                           </p>
-                          <p className="line-clamp-2 text-xs text-muted-foreground">
+                          <p className="line-clamp-2 text-xs leading-5 text-muted-foreground">
                             {item.body}
                           </p>
                         </div>
                       </TableCell>
                       <TableCell>
-                        {formatTriggerTypeLabel(t, item.trigger_type)}
+                        <div className="space-y-1">
+                          <p className="font-medium">
+                            {formatTriggerTypeLabel(t, item.trigger_type)}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {t("notifications.table.recipientCount")}:{" "}
+                            {item.recipient_count}
+                          </p>
+                        </div>
                       </TableCell>
                       <TableCell>
                         {formatRecipientSelectorLabel(
@@ -179,44 +237,37 @@ export function NotificationsPageContainer({
                           item.recipient_selector_type
                         )}
                       </TableCell>
-                      <TableCell>{item.recipient_count}</TableCell>
-                      <TableCell>
-                        {formatDateTime(item.created_at, locale)}
-                      </TableCell>
+                      <TableCell>{formatDateTime(item.created_at, locale)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             )}
-          </CardContent>
-        </Card>
-      ) : null}
+          </div>
+      </TabsContent>
 
-      {activePanel === "templates" ? (
-        <Card>
-          <CardHeader>
-            <div>
-              <CardTitle>
-                <LabelTooltip
-                  label={t("notifications.templates.title")}
-                  content={t("notifications.templates.description")}
-                  align="start"
-                  className="gap-2"
-                />
-              </CardTitle>
-            </div>
-            <CardAction>
-              <Button size="sm" onClick={onOpenCreateTemplate}>
-                <PlusIcon className="size-4" />
-                {t("notifications.actions.newTemplate")}
-              </Button>
-            </CardAction>
-          </CardHeader>
-          <CardContent>
+      <TabsContent value="templates" className="mt-0 space-y-3">
+          <div className="flex items-center gap-2">
+            <LabelTooltip
+              label={t("notifications.templates.title")}
+              content={t("notifications.templates.description")}
+              align="start"
+              className="gap-2"
+            />
+          </div>
+
+          <div className="overflow-hidden rounded-xl border border-border/70 bg-card">
             {templates.length === 0 ? (
               <EntityEmptyState
+                compact
                 title={t("notifications.empty.templatesTitle")}
                 description={t("notifications.empty.templatesDescription")}
+                action={
+                  <Button size="sm" onClick={onOpenCreateTemplate}>
+                    <PlusIcon className="size-4" />
+                    {t("notifications.actions.newTemplate")}
+                  </Button>
+                }
               />
             ) : (
               <Table>
@@ -233,12 +284,10 @@ export function NotificationsPageContainer({
                 <TableBody>
                   {templates.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell className="whitespace-normal">
+                      <TableCell className="min-w-[220px] whitespace-normal">
                         <div className="space-y-1">
                           <p className="font-medium">{item.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {item.code}
-                          </p>
+                          <p className="text-xs text-muted-foreground">{item.code}</p>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -248,13 +297,18 @@ export function NotificationsPageContainer({
                         {formatNotificationLocaleLabel(t, item.locale)}
                       </TableCell>
                       <TableCell>
-                        {item.status === 1
-                          ? t("notifications.status.enabled")
-                          : t("notifications.status.disabled")}
+                        <Badge
+                          variant={
+                            item.status === 1 ? "success-light" : "warning-light"
+                          }
+                          radius="full"
+                        >
+                          {item.status === 1
+                            ? t("notifications.status.enabled")
+                            : t("notifications.status.disabled")}
+                        </Badge>
                       </TableCell>
-                      <TableCell>
-                        {formatDateTime(item.updated_at, locale)}
-                      </TableCell>
+                      <TableCell>{formatDateTime(item.updated_at, locale)}</TableCell>
                       <TableCell>
                         <Button
                           variant="outline"
@@ -269,35 +323,31 @@ export function NotificationsPageContainer({
                 </TableBody>
               </Table>
             )}
-          </CardContent>
-        </Card>
-      ) : null}
+          </div>
+      </TabsContent>
 
-      {activePanel === "rules" ? (
-        <Card>
-          <CardHeader>
-            <div>
-              <CardTitle>
-                <LabelTooltip
-                  label={t("notifications.rules.title")}
-                  content={t("notifications.rules.description")}
-                  align="start"
-                  className="gap-2"
-                />
-              </CardTitle>
-            </div>
-            <CardAction>
-              <Button size="sm" onClick={onOpenCreateRule}>
-                <PlusIcon className="size-4" />
-                {t("notifications.actions.newRule")}
-              </Button>
-            </CardAction>
-          </CardHeader>
-          <CardContent>
+      <TabsContent value="rules" className="mt-0 space-y-3">
+          <div className="flex items-center gap-2">
+            <LabelTooltip
+              label={t("notifications.rules.title")}
+              content={t("notifications.rules.description")}
+              align="start"
+              className="gap-2"
+            />
+          </div>
+
+          <div className="overflow-hidden rounded-xl border border-border/70 bg-card">
             {rules.length === 0 ? (
               <EntityEmptyState
+                compact
                 title={t("notifications.empty.rulesTitle")}
                 description={t("notifications.empty.rulesDescription")}
+                action={
+                  <Button size="sm" onClick={onOpenCreateRule}>
+                    <PlusIcon className="size-4" />
+                    {t("notifications.actions.newRule")}
+                  </Button>
+                }
               />
             ) : (
               <Table>
@@ -305,19 +355,43 @@ export function NotificationsPageContainer({
                   <TableRow>
                     <TableHead>{t("notifications.table.name")}</TableHead>
                     <TableHead>{t("notifications.table.template")}</TableHead>
-                    <TableHead>{t("notifications.table.eventCode")}</TableHead>
+                    <TableHead>{t("notifications.table.trigger")}</TableHead>
                     <TableHead>{t("notifications.table.recipient")}</TableHead>
-                    <TableHead>{t("notifications.table.status")}</TableHead>
+                    <TableHead>{t("notifications.table.nextRunAt")}</TableHead>
                     <TableHead>{t("notifications.table.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {rules.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell className="whitespace-normal">
+                      <TableCell className="min-w-[220px] whitespace-normal">
                         <div className="space-y-1">
-                          <p>{formatNotificationDisplayText(t, item.template_name)}</p>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="font-medium">{item.name}</p>
+                            <Badge
+                              variant={
+                                item.enabled ? "success-light" : "warning-light"
+                              }
+                              size="sm"
+                              radius="full"
+                            >
+                              {item.enabled
+                                ? t("notifications.status.enabled")
+                                : t("notifications.status.disabled")}
+                            </Badge>
+                          </div>
+                          {item.last_error?.trim() ? (
+                            <p className="line-clamp-1 text-xs text-destructive">
+                              {item.last_error}
+                            </p>
+                          ) : null}
+                        </div>
+                      </TableCell>
+                      <TableCell className="min-w-[180px] whitespace-normal">
+                        <div className="space-y-1">
+                          <p className="font-medium">
+                            {formatNotificationDisplayText(t, item.template_name)}
+                          </p>
                           {item.template_code?.trim() ? (
                             <p className="text-xs text-muted-foreground">
                               {item.template_code}
@@ -325,7 +399,16 @@ export function NotificationsPageContainer({
                           ) : null}
                         </div>
                       </TableCell>
-                      <TableCell>{item.event_code}</TableCell>
+                      <TableCell className="min-w-[220px] whitespace-normal">
+                        <div className="space-y-1">
+                          <p className="font-medium">
+                            {formatRuleTriggerModeLabel(t, item.trigger_mode)}
+                          </p>
+                          <p className="text-xs leading-5 text-muted-foreground">
+                            {formatRuleScheduleSummary(t, item)}
+                          </p>
+                        </div>
+                      </TableCell>
                       <TableCell>
                         {formatRecipientSelectorLabel(
                           t,
@@ -333,9 +416,9 @@ export function NotificationsPageContainer({
                         )}
                       </TableCell>
                       <TableCell>
-                        {item.enabled
-                          ? t("notifications.status.enabled")
-                          : t("notifications.status.disabled")}
+                        {item.next_run_at
+                          ? formatDateTime(item.next_run_at, locale)
+                          : t("common.misc.none")}
                       </TableCell>
                       <TableCell>
                         <Button
@@ -351,9 +434,8 @@ export function NotificationsPageContainer({
                 </TableBody>
               </Table>
             )}
-          </CardContent>
-        </Card>
-      ) : null}
-    </div>
+          </div>
+      </TabsContent>
+    </Tabs>
   )
 }

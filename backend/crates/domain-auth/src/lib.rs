@@ -170,6 +170,29 @@ impl RecoveryChannel {
 }
 
 #[derive(Debug, Clone)]
+pub struct SendSignupCodeCmd {
+    pub channel: RecoveryChannel,
+    pub contact: String,
+    pub code: String,
+}
+
+impl SendSignupCodeCmd {
+    pub fn validate(&self) -> AppResult<()> {
+        if self.contact.trim().is_empty() {
+            return Err(AppError::ValidationError(
+                "contact cannot be empty".to_string(),
+            ));
+        }
+        if self.code.trim().is_empty() {
+            return Err(AppError::ValidationError(
+                "code cannot be empty".to_string(),
+            ));
+        }
+        Ok(())
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct SendPasswordResetCodeCmd {
     pub channel: RecoveryChannel,
     pub account: String,
@@ -254,9 +277,10 @@ impl ChangePasswordCmd {
 /// membership in one coordinated operation.
 #[derive(Debug, Clone)]
 pub struct AccountSignupCmd {
-    pub account: String,
+    pub channel: RecoveryChannel,
+    pub contact: String,
+    pub captcha: String,
     pub password: String,
-    pub code: String,
     pub nickname: Option<String>,
     pub tenant_name: Option<String>,
 }
@@ -264,9 +288,9 @@ pub struct AccountSignupCmd {
 impl AccountSignupCmd {
     /// Validate the signup payload before persistence and token-related work.
     pub fn validate(&self) -> AppResult<()> {
-        if self.account.trim().is_empty() {
+        if self.contact.trim().is_empty() {
             return Err(AppError::ValidationError(
-                "account cannot be empty".to_string(),
+                "contact cannot be empty".to_string(),
             ));
         }
         if self.password.trim().is_empty() {
@@ -274,9 +298,9 @@ impl AccountSignupCmd {
                 "password cannot be empty".to_string(),
             ));
         }
-        if self.code.trim().is_empty() {
+        if self.captcha.trim().is_empty() {
             return Err(AppError::ValidationError(
-                "code cannot be empty".to_string(),
+                "captcha cannot be empty".to_string(),
             ));
         }
 
@@ -306,9 +330,10 @@ impl AccountSignupCmd {
 /// tenant resolved from the invite code.
 #[derive(Debug, Clone)]
 pub struct InviteSignupCmd {
-    pub account: String,
+    pub channel: RecoveryChannel,
+    pub contact: String,
+    pub captcha: String,
     pub password: String,
-    pub code: String,
     pub nickname: Option<String>,
     pub invite_code: String,
 }
@@ -316,9 +341,9 @@ pub struct InviteSignupCmd {
 impl InviteSignupCmd {
     /// Validate the invite-signup payload before persistence.
     pub fn validate(&self) -> AppResult<()> {
-        if self.account.trim().is_empty() {
+        if self.contact.trim().is_empty() {
             return Err(AppError::ValidationError(
-                "account cannot be empty".to_string(),
+                "contact cannot be empty".to_string(),
             ));
         }
         if self.password.trim().is_empty() {
@@ -326,9 +351,9 @@ impl InviteSignupCmd {
                 "password cannot be empty".to_string(),
             ));
         }
-        if self.code.trim().is_empty() {
+        if self.captcha.trim().is_empty() {
             return Err(AppError::ValidationError(
-                "code cannot be empty".to_string(),
+                "captcha cannot be empty".to_string(),
             ));
         }
         if self.invite_code.trim().is_empty() {
@@ -352,6 +377,9 @@ impl InviteSignupCmd {
 /// Result returned when self-service signup succeeds.
 #[derive(Debug, Clone)]
 pub struct AccountSignupResult {
+    pub user_id: i64,
+    pub membership_id: i64,
+    pub tenant_id: i64,
     pub account: String,
     pub username: String,
     pub tenant_name: String,

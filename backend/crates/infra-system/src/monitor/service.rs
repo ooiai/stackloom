@@ -1,8 +1,9 @@
 use std::sync::Arc;
 
 use domain_system::{
-    AppStats, BusinessSummary, DatabaseStats, ErrorEndpoint, HourlyRequestStat, MonitorRepository,
-    MonitorService, RedisStats, SlowEndpoint, StatusDistribution, SystemSnapshot,
+    AppStats, BusinessSummary, DatabaseStats, ErrorEndpoint, GpuDeviceInfo, GpuStats,
+    HourlyRequestStat, MonitorRepository, MonitorService, RedisStats, SlowEndpoint,
+    StatusDistribution, SystemSnapshot,
 };
 use neocrates::{
     async_trait::async_trait,
@@ -161,5 +162,84 @@ where
         };
 
         Ok(stats)
+    }
+
+    async fn get_gpu_stats(&self) -> AppResult<GpuStats> {
+        // Query fields: index, name, utilization.gpu, utilization.memory,
+        //               memory.used (MiB), memory.total (MiB),
+        //               temperature.gpu, power.draw, power.limit,
+        //               fan.speed, pstate
+        let output = neocrates::tokio::process::Command::new("nvidia-smi")
+            .args([
+                "--query-gpu=index,name,utilization.gpu,utilization.memory,memory.used,memory.total,temperature.gpu,power.draw,power.limit,fan.speed,pstate",
+                "--format=csv,noheader,nounits",
+            ])
+            .output()
+            .await;
+
+        let output = match output {
+            Ok(o) if o.status.success() => o,
+            _ => {
+                return Ok(GpuStats {
+                    available: false,
+                    devices: vec![],
+                });
+            }
+        };
+
+        let stdout = match String::from_utf8(output.stdout) {
+            Ok(s) => s,
+            Err(_) => {
+                return Ok(GpuStats {
+                    available: false,
+                    devices: vec![],
+                });
+            }
+        };
+
+        let mut devices = Vec::new();
+
+        for line in stdout.lines() {
+            let parts: Vec<&str> = line.split(',').map(str::trim).collect();
+            if parts.len() < 11 {
+                continue;
+            }
+
+            let index = parts[0].parse::<u32>().unwrap_or(0);
+            let name = parts[1].to_string();
+            let utilization_gpu = parts[2].parse::<u32>().unwrap_or(0);
+            let utilization_memory = parts[3].parse::<u32>().unwrap_or(0);
+            // nvidia-smi reports MiB; convert to bytes
+            let memory_used_bytes = parts[4].parse::<u64>().unwrap_or(0) * 1024 * 1024;
+            let memory_total_bytes = parts[5].parse::<u64>().unwrap_or(0) * 1024 * 1024;
+            let temperature_celsius = parts[6].parse::<u32>().ok();
+            let power_usage_watts = parts[7].parse::<f32>().ok();
+            let power_limit_watts = parts[8].parse::<f32>().ok();
+            let fan_speed_percent = parts[9].parse::<u32>().ok();
+            let pstate = if parts[10].is_empty() || parts[10] == "N/A" {
+                None
+            } else {
+                Some(parts[10].to_string())
+            };
+
+            devices.push(GpuDeviceInfo {
+                index,
+                name,
+                utilization_gpu,
+                utilization_memory,
+                memory_used_bytes,
+                memory_total_bytes,
+                temperature_celsius,
+                power_usage_watts,
+                power_limit_watts,
+                fan_speed_percent,
+                pstate,
+            });
+        }
+
+        Ok(GpuStats {
+            available: !devices.is_empty(),
+            devices,
+        })
     }
 }

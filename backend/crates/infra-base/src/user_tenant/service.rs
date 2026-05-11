@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
 use chrono::Utc;
-use common::core::biz_error;
+use common::core::{biz_error, constants::SIGNUP_MEMBER_CODE};
 use domain_base::{
-    CreateUserTenantCmd, PageTenantMemberCmd, PageUserTenantCmd, TenantMemberView,
+    CreateUserTenantCmd, PageTenantMemberCmd, PageUserTenantCmd, RoleRepository, TenantMemberView,
     UpdateUserTenantCmd, UserTenant, UserTenantRepository, UserTenantService,
     user_tenant::{TenantMemberPageQuery, UserTenantPageQuery},
 };
@@ -14,37 +14,59 @@ use neocrates::{
     sqlxhelper::pool::SqlxPool,
 };
 
+use crate::SqlxRoleRepository;
+
 use super::repo::SqlxUserTenantRepository;
 
 #[derive(Clone)]
-pub struct UserTenantServiceImpl<R>
+pub struct UserTenantServiceImpl<R, RR>
 where
     R: UserTenantRepository,
+    RR: RoleRepository,
 {
     repository: Arc<R>,
+    role_repository: Arc<RR>,
 }
 
-impl UserTenantServiceImpl<SqlxUserTenantRepository> {
+impl UserTenantServiceImpl<SqlxUserTenantRepository, SqlxRoleRepository> {
     pub fn new(pool: Arc<SqlxPool>) -> Self {
         Self {
-            repository: Arc::new(SqlxUserTenantRepository::new(pool)),
+            repository: Arc::new(SqlxUserTenantRepository::new(pool.clone())),
+            role_repository: Arc::new(SqlxRoleRepository::new(pool)),
         }
     }
 }
 
-impl<R> UserTenantServiceImpl<R>
+impl<R, RR> UserTenantServiceImpl<R, RR>
 where
     R: UserTenantRepository,
+    RR: RoleRepository,
 {
-    pub fn with_repository(repository: Arc<R>) -> Self {
-        Self { repository }
+    pub fn with_repository(repository: Arc<R>, role_repository: Arc<RR>) -> Self {
+        Self {
+            repository,
+            role_repository,
+        }
+    }
+
+    async fn load_member_role_id(&self) -> AppResult<i64> {
+        self.role_repository
+            .find_system_role_by_code(SIGNUP_MEMBER_CODE)
+            .await?
+            .map(|role| role.id)
+            .ok_or_else(|| {
+                AppError::not_found_here(format!(
+                    "member role template not found: {SIGNUP_MEMBER_CODE}"
+                ))
+            })
     }
 }
 
 #[async_trait]
-impl<R> UserTenantService for UserTenantServiceImpl<R>
+impl<R, RR> UserTenantService for UserTenantServiceImpl<R, RR>
 where
     R: UserTenantRepository,
+    RR: RoleRepository,
 {
     async fn create(&self, mut cmd: CreateUserTenantCmd) -> AppResult<UserTenant> {
         cmd.validate()
@@ -111,6 +133,12 @@ where
         tenant_id: i64,
         status: i16,
     ) -> AppResult<()> {
+        if !matches!(status, 0 | 1) {
+            return Err(AppError::ValidationError(
+                "member status must be either 0 or 1".to_string(),
+            ));
+        }
+
         // Verify requester is a tenant admin.
         let requester = self
             .repository
@@ -157,6 +185,28 @@ where
             ));
         }
 
+        match (target.status, status) {
+            (2, 0) => {
+                self.repository.soft_delete_batch(&[member_id]).await?;
+                return Ok(());
+            }
+            (2, 1) | (0, 1) => {
+                let member_role_id = self.load_member_role_id().await?;
+                return self
+                    .repository
+                    .activate_with_role_if_missing(member_id, member_role_id)
+                    .await;
+            }
+            (1, 0) => {}
+            (current, next) if current == next => return Ok(()),
+            _ => {
+                return Err(AppError::ValidationError(format!(
+                    "invalid member status transition: {} -> {}",
+                    target.status, status
+                )));
+            }
+        }
+
         self.repository.update_status(member_id, status).await
     }
 
@@ -175,17 +225,24 @@ where
         user_id: i64,
         tenant_id: i64,
         invited_by: Option<i64>,
-    ) -> AppResult<()> {
-        // Reject if already a member.
-        if self
+    ) -> AppResult<UserTenant> {
+        // Reject if already a member or a pending request already exists.
+        if let Some(existing) = self
             .repository
             .find_by_user_and_tenant(user_id, tenant_id)
             .await?
-            .is_some()
         {
+            let error_key = if existing.status == 2 {
+                biz_error::INVITE_CODE_PENDING_APPROVAL
+            } else {
+                biz_error::INVITE_CODE_ALREADY_MEMBER
+            };
             return Err(AppError::DataError(
-                biz_error::INVITE_CODE_ALREADY_MEMBER,
-                format!("user {user_id} is already a member of tenant {tenant_id}"),
+                error_key,
+                format!(
+                    "user {user_id} already has membership state {} in tenant {tenant_id}",
+                    existing.status
+                ),
             ));
         }
 
@@ -198,7 +255,7 @@ where
             display_name: None,
             employee_no: None,
             job_title: None,
-            status: 1,
+            status: 2,
             is_default: false,
             is_tenant_admin: false,
             joined_at: now,
@@ -208,8 +265,7 @@ where
         let user_tenant =
             UserTenant::new(cmd).map_err(|err| AppError::ValidationError(err.to_string()))?;
 
-        self.repository.create(&user_tenant).await?;
-        Ok(())
+        self.repository.create(&user_tenant).await
     }
 
     async fn page_members(

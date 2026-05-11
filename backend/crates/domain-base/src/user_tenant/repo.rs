@@ -34,6 +34,10 @@ pub trait UserTenantRepository: Send + Sync {
     /// Update the status of a user_tenant record by ID.
     async fn update_status(&self, id: i64, status: i16) -> AppResult<()>;
 
+    /// Activate the membership and ensure it has at least the provided default
+    /// role binding when no role bindings exist yet.
+    async fn activate_with_role_if_missing(&self, id: i64, role_id: i64) -> AppResult<()>;
+
     /// Find the active membership record for a specific user within a tenant.
     async fn find_by_user_and_tenant(
         &self,

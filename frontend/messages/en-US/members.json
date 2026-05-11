@@ -27,12 +27,14 @@
     "disabled": "Disabled"
   },
   "actions": {
+    "approve": "Approve request",
+    "reject": "Reject request",
     "enable": "Enable member",
     "disable": "Disable member"
   },
   "invite": {
     "title": "Invite Members",
-    "description": "Share the invite link to bring new members into your team.",
+    "description": "Share the invite link so members can submit a request to join your team.",
     "linkLabel": "Invite link",
     "copyLink": "Copy Link",
     "copied": "Copied!",

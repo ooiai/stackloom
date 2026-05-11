@@ -3,8 +3,9 @@ use neocrates::serde::Serialize;
 
 /// HTTP response returned after self-service signup succeeds.
 ///
-/// The response echoes the created account identity together with the tenant
-/// information the frontend can use to guide the user into the signin page.
+/// The response echoes the verified signup contact together with the generated
+/// username and tenant information the frontend can use to guide the user into
+/// the signin page.
 #[derive(Debug, Clone, Serialize)]
 pub struct AccountSignupResp {
     pub account: String,

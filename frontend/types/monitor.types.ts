@@ -7,6 +7,8 @@ export interface SystemSnapshot {
   cpu_freq_mhz: number[]
   memory_used: number
   memory_total: number
+  swap_used: number
+  swap_total: number
   disk_used: number
   disk_total: number
   net_rx_bytes: number
@@ -17,6 +19,28 @@ export interface SystemSnapshot {
   process_cpu_percent: number
   db_pool_size: number
   db_pool_idle: number
+  load_avg_1: number
+  load_avg_5: number
+  load_avg_15: number
+}
+
+export interface GpuDeviceInfo {
+  index: number
+  name: string
+  utilization_gpu: number
+  utilization_memory: number
+  memory_used_bytes: number
+  memory_total_bytes: number
+  temperature_celsius: number | null
+  power_usage_watts: number | null
+  power_limit_watts: number | null
+  fan_speed_percent: number | null
+  pstate: string | null
+}
+
+export interface GpuStats {
+  available: boolean
+  devices: GpuDeviceInfo[]
 }
 
 export interface HourlyStat {
@@ -125,4 +149,5 @@ export interface MonitorMetrics {
   business_summary: BusinessSummary
   redis_stats: RedisStats
   database_stats: DatabaseStats
+  gpu_stats: GpuStats
 }

@@ -27,17 +27,19 @@ export interface AccountSigninParam {
 }
 
 export interface AccountSignupParam {
-  account: string
+  channel: RecoveryChannel
+  contact: string
+  captcha: string
   password: string
-  code: string
   nickname?: string
   tenant_name?: string
 }
 
 export interface InviteSignupParam {
-  account: string
+  channel: RecoveryChannel
+  contact: string
+  captcha: string
   password: string
-  code: string
   nickname?: string
   invite_code: string
 }
@@ -51,6 +53,13 @@ export interface AccountSignupResult {
 }
 
 export type RecoveryChannel = "phone" | "email"
+export type SignupChannel = RecoveryChannel
+
+export interface SendSignupCodeParam {
+  channel: SignupChannel
+  contact: string
+  code: string
+}
 
 export interface SendPasswordResetCodeParam {
   channel: RecoveryChannel

@@ -7,6 +7,7 @@ use domain_base::{
 };
 use neocrates::{
     async_trait::async_trait,
+    helper::core::snowflake::generate_sonyflake_id,
     response::error::{AppError, AppResult},
     sqlxhelper::pool::SqlxPool,
 };
@@ -338,6 +339,54 @@ impl UserTenantRepository for SqlxUserTenantRepository {
         Ok(())
     }
 
+    async fn activate_with_role_if_missing(&self, id: i64, role_id: i64) -> AppResult<()> {
+        let now = Utc::now();
+        let binding_id = generate_sonyflake_id() as i64;
+        let mut tx = self
+            .pool
+            .pool()
+            .begin()
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        sqlx::query(
+            r#"
+            UPDATE user_tenants
+            SET status = 1, updated_at = $2
+            WHERE id = $1 AND deleted_at IS NULL
+            "#,
+        )
+        .bind(id)
+        .bind(now)
+        .execute(&mut *tx)
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        sqlx::query(
+            r#"
+            INSERT INTO user_tenant_roles (id, user_tenant_id, role_id, created_at)
+            SELECT $2, $1, $3, $4
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM user_tenant_roles
+                WHERE user_tenant_id = $1
+            )
+            ON CONFLICT (user_tenant_id, role_id) DO NOTHING
+            "#,
+        )
+        .bind(id)
+        .bind(binding_id)
+        .bind(role_id)
+        .bind(now)
+        .execute(&mut *tx)
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        tx.commit().await.map_err(Self::map_sqlx_error)?;
+
+        Ok(())
+    }
+
     async fn find_by_user_and_tenant(
         &self,
         user_id: i64,
@@ -443,7 +492,7 @@ impl UserTenantRepository for SqlxUserTenantRepository {
             builder.push(")");
         }
 
-        builder.push(" ORDER BY ut.joined_at ASC");
+        builder.push(" ORDER BY CASE WHEN ut.status = 2 THEN 0 ELSE 1 END ASC, ut.joined_at ASC");
 
         if let Some(limit) = query.limit {
             builder.push(" LIMIT ");

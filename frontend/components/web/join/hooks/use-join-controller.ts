@@ -39,6 +39,10 @@ export function useJoinController() {
     },
     onError: (error: { errorKey?: string; message?: string }) => {
       const key = error?.errorKey
+      if (key === "errors.biz.invite.pendingApproval") {
+        toast.success(t(key))
+        return
+      }
       toast.error(key ? t(key) : (error?.message ?? t("common.error")))
     },
   })
@@ -46,6 +50,9 @@ export function useJoinController() {
   const alreadyMember =
     (joinMutation.error as { errorKey?: string } | null)?.errorKey ===
     "errors.biz.invite.alreadyMember"
+  const alreadyPending =
+    (joinMutation.error as { errorKey?: string } | null)?.errorKey ===
+    "errors.biz.invite.pendingApproval"
 
   const handleJoin = () => {
     if (alreadyMember) {
@@ -62,6 +69,10 @@ export function useJoinController() {
 
   const handleSignup = () => {
     router.push(buildSignupWithInviteCode(inviteCode))
+  }
+
+  const handleGoToDashboard = () => {
+    router.replace(getJoinRedirectUrl())
   }
 
   // Redirect already-authenticated users who hit an already-member error to dashboard.
@@ -85,7 +96,9 @@ export function useJoinController() {
     isJoining: joinMutation.isPending,
     isJoinSuccess: joinMutation.isSuccess,
     alreadyMember,
+    alreadyPending,
     handleJoin,
+    handleGoToDashboard,
     handleSignup,
   }
 }

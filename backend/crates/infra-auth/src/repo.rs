@@ -79,7 +79,7 @@ impl SqlxAuthRepository {
 
 #[async_trait]
 impl AuthRepository for SqlxAuthRepository {
-    /// Load one enabled auth account candidate by username or phone.
+    /// Load one enabled auth account candidate by username, phone, or email.
     async fn find_user_by_account(
         &self,
         account: &str,
@@ -96,11 +96,39 @@ impl AuthRepository for SqlxAuthRepository {
                 status
             FROM users
             WHERE deleted_at IS NULL
-              AND (username = $1 OR phone = $1)
+              AND (username = $1 OR phone = $1 OR LOWER(email) = LOWER($1))
             LIMIT 1
             "#,
         )
         .bind(account)
+        .fetch_optional(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(row.map(Into::into))
+    }
+
+    async fn find_user_by_username(
+        &self,
+        username: &str,
+    ) -> AppResult<Option<domain_auth::AuthUserAccount>> {
+        let row = sqlx::query_as::<_, AuthUserAccountRow>(
+            r#"
+            SELECT
+                id,
+                username,
+                email,
+                phone,
+                nickname,
+                password_hash,
+                status
+            FROM users
+            WHERE deleted_at IS NULL
+              AND username = $1
+            LIMIT 1
+            "#,
+        )
+        .bind(username)
         .fetch_optional(self.pool.pool())
         .await
         .map_err(Self::map_sqlx_error)?;
@@ -213,7 +241,7 @@ impl AuthRepository for SqlxAuthRepository {
                 t.name AS tenant_name,
                 ut.display_name,
                 CASE
-                    WHEN ut.status = 1 AND t.status = 1 THEN 1
+                    WHEN t.status = 1 THEN ut.status
                     ELSE 0
                 END::SMALLINT AS status,
                 u.id AS user_id,

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useI18n } from "@/providers/i18n-provider"
 import { notificationAdminApi, userApi } from "@/stores/base-api"
 import type {
@@ -22,6 +23,7 @@ import {
   buildSendNotificationParam,
   buildUpdateRuleParam,
   buildUpdateTemplateParam,
+  parseNotificationsPanel,
 } from "../helpers"
 
 const DISPATCH_LIMIT = 20
@@ -54,15 +56,33 @@ const DEFAULT_RULE_DIALOG: RuleDialogState = {
 
 export function useNotificationsController() {
   const { t, locale } = useI18n()
+  const pathname = usePathname()
   const queryClient = useQueryClient()
-  const [activePanel, setActivePanel] =
-    useState<NotificationsPanel>("dispatches")
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const activePanel = useMemo(
+    () => parseNotificationsPanel(searchParams.get("panel")),
+    [searchParams]
+  )
   const [sendOpen, setSendOpen] = useState(false)
   const [templateDialog, setTemplateDialog] = useState<TemplateDialogState>(
     DEFAULT_TEMPLATE_DIALOG
   )
   const [ruleDialog, setRuleDialog] =
     useState<RuleDialogState>(DEFAULT_RULE_DIALOG)
+
+  const handlePanelChange = (panel: NotificationsPanel) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (panel === "dispatches") {
+      params.delete("panel")
+    } else {
+      params.set("panel", panel)
+    }
+    const nextQuery = params.toString()
+    router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname, {
+      scroll: false,
+    })
+  }
 
   const dispatchesQuery = useQuery({
     queryKey: ["base", "notifications", "dispatches"],
@@ -196,6 +216,9 @@ export function useNotificationsController() {
       (templatesQuery.data?.items ?? []).map((template) => ({
         id: template.id,
         label: `${template.name} · ${template.code}`,
+        title_template: template.title_template,
+        body_template: template.body_template,
+        action_url_template: template.action_url_template ?? "",
       })),
     [templatesQuery.data?.items]
   )
@@ -218,7 +241,7 @@ export function useNotificationsController() {
       templates: templatesQuery.data?.items ?? [],
       rules: rulesQuery.data?.items ?? [],
       isRefreshing,
-      onPanelChange: setActivePanel,
+      onPanelChange: handlePanelChange,
       onRefresh: () => {
         void Promise.all([
           dispatchesQuery.refetch(),
@@ -256,6 +279,7 @@ export function useNotificationsController() {
     sendDialog: {
       open: sendOpen,
       userOptions,
+      templateOptions,
       isBusy: sendMutation.isPending,
       onOpenChange: setSendOpen,
       onSubmit: (values: Parameters<typeof buildSendNotificationParam>[0]) =>
@@ -297,7 +321,7 @@ export function useNotificationsController() {
       },
       onOpenCreateTemplate: () => {
         setRuleDialog(DEFAULT_RULE_DIALOG)
-        setActivePanel("templates")
+        handlePanelChange("templates")
         setTemplateDialog({
           open: true,
           mode: "create",

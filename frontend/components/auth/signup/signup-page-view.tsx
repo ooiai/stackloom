@@ -11,16 +11,20 @@ import { Button } from "@/components/ui/button"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Spinner } from "@/components/ui/spinner"
 import { useI18n } from "@/providers/i18n-provider"
-import type { AccountSignupResult } from "@/types/auth.types"
+import type { AccountSignupResult, SignupChannel } from "@/types/auth.types"
 import type { SignupFormErrors, SignupFormValues } from "./helpers"
 import { SignupFormFields } from "./signup-form-fields"
 import { SignupSuccessState } from "./signup-success-state"
 
 interface SignupPageViewProps {
+  signupChannel: SignupChannel
   values: SignupFormValues
   errors: SignupFormErrors
   showSlider: boolean
-  isLoading: boolean
+  isBusy: boolean
+  isSendingCode: boolean
+  isSubmitting: boolean
+  resendCooldownSeconds: number
   signupResult: AccountSignupResult | null
   isInviteMode: boolean
   isInviteValidating: boolean
@@ -28,17 +32,23 @@ interface SignupPageViewProps {
   inviteTenantName?: string | null
   signinHref: string
   successSigninHref: string
+  switchHref: string
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
+  onSendCode: () => void
   onFieldChange: (key: keyof SignupFormValues, value: string) => void
   onVerifySuccess: (data: VerifyParam) => Promise<void> | void
   onVerifyError: () => void
 }
 
 export function SignupPageView({
+  signupChannel,
   values,
   errors,
   showSlider,
-  isLoading,
+  isBusy,
+  isSendingCode,
+  isSubmitting,
+  resendCooldownSeconds,
   signupResult,
   isInviteMode,
   isInviteValidating,
@@ -46,12 +56,15 @@ export function SignupPageView({
   inviteTenantName,
   signinHref,
   successSigninHref,
+  switchHref,
   onSubmit,
+  onSendCode,
   onFieldChange,
   onVerifySuccess,
   onVerifyError,
 }: SignupPageViewProps) {
   const { t } = useI18n()
+  const isPhoneSignup = signupChannel === "phone"
 
   return (
     <AuthPageShell
@@ -64,7 +77,9 @@ export function SignupPageView({
       heroDescription={t(
         isInviteMode
           ? "auth.signup.invite.heroDescription"
-          : "auth.signup.heroDescription"
+          : isPhoneSignup
+            ? "auth.signup.heroDescriptionPhone"
+            : "auth.signup.heroDescriptionEmail"
       )}
     >
       {signupResult ? (
@@ -72,6 +87,7 @@ export function SignupPageView({
           result={signupResult}
           signinHref={successSigninHref}
           isInviteMode={isInviteMode}
+          signupChannel={signupChannel}
         />
       ) : isInviteMode && isInviteInvalid ? (
         <div className="flex flex-col gap-6 rounded-3xl border border-border/70 bg-background/95 p-6 shadow-sm">
@@ -99,20 +115,38 @@ export function SignupPageView({
             <div className="flex flex-col items-center gap-1 text-center">
               <h1 className="text-2xl font-bold">
                 {t(
-                  isInviteMode ? "auth.signup.invite.title" : "auth.signup.title"
+                  isInviteMode
+                    ? "auth.signup.invite.title"
+                    : isPhoneSignup
+                      ? "auth.signup.phone.title"
+                      : "auth.signup.email.title"
                 )}
               </h1>
               <p className="text-sm text-balance text-muted-foreground">
                 {t(
                   isInviteMode
                     ? "auth.signup.invite.subtitle"
-                    : "auth.signup.subtitle"
+                    : isPhoneSignup
+                      ? "auth.signup.phone.subtitle"
+                      : "auth.signup.email.subtitle"
                 )}{" "}
                 <Link
                   href={signinHref}
                   className="text-primary underline underline-offset-4"
                 >
                   {t("auth.signup.signIn")}
+                </Link>
+              </p>
+              <p className="text-sm text-balance text-muted-foreground">
+                <Link
+                  href={switchHref}
+                  className="text-primary underline underline-offset-4"
+                >
+                  {t(
+                    isPhoneSignup
+                      ? "auth.signup.switchToEmail"
+                      : "auth.signup.switchToPhone"
+                  )}
                 </Link>
               </p>
               {isInviteMode ? (
@@ -127,17 +161,21 @@ export function SignupPageView({
             </div>
 
             <SignupFormFields
+              signupChannel={signupChannel}
               values={values}
               errors={errors}
-              isLoading={isLoading}
+              isBusy={isBusy}
+              isSendingCode={isSendingCode}
+              resendCooldownSeconds={resendCooldownSeconds}
               showTenantField={!isInviteMode}
               inviteTenantName={inviteTenantName}
+              onSendCode={onSendCode}
               onValueChange={onFieldChange}
             />
 
             {showSlider ? (
               <CaptchaSlider
-                account={values.account}
+                account={values.contact}
                 onVerifySuccess={onVerifySuccess}
                 onVerifyError={onVerifyError}
               />
@@ -147,9 +185,9 @@ export function SignupPageView({
               <Button
                 type="submit"
                 className="w-full"
-                disabled={isLoading || (isInviteMode && (isInviteValidating || isInviteInvalid))}
+                disabled={isBusy || (isInviteMode && (isInviteValidating || isInviteInvalid))}
               >
-                {isLoading ? <Spinner className="size-4" /> : null}
+                {isSubmitting ? <Spinner className="size-4" /> : null}
                 {t(
                   isInviteMode
                     ? "auth.signup.invite.submit"

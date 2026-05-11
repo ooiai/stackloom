@@ -20,8 +20,8 @@ api-http/src/auth/
 │   └── resp.rs       — SigninTenantOptionResp, AuthTokenResp
 └── signup/
     ├── mod.rs        — route wiring
-    ├── handlers.rs   — account_signup
-    ├── req.rs        — AccountSignupReq
+    ├── handlers.rs   — send_signup_code, account_signup, invite_signup
+    ├── req.rs        — SendSignupCodeReq, AccountSignupReq, InviteSignupReq
     └── resp.rs       — AccountSignupResp
 ```
 
@@ -48,8 +48,11 @@ All auth routes are nested under `/auth`.
 | `/auth/signin/account` | POST | `account_signin` | Phase 2: select membership, issue JWT token pair |
 | `/auth/signin/refresh_token` | POST | `refresh_token` | Rotate access + refresh token pair |
 | `/auth/signin/logout` | POST | `logout` | Revoke the current session (requires auth header) |
+| `/auth/signup/send_code` | POST | `send_signup_code` | Verify slider captcha, then send phone/email signup code |
 | `/auth/signup/account` | POST | `account_signup` | Self-service signup: create user + tenant + role binding |
 | `/auth/signup/invite` | POST | `invite_signup` | Invite-aware signup: create user + membership inside the invited tenant |
+
+Public auth routes under `/auth/signin/*` and `/auth/signup/*` also need matching auth middleware whitelist entries in runtime config using the **nested path seen by the interceptor** (for example `/signup/send_code`, `/signup/account`, `/signup/invite`, `/signin/tenants`). If the whitelist omits a public auth route, the interceptor will incorrectly require Bearer auth before the handler runs.
 
 ---
 
@@ -148,37 +151,31 @@ Signup creates the full account aggregate in a **single database transaction** v
 
 ### Signup steps
 
-1. Validate the request DTO.
-2. Consume the slider captcha from Redis.
-3. Check for duplicate account (returns `errors.biz.auth.accountExists`).
-4. Determine tenant name and slug:
+1. `send_signup_code` validates and consumes the slider captcha, then sends a phone/email signup code using the dedicated signup Redis namespaces (`CACHE_SIGNUP_PHONE_CODE`, `CACHE_SIGNUP_EMAIL_CODE`, `CACHE_SIGNUP_SEND_COOLDOWN`).
+2. `account_signup` validates the request DTO and verifies the signup code (`errors.biz.auth.signupCodeInvalid` on failure).
+3. Check for duplicate account/contact (returns `errors.biz.auth.accountExists`).
+4. Generate a backend-owned unique username (`u` + sonyflake base36) and probe uniqueness with `find_user_by_username(...)`.
+5. Determine tenant name and slug:
    - If `tenant_name` is provided: slugify it, check for existing name/slug conflict (returns `errors.biz.auth.tenantExists`).
-   - If not provided: auto-generate a slug from the account, deduplicated via DB probe loop.
-5. Hash the password via `Crypto::hash_password`.
-6. Detect phone vs username from the account string (11-digit all-numeric → phone).
-7. Load the role template: `role_repository.find_system_role_by_code(SIGNUP_ADMIN_CODE)` where `SIGNUP_ADMIN_CODE = "WEB::ADMIN"` is defined in `common/src/core/constants.rs`.
-8. Build the aggregate records:
-   - `User` (status = 0, disabled by default — must be enabled by tenant admin after verification)
-   - `Tenant` (status = 1, active)
-   - `UserTenant` (status = 1, is_default = true, is_tenant_admin = true)
-   - `UserTenantRole` (binds the user_tenant to the loaded role template)
-9. Persist the full bundle transactionally.
-10. Return `AccountSignupResp { account, username, tenant_name, tenant_slug }`.
+   - If not provided: auto-generate a slug from `nickname || username`, never from raw phone/email.
+6. Hash the password via `Crypto::hash_password`.
+7. Split the verified contact into `phone` or `email` via the explicit `channel` field. Do not guess from a free-form `account` string.
+8. Load the role template: `role_repository.find_system_role_by_code(SIGNUP_ADMIN_CODE)` where `SIGNUP_ADMIN_CODE = "WEB::ADMIN"` is defined in `common/src/core/constants.rs`.
+9. Build the aggregate records:
+    - `User` (status = 1, active immediately because signup already verified the contact channel)
+    - `Tenant` (status = 1, active)
+    - `UserTenant` (status = 1, is_default = true, is_tenant_admin = true)
+    - `UserTenantRole` (binds the tenant creator to the loaded `WEB::ADMIN` system template)
+10. Persist the full bundle transactionally.
+11. Return `AccountSignupResp { account, username, tenant_name, tenant_slug }`, where `account` is the verified phone/email contact.
 
 ### Role template design
 
 The signup role is **not hardcoded** in `infra-auth`. The role template is loaded from the `roles` table using the system role code constant `SIGNUP_ADMIN_CODE`.
 
 - The `roles` table must contain a system-level row with `code = "WEB::ADMIN"` for signup to succeed.
-- The signup does **not** create a new tenant-scoped role. It binds the `user_tenant` directly to the system role template via `user_tenant_roles`.
+- The signup does **not** create a new tenant-scoped role. It binds the `user_tenant` directly to the system `WEB::ADMIN` role template via `user_tenant_roles`.
 - If the required system role is missing in the database, signup fails with a `not_found_here` error.
-
-### New signup user status
-
-Newly signed-up users have `status = 0` (disabled). They must be activated by a tenant admin
-or via a verification flow before they can sign in.
-
----
 
 ## 6.1 Invite-Aware Signup Flow
 
@@ -187,22 +184,24 @@ Invite-aware signup is a separate auth path for public invite acceptance. It doe
 
 ### Invite signup steps
 
-1. Validate the request DTO.
-2. Consume the slider captcha from Redis.
-3. Check for duplicate account (returns `errors.biz.auth.accountExists`).
+1. `send_signup_code` is shared with self-service signup; invite signup consumes the same verified phone/email code.
+2. Validate the request DTO and verify the signup code.
+3. Check for duplicate account/contact (returns `errors.biz.auth.accountExists`).
 4. Resolve the tenant from Redis invite lookup data (`CACHE_INVITE_CODE_LOOKUP`).
 5. Hash the password via `Crypto::hash_password`.
-6. Detect phone vs username from the account string (11-digit all-numeric → phone).
-7. Build the aggregate records:
-   - `User` with `status = 1` so the new invitee can sign in immediately
-   - `UserTenant` with `status = 1`, `is_default = true`, `is_tenant_admin = false`
-8. Persist the user + membership transactionally via `create_invite_signup_bundle(...)`.
-9. Return `AccountSignupResp { account, username, tenant_name, tenant_slug }` for the invited tenant.
+6. Generate a backend-owned unique username; never derive it from phone/email.
+7. Split the verified contact into `phone` or `email` via the explicit `channel`.
+8. Build the aggregate records:
+    - `User` with `status = 1` so the new invitee can sign in immediately
+    - `UserTenant` with `status = 2`, `is_default = true`, `is_tenant_admin = false`
+9. Persist the user + membership transactionally via `create_invite_signup_bundle(...)`.
+10. Return `AccountSignupResp { account, username, tenant_name, tenant_slug }` for the invited tenant.
 
 ### Important invite-signup rules
 
 - Do not create a new tenant in invite signup.
 - Do not bind the invitee to the self-service signup admin role template.
+- Do not bind the final member role during invite signup creation; `WEB::MEMBER` is granted when the membership is approved into `status = 1`.
 - Keep invite-code resolution inside the auth service or infra layer, not in handlers.
 
 ---
@@ -212,7 +211,9 @@ Invite-aware signup is a separate auth path for public invite acceptance. It doe
 All auth endpoints that accept credentials use the slider captcha system from `neocrates::captcha::CaptchaService`.
 
 - **Phase 1 (query_tenants):** captcha is probed but **not consumed** — allowing retry without re-solving.
-- **Phase 2 (account_signin) and signup:** captcha is probed and **consumed** in the same call.
+- **Phase 2 (account_signin):** captcha is probed and **consumed** in the same call.
+- **Signup send_code:** slider captcha is probed and **consumed** before the phone/email verification code is sent.
+- **Signup submit:** validates the dedicated phone/email signup code; it no longer reuses the slider captcha proof.
 
 The captcha proof is submitted as the `code` field in the request JSON.
 

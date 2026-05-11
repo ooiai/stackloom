@@ -14,7 +14,11 @@ domain-system.workspace = true
 
 neocrates = { workspace = true, features = ["logger", "diesel", "crypto", "sqlx"] }
 chrono = { workspace = true, features = ["serde"] }
+chrono-tz.workspace = true
 bon.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+apalis.workspace = true
+apalis-redis.workspace = true
+croner.workspace = true
 sqlx = { version = "0.8", features = ["postgres", "runtime-tokio", "chrono", "json"] }

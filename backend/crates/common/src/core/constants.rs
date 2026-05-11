@@ -6,6 +6,9 @@ pub const CACHE_INVITE_CODE: &str = ":invite_code:";
 /// Reverse lookup: invite UUID → tenant_id
 pub const CACHE_INVITE_CODE_LOOKUP: &str = ":invite_code_lookup:";
 pub const CACHE_APPLY_REGISTER_CODE: &str = ":apply_register_code:";
+pub const CACHE_SIGNUP_PHONE_CODE: &str = ":signup_phone_code:";
+pub const CACHE_SIGNUP_EMAIL_CODE: &str = ":signup_email_code:";
+pub const CACHE_SIGNUP_SEND_COOLDOWN: &str = ":signup_send_cooldown:";
 pub const CACHE_PASSWORD_RESET_PHONE_CODE: &str = ":pwd_reset_phone_code:";
 pub const CACHE_PASSWORD_RESET_EMAIL_CODE: &str = ":pwd_reset_email_code:";
 pub const CACHE_PASSWORD_RESET_SEND_COOLDOWN: &str = ":pwd_reset_send_cooldown:";
@@ -42,6 +45,9 @@ pub const DICT_CACHE_TTL: u64 = 600;
 
 /// System role template code used to create the tenant-scoped guest role on signup.
 pub const SIGNUP_GUEST_CODE: &str = "WEB::GUEST";
+/// System role template code used for invite/member approval flows.
+pub const SIGNUP_MEMBER_CODE: &str = "WEB::MEMBER";
+/// System role template code used to create the tenant owner/admin on signup.
 pub const SIGNUP_ADMIN_CODE: &str = "WEB::ADMIN";
 
 // set per-role cached tree_by_code menus key prefix

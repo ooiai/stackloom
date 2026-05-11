@@ -16,6 +16,8 @@ const EMPTY_METRICS: MonitorMetrics = {
     cpu_freq_mhz: [],
     memory_used: 0,
     memory_total: 0,
+    swap_used: 0,
+    swap_total: 0,
     disk_used: 0,
     disk_total: 0,
     net_rx_bytes: 0,
@@ -26,6 +28,9 @@ const EMPTY_METRICS: MonitorMetrics = {
     process_cpu_percent: 0,
     db_pool_size: 0,
     db_pool_idle: 0,
+    load_avg_1: 0,
+    load_avg_5: 0,
+    load_avg_15: 0,
   },
   hourly_stats: [],
   app_stats: {
@@ -84,6 +89,10 @@ const EMPTY_METRICS: MonitorMetrics = {
       top_by_total_time: [],
       top_by_mean_time: [],
     },
+  },
+  gpu_stats: {
+    available: false,
+    devices: [],
   },
 }
 

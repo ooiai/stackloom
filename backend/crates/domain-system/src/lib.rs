@@ -10,9 +10,9 @@ pub use audit_log::{
     PageAuditLogCmd,
 };
 pub use monitor::{
-    AppStats, BusinessSummary, DatabaseStats, DatabaseTopQuery, ErrorEndpoint, HourlyRequestStat,
-    MonitorRepository, MonitorService, PgStatStatementsStats, RedisStats, SlowEndpoint,
-    StatusDistribution, SystemSnapshot,
+    AppStats, BusinessSummary, DatabaseStats, DatabaseTopQuery, ErrorEndpoint, GpuDeviceInfo,
+    GpuStats, HourlyRequestStat, MonitorRepository, MonitorService, PgStatStatementsStats,
+    RedisStats, SlowEndpoint, StatusDistribution, SystemSnapshot,
 };
 pub use system_log::repo::SystemLogRepository;
 pub use system_log::service::SystemLogService;

@@ -85,7 +85,8 @@ pms-ignore-urls:
   - /signin/refresh_token
   - /signin/account
   - /signin/tenants
+  - /signup/send_code
   - /signup/account
+  - /signup/invite
   - /sms/signin
   - /captcha/slider
-

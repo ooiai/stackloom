@@ -2,16 +2,16 @@
   "page": {
     "eyebrow": "通知中心",
     "title": "通知管理",
-    "description": "统一管理手动发送、通知模板和事件规则。"
+    "description": "统一管理手动发送、通知模板和通知规则。"
   },
   "actions": {
     "send": "发送通知",
     "newTemplate": "新建模板",
     "createTemplate": "创建模板",
     "saveTemplate": "保存模板",
-    "newRule": "新建事件规则",
-    "createRule": "创建事件规则",
-    "saveRule": "保存事件规则",
+    "newRule": "新建通知规则",
+    "createRule": "创建通知规则",
+    "saveRule": "保存通知规则",
     "markAllRead": "全部已读",
     "markRead": "标记已读",
     "archive": "归档",
@@ -29,7 +29,7 @@
   "panels": {
     "dispatches": "发送记录",
     "templates": "通知模板",
-    "rules": "事件规则"
+    "rules": "通知规则"
   },
   "dispatches": {
     "title": "最近发送记录",
@@ -40,13 +40,13 @@
     "description": "维护可复用的标题和正文模板。模板中的事件编码主要用于分类和筛选，不会强制与事件规则绑定。"
   },
   "rules": {
-    "title": "事件规则",
-    "description": "事件规则会在业务事件发生后，按事件编码匹配模板与收件人策略并自动发送通知"
+    "title": "通知规则",
+    "description": "在一套规则里统一配置事件触发、延迟一次、固定时间和 cron 表达式通知。"
   },
   "dialogs": {
     "send": {
       "title": "发送通知",
-      "description": "向当前租户成员发送一条站内通知。"
+      "description": "向当前租户成员发送一条站内通知，可先选模板再按需修改最终内容。"
     },
     "template": {
       "description": "模板支持 {memberUsernameExample}、{tenantNameExample} 等变量占位。"
@@ -58,14 +58,14 @@
       "title": "更新通知模板"
     },
     "rule": {
-      "description": "事件规则会把业务事件自动映射成通知，避免在各业务里重复拼装发送逻辑",
-      "noTemplates": "请先创建通知模板，再新建事件规则。"
+      "description": "通知规则会把事件或时间触发统一映射成通知，避免在各业务里重复拼装发送逻辑。",
+      "noTemplates": "请先创建通知模板，再新建通知规则。"
     },
     "ruleCreate": {
-      "title": "新建事件规则"
+      "title": "新建通知规则"
     },
     "ruleUpdate": {
-      "title": "更新事件规则"
+      "title": "更新通知规则"
     }
   },
   "table": {
@@ -80,7 +80,8 @@
     "locale": "语言",
     "status": "状态",
     "actions": "操作",
-    "template": "模板"
+    "template": "模板",
+    "nextRunAt": "下次执行"
   },
   "form": {
     "title": "标题",
@@ -96,7 +97,20 @@
     "bodyTemplate": "正文模板",
     "actionUrlTemplate": "跳转地址模板",
     "enabled": "启用",
-    "template": "模板"
+    "template": "模板",
+    "triggerMode": "触发模式",
+    "delaySeconds": "延迟秒数",
+    "scheduleKind": "固定周期",
+    "scheduleTime": "触发时间",
+    "scheduleWeekdays": "每周日期",
+    "cronExpression": "Cron 表达式",
+    "startAt": "开始时间",
+    "endAt": "结束时间"
+  },
+  "sections": {
+    "basics": "基础信息",
+    "content": "通知内容",
+    "recipients": "收件人"
   },
   "placeholders": {
     "title": "输入一条简洁明确的通知标题",
@@ -108,7 +122,17 @@
     "titleTemplate": "例如：{tenantNameExample} 有新成员加入",
     "bodyTemplate": "支持 {memberUsernameExample} 这类变量占位",
     "actionUrlTemplate": "可选，例如：/member",
-    "template": "请选择模板"
+    "template": "请选择模板",
+    "delaySeconds": "例如：1800",
+    "cronExpression": "例如：0 9 * * 1-5"
+  },
+  "userPicker": {
+    "selectedCount": "已选 {count} 位",
+    "searchPlaceholder": "搜索用户名称",
+    "emptyDefaultTitle": "暂无可选用户",
+    "emptyDefaultDescription": "当前没有可用于手动指定的租户用户。",
+    "emptySearchTitle": "未找到匹配用户",
+    "emptySearchDescription": "试试更短的关键词或换一个昵称/用户名。"
   },
   "selector": {
     "tenant_all": "当前租户全部成员",
@@ -119,7 +143,23 @@
   "trigger": {
     "manual": "手动",
     "direct": "直接",
-    "event": "事件"
+    "event": "事件触发",
+    "delay_once": "延迟一次",
+    "fixed_schedule": "固定时间",
+    "cron_expression": "Cron 表达式"
+  },
+  "scheduleKind": {
+    "daily": "每日",
+    "weekly": "每周"
+  },
+  "weekdays": {
+    "monday": "周一",
+    "tuesday": "周二",
+    "wednesday": "周三",
+    "thursday": "周四",
+    "friday": "周五",
+    "saturday": "周六",
+    "sunday": "周日"
   },
   "status": {
     "enabled": "启用",
@@ -150,15 +190,15 @@
     "dispatchesDescription": "手动发送和自动事件通知都会出现在这里。",
     "templatesTitle": "暂无通知模板",
     "templatesDescription": "先创建模板，再把它绑定到事件规则。",
-    "rulesTitle": "暂无事件规则",
-    "rulesDescription": "创建事件规则后，member.joined 等业务事件就能自动发通知。"
+    "rulesTitle": "暂无通知规则",
+    "rulesDescription": "创建通知规则后，既可以响应业务事件，也可以按时间自动发送通知。"
   },
   "toast": {
     "sent": "通知已发送。",
     "templateCreated": "模板已创建。",
     "templateUpdated": "模板已更新。",
-    "ruleCreated": "事件规则已创建。",
-    "ruleUpdated": "事件规则已更新。"
+    "ruleCreated": "通知规则已创建。",
+    "ruleUpdated": "通知规则已更新。"
   },
   "validation": {
     "titleRequired": "请输入标题。",
@@ -171,6 +211,23 @@
     "titleTemplateRequired": "请输入标题模板。",
     "bodyTemplateRequired": "请输入正文模板。",
     "eventCodeRequired": "请输入事件编码。",
-    "templateRequired": "请选择模板。"
+    "templateRequired": "请选择模板。",
+    "delaySecondsRequired": "请输入大于 0 的延迟秒数。",
+    "scheduleTimeRequired": "请选择触发时间。",
+    "scheduleWeekdaysRequired": "请至少选择一个每周日期。",
+    "cronExpressionRequired": "请输入 Cron 表达式。",
+    "actorRecipientEventOnly": "仅事件触发模式支持“事件触发人”收件人。",
+    "endAtAfterStartAt": "结束时间必须晚于开始时间。"
+  },
+  "scheduleSummary": {
+    "event": "事件：{eventCode}",
+    "eventEmpty": "等待业务事件触发",
+    "delayOnce": "延迟 {seconds} 秒后发送一次",
+    "fixedDaily": "每日 {time}",
+    "fixedWeekly": "每周 {weekdays} {time}",
+    "cron": "Cron：{cron}"
+  },
+  "templateSelection": {
+    "manual": "手动输入内容"
   }
 }

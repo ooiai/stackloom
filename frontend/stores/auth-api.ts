@@ -10,6 +10,7 @@ import type {
   QuerySigninTenantsParam,
   ResetPasswordParam,
   SendPasswordResetCodeParam,
+  SendSignupCodeParam,
   SigninTenantOption,
 } from "@/types/auth.types"
 
@@ -52,6 +53,11 @@ export const signinApi = {
 }
 
 export const signupApi = {
+  sendSignupCode: async (params: SendSignupCodeParam): Promise<void> => {
+    await post(`${AUTH_SIGNUP_API_PREFIX}/send_code`, params, {
+      headers: BASIC_AUTH_HEADER,
+    })
+  },
   accountSignup: async (
     params: AccountSignupParam
   ): Promise<AccountSignupResult> => {

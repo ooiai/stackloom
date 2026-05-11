@@ -10,6 +10,8 @@ pub struct SystemSnapshotResp {
     pub cpu_freq_mhz: Vec<u64>,
     pub memory_used: u64,
     pub memory_total: u64,
+    pub swap_used: u64,
+    pub swap_total: u64,
     pub disk_used: u64,
     pub disk_total: u64,
     pub net_rx_bytes: u64,
@@ -20,6 +22,9 @@ pub struct SystemSnapshotResp {
     pub process_cpu_percent: f32,
     pub db_pool_size: u32,
     pub db_pool_idle: u32,
+    pub load_avg_1: f64,
+    pub load_avg_5: f64,
+    pub load_avg_15: f64,
 }
 
 #[derive(Debug, Serialize)]
@@ -129,6 +134,27 @@ pub struct DatabaseStatsResp {
 }
 
 #[derive(Debug, Serialize)]
+pub struct GpuDeviceInfoResp {
+    pub index: u32,
+    pub name: String,
+    pub utilization_gpu: u32,
+    pub utilization_memory: u32,
+    pub memory_used_bytes: u64,
+    pub memory_total_bytes: u64,
+    pub temperature_celsius: Option<u32>,
+    pub power_usage_watts: Option<f32>,
+    pub power_limit_watts: Option<f32>,
+    pub fan_speed_percent: Option<u32>,
+    pub pstate: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct GpuStatsResp {
+    pub available: bool,
+    pub devices: Vec<GpuDeviceInfoResp>,
+}
+
+#[derive(Debug, Serialize)]
 pub struct MonitorMetricsResp {
     pub snapshot: SystemSnapshotResp,
     pub hourly_stats: Vec<HourlyStatResp>,
@@ -139,4 +165,5 @@ pub struct MonitorMetricsResp {
     pub business_summary: BusinessSummaryResp,
     pub redis_stats: RedisStatsResp,
     pub database_stats: DatabaseStatsResp,
+    pub gpu_stats: GpuStatsResp,
 }

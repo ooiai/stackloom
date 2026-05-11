@@ -43,6 +43,7 @@
         "accountNotFound": "Account not found. Please check the input or sign up.",
         "accountDisabled": "Account has been disabled. Please contact an administrator.",
         "credentialInvalid": "Incorrect password. Please try again.",
+        "signupCodeInvalid": "Signup verification code is invalid or expired.",
         "recoveryCodeInvalid": "Verification code is invalid or expired."
       },
     "users": {
@@ -66,6 +67,7 @@
     },
     "invite": {
       "codeInvalid": "This invite link is invalid or has expired. Please ask your admin for a new link.",
+      "pendingApproval": "Your membership request has already been submitted and is waiting for admin approval.",
       "alreadyMember": "You are already a member of this team."
     }
   }

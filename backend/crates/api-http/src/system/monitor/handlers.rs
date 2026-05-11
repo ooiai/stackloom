@@ -1,7 +1,7 @@
 use super::resp::{
     AppStatsResp, BusinessSummaryResp, DatabaseStatsResp, DatabaseTopQueryResp, ErrorEndpointResp,
-    HourlyStatResp, MonitorMetricsResp, PgStatStatementsStatsResp, RedisStatsResp,
-    SlowEndpointResp, StatusDistributionResp, SystemSnapshotResp,
+    GpuDeviceInfoResp, GpuStatsResp, HourlyStatResp, MonitorMetricsResp, PgStatStatementsStatsResp,
+    RedisStatsResp, SlowEndpointResp, StatusDistributionResp, SystemSnapshotResp,
 };
 use crate::system::SysHttpState;
 use neocrates::{
@@ -35,6 +35,7 @@ pub async fn metrics(
         business,
         redis_stats,
         database_stats,
+        gpu_stats,
     ) = neocrates::tokio::try_join!(
         state.monitor_service.get_metrics(),
         state.monitor_service.get_request_stats(),
@@ -45,6 +46,7 @@ pub async fn metrics(
         state.monitor_service.get_business_summary(),
         state.monitor_service.get_redis_stats(),
         state.monitor_service.get_database_stats(),
+        state.monitor_service.get_gpu_stats(),
     )?;
 
     let resp = MonitorMetricsResp {
@@ -57,6 +59,8 @@ pub async fn metrics(
             cpu_freq_mhz: snapshot.cpu_freq_mhz,
             memory_used: snapshot.memory_used,
             memory_total: snapshot.memory_total,
+            swap_used: snapshot.swap_used,
+            swap_total: snapshot.swap_total,
             disk_used: snapshot.disk_used,
             disk_total: snapshot.disk_total,
             net_rx_bytes: snapshot.net_rx_bytes,
@@ -67,6 +71,9 @@ pub async fn metrics(
             process_cpu_percent: snapshot.process_cpu_percent,
             db_pool_size: snapshot.db_pool_size,
             db_pool_idle: snapshot.db_pool_idle,
+            load_avg_1: snapshot.load_avg_1,
+            load_avg_5: snapshot.load_avg_5,
+            load_avg_15: snapshot.load_avg_15,
         },
         hourly_stats: hourly_stats
             .into_iter()
@@ -181,6 +188,26 @@ pub async fn metrics(
                     })
                     .collect(),
             },
+        },
+        gpu_stats: GpuStatsResp {
+            available: gpu_stats.available,
+            devices: gpu_stats
+                .devices
+                .into_iter()
+                .map(|d| GpuDeviceInfoResp {
+                    index: d.index,
+                    name: d.name,
+                    utilization_gpu: d.utilization_gpu,
+                    utilization_memory: d.utilization_memory,
+                    memory_used_bytes: d.memory_used_bytes,
+                    memory_total_bytes: d.memory_total_bytes,
+                    temperature_celsius: d.temperature_celsius,
+                    power_usage_watts: d.power_usage_watts,
+                    power_limit_watts: d.power_limit_watts,
+                    fan_speed_percent: d.fan_speed_percent,
+                    pstate: d.pstate,
+                })
+                .collect(),
         },
     };
 

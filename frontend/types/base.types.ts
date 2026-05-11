@@ -659,7 +659,21 @@ export type NotificationRecipientSelectorType =
   | "explicit_users"
   | "actor"
 
-export type NotificationTriggerType = "manual" | "direct" | "event"
+export type NotificationTriggerType =
+  | "manual"
+  | "direct"
+  | "event"
+  | "delay_once"
+  | "fixed_schedule"
+  | "cron_expression"
+
+export type NotificationRuleTriggerMode = Exclude<
+  NotificationTriggerType,
+  "manual" | "direct"
+>
+
+export type NotificationScheduleKind = "daily" | "weekly"
+export type NotificationCatchupPolicy = "fire_once"
 
 export type NotificationTemplateStatus = 0 | 1
 
@@ -694,8 +708,23 @@ export interface NotificationTemplateData {
 export interface NotificationRuleData {
   id: string
   name: string
-  event_code: string
+  event_code: string | null
   template_id: string
+  trigger_mode: NotificationRuleTriggerMode
+  timezone: string
+  delay_seconds: number | null
+  schedule_kind: NotificationScheduleKind | null
+  schedule_time: string | null
+  schedule_weekdays: number[]
+  cron_expression: string | null
+  next_run_at: string | null
+  last_run_at: string | null
+  last_fired_for: string | null
+  start_at: string | null
+  end_at: string | null
+  catchup_policy: NotificationCatchupPolicy
+  last_error: string | null
+  consecutive_failure_count: number
   template_name: string | null
   template_code: string | null
   recipient_selector_type: NotificationRecipientSelectorType
@@ -729,6 +758,7 @@ export interface PageNotificationDispatchParam {
 }
 
 export interface SendNotificationParam {
+  template_id?: string
   title: string
   body: string
   action_url?: string
@@ -770,8 +800,18 @@ export interface PageNotificationRuleParam {
 
 export interface CreateNotificationRuleParam {
   name: string
-  event_code: string
+  event_code?: string
   template_id: string
+  trigger_mode: NotificationRuleTriggerMode
+  timezone?: string
+  delay_seconds?: number
+  schedule_kind?: NotificationScheduleKind
+  schedule_time?: string
+  schedule_weekdays?: number[]
+  cron_expression?: string
+  start_at?: string
+  end_at?: string
+  catchup_policy?: NotificationCatchupPolicy
   recipient_selector_type: NotificationRecipientSelectorType
   recipient_user_ids?: string[]
   enabled: boolean

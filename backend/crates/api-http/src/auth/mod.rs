@@ -2,6 +2,7 @@ use common::config::env_config::EnvConfig;
 use std::sync::Arc;
 
 use domain_auth::AuthService;
+use domain_base::NotificationService;
 use domain_system::SystemLogService;
 use neocrates::{
     axum::{Router, middleware},
@@ -22,6 +23,7 @@ pub mod signup;
 #[derive(Clone)]
 pub struct AuthHttpState {
     pub auth_service: Arc<dyn AuthService>,
+    pub notification_service: Arc<dyn NotificationService>,
     pub system_log_service: Arc<dyn SystemLogService>,
     pub sms_config: Arc<SmsConfig>,
     pub email_config: Arc<EmailConfig>,

@@ -2,16 +2,16 @@
   "page": {
     "eyebrow": "Notification Center",
     "title": "Notifications",
-    "description": "Manage manual sends, notification templates, and event rules in one place."
+    "description": "Manage manual sends, notification templates, and notification rules in one place."
   },
   "actions": {
     "send": "Send notification",
     "newTemplate": "New template",
     "createTemplate": "Create template",
     "saveTemplate": "Save template",
-    "newRule": "New event rule",
-    "createRule": "Create event rule",
-    "saveRule": "Save event rule",
+    "newRule": "New notification rule",
+    "createRule": "Create notification rule",
+    "saveRule": "Save notification rule",
     "markAllRead": "Mark all read",
     "markRead": "Mark read",
     "archive": "Archive",
@@ -29,7 +29,7 @@
   "panels": {
     "dispatches": "Dispatches",
     "templates": "Templates",
-    "rules": "Event rules"
+    "rules": "Notification rules"
   },
   "dispatches": {
     "title": "Recent dispatches",
@@ -40,13 +40,13 @@
     "description": "Maintain reusable title and body templates. The template event code is mainly for categorization and filtering, and is not strictly bound to an event rule."
   },
   "rules": {
-    "title": "Event rules",
-    "description": "Event rules automatically send notifications after a business event occurs by matching the event code to a template and recipient selector. Scheduled, cron, and delayed time-based triggers are not supported yet."
+    "title": "Notification rules",
+    "description": "Configure event-driven, delay-once, fixed-schedule, and cron-based notification rules in one model."
   },
   "dialogs": {
     "send": {
       "title": "Send notification",
-      "description": "Create an in-app notification for the current tenant."
+      "description": "Create an in-app notification for the current tenant, optionally starting from a template."
     },
     "template": {
       "description": "Templates render variables such as {memberUsernameExample} or {tenantNameExample}."
@@ -58,14 +58,14 @@
       "title": "Update template"
     },
     "rule": {
-      "description": "Event rules turn business events into notifications without duplicating sending logic across features. Scheduled, cron, and delayed time-based triggers are not supported yet.",
-      "noTemplates": "Create a notification template before creating an event rule."
+      "description": "Notification rules turn events or time-based schedules into notifications without duplicating send logic across features.",
+      "noTemplates": "Create a notification template before creating a notification rule."
     },
     "ruleCreate": {
-      "title": "Create event rule"
+      "title": "Create notification rule"
     },
     "ruleUpdate": {
-      "title": "Update event rule"
+      "title": "Update notification rule"
     }
   },
   "table": {
@@ -80,7 +80,8 @@
     "locale": "Locale",
     "status": "Status",
     "actions": "Actions",
-    "template": "Template"
+    "template": "Template",
+    "nextRunAt": "Next run"
   },
   "form": {
     "title": "Title",
@@ -96,7 +97,20 @@
     "bodyTemplate": "Body template",
     "actionUrlTemplate": "Action URL template",
     "enabled": "Enabled",
-    "template": "Template"
+    "template": "Template",
+    "triggerMode": "Trigger mode",
+    "delaySeconds": "Delay seconds",
+    "scheduleKind": "Schedule kind",
+    "scheduleTime": "Trigger time",
+    "scheduleWeekdays": "Weekdays",
+    "cronExpression": "Cron expression",
+    "startAt": "Start at",
+    "endAt": "End at"
+  },
+  "sections": {
+    "basics": "Basics",
+    "content": "Content",
+    "recipients": "Recipients"
   },
   "placeholders": {
     "title": "Input a concise notification title",
@@ -108,7 +122,17 @@
     "titleTemplate": "e.g. New member joined {tenantNameExample}",
     "bodyTemplate": "Variables like {memberUsernameExample} are supported",
     "actionUrlTemplate": "Optional dynamic route, such as /member",
-    "template": "Select a template"
+    "template": "Select a template",
+    "delaySeconds": "e.g. 1800",
+    "cronExpression": "e.g. 0 9 * * 1-5"
+  },
+  "userPicker": {
+    "selectedCount": "Selected {count}",
+    "searchPlaceholder": "Search users",
+    "emptyDefaultTitle": "No users available",
+    "emptyDefaultDescription": "There are no tenant users available for manual selection yet.",
+    "emptySearchTitle": "No matching users",
+    "emptySearchDescription": "Try a shorter keyword or search by nickname / username."
   },
   "selector": {
     "tenant_all": "All tenant members",
@@ -119,7 +143,23 @@
   "trigger": {
     "manual": "Manual",
     "direct": "Direct",
-    "event": "Event"
+    "event": "Event",
+    "delay_once": "Delay once",
+    "fixed_schedule": "Fixed schedule",
+    "cron_expression": "Cron expression"
+  },
+  "scheduleKind": {
+    "daily": "Daily",
+    "weekly": "Weekly"
+  },
+  "weekdays": {
+    "monday": "Mon",
+    "tuesday": "Tue",
+    "wednesday": "Wed",
+    "thursday": "Thu",
+    "friday": "Fri",
+    "saturday": "Sat",
+    "sunday": "Sun"
   },
   "status": {
     "enabled": "Enabled",
@@ -150,15 +190,15 @@
     "dispatchesDescription": "Manual sends and automatic event pushes will appear here.",
     "templatesTitle": "No templates yet",
     "templatesDescription": "Create a template first, then bind it with an event rule.",
-    "rulesTitle": "No event rules yet",
-    "rulesDescription": "Create an event rule to turn events such as member.joined into notifications."
+    "rulesTitle": "No notification rules yet",
+    "rulesDescription": "Create a notification rule to react to business events or run on a schedule."
   },
   "toast": {
     "sent": "Notification sent.",
     "templateCreated": "Template created.",
     "templateUpdated": "Template updated.",
-    "ruleCreated": "Event rule created.",
-    "ruleUpdated": "Event rule updated."
+    "ruleCreated": "Notification rule created.",
+    "ruleUpdated": "Notification rule updated."
   },
   "validation": {
     "titleRequired": "Please enter a title.",
@@ -171,6 +211,23 @@
     "titleTemplateRequired": "Please enter a title template.",
     "bodyTemplateRequired": "Please enter a body template.",
     "eventCodeRequired": "Please enter an event code.",
-    "templateRequired": "Please select a template."
+    "templateRequired": "Please select a template.",
+    "delaySecondsRequired": "Please enter a delay greater than 0 seconds.",
+    "scheduleTimeRequired": "Please select a trigger time.",
+    "scheduleWeekdaysRequired": "Please select at least one weekday.",
+    "cronExpressionRequired": "Please enter a cron expression.",
+    "actorRecipientEventOnly": "The event actor recipient is only supported for event trigger mode.",
+    "endAtAfterStartAt": "End time must be later than start time."
+  },
+  "scheduleSummary": {
+    "event": "Event: {eventCode}",
+    "eventEmpty": "Waiting for a business event",
+    "delayOnce": "Send once after {seconds} seconds",
+    "fixedDaily": "Daily at {time}",
+    "fixedWeekly": "{weekdays} at {time}",
+    "cron": "Cron: {cron}"
+  },
+  "templateSelection": {
+    "manual": "Manual content"
   }
 }

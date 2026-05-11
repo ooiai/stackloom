@@ -3,7 +3,12 @@ use domain_base::{
     PageNotificationDispatchCmd, PageNotificationRuleCmd, PageNotificationTemplateCmd,
     PublishNotificationCmd, UpdateNotificationRuleCmd, UpdateNotificationTemplateCmd,
 };
-use neocrates::{helper::core::serde_helpers, serde::Deserialize, serde_json::json};
+use neocrates::{
+    chrono::{DateTime, Utc},
+    helper::core::serde_helpers,
+    serde::Deserialize,
+    serde_json::json,
+};
 use validator::{Validate, ValidationError};
 
 fn validate_recipient_selector(value: &str) -> Result<(), ValidationError> {
@@ -86,6 +91,9 @@ pub struct SendNotificationReq {
         deserialize_with = "serde_helpers::deserialize_vec_option_i64"
     )]
     pub recipient_user_ids: Option<Vec<i64>>,
+
+    #[serde(default, deserialize_with = "serde_helpers::deserialize_option_i64")]
+    pub template_id: Option<i64>,
 }
 
 impl SendNotificationReq {
@@ -97,6 +105,7 @@ impl SendNotificationReq {
         Ok(PublishNotificationCmd {
             tenant_id,
             trigger_type: Some("manual".to_string()),
+            template_id: self.template_id,
             title: self.title,
             body: self.body,
             action_url: self.action_url,
@@ -237,11 +246,38 @@ pub struct CreateNotificationRuleReq {
     #[validate(length(min = 1, max = 120))]
     pub name: String,
 
-    #[validate(length(min = 1, max = 120))]
-    pub event_code: String,
+    #[validate(length(max = 120))]
+    pub event_code: Option<String>,
 
     #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
     pub template_id: i64,
+
+    #[validate(length(min = 1, max = 32))]
+    pub trigger_mode: String,
+
+    #[validate(length(max = 64))]
+    pub timezone: Option<String>,
+
+    #[validate(range(min = 1))]
+    pub delay_seconds: Option<i64>,
+
+    #[validate(length(max = 32))]
+    pub schedule_kind: Option<String>,
+
+    #[validate(length(max = 5))]
+    pub schedule_time: Option<String>,
+
+    pub schedule_weekdays: Option<Vec<i16>>,
+
+    #[validate(length(max = 120))]
+    pub cron_expression: Option<String>,
+
+    pub start_at: Option<DateTime<Utc>>,
+
+    pub end_at: Option<DateTime<Utc>>,
+
+    #[validate(length(max = 32))]
+    pub catchup_policy: Option<String>,
 
     #[validate(custom(function = "validate_recipient_selector"))]
     pub recipient_selector_type: String,
@@ -267,6 +303,23 @@ impl CreateNotificationRuleReq {
             name: self.name,
             event_code: self.event_code,
             template_id: self.template_id,
+            trigger_mode: self.trigger_mode,
+            timezone: self
+                .timezone
+                .filter(|value| !value.trim().is_empty())
+                .unwrap_or_else(|| "Asia/Shanghai".to_string()),
+            delay_seconds: self.delay_seconds,
+            schedule_kind: self.schedule_kind,
+            schedule_time: self.schedule_time,
+            schedule_weekdays: self.schedule_weekdays.unwrap_or_default(),
+            cron_expression: self.cron_expression,
+            next_run_at: None,
+            start_at: self.start_at,
+            end_at: self.end_at,
+            catchup_policy: self
+                .catchup_policy
+                .filter(|value| !value.trim().is_empty())
+                .unwrap_or_else(|| "fire_once".to_string()),
             recipient_selector: to_recipient_selector(
                 self.recipient_selector_type.as_str(),
                 self.recipient_user_ids,
@@ -285,11 +338,38 @@ pub struct UpdateNotificationRuleReq {
     #[validate(length(min = 1, max = 120))]
     pub name: String,
 
-    #[validate(length(min = 1, max = 120))]
-    pub event_code: String,
+    #[validate(length(max = 120))]
+    pub event_code: Option<String>,
 
     #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
     pub template_id: i64,
+
+    #[validate(length(min = 1, max = 32))]
+    pub trigger_mode: String,
+
+    #[validate(length(max = 64))]
+    pub timezone: Option<String>,
+
+    #[validate(range(min = 1))]
+    pub delay_seconds: Option<i64>,
+
+    #[validate(length(max = 32))]
+    pub schedule_kind: Option<String>,
+
+    #[validate(length(max = 5))]
+    pub schedule_time: Option<String>,
+
+    pub schedule_weekdays: Option<Vec<i16>>,
+
+    #[validate(length(max = 120))]
+    pub cron_expression: Option<String>,
+
+    pub start_at: Option<DateTime<Utc>>,
+
+    pub end_at: Option<DateTime<Utc>>,
+
+    #[validate(length(max = 32))]
+    pub catchup_policy: Option<String>,
 
     #[validate(custom(function = "validate_recipient_selector"))]
     pub recipient_selector_type: String,
@@ -309,6 +389,23 @@ impl UpdateNotificationRuleReq {
             name: self.name,
             event_code: self.event_code,
             template_id: self.template_id,
+            trigger_mode: self.trigger_mode,
+            timezone: self
+                .timezone
+                .filter(|value| !value.trim().is_empty())
+                .unwrap_or_else(|| "Asia/Shanghai".to_string()),
+            delay_seconds: self.delay_seconds,
+            schedule_kind: self.schedule_kind,
+            schedule_time: self.schedule_time,
+            schedule_weekdays: self.schedule_weekdays.unwrap_or_default(),
+            cron_expression: self.cron_expression,
+            next_run_at: None,
+            start_at: self.start_at,
+            end_at: self.end_at,
+            catchup_policy: self
+                .catchup_policy
+                .filter(|value| !value.trim().is_empty())
+                .unwrap_or_else(|| "fire_once".to_string()),
             recipient_selector: to_recipient_selector(
                 self.recipient_selector_type.as_str(),
                 self.recipient_user_ids,

@@ -20,6 +20,7 @@ pub const AUTH_ACCOUNT_NOT_FOUND: &str = "errors.biz.auth.accountNotFound";
 pub const AUTH_ACCOUNT_DISABLED: &str = "errors.biz.auth.accountDisabled";
 /// `errors.biz.auth.credentialInvalid` — password verification failed
 pub const AUTH_CREDENTIAL_INVALID: &str = "errors.biz.auth.credentialInvalid";
+pub const AUTH_SIGNUP_CODE_INVALID: &str = "errors.biz.auth.signupCodeInvalid";
 pub const AUTH_RECOVERY_CODE_INVALID: &str = "errors.biz.auth.recoveryCodeInvalid";
 
 // 412xxx: users
@@ -47,6 +48,8 @@ pub const MEMBER_NOT_FOUND: &str = "errors.biz.members.notFound";
 // 417xxx: invite / join
 /// Invite code does not exist or has expired.
 pub const INVITE_CODE_INVALID: &str = "errors.biz.invite.codeInvalid";
+/// The user has already submitted a membership request and is waiting for review.
+pub const INVITE_CODE_PENDING_APPROVAL: &str = "errors.biz.invite.pendingApproval";
 /// The joining user is already a member of the target tenant.
 pub const INVITE_CODE_ALREADY_MEMBER: &str = "errors.biz.invite.alreadyMember";
 

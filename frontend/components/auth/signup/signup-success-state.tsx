@@ -4,20 +4,26 @@ import { CheckCircle2Icon } from "lucide-react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { useI18n } from "@/providers/i18n-provider"
-import type { AccountSignupResult } from "@/types/auth.types"
+import type { AccountSignupResult, SignupChannel } from "@/types/auth.types"
 
 interface SignupSuccessStateProps {
   result: AccountSignupResult
   signinHref: string
   isInviteMode: boolean
+  signupChannel: SignupChannel
 }
 
 export function SignupSuccessState({
   result,
   signinHref,
   isInviteMode,
+  signupChannel,
 }: SignupSuccessStateProps) {
   const { t } = useI18n()
+  const verifiedContactLabel =
+    signupChannel === "phone"
+      ? t("auth.signup.success.phoneLabel")
+      : t("auth.signup.success.emailLabel")
 
   return (
     <div className="rounded-3xl border border-border/70 bg-background/95 p-6 shadow-sm">
@@ -39,13 +45,17 @@ export function SignupSuccessState({
               : "auth.signup.success.description"
           )}
         </p>
-      </div>
+        </div>
 
       <div className="mt-6 space-y-3 rounded-2xl border border-border/70 bg-muted/20 p-4">
         <div className="flex items-center justify-between gap-4 text-sm">
           <span className="text-muted-foreground">
-            {t("auth.signup.success.accountLabel")}
+            {t("auth.signup.success.usernameLabel")}
           </span>
+          <span className="font-medium">{result.username}</span>
+        </div>
+        <div className="flex items-center justify-between gap-4 text-sm">
+          <span className="text-muted-foreground">{verifiedContactLabel}</span>
           <span className="font-medium">{result.account}</span>
         </div>
         <div className="flex items-center justify-between gap-4 text-sm">

@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useSearchParams } from "next/navigation"
@@ -15,10 +15,12 @@ import {
 import { useI18n } from "@/providers/i18n-provider"
 import { signupApi } from "@/stores/auth-api"
 import { memberApi } from "@/stores/web-api"
-import type { AccountSignupResult } from "@/types/auth.types"
+import type { AccountSignupResult, SignupChannel } from "@/types/auth.types"
 import {
   buildAccountSignupParam,
   buildInviteSignupParam,
+  buildSendSignupCodeParam,
+  createSignupContactSchema,
   createSignupFormSchema,
   DEFAULT_SIGNUP_VALUES,
   getSignupFormErrors,
@@ -26,12 +28,13 @@ import {
   type SignupFormValues,
 } from "../helpers"
 
-export function useSignupController() {
+export function useSignupController(signupChannel: SignupChannel) {
   const { t } = useI18n()
   const searchParams = useSearchParams()
   const [values, setValues] = useState<SignupFormValues>(DEFAULT_SIGNUP_VALUES)
   const [errors, setErrors] = useState<SignupFormErrors>({})
   const [showSlider, setShowSlider] = useState(false)
+  const [resendCooldownSeconds, setResendCooldownSeconds] = useState(0)
   const [signupResult, setSignupResult] = useState<AccountSignupResult | null>(
     null
   )
@@ -45,13 +48,39 @@ export function useSignupController() {
   const successSigninHref = isInviteMode
     ? "/signin"
     : buildRouteWithReturnTo("/signin", returnTo)
-  const formSchema = useMemo(() => createSignupFormSchema(t), [t])
+  const formSchema = useMemo(
+    () => createSignupFormSchema(t, signupChannel),
+    [signupChannel, t]
+  )
+  const contactSchema = useMemo(
+    () => createSignupContactSchema(t, signupChannel),
+    [signupChannel, t]
+  )
+  const switchHref = useMemo(() => {
+    const targetPath = signupChannel === "phone" ? "/signup/email" : "/signup"
+    const params = new URLSearchParams()
+    if (inviteCode) {
+      params.set("inviteCode", inviteCode)
+    }
+    if (returnTo) {
+      params.set("returnTo", returnTo)
+    }
+    const query = params.toString()
+    return query ? `${targetPath}?${query}` : targetPath
+  }, [inviteCode, returnTo, signupChannel])
 
   const inviteQuery = useQuery({
     queryKey: ["signup", "invite", inviteCode],
     queryFn: () => memberApi.validateInvite({ invite_code: inviteCode }),
     enabled: isInviteMode,
     retry: false,
+  })
+
+  const sendSignupCodeMutation = useMutation({
+    mutationFn: signupApi.sendSignupCode,
+    onError: () => {
+      setShowSlider(false)
+    },
   })
 
   const accountSignupMutation = useMutation({
@@ -82,6 +111,18 @@ export function useSignupController() {
     []
   )
 
+  useEffect(() => {
+    if (resendCooldownSeconds <= 0) {
+      return
+    }
+
+    const timer = window.setTimeout(() => {
+      setResendCooldownSeconds((current) => Math.max(0, current - 1))
+    }, 1000)
+
+    return () => window.clearTimeout(timer)
+  }, [resendCooldownSeconds])
+
   const validate = useCallback(() => {
     const result = formSchema.safeParse(values)
 
@@ -94,8 +135,32 @@ export function useSignupController() {
     return false
   }, [formSchema, values])
 
+  const validateContact = useCallback(() => {
+    const result = contactSchema.safeParse(values.contact.trim())
+    if (result.success) {
+      setErrors((current) => ({ ...current, contact: undefined }))
+      return true
+    }
+
+    const issue = result.error.issues[0]
+    setErrors((current) => ({ ...current, contact: issue?.message }))
+    return false
+  }, [contactSchema, values.contact])
+
+  const handleSendCode = useCallback(() => {
+    if (resendCooldownSeconds > 0) {
+      return
+    }
+
+    if (!validateContact()) {
+      return
+    }
+
+    setShowSlider(true)
+  }, [resendCooldownSeconds, validateContact])
+
   const handleSubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
+    async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
 
       if (isInviteMode && !inviteQuery.data) {
@@ -107,33 +172,50 @@ export function useSignupController() {
         return
       }
 
-      setShowSlider(true)
+      try {
+        const result = isInviteMode
+          ? await inviteSignupMutation.mutateAsync(
+              buildInviteSignupParam(values, signupChannel, inviteCode)
+            )
+          : await accountSignupMutation.mutateAsync(
+              buildAccountSignupParam(values, signupChannel)
+            )
+
+        setSignupResult(result)
+        toast.success(
+          t(
+            isInviteMode
+              ? "auth.signup.invite.toast.success"
+              : "auth.signup.toast.success"
+          )
+        )
+      } catch {
+        return
+      }
     },
-    [inviteQuery.data, isInviteMode, t, validate]
+    [
+      accountSignupMutation,
+      inviteCode,
+      inviteQuery.data,
+      inviteSignupMutation,
+      isInviteMode,
+      signupChannel,
+      t,
+      validate,
+      values,
+    ]
   )
 
   const handleVerifySuccess = useCallback(
     async (verifyData: VerifyParam) => {
-      const result = isInviteMode
-        ? await inviteSignupMutation.mutateAsync(
-            buildInviteSignupParam(values, verifyData, inviteCode)
-          )
-        : await accountSignupMutation.mutateAsync(
-            buildAccountSignupParam(values, verifyData)
-          )
-
-      setShowSlider(false)
-      // Switching to `signupResult` renders the post-signup success state instead of the form.
-      setSignupResult(result)
-      toast.success(
-        t(
-          isInviteMode
-            ? "auth.signup.invite.toast.success"
-            : "auth.signup.toast.success"
-        )
+      await sendSignupCodeMutation.mutateAsync(
+        buildSendSignupCodeParam(values, signupChannel, verifyData)
       )
+      setShowSlider(false)
+      setResendCooldownSeconds(60)
+      toast.success(t("auth.signup.toast.codeSent"))
     },
-    [accountSignupMutation, inviteCode, inviteSignupMutation, isInviteMode, t, values]
+    [sendSignupCodeMutation, signupChannel, t, values]
   )
 
   const handleVerifyError = useCallback(() => {
@@ -141,22 +223,32 @@ export function useSignupController() {
   }, [])
 
   return {
-    view: {
-      values,
-      errors,
-      showSlider,
-      isLoading: accountSignupMutation.isPending || inviteSignupMutation.isPending,
-      signupResult,
-      isInviteMode,
-      isInviteValidating: inviteQuery.isLoading,
-      isInviteInvalid: isInviteMode && inviteQuery.isError,
-      inviteTenantName: inviteQuery.data?.tenant_name ?? null,
-      signinHref,
-      successSigninHref,
-      onSubmit: handleSubmit,
-      onFieldChange: handleFieldChange,
-      onVerifySuccess: handleVerifySuccess,
-      onVerifyError: handleVerifyError,
+      view: {
+        signupChannel,
+        values,
+        errors,
+        showSlider,
+        resendCooldownSeconds,
+        isBusy:
+          sendSignupCodeMutation.isPending ||
+          accountSignupMutation.isPending ||
+          inviteSignupMutation.isPending,
+        isSendingCode: sendSignupCodeMutation.isPending,
+        isSubmitting:
+          accountSignupMutation.isPending || inviteSignupMutation.isPending,
+        signupResult,
+        isInviteMode,
+        isInviteValidating: inviteQuery.isLoading,
+        isInviteInvalid: isInviteMode && inviteQuery.isError,
+        inviteTenantName: inviteQuery.data?.tenant_name ?? null,
+        signinHref,
+        successSigninHref,
+        switchHref,
+        onSubmit: handleSubmit,
+        onSendCode: handleSendCode,
+        onFieldChange: handleFieldChange,
+        onVerifySuccess: handleVerifySuccess,
+        onVerifyError: handleVerifyError,
     },
   }
 }

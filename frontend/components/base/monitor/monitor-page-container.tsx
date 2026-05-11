@@ -12,7 +12,9 @@ import { MonitorBusinessSummary } from "./monitor-business-summary"
 import { MonitorCpuCoresGrid } from "./monitor-cpu-cores-grid"
 import { MonitorDatabaseGrid } from "./monitor-database-grid"
 import { MonitorDatabaseTopQueries } from "./monitor-database-top-queries"
+import { MonitorGpuGrid } from "./monitor-gpu-grid"
 import { MonitorLatencyChart } from "./monitor-latency-chart"
+import { MonitorLoadAvgGrid } from "./monitor-load-avg-grid"
 import { MonitorNetworkGrid } from "./monitor-network-grid"
 import { MonitorOverviewStrip } from "./monitor-overview-strip"
 import { MonitorProcessGrid } from "./monitor-process-grid"
@@ -82,6 +84,15 @@ export function MonitorPageContainer({
         <MonitorSnapshotGrid snapshot={metrics.snapshot} />
         <MonitorCpuCoresGrid snapshot={metrics.snapshot} />
         <MonitorNetworkGrid snapshot={metrics.snapshot} />
+        <MonitorLoadAvgGrid snapshot={metrics.snapshot} />
+      </MonitorSectionGroup>
+
+      {/* Group 1.5: GPU */}
+      <MonitorSectionGroup
+        title={t("monitor.group_gpu")}
+        description={t("monitor.group_gpu_description")}
+      >
+        <MonitorGpuGrid gpuStats={metrics.gpu_stats} />
       </MonitorSectionGroup>
 
       {/* Group 2: App Runtime */}

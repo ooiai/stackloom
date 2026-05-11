@@ -43,11 +43,13 @@ pub trait UserTenantService: Send + Sync {
     /// Join a tenant via an invite code.
     ///
     /// Creates a new membership record for `user_id` in `tenant_id`.
-    /// Returns `INVITE_CODE_ALREADY_MEMBER` if the user is already a member.
+    /// Returns `INVITE_CODE_ALREADY_MEMBER` if the user is already an active or
+    /// disabled member, and `INVITE_CODE_PENDING_APPROVAL` if the request is
+    /// already waiting for admin review.
     async fn join_by_invite_code(
         &self,
         user_id: i64,
         tenant_id: i64,
         invited_by: Option<i64>,
-    ) -> AppResult<()>;
+    ) -> AppResult<UserTenant>;
 }

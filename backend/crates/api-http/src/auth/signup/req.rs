@@ -1,19 +1,44 @@
-use domain_auth::AccountSignupCmd;
+use domain_auth::{AccountSignupCmd, RecoveryChannel, SendSignupCodeCmd};
+use neocrates::response::error::AppError;
 use neocrates::serde::Deserialize;
 use validator::Validate;
 
-/// Request body for self-service account signup.
-///
-/// In addition to account credentials and captcha data, the caller may provide
-/// an optional nickname and tenant name used to initialize the first tenant.
 #[derive(Debug, Clone, Deserialize, Validate)]
-pub struct AccountSignupReq {
-    #[validate(length(min = 1, max = 50))]
-    pub account: String,
+pub struct SendSignupCodeReq {
     #[validate(length(min = 1))]
-    pub password: String,
+    pub channel: String,
+    #[validate(length(min = 1, max = 100))]
+    pub contact: String,
     #[validate(length(min = 1))]
     pub code: String,
+}
+
+impl TryFrom<SendSignupCodeReq> for SendSignupCodeCmd {
+    type Error = AppError;
+
+    fn try_from(req: SendSignupCodeReq) -> Result<Self, Self::Error> {
+        Ok(Self {
+            channel: RecoveryChannel::parse(req.channel.as_str())?,
+            contact: req.contact,
+            code: req.code,
+        })
+    }
+}
+
+/// Request body for self-service account signup.
+///
+/// In addition to the verified phone/email contact, the caller may provide an
+/// optional nickname and tenant name used to initialize the first tenant.
+#[derive(Debug, Clone, Deserialize, Validate)]
+pub struct AccountSignupReq {
+    #[validate(length(min = 1))]
+    pub channel: String,
+    #[validate(length(min = 1, max = 100))]
+    pub contact: String,
+    #[validate(length(min = 6, max = 6))]
+    pub captcha: String,
+    #[validate(length(min = 1))]
+    pub password: String,
     #[validate(length(max = 100))]
     pub nickname: Option<String>,
     #[validate(length(max = 255))]
@@ -21,15 +46,18 @@ pub struct AccountSignupReq {
 }
 
 /// Convert the signup HTTP DTO into the domain command handled by auth.
-impl From<AccountSignupReq> for AccountSignupCmd {
-    fn from(req: AccountSignupReq) -> Self {
-        Self {
-            account: req.account,
+impl TryFrom<AccountSignupReq> for AccountSignupCmd {
+    type Error = AppError;
+
+    fn try_from(req: AccountSignupReq) -> Result<Self, Self::Error> {
+        Ok(Self {
+            channel: RecoveryChannel::parse(req.channel.as_str())?,
+            contact: req.contact,
+            captcha: req.captcha,
             password: req.password,
-            code: req.code,
             nickname: req.nickname,
             tenant_name: req.tenant_name,
-        }
+        })
     }
 }
 
@@ -39,12 +67,14 @@ impl From<AccountSignupReq> for AccountSignupCmd {
 /// identifies the tenant they are joining.
 #[derive(Debug, Clone, Deserialize, Validate)]
 pub struct InviteSignupReq {
-    #[validate(length(min = 1, max = 50))]
-    pub account: String,
+    #[validate(length(min = 1))]
+    pub channel: String,
+    #[validate(length(min = 1, max = 100))]
+    pub contact: String,
+    #[validate(length(min = 6, max = 6))]
+    pub captcha: String,
     #[validate(length(min = 1))]
     pub password: String,
-    #[validate(length(min = 1))]
-    pub code: String,
     #[validate(length(max = 100))]
     pub nickname: Option<String>,
     #[validate(length(min = 1))]
@@ -52,14 +82,17 @@ pub struct InviteSignupReq {
 }
 
 /// Convert the invite-signup transport DTO into the domain command.
-impl From<InviteSignupReq> for domain_auth::InviteSignupCmd {
-    fn from(req: InviteSignupReq) -> Self {
-        Self {
-            account: req.account,
+impl TryFrom<InviteSignupReq> for domain_auth::InviteSignupCmd {
+    type Error = AppError;
+
+    fn try_from(req: InviteSignupReq) -> Result<Self, Self::Error> {
+        Ok(Self {
+            channel: RecoveryChannel::parse(req.channel.as_str())?,
+            contact: req.contact,
+            captcha: req.captcha,
             password: req.password,
-            code: req.code,
             nickname: req.nickname,
             invite_code: req.invite_code,
-        }
+        })
     }
 }

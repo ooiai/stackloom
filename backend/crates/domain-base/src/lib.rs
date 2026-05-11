@@ -66,8 +66,9 @@ pub use notification::repo::NotificationRepository;
 pub use notification::service::NotificationService;
 pub use notification::{
     CreateNotificationRuleCmd, CreateNotificationTemplateCmd, NotificationDispatch,
-    NotificationEvent, NotificationRecipientSelector, NotificationRule, NotificationStreamSignal,
-    NotificationTemplate, PageNotificationDispatchCmd, PageNotificationRuleCmd,
-    PageNotificationTemplateCmd, PageUserNotificationCmd, PublishNotificationCmd,
-    UpdateNotificationRuleCmd, UpdateNotificationTemplateCmd, UserNotification,
+    NotificationEvent, NotificationRecipientSelector, NotificationRule, NotificationRuleFire,
+    NotificationStreamSignal, NotificationTemplate, PageNotificationDispatchCmd,
+    PageNotificationRuleCmd, PageNotificationTemplateCmd, PageUserNotificationCmd,
+    PublishNotificationCmd, UpdateNotificationRuleCmd, UpdateNotificationTemplateCmd,
+    UserNotification,
 };

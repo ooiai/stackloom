@@ -1,6 +1,6 @@
 {
   "page": {
-    "title": "成员",
+    "title": "成员管理",
     "memberCount": "{count} 名成员",
     "search": "搜索",
     "inviteMembers": "邀请成员",
@@ -19,7 +19,7 @@
   },
   "roles": {
     "admin": "管理员",
-    "member": "成员"
+    "member": "成员管理"
   },
   "status": {
     "normal": "正常",
@@ -27,12 +27,14 @@
     "disabled": "已禁用"
   },
   "actions": {
+    "approve": "通过申请",
+    "reject": "拒绝申请",
     "enable": "启用成员",
     "disable": "禁用成员"
   },
   "invite": {
     "title": "邀请成员",
-    "description": "分享邀请链接，邀请成员加入您的团队。",
+    "description": "分享邀请链接，让成员提交加入您团队的申请。",
     "linkLabel": "邀请链接",
     "copyLink": "复制链接",
     "copied": "已复制！",

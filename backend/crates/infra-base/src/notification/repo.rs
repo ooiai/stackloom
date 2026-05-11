@@ -1,10 +1,14 @@
 use std::{collections::BTreeSet, sync::Arc};
 
-use chrono::Utc;
+use chrono::{DateTime, Utc};
 use common::core::biz_error::NOTIFICATION_TEMPLATE_CODE_EXISTS;
 use domain_base::{
     NotificationDispatch, NotificationRecipientSelector, NotificationRepository, NotificationRule,
-    NotificationTemplate, UserNotification,
+    NotificationRuleFire, NotificationTemplate, UserNotification,
+    notification::{
+        NOTIFICATION_TRIGGER_CRON_EXPRESSION, NOTIFICATION_TRIGGER_DELAY_ONCE,
+        NOTIFICATION_TRIGGER_FIXED_SCHEDULE,
+    },
     notification::{
         NotificationDispatchPageQuery, NotificationRulePageQuery, NotificationTemplatePageQuery,
         UserNotificationPageQuery,
@@ -18,7 +22,8 @@ use neocrates::{
 use sqlx::{Error as SqlxError, Postgres, QueryBuilder, types::Json};
 
 use super::{
-    NotificationDispatchRow, NotificationRuleRow, NotificationTemplateRow, UserNotificationRow,
+    NotificationDispatchRow, NotificationRuleFireRow, NotificationRuleRow, NotificationTemplateRow,
+    UserNotificationRow,
 };
 
 #[derive(Debug, Clone)]
@@ -285,12 +290,22 @@ impl NotificationRepository for SqlxNotificationRepository {
         let row = sqlx::query_as::<_, NotificationRuleRow>(
             r#"
             INSERT INTO notification_rules (
-                id, tenant_id, name, event_code, template_id, recipient_selector_type,
+                id, tenant_id, name, event_code, template_id, trigger_mode, timezone,
+                delay_seconds, schedule_kind, schedule_time, schedule_weekdays,
+                cron_expression, next_run_at, last_run_at, last_fired_for, start_at, end_at,
+                catchup_policy, last_error, consecutive_failure_count, recipient_selector_type,
                 recipient_selector_payload, enabled, created_by, created_at, updated_at, deleted_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            VALUES (
+                $1, $2, $3, $4, $5, $6, $7,
+                $8, $9, $10, $11, $12, $13, $14, $15, $16, $17,
+                $18, $19, $20, $21, $22, $23, $24, $25, $26, $27
+            )
             RETURNING
-                id, tenant_id, name, event_code, template_id, recipient_selector_type,
+                id, tenant_id, name, event_code, template_id, trigger_mode, timezone,
+                delay_seconds, schedule_kind, schedule_time, schedule_weekdays, cron_expression,
+                next_run_at, last_run_at, last_fired_for, start_at, end_at, catchup_policy,
+                last_error, consecutive_failure_count, recipient_selector_type,
                 recipient_selector_payload, enabled, created_by, created_at, updated_at,
                 deleted_at, NULL::VARCHAR AS template_name, NULL::VARCHAR AS template_code
             "#,
@@ -300,6 +315,21 @@ impl NotificationRepository for SqlxNotificationRepository {
         .bind(&rule.name)
         .bind(&rule.event_code)
         .bind(rule.template_id)
+        .bind(&rule.trigger_mode)
+        .bind(&rule.timezone)
+        .bind(rule.delay_seconds)
+        .bind(&rule.schedule_kind)
+        .bind(&rule.schedule_time)
+        .bind(Json(rule.schedule_weekdays.clone()))
+        .bind(&rule.cron_expression)
+        .bind(rule.next_run_at)
+        .bind(rule.last_run_at)
+        .bind(rule.last_fired_for)
+        .bind(rule.start_at)
+        .bind(rule.end_at)
+        .bind(&rule.catchup_policy)
+        .bind(&rule.last_error)
+        .bind(rule.consecutive_failure_count)
         .bind(&rule.recipient_selector_type)
         .bind(Json(rule.recipient_selector_payload.clone()))
         .bind(rule.enabled)
@@ -322,9 +352,13 @@ impl NotificationRepository for SqlxNotificationRepository {
         let row = sqlx::query_as::<_, NotificationRuleRow>(
             r#"
             SELECT
-                nr.id, nr.tenant_id, nr.name, nr.event_code, nr.template_id,
-                nr.recipient_selector_type, nr.recipient_selector_payload, nr.enabled,
-                nr.created_by, nr.created_at, nr.updated_at, nr.deleted_at,
+                nr.id, nr.tenant_id, nr.name, nr.event_code, nr.template_id, nr.trigger_mode,
+                nr.timezone, nr.delay_seconds, nr.schedule_kind, nr.schedule_time,
+                nr.schedule_weekdays, nr.cron_expression, nr.next_run_at, nr.last_run_at,
+                nr.last_fired_for, nr.start_at, nr.end_at, nr.catchup_policy, nr.last_error,
+                nr.consecutive_failure_count, nr.recipient_selector_type,
+                nr.recipient_selector_payload, nr.enabled, nr.created_by, nr.created_at,
+                nr.updated_at, nr.deleted_at,
                 nt.name AS template_name,
                 nt.code AS template_code
             FROM notification_rules nr
@@ -371,7 +405,7 @@ impl NotificationRepository for SqlxNotificationRepository {
             let pattern = format!("%{}%", keyword);
             count_builder.push(" AND (nr.name ILIKE ");
             count_builder.push_bind(pattern.clone());
-            count_builder.push(" OR nr.event_code ILIKE ");
+            count_builder.push(" OR COALESCE(nr.event_code, '') ILIKE ");
             count_builder.push_bind(pattern);
             count_builder.push(")");
         }
@@ -385,9 +419,13 @@ impl NotificationRepository for SqlxNotificationRepository {
         let mut builder: QueryBuilder<Postgres> = QueryBuilder::new(
             r#"
             SELECT
-                nr.id, nr.tenant_id, nr.name, nr.event_code, nr.template_id,
-                nr.recipient_selector_type, nr.recipient_selector_payload, nr.enabled,
-                nr.created_by, nr.created_at, nr.updated_at, nr.deleted_at,
+                nr.id, nr.tenant_id, nr.name, nr.event_code, nr.template_id, nr.trigger_mode,
+                nr.timezone, nr.delay_seconds, nr.schedule_kind, nr.schedule_time,
+                nr.schedule_weekdays, nr.cron_expression, nr.next_run_at, nr.last_run_at,
+                nr.last_fired_for, nr.start_at, nr.end_at, nr.catchup_policy, nr.last_error,
+                nr.consecutive_failure_count, nr.recipient_selector_type,
+                nr.recipient_selector_payload, nr.enabled, nr.created_by, nr.created_at,
+                nr.updated_at, nr.deleted_at,
                 nt.name AS template_name,
                 nt.code AS template_code
             FROM notification_rules nr
@@ -412,7 +450,7 @@ impl NotificationRepository for SqlxNotificationRepository {
             let pattern = format!("%{}%", keyword);
             builder.push(" AND (nr.name ILIKE ");
             builder.push_bind(pattern.clone());
-            builder.push(" OR nr.event_code ILIKE ");
+            builder.push(" OR COALESCE(nr.event_code, '') ILIKE ");
             builder.push_bind(pattern);
             builder.push(")");
         }
@@ -444,9 +482,13 @@ impl NotificationRepository for SqlxNotificationRepository {
         let rows = sqlx::query_as::<_, NotificationRuleRow>(
             r#"
             SELECT
-                nr.id, nr.tenant_id, nr.name, nr.event_code, nr.template_id,
-                nr.recipient_selector_type, nr.recipient_selector_payload, nr.enabled,
-                nr.created_by, nr.created_at, nr.updated_at, nr.deleted_at,
+                nr.id, nr.tenant_id, nr.name, nr.event_code, nr.template_id, nr.trigger_mode,
+                nr.timezone, nr.delay_seconds, nr.schedule_kind, nr.schedule_time,
+                nr.schedule_weekdays, nr.cron_expression, nr.next_run_at, nr.last_run_at,
+                nr.last_fired_for, nr.start_at, nr.end_at, nr.catchup_policy, nr.last_error,
+                nr.consecutive_failure_count, nr.recipient_selector_type,
+                nr.recipient_selector_payload, nr.enabled, nr.created_by, nr.created_at,
+                nr.updated_at, nr.deleted_at,
                 nt.name AS template_name,
                 nt.code AS template_code
             FROM notification_rules nr
@@ -469,6 +511,40 @@ impl NotificationRepository for SqlxNotificationRepository {
         Ok(rows.into_iter().map(Into::into).collect())
     }
 
+    async fn list_enabled_time_rules(&self) -> AppResult<Vec<NotificationRule>> {
+        let rows = sqlx::query_as::<_, NotificationRuleRow>(
+            r#"
+            SELECT
+                nr.id, nr.tenant_id, nr.name, nr.event_code, nr.template_id, nr.trigger_mode,
+                nr.timezone, nr.delay_seconds, nr.schedule_kind, nr.schedule_time,
+                nr.schedule_weekdays, nr.cron_expression, nr.next_run_at, nr.last_run_at,
+                nr.last_fired_for, nr.start_at, nr.end_at, nr.catchup_policy, nr.last_error,
+                nr.consecutive_failure_count, nr.recipient_selector_type,
+                nr.recipient_selector_payload, nr.enabled, nr.created_by, nr.created_at,
+                nr.updated_at, nr.deleted_at,
+                nt.name AS template_name,
+                nt.code AS template_code
+            FROM notification_rules nr
+            LEFT JOIN notification_templates nt
+              ON nt.id = nr.template_id
+             AND nt.deleted_at IS NULL
+            WHERE nr.deleted_at IS NULL
+              AND nr.enabled = TRUE
+              AND nr.next_run_at IS NOT NULL
+              AND nr.trigger_mode IN ($1, $2, $3)
+            ORDER BY nr.next_run_at ASC, nr.created_at ASC
+            "#,
+        )
+        .bind(NOTIFICATION_TRIGGER_DELAY_ONCE)
+        .bind(NOTIFICATION_TRIGGER_FIXED_SCHEDULE)
+        .bind(NOTIFICATION_TRIGGER_CRON_EXPRESSION)
+        .fetch_all(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows.into_iter().map(Into::into).collect())
+    }
+
     async fn update_rule(&self, rule: &NotificationRule) -> AppResult<NotificationRule> {
         let row = sqlx::query_as::<_, NotificationRuleRow>(
             r#"
@@ -477,17 +553,32 @@ impl NotificationRepository for SqlxNotificationRepository {
                 name = $3,
                 event_code = $4,
                 template_id = $5,
-                recipient_selector_type = $6,
-                recipient_selector_payload = $7,
-                enabled = $8,
-                updated_at = $9
+                trigger_mode = $6,
+                timezone = $7,
+                delay_seconds = $8,
+                schedule_kind = $9,
+                schedule_time = $10,
+                schedule_weekdays = $11,
+                cron_expression = $12,
+                next_run_at = $13,
+                start_at = $14,
+                end_at = $15,
+                catchup_policy = $16,
+                last_error = NULL,
+                consecutive_failure_count = 0,
+                recipient_selector_type = $17,
+                recipient_selector_payload = $18,
+                enabled = $19,
+                updated_at = $20
             WHERE tenant_id = $1
               AND id = $2
               AND deleted_at IS NULL
             RETURNING
-                id, tenant_id, name, event_code, template_id,
-                recipient_selector_type, recipient_selector_payload, enabled,
-                created_by, created_at, updated_at, deleted_at,
+                id, tenant_id, name, event_code, template_id, trigger_mode, timezone,
+                delay_seconds, schedule_kind, schedule_time, schedule_weekdays, cron_expression,
+                next_run_at, last_run_at, last_fired_for, start_at, end_at, catchup_policy,
+                last_error, consecutive_failure_count, recipient_selector_type,
+                recipient_selector_payload, enabled, created_by, created_at, updated_at, deleted_at,
                 NULL::VARCHAR AS template_name, NULL::VARCHAR AS template_code
             "#,
         )
@@ -496,10 +587,96 @@ impl NotificationRepository for SqlxNotificationRepository {
         .bind(&rule.name)
         .bind(&rule.event_code)
         .bind(rule.template_id)
+        .bind(&rule.trigger_mode)
+        .bind(&rule.timezone)
+        .bind(rule.delay_seconds)
+        .bind(&rule.schedule_kind)
+        .bind(&rule.schedule_time)
+        .bind(Json(rule.schedule_weekdays.clone()))
+        .bind(&rule.cron_expression)
+        .bind(rule.next_run_at)
+        .bind(rule.start_at)
+        .bind(rule.end_at)
+        .bind(&rule.catchup_policy)
         .bind(&rule.recipient_selector_type)
         .bind(Json(rule.recipient_selector_payload.clone()))
         .bind(rule.enabled)
         .bind(rule.updated_at)
+        .fetch_one(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(row.into())
+    }
+
+    async fn update_rule_schedule_state(
+        &self,
+        tenant_id: i64,
+        id: i64,
+        next_run_at: Option<DateTime<Utc>>,
+        fired_at: Option<DateTime<Utc>>,
+        fired_for: Option<DateTime<Utc>>,
+        last_error: Option<String>,
+        consecutive_failure_count: i32,
+    ) -> AppResult<()> {
+        sqlx::query(
+            r#"
+            UPDATE notification_rules
+            SET
+                next_run_at = $3,
+                last_run_at = $4,
+                last_fired_for = $5,
+                last_error = $6,
+                consecutive_failure_count = $7,
+                updated_at = now()
+            WHERE tenant_id = $1
+              AND id = $2
+              AND deleted_at IS NULL
+            "#,
+        )
+        .bind(tenant_id)
+        .bind(id)
+        .bind(next_run_at)
+        .bind(fired_at)
+        .bind(fired_for)
+        .bind(last_error)
+        .bind(consecutive_failure_count)
+        .execute(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(())
+    }
+
+    async fn upsert_rule_fire(
+        &self,
+        fire: &NotificationRuleFire,
+    ) -> AppResult<NotificationRuleFire> {
+        let row = sqlx::query_as::<_, NotificationRuleFireRow>(
+            r#"
+            INSERT INTO notification_rule_fires (
+                id, tenant_id, rule_id, scheduled_at, fired_at, status, error_message, created_at, updated_at
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            ON CONFLICT (rule_id, scheduled_at)
+            DO UPDATE SET
+                fired_at = EXCLUDED.fired_at,
+                status = EXCLUDED.status,
+                error_message = EXCLUDED.error_message,
+                updated_at = EXCLUDED.updated_at
+            RETURNING
+                id, tenant_id, rule_id, scheduled_at, fired_at, status, error_message, created_at, updated_at
+            "#,
+        )
+        .bind(fire.id)
+        .bind(fire.tenant_id)
+        .bind(fire.rule_id)
+        .bind(fire.scheduled_at)
+        .bind(fire.fired_at)
+        .bind(&fire.status)
+        .bind(&fire.error_message)
+        .bind(fire.created_at)
+        .bind(fire.updated_at)
         .fetch_one(self.pool.pool())
         .await
         .map_err(Self::map_sqlx_error)?;
