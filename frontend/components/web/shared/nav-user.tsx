@@ -16,6 +16,7 @@ import { useTranslations } from "next-intl"
 import { AccountSettingsDialog } from "@/components/base/shared/account-settings-dialog"
 import { ChangePasswordDialog } from "@/components/base/shared/change-password-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { resolveAwsObjectUrl } from "@/lib/aws"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,6 +48,7 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
 
   const displayName = user?.nickname ?? user?.username ?? t("account")
   const username = user?.username ?? t("planFallback")
+  const avatarSrc = resolveAwsObjectUrl(user?.avatar_url)
 
   async function executeLogout() {
     try {
@@ -119,7 +121,7 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
                     {user?.avatar_url && (
                       <AvatarImage
                         className="bg-primary/5"
-                        src={user.avatar_url}
+                        src={avatarSrc}
                         alt={displayName}
                       />
                     )}
@@ -152,7 +154,7 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
                     {user?.avatar_url && (
                       <AvatarImage
                         className="bg-primary/5"
-                        src={user.avatar_url}
+                        src={avatarSrc}
                         alt={displayName}
                       />
                     )}

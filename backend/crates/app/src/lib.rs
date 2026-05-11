@@ -26,11 +26,11 @@ use crate::{
 use infra_auth::AuthServiceImpl;
 use infra_base::{
     AuditLogServiceImpl, DictServiceImpl, LogRetentionService, MenuServiceImpl,
-    OperationLogServiceImpl, PermServiceImpl, RoleServiceImpl, SharedContextServiceImpl,
-    SqlxLogRetentionPolicyRepository, SystemLogServiceImpl, TenantServiceImpl, UserServiceImpl,
-    UserTenantRoleServiceImpl, UserTenantServiceImpl,
+    NotificationServiceImpl, OperationLogServiceImpl, PermServiceImpl, RoleServiceImpl,
+    SharedContextServiceImpl, SqlxLogRetentionPolicyRepository, SystemLogServiceImpl,
+    TenantServiceImpl, UserServiceImpl, UserTenantRoleServiceImpl, UserTenantServiceImpl,
 };
-use infra_system::{MonitorServiceImpl, SysModule};
+use infra_system::{MonitorServiceImpl, StorageBrowseServiceImpl, SysModule};
 
 mod diesel_init;
 mod diesel_migrations;
@@ -111,6 +111,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     let perm_service = Arc::new(PermServiceImpl::new(base_pool.clone()));
     let user_tenant_service = Arc::new(UserTenantServiceImpl::new(base_pool.clone()));
     let user_tenant_role_service = Arc::new(UserTenantRoleServiceImpl::new(base_pool.clone()));
+    let notification_service = Arc::new(NotificationServiceImpl::new(base_pool.clone()));
     let shared_context_service = Arc::new(SharedContextServiceImpl::new(
         base_pool.clone(),
         user_service.clone(),
@@ -137,6 +138,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         tenant_service: tenant_service.clone(),
         redis_pool: redis_pool.clone(),
         cfg: cfg.clone(),
+        notification_service: notification_service.clone(),
     };
     let log_retention_repo = Arc::new(SqlxLogRetentionPolicyRepository::new(base_pool.clone()));
 
@@ -149,6 +151,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         Box::new(SqlxLogRetentionPolicyRepository::new(base_pool.clone())),
         pg_pool,
     ));
+    let sys = SysModule::new(cfg.as_ref().clone(), redis_pool.as_ref().clone());
+    let storage_browse_service = Arc::new(StorageBrowseServiceImpl::new(cfg.as_ref().clone()));
 
     let base_http_state = BaseHttpState {
         cfg: cfg.clone(),
@@ -162,15 +166,21 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         user_tenant_service: user_tenant_service.clone(),
         user_tenant_role_service: user_tenant_role_service.clone(),
         shared_context_service: shared_context_service.clone(),
+        object_storage_service: sys.object_storage_service.clone(),
+        storage_browse_service,
         system_log_service: system_log_service.clone(),
         audit_log_service: audit_log_service.clone(),
         operation_log_service: operation_log_service.clone(),
         log_retention_repo,
+        notification_service: notification_service.clone(),
     };
     let shared_http_state = SharedHttpState {
+        cfg: cfg.clone(),
         menu_service,
         shared_context_service,
         tenant_service,
+        object_storage_service: sys.object_storage_service.clone(),
+        notification_service,
     };
     let auth_http_state = AuthHttpState {
         auth_service,
@@ -181,7 +191,6 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         cfg: cfg.clone(),
     };
 
-    let sys = SysModule::new(cfg.as_ref().clone(), redis_pool.as_ref().clone());
     let (monitor_service, _metrics_task) =
         MonitorServiceImpl::new(base_pool.clone(), redis_pool.clone(), start_time);
     let monitor_service = Arc::new(monitor_service);

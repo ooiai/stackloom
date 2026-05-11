@@ -2,6 +2,11 @@ import { z } from "zod"
 
 import CryptUtil from "@/lib/crypt"
 import type { TranslateFn } from "@/lib/i18n"
+import {
+  isAwsObjectPathOrUrl,
+  normalizeAwsObjectRef,
+  resolveAwsObjectRequestValue,
+} from "@/lib/aws"
 import type {
   CreateUserParam,
   UpdateUserParam,
@@ -65,19 +70,9 @@ function createOptionalUrlSchema(t: TranslateFn) {
   return z
     .string()
     .trim()
-    .refine(
-      (value) =>
-        value === "" ||
-        z
-          .url({
-            protocol: /^https?$/,
-            hostname: z.regexes.domain,
-          })
-          .safeParse(value).success,
-      {
-        message: t("users.form.avatar.validation.invalid"),
-      }
-    )
+    .refine((value) => value === "" || isAwsObjectPathOrUrl(value), {
+      message: t("users.form.avatar.validation.invalid"),
+    })
     .transform((value) => (value === "" ? undefined : value))
 }
 
@@ -204,7 +199,7 @@ export function getDefaultUserFormValues(
     phone: user?.phone ?? "",
     password: "",
     nickname: user?.nickname ?? "",
-    avatar_url: user?.avatar_url ?? "",
+    avatar_url: normalizeAwsObjectRef(user?.avatar_url) ?? "",
     gender: user?.gender ?? 0,
     status: user?.status ?? 1,
     bio: user?.bio ?? "",
@@ -238,6 +233,7 @@ export async function buildCreateUserParam(
   t: TranslateFn = defaultT
 ): Promise<CreateUserParam> {
   const parsed = createUserFormSchema(t).parse(values)
+  const avatarUrl = resolveAwsObjectRequestValue(parsed.avatar_url)
 
   return {
     username: parsed.username,
@@ -245,7 +241,7 @@ export async function buildCreateUserParam(
     phone: parsed.phone,
     password_hash: CryptUtil.md5Double(parsed.password),
     nickname: parsed.nickname,
-    avatar_url: parsed.avatar_url,
+    avatar_url: avatarUrl ?? undefined,
     gender: parsed.gender,
     status: parsed.status,
     bio: parsed.bio,
@@ -264,9 +260,8 @@ export function buildUpdateUserParam(
     email: normalizeOptionalUpdateValue(values.email, parsed.email),
     phone: normalizeOptionalUpdateValue(values.phone, parsed.phone),
     nickname: normalizeOptionalUpdateValue(values.nickname, parsed.nickname),
-    avatar_url: normalizeOptionalUpdateValue(
-      values.avatar_url,
-      parsed.avatar_url
+    avatar_url: resolveAwsObjectRequestValue(
+      normalizeOptionalUpdateValue(values.avatar_url, parsed.avatar_url)
     ),
     gender: parsed.gender,
     status: parsed.status,

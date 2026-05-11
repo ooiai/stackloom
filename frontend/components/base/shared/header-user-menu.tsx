@@ -2,10 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react"
 
-import {
-  IconLogout,
-  IconSettings,
-} from "@tabler/icons-react"
+import { IconLogout, IconSettings } from "@tabler/icons-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -16,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { AccountSettingsDialog } from "@/components/base/shared/account-settings-dialog"
+import { resolveAwsObjectUrl } from "@/lib/aws"
 import { ROUTER_ENUM, STORAGE_ENUM } from "@/lib/config/enums"
 import { removeStorageItem } from "@/hooks/use-persisted-state"
 import { cn } from "@/lib/utils"
@@ -50,6 +48,7 @@ export function HeaderUserMenu({
     return `${user.username} · ${tenantName}`
   }, [tenantName, user?.username])
   const compactOnMobile = mobileMode === "compact"
+  const avatarSrc = resolveAwsObjectUrl(user?.avatar_url)
 
   const executeLogout = useCallback(async () => {
     try {
@@ -99,7 +98,7 @@ export function HeaderUserMenu({
             {user?.avatar_url && (
               <AvatarImage
                 className="bg-primary/5"
-                src={user.avatar_url}
+                src={avatarSrc}
                 alt={displayName}
               />
             )}
@@ -121,7 +120,7 @@ export function HeaderUserMenu({
                 {user?.avatar_url && (
                   <AvatarImage
                     className="bg-primary/5"
-                    src={user.avatar_url}
+                    src={avatarSrc}
                     alt={displayName}
                   />
                 )}

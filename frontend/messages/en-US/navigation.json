@@ -136,5 +136,13 @@
         }
       }
     }
+  },
+  "tools-storage": {
+    "name": "Object Storage",
+    "remark": "Browse storage objects, prefixes, and access URLs"
+  },
+  "tools-notifications": {
+    "name": "Notifications",
+    "remark": "Manage manual sends, templates, and automatic rules"
   }
 }

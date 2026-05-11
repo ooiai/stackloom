@@ -12,6 +12,8 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import * as React from "react"
 import { useWebCurrentMenus } from "./hooks/use-web-current-menus"
 import type { MenuTreeNodeData } from "@/types/base.types"
+import type { NotificationBellData } from "@/components/base/notifications/hooks/use-notification-bell"
+import { WebHeaderNotificationBell } from "./web-notification-bell"
 
 function isMenuMatched(pathname: string, path: string | null) {
   if (!path || path === "/") {
@@ -64,7 +66,11 @@ function fallbackTitleFromPathname(pathname: string) {
     .replace(/\b\w/g, (char) => char.toUpperCase())
 }
 
-export function AppHeader() {
+export function AppHeader({
+  notificationBellData,
+}: {
+  notificationBellData: NotificationBellData
+}) {
   const pathname = usePathname()
   const { menus } = useWebCurrentMenus()
   const currentMenuTitle = React.useMemo(
@@ -74,7 +80,7 @@ export function AppHeader() {
   const title = currentMenuTitle ?? fallbackTitleFromPathname(pathname)
 
   return (
-    <header className="flex h-16 shrink-0 items-center border-b px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+    <header className="flex h-16 shrink-0 items-center justify-between border-b px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
       <div className="flex min-w-0 items-center gap-2">
         <SidebarTrigger className="-ml-1 self-center" />
         <Separator
@@ -90,6 +96,9 @@ export function AppHeader() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+      </div>
+      <div className="flex items-center gap-2">
+        <WebHeaderNotificationBell data={notificationBellData} />
       </div>
     </header>
   )

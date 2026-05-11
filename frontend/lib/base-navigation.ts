@@ -1,4 +1,5 @@
-import type { MenuItem } from "@/lib/tree"
+import { buildMenuTree, type MenuItem, type MenuTreeNode } from "@/lib/tree"
+import type { MenuTreeNodeData } from "@/types/base.types"
 
 export const BASE_CURRENT_MENU_ITEMS: MenuItem[] = [
   {
@@ -133,4 +134,154 @@ export const BASE_CURRENT_MENU_ITEMS: MenuItem[] = [
     visible: 1,
     remark: "追踪后台业务操作与变更快照",
   },
+  {
+    id: "tools-notifications",
+    pid: "tools-group",
+    name: "通知中心",
+    code: "tools-notifications",
+    icon: "Bell",
+    path: "/tools/notifications",
+    sort: 5,
+    visible: 1,
+    remark: "管理手动通知、事件模板和自动规则",
+  },
+  {
+    id: "tools-storage",
+    pid: "tools-group",
+    name: "对象存储",
+    code: "tools-storage",
+    icon: "Database",
+    path: "/tools/storage",
+    sort: 6,
+    visible: 1,
+    remark: "浏览对象存储文件、前缀和访问地址",
+  },
 ]
+
+const TOOLS_MENU_CODE = "tools"
+const TOOLS_STORAGE_MENU_CODE = "tools-storage"
+const TOOLS_NOTIFICATIONS_MENU_CODE = "tools-notifications"
+
+function compareMenuNodes(a: MenuTreeNodeData, b: MenuTreeNodeData) {
+  const sortDiff = a.sort - b.sort
+  if (sortDiff !== 0) {
+    return sortDiff
+  }
+
+  return a.name.localeCompare(b.name, "zh-Hans")
+}
+
+function toMenuTreeNodeData(node: MenuTreeNode): MenuTreeNodeData {
+  return {
+    id: node.id,
+    tenant_id: null,
+    parent_id: node.pid === "0" ? null : node.pid,
+    code: node.code,
+    name: node.name,
+    description: node.remark,
+    path: node.path || null,
+    component: null,
+    redirect: null,
+    icon: node.icon || null,
+    menu_type: node.children.length > 0 ? 1 : 2,
+    sort: node.sort,
+    visible: node.visible === 1,
+    keep_alive: false,
+    status: 1,
+    created_at: "",
+    updated_at: "",
+    children: node.children.map(toMenuTreeNodeData),
+  }
+}
+
+function cloneMenuNode(node: MenuTreeNodeData): MenuTreeNodeData {
+  return {
+    ...node,
+    children: node.children.map(cloneMenuNode),
+  }
+}
+
+function hasMenuCode(nodes: MenuTreeNodeData[], code: string): boolean {
+  return nodes.some((node) => node.code === code || hasMenuCode(node.children, code))
+}
+
+function findMenuNode(
+  nodes: MenuTreeNodeData[],
+  code: string
+): MenuTreeNodeData | null {
+  for (const node of nodes) {
+    if (node.code === code) {
+      return node
+    }
+
+    const childMatch = findMenuNode(node.children, code)
+    if (childMatch) {
+      return childMatch
+    }
+  }
+
+  return null
+}
+
+function appendMissingChildMenu(
+  nodes: MenuTreeNodeData[],
+  parentCode: string,
+  child: MenuTreeNodeData
+): MenuTreeNodeData[] {
+  let changed = false
+
+  const nextNodes = nodes.map((node) => {
+    const nextChildren = appendMissingChildMenu(node.children, parentCode, child)
+    let mergedChildren = nextChildren
+
+    if (node.code === parentCode && !nextChildren.some((item) => item.code === child.code)) {
+      mergedChildren = [...nextChildren, cloneMenuNode(child)].sort(compareMenuNodes)
+    }
+
+    if (mergedChildren !== node.children) {
+      changed = true
+      return {
+        ...node,
+        children: mergedChildren,
+      }
+    }
+
+    return node
+  })
+
+  return changed ? nextNodes : nodes
+}
+
+const BASE_CURRENT_MENU_TREE = buildMenuTree(BASE_CURRENT_MENU_ITEMS).map(
+  toMenuTreeNodeData
+)
+const BASE_STORAGE_MENU = findMenuNode(BASE_CURRENT_MENU_TREE, TOOLS_STORAGE_MENU_CODE)
+const BASE_NOTIFICATIONS_MENU = findMenuNode(
+  BASE_CURRENT_MENU_TREE,
+  TOOLS_NOTIFICATIONS_MENU_CODE
+)
+
+export function mergeBaseCurrentMenus(
+  nodes: MenuTreeNodeData[],
+  menuCodes: string[]
+): MenuTreeNodeData[] {
+  if (!menuCodes.includes(TOOLS_MENU_CODE)) {
+    return nodes
+  }
+
+  let nextNodes = nodes
+
+  if (BASE_NOTIFICATIONS_MENU && !hasMenuCode(nextNodes, TOOLS_NOTIFICATIONS_MENU_CODE)) {
+    nextNodes = appendMissingChildMenu(
+      nextNodes,
+      TOOLS_MENU_CODE,
+      BASE_NOTIFICATIONS_MENU
+    )
+  }
+
+  if (BASE_STORAGE_MENU && !hasMenuCode(nextNodes, TOOLS_STORAGE_MENU_CODE)) {
+    nextNodes = appendMissingChildMenu(nextNodes, TOOLS_MENU_CODE, BASE_STORAGE_MENU)
+  }
+
+  return nextNodes
+}

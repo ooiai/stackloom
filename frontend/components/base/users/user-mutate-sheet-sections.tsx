@@ -4,6 +4,7 @@ import type { ChangeEvent, KeyboardEvent, ReactNode, RefObject } from "react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { resolveAwsObjectUrl } from "@/lib/aws"
 import { cn } from "@/lib/utils"
 import { getUserAvatarFallback } from "./helpers"
 import { useI18n } from "@/providers/i18n-provider"
@@ -52,6 +53,7 @@ export function UserMutateAvatarSection({
 }: AvatarSectionProps) {
   const { t } = useI18n()
   const triggerFileInput = () => fileInputRef.current?.click()
+  const avatarSrc = resolveAwsObjectUrl(values.avatar_url)
 
   const handleAvatarKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter" || event.key === " ") {
@@ -73,7 +75,7 @@ export function UserMutateAvatarSection({
             onKeyDown={handleAvatarKeyDown}
           >
             <Avatar className="size-14 ring-2 ring-border/70 ring-offset-2 ring-offset-background transition-all duration-300 group-hover:ring-primary/60 sm:size-16">
-              <AvatarImage src={values.avatar_url} alt={avatarLabel} />
+              <AvatarImage src={avatarSrc} alt={avatarLabel} />
               <AvatarFallback className="bg-primary/5 text-base font-semibold text-primary/80">
                 {getUserAvatarFallback(values)}
               </AvatarFallback>

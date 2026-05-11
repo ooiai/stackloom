@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use common::config::env_config::EnvConfig;
-use domain_base::{TenantService, UserTenantService};
+use domain_base::{NotificationService, TenantService, UserTenantService};
 use neocrates::{
     axum::{Router, middleware},
     middlewares::{interceptor::interceptor, models::MiddlewareConfig},
@@ -17,6 +17,7 @@ pub struct WebHttpState {
     pub tenant_service: Arc<dyn TenantService>,
     pub redis_pool: Arc<RedisPool>,
     pub cfg: Arc<EnvConfig>,
+    pub notification_service: Arc<dyn NotificationService>,
 }
 
 pub fn router(state: WebHttpState, mw: Arc<MiddlewareConfig>) -> Router {

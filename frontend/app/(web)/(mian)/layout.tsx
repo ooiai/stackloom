@@ -1,6 +1,7 @@
 "use client"
 
 import Loading from "@/app/loading"
+import { useNotificationBellData } from "@/components/base/notifications/hooks/use-notification-bell"
 import { SpinnerOverlay } from "@/components/topui/spinner-overlay"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AppHeader } from "@/components/web/shared/app-header"
@@ -12,6 +13,7 @@ export default function MainLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   // const { mode, setMode } = useBaseLayoutMode()
+  const notificationBellData = useNotificationBellData()
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -26,9 +28,9 @@ export default function MainLayout({
     <Suspense fallback={<SpinnerOverlay visible delay={300} />}>
       <NuqsAdapter>
         <SidebarProvider>
-          <AppSidebar />
+          <AppSidebar notificationBellData={notificationBellData} />
           <SidebarInset>
-            <AppHeader />
+            <AppHeader notificationBellData={notificationBellData} />
             {children}
           </SidebarInset>
         </SidebarProvider>

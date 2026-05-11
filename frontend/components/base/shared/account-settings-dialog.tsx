@@ -27,6 +27,9 @@ import { useAwsS3 } from "@/hooks/use-aws-s3"
 import { invalidateHeaderSharedQueries } from "@/hooks/use-header-context"
 import {
   SINGLE_REQUEST_UPLOAD_PART_SIZE_BYTES,
+  normalizeAwsObjectRef,
+  resolveAwsObjectUrl,
+  resolveAwsObjectRequestValue,
   uploadAwsObject,
 } from "@/lib/aws"
 import { OSS_ENUM } from "@/lib/config/enums"
@@ -85,7 +88,7 @@ function buildFallbackProfile(
     email: user.email,
     phone: user.phone,
     nickname: user.nickname,
-    avatar_url: user.avatar_url,
+    avatar_url: normalizeAwsObjectRef(user.avatar_url) ?? null,
     display_name: user.display_name,
     employee_no: user.employee_no,
     job_title: user.job_title,
@@ -143,7 +146,7 @@ function AccountSettingsDialogForm({
         email: normalizedEmail,
         phone: normalizedPhone,
         nickname: normalizedNickname,
-        avatar_url: normalizedAvatarUrl,
+        avatar_url: resolveAwsObjectRequestValue(normalizedAvatarUrl),
         display_name: normalizedDisplayName,
         employee_no: normalizedEmployeeNo,
         job_title: normalizedJobTitle,
@@ -261,6 +264,7 @@ function AccountSettingsDialogForm({
   const previewName =
     normalizedDisplayName || normalizedNickname || profile.username
   const initials = getNameAbbr(previewName || "SL")
+  const previewAvatarUrl = resolveAwsObjectUrl(normalizedAvatarUrl)
   const isBusy = updateMutation.isPending || isUploadingAvatar
   const isSaveDisabled = !isDirty || isBusy
 
@@ -286,8 +290,8 @@ function AccountSettingsDialogForm({
             onKeyDown={handleAvatarKeyDown}
           >
             <Avatar className="size-16 ring-2 ring-border/70 ring-offset-2 ring-offset-background transition-all duration-300 group-hover:ring-primary/60">
-              {normalizedAvatarUrl && (
-                <AvatarImage src={normalizedAvatarUrl} alt={previewName} />
+              {previewAvatarUrl && (
+                <AvatarImage src={previewAvatarUrl} alt={previewName} />
               )}
               <AvatarFallback className="text-base font-semibold">
                 {initials}
@@ -533,7 +537,13 @@ function AccountSettingsDialogContent({
   const fallbackProfile = buildFallbackProfile(user)
   const profileQuery = useQuery({
     queryKey: [...ACCOUNT_PROFILE_QUERY_KEY],
-    queryFn: () => profileApi.get(),
+    queryFn: async () => {
+      const profile = await profileApi.get()
+      return {
+        ...profile,
+        avatar_url: normalizeAwsObjectRef(profile.avatar_url) ?? null,
+      }
+    },
   })
 
   const profile = profileQuery.data ?? fallbackProfile

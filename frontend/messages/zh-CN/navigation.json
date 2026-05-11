@@ -136,5 +136,13 @@
         }
       }
     }
+  },
+  "tools-storage": {
+    "name": "对象存储",
+    "remark": "浏览对象存储文件、前缀和访问地址"
+  },
+  "tools-notifications": {
+    "name": "通知中心",
+    "remark": "管理手动通知、模板与自动规则"
   }
 }

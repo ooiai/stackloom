@@ -1,0 +1,149 @@
+{
+  "page": {
+    "eyebrow": "Notification Center",
+    "title": "Notifications",
+    "description": "Manage manual sends, reusable templates, and automatic event rules in one place."
+  },
+  "actions": {
+    "send": "Send notification",
+    "newTemplate": "New template",
+    "createTemplate": "Create template",
+    "saveTemplate": "Save template",
+    "newRule": "New rule",
+    "createRule": "Create rule",
+    "saveRule": "Save rule",
+    "markAllRead": "Mark all read",
+    "archive": "Archive"
+  },
+  "panels": {
+    "dispatches": "Dispatches",
+    "templates": "Templates",
+    "rules": "Rules"
+  },
+  "dispatches": {
+    "title": "Recent dispatches",
+    "description": "Review the latest manual and automatic notifications."
+  },
+  "templates": {
+    "title": "Notification templates",
+    "description": "Maintain reusable title/body templates for event-driven notifications."
+  },
+  "rules": {
+    "title": "Automatic rules",
+    "description": "Map event codes to templates and recipient selectors."
+  },
+  "dialogs": {
+    "send": {
+      "title": "Send notification",
+      "description": "Create an in-app notification for the current tenant."
+    },
+    "template": {
+      "description": "Templates render variables such as {{member.username}} or {{tenant.name}}."
+    },
+    "templateCreate": {
+      "title": "Create template"
+    },
+    "templateUpdate": {
+      "title": "Update template"
+    },
+    "rule": {
+      "description": "Rules turn business events into notifications without changing channel logic everywhere."
+    },
+    "ruleCreate": {
+      "title": "Create rule"
+    },
+    "ruleUpdate": {
+      "title": "Update rule"
+    }
+  },
+  "table": {
+    "summary": "Summary",
+    "trigger": "Trigger",
+    "recipient": "Recipient",
+    "recipientCount": "Recipients",
+    "createdAt": "Created at",
+    "updatedAt": "Updated at",
+    "name": "Name",
+    "eventCode": "Event code",
+    "locale": "Locale",
+    "status": "Status",
+    "actions": "Actions",
+    "template": "Template"
+  },
+  "form": {
+    "title": "Title",
+    "body": "Body",
+    "actionUrl": "Action URL",
+    "recipientSelector": "Recipient selector",
+    "recipientUsers": "Specific users",
+    "code": "Code",
+    "name": "Name",
+    "eventCode": "Event code",
+    "locale": "Locale",
+    "titleTemplate": "Title template",
+    "bodyTemplate": "Body template",
+    "actionUrlTemplate": "Action URL template",
+    "enabled": "Enabled",
+    "template": "Template"
+  },
+  "placeholders": {
+    "title": "Input a concise notification title",
+    "body": "Describe the notification body and next step",
+    "actionUrl": "Optional route or URL to open after clicking",
+    "code": "e.g. member_joined_admin",
+    "name": "Human-readable template or rule name",
+    "eventCode": "e.g. member.joined",
+    "titleTemplate": "e.g. New member joined {{tenant.name}}",
+    "bodyTemplate": "Variables like {{member.username}} are supported",
+    "actionUrlTemplate": "Optional dynamic route, such as /member",
+    "template": "Select a template"
+  },
+  "selector": {
+    "tenant_all": "All tenant members",
+    "tenant_admins": "Tenant admins",
+    "explicit_users": "Specific users",
+    "actor": "Event actor"
+  },
+  "trigger": {
+    "manual": "Manual",
+    "direct": "Direct",
+    "event": "Event"
+  },
+  "status": {
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  },
+  "bell": {
+    "title": "Inbox",
+    "unreadCount": "{count} unread notifications",
+    "empty": "No notifications yet."
+  },
+  "empty": {
+    "dispatchesTitle": "No dispatches yet",
+    "dispatchesDescription": "Manual sends and automatic event pushes will appear here.",
+    "templatesTitle": "No templates yet",
+    "templatesDescription": "Create a template first, then bind it with an event rule.",
+    "rulesTitle": "No rules yet",
+    "rulesDescription": "Create a rule to turn events such as member.joined into notifications."
+  },
+  "toast": {
+    "sent": "Notification sent.",
+    "templateCreated": "Template created.",
+    "templateUpdated": "Template updated.",
+    "ruleCreated": "Rule created.",
+    "ruleUpdated": "Rule updated."
+  },
+  "validation": {
+    "titleRequired": "Please enter a title.",
+    "bodyRequired": "Please enter a body.",
+    "actionUrlLength": "Action URL is too long.",
+    "recipientUsersRequired": "Select at least one user.",
+    "codeRequired": "Please enter a code.",
+    "nameRequired": "Please enter a name.",
+    "localeRequired": "Please select a locale.",
+    "titleTemplateRequired": "Please enter a title template.",
+    "bodyTemplateRequired": "Please enter a body template.",
+    "eventCodeRequired": "Please enter an event code.",
+    "templateRequired": "Please select a template."
+  }
+}

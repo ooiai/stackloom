@@ -16,6 +16,7 @@ import type { UseMutationResult } from "@tanstack/react-query"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/reui/badge"
 import { Button } from "@/components/ui/button"
+import { resolveAwsObjectUrl } from "@/lib/aws"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -228,6 +229,7 @@ export function MembersPageView({
                 const avatarColor = getAvatarColor(member.user_id)
                 const displayName =
                   member.display_name ?? member.nickname ?? member.username
+                const avatarSrc = resolveAwsObjectUrl(member.avatar_url)
 
                 return (
                   <TableRow
@@ -240,7 +242,7 @@ export function MembersPageView({
                         <Avatar className="size-9 shrink-0">
                           {member.avatar_url && (
                             <AvatarImage
-                              src={member.avatar_url}
+                              src={avatarSrc}
                               alt={member.username}
                             />
                           )}

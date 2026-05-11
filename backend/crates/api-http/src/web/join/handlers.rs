@@ -4,11 +4,14 @@ use super::{
 };
 use crate::web::WebHttpState;
 use common::core::{biz_error, constants::CACHE_INVITE_CODE_LOOKUP};
+use domain_base::NotificationEvent;
 use neocrates::{
     axum::{Extension, Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
     middlewares::models::AuthModel,
     response::error::{AppError, AppResult},
+    tokio,
+    serde_json::json,
     tracing,
 };
 
@@ -102,6 +105,49 @@ pub async fn join(
         .user_tenant_service
         .join_by_invite_code(auth_user.uid, tenant_id, None)
         .await?;
+
+    let user_id = auth_user.uid;
+    let username = auth_user.username.clone();
+    let nickname = auth_user.nickname.clone();
+    let fallback_tenant_name = auth_user.tname.clone();
+
+    let tenant_name = state
+        .tenant_service
+        .get(tenant_id)
+        .await
+        .map(|tenant| tenant.name)
+        .unwrap_or_else(|err| {
+            tracing::warn!(tenant_id, error = %err, "failed to load tenant name for notification");
+            fallback_tenant_name
+        });
+
+    let notification_service = state.notification_service.clone();
+    let event = NotificationEvent {
+        tenant_id,
+        event_code: "member.joined".to_string(),
+        actor_user_id: Some(user_id),
+        source_type: Some("member".to_string()),
+        source_id: Some(user_id),
+        template_vars: json!({
+            "member": {
+                "id": user_id,
+                "username": username,
+                "nickname": nickname,
+            },
+            "tenant": {
+                "id": tenant_id,
+                "name": tenant_name,
+            },
+        }),
+        idempotency_key: Some(format!("member.joined:{tenant_id}:{user_id}")),
+        created_by: Some(user_id),
+    };
+
+    tokio::spawn(async move {
+        if let Err(err) = notification_service.publish_event(event).await {
+            tracing::warn!(tenant_id, user_id, error = %err, "failed to publish member.joined notification");
+        }
+    });
 
     Ok(Json(()))
 }

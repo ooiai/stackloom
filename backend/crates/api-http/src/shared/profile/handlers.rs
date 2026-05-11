@@ -54,6 +54,8 @@ pub async fn update(
     req.validate()
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
+    let req =
+        req.normalize_avatar_url(state.cfg.as_ref(), state.object_storage_service.as_ref())?;
     let cmd = req.into_cmd();
     let profile = state
         .shared_context_service

@@ -1,5 +1,6 @@
 pub mod auth;
 pub mod base;
+mod object_storage;
 pub mod shared;
 pub mod system;
 pub mod web;

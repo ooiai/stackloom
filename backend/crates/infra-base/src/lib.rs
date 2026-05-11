@@ -56,3 +56,6 @@ pub mod system_log;
 pub use system_log::SystemLogRow;
 pub use system_log::repo::SqlxSystemLogRepository;
 pub use system_log::service::SystemLogServiceImpl;
+pub mod notification;
+pub use notification::repo::SqlxNotificationRepository;
+pub use notification::service::NotificationServiceImpl;

@@ -16,11 +16,13 @@ export const LOCALE_MESSAGE_MODULES = [
   "perms",
   "tenants",
   "logs",
+  "storage",
   "monitor",
   "members",
   "pricing",
   "join",
   "account",
+  "notifications",
 ] as const
 
 export type LocaleMessageModule = (typeof LOCALE_MESSAGE_MODULES)[number]
@@ -70,11 +72,14 @@ const MESSAGE_MODULE_LOADERS: Record<
     perms: async () => (await import("@/messages/en-US/perms.json")).default,
     tenants: async () => (await import("@/messages/en-US/tenants.json")).default,
     logs: async () => (await import("@/messages/en-US/logs.json")).default,
+    storage: async () => (await import("@/messages/en-US/storage.json")).default,
     monitor: async () => (await import("@/messages/en-US/monitor.json")).default,
     members: async () => (await import("@/messages/en-US/members.json")).default,
     pricing: async () => (await import("@/messages/en-US/pricing.json")).default,
     join: async () => (await import("@/messages/en-US/join.json")).default,
     account: async () => (await import("@/messages/en-US/account.json")).default,
+    notifications: async () =>
+      (await import("@/messages/en-US/notifications.json")).default,
   },
   "zh-CN": {
     common: async () => (await import("@/messages/zh-CN/common.json")).default,
@@ -92,11 +97,14 @@ const MESSAGE_MODULE_LOADERS: Record<
     perms: async () => (await import("@/messages/zh-CN/perms.json")).default,
     tenants: async () => (await import("@/messages/zh-CN/tenants.json")).default,
     logs: async () => (await import("@/messages/zh-CN/logs.json")).default,
+    storage: async () => (await import("@/messages/zh-CN/storage.json")).default,
     monitor: async () => (await import("@/messages/zh-CN/monitor.json")).default,
     members: async () => (await import("@/messages/zh-CN/members.json")).default,
     pricing: async () => (await import("@/messages/zh-CN/pricing.json")).default,
     join: async () => (await import("@/messages/zh-CN/join.json")).default,
     account: async () => (await import("@/messages/zh-CN/account.json")).default,
+    notifications: async () =>
+      (await import("@/messages/zh-CN/notifications.json")).default,
   },
 }
 

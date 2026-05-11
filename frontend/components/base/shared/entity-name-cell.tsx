@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { resolveAwsObjectUrl } from "@/lib/aws"
 
 interface EntityNameCellProps {
   avatarAlt: string
@@ -15,10 +16,12 @@ export function EntityNameCell({
   description,
   title,
 }: EntityNameCellProps) {
+  const resolvedAvatarSrc = resolveAwsObjectUrl(avatarSrc)
+
   return (
     <div className="flex items-center gap-3">
       <Avatar className="size-8">
-        <AvatarImage src={avatarSrc} alt={avatarAlt} />
+        <AvatarImage src={resolvedAvatarSrc} alt={avatarAlt} />
         <AvatarFallback className="font-medium">
           {avatarFallback}
         </AvatarFallback>

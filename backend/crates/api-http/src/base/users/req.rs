@@ -1,9 +1,16 @@
+use crate::object_storage::{
+    normalize_optional_nullable_object_ref, normalize_optional_object_ref,
+    validate_object_path_or_url,
+};
+use ::common::config::env_config::EnvConfig;
 use domain_base::{CreateUserCmd, PageUserCmd, UpdateUserCmd};
+use domain_system::aws::ObjectStorageService;
 use neocrates::{
     helper::core::{serde_helpers, snowflake::generate_sonyflake_id},
+    response::error::AppResult,
     serde::Deserialize,
 };
-use validator::{Validate, ValidateEmail, ValidateUrl, ValidationError};
+use validator::{Validate, ValidateEmail, ValidationError};
 
 fn validate_nullable_email(email: &String) -> Result<(), ValidationError> {
     let email = email.trim();
@@ -34,15 +41,6 @@ fn validate_nullable_nickname(nickname: &String) -> Result<(), ValidationError> 
     Ok(())
 }
 
-fn validate_nullable_avatar_url(avatar_url: &String) -> Result<(), ValidationError> {
-    let avatar_url = avatar_url.trim();
-    if avatar_url.is_empty() || !avatar_url.validate_url() {
-        return Err(ValidationError::new("url"));
-    }
-
-    Ok(())
-}
-
 fn validate_nullable_bio(bio: &String) -> Result<(), ValidationError> {
     if bio.trim().len() > 2000 {
         return Err(ValidationError::new("length"));
@@ -68,7 +66,7 @@ pub struct CreateUserReq {
     #[validate(length(max = 100))]
     pub nickname: Option<String>,
 
-    #[validate(url)]
+    #[validate(custom(function = "validate_object_path_or_url"))]
     pub avatar_url: Option<String>,
 
     #[validate(range(min = 0, max = 2))]
@@ -98,6 +96,43 @@ impl From<CreateUserReq> for CreateUserCmd {
     }
 }
 
+impl CreateUserReq {
+    pub fn normalize_avatar_url(
+        self,
+        cfg: &EnvConfig,
+        object_storage_service: &dyn ObjectStorageService,
+    ) -> AppResult<Self> {
+        let Self {
+            username,
+            email,
+            phone,
+            password_hash,
+            nickname,
+            avatar_url,
+            gender,
+            status,
+            bio,
+        } = self;
+
+        Ok(Self {
+            username,
+            email,
+            phone,
+            password_hash,
+            nickname,
+            avatar_url: normalize_optional_object_ref(
+                cfg,
+                object_storage_service,
+                avatar_url,
+                "avatar_url",
+            )?,
+            gender,
+            status,
+            bio,
+        })
+    }
+}
+
 #[derive(Debug, Clone, Deserialize, Validate, Default)]
 pub struct GetUserReq {
     #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
@@ -122,7 +157,7 @@ pub struct UpdateUserReq {
     pub nickname: Option<Option<String>>,
 
     #[serde(default)]
-    #[validate(custom(function = "validate_nullable_avatar_url"))]
+    #[validate(custom(function = "validate_object_path_or_url"))]
     pub avatar_url: Option<Option<String>>,
 
     #[validate(range(min = 0, max = 2))]
@@ -147,6 +182,41 @@ impl From<UpdateUserReq> for UpdateUserCmd {
             status: req.status,
             bio: req.bio,
         }
+    }
+}
+
+impl UpdateUserReq {
+    pub fn normalize_avatar_url(
+        self,
+        cfg: &EnvConfig,
+        object_storage_service: &dyn ObjectStorageService,
+    ) -> AppResult<Self> {
+        let Self {
+            id,
+            email,
+            phone,
+            nickname,
+            avatar_url,
+            gender,
+            status,
+            bio,
+        } = self;
+
+        Ok(Self {
+            id,
+            email,
+            phone,
+            nickname,
+            avatar_url: normalize_optional_nullable_object_ref(
+                cfg,
+                object_storage_service,
+                avatar_url,
+                "avatar_url",
+            )?,
+            gender,
+            status,
+            bio,
+        })
     }
 }
 

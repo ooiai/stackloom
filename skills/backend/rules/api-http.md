@@ -204,6 +204,23 @@ A handler should not:
 - hold domain entity mutation logic
 - duplicate conversion logic in multiple places
 
+### Handler comments are required
+
+`handlers.rs` must not be left as uncommented glue code.
+
+Each handler file should include concise comments that explain:
+
+- what the handler is responsible for at the transport boundary
+- any non-obvious DTO → command mapping
+- any branching, fallback, or permission-related behavior that is not immediately obvious from the function signature
+
+Minimum expectation:
+
+- add a short comment above each handler when the purpose is not trivial
+- add a short comment above any non-obvious block inside the handler
+
+Do not add noisy line-by-line comments. The goal is to make handler intent and transport decisions reviewable without guessing.
+
 ### Typical handler flow
 
 1. receive state and request body

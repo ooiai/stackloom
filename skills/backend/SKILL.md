@@ -107,6 +107,7 @@ When a task is primarily about one backend layer or concern, read the matching r
 - `rules/api-http.md`
     - `req.rs` / `resp.rs` / `handlers.rs` / `mod.rs`
     - Axum handler conventions
+    - handler comment requirements
     - route design
     - HTTP state and DTO mapping
 
@@ -188,6 +189,7 @@ If multiple backend concerns are involved, read the closest primary rule first, 
 
 - **Follow the project structure and backend conventions strictly.** Do not change the established crate boundaries, layer responsibilities, or naming conventions arbitrarily.
 - **Keep HTTP handlers minimal and focused on transport concerns.** Validate requests, convert DTOs, call services, and return responses. Move business logic into services and persistence logic into repositories.
+- **Add comments in `handlers.rs`.** Every handler file should include concise comments that explain handler purpose and any non-obvious transport/domain conversion or branching, so review and maintenance do not rely on guesswork.
 - **Prefer domain commands and entities for service boundaries.** Do not pass HTTP request DTOs through the full backend stack.
 - **Extract persistence logic into `infra-*`.** SQL queries, row mapping, and SQLx-specific code should stay in repository implementations.
 - **Use unified `AppError` / `AppResult` consistently.** Avoid inventing module-specific error systems unless the codebase explicitly adopts them.

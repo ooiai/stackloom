@@ -1,4 +1,4 @@
-import { post, get } from "@/lib/http/axios"
+import { post } from "@/lib/http/axios"
 import type {
     GetRoleMenusParam,
     AssignRoleMenusParam,
@@ -69,10 +69,29 @@ import type {
   UpdateTenantParam,
   TreeDictParam,
   UpdateDictParam,
-   UpdateUserParam,
+    UpdateUserParam,
     HeaderContextData,
     UserProfileData,
     MyTenantData,
+    NotificationDispatchData,
+    NotificationRuleData,
+    NotificationTemplateData,
+    NotificationUnreadCountData,
+    PageNotificationDispatchParam,
+    PageNotificationRuleParam,
+    PageNotificationTemplateParam,
+    PageUserNotificationParam,
+    PaginateNotificationDispatch,
+    PaginateNotificationRule,
+    PaginateNotificationTemplate,
+    PaginateUserNotification,
+    SendNotificationParam,
+    CreateNotificationTemplateParam,
+    UpdateNotificationTemplateParam,
+    CreateNotificationRuleParam,
+    UpdateNotificationRuleParam,
+    ArchiveNotificationsParam,
+    MarkReadNotificationsParam,
     UpdateUserProfileParam,
     UserData,
     UserRolesResp,
@@ -86,8 +105,10 @@ const BASE_DICT_API_PREFIX = "/apiv1/base/dicts"
 const BASE_ROLE_API_PREFIX = "/apiv1/base/roles"
 const BASE_PERM_API_PREFIX = "/apiv1/base/perms"
 const BASE_LOGS_API_PREFIX = "/apiv1/base/logs"
+const BASE_NOTIFICATION_API_PREFIX = "/apiv1/base/notifications"
 const SHARED_COMMON_API_PREFIX = "/apiv1/shared/common"
 const SHARED_PROFILE_API_PREFIX = "/apiv1/shared/profile"
+const SHARED_NOTIFICATION_API_PREFIX = "/apiv1/shared/notifications"
 
 export const userSharedApi = {
   listCurrentMenus: async (code?: string): Promise<MenuTreeNodeData[]> => {
@@ -300,6 +321,63 @@ export const profileApi = {
   update: async (params: UpdateUserProfileParam): Promise<UserProfileData> => {
     return post(`${SHARED_PROFILE_API_PREFIX}/update`, params)
   },
+}
+
+export const notificationAdminApi = {
+  pageDispatches: (
+    params: PageNotificationDispatchParam
+  ): Promise<PaginateNotificationDispatch> =>
+    post(`${BASE_NOTIFICATION_API_PREFIX}/page`, params),
+
+  send: (params: SendNotificationParam): Promise<NotificationDispatchData> =>
+    post(`${BASE_NOTIFICATION_API_PREFIX}/send`, params),
+
+  pageTemplates: (
+    params: PageNotificationTemplateParam
+  ): Promise<PaginateNotificationTemplate> =>
+    post(`${BASE_NOTIFICATION_API_PREFIX}/templates/page`, params),
+
+  createTemplate: (
+    params: CreateNotificationTemplateParam
+  ): Promise<NotificationTemplateData> =>
+    post(`${BASE_NOTIFICATION_API_PREFIX}/templates/create`, params),
+
+  updateTemplate: (
+    params: UpdateNotificationTemplateParam
+  ): Promise<NotificationTemplateData> =>
+    post(`${BASE_NOTIFICATION_API_PREFIX}/templates/update`, params),
+
+  pageRules: (
+    params: PageNotificationRuleParam
+  ): Promise<PaginateNotificationRule> =>
+    post(`${BASE_NOTIFICATION_API_PREFIX}/rules/page`, params),
+
+  createRule: (
+    params: CreateNotificationRuleParam
+  ): Promise<NotificationRuleData> =>
+    post(`${BASE_NOTIFICATION_API_PREFIX}/rules/create`, params),
+
+  updateRule: (
+    params: UpdateNotificationRuleParam
+  ): Promise<NotificationRuleData> =>
+    post(`${BASE_NOTIFICATION_API_PREFIX}/rules/update`, params),
+}
+
+export const notificationInboxApi = {
+  page: (params: PageUserNotificationParam): Promise<PaginateUserNotification> =>
+    post(`${SHARED_NOTIFICATION_API_PREFIX}/page`, params),
+
+  unreadCount: (): Promise<NotificationUnreadCountData> =>
+    post(`${SHARED_NOTIFICATION_API_PREFIX}/unread_count`, {}),
+
+  markRead: (params: MarkReadNotificationsParam): Promise<void> =>
+    post(`${SHARED_NOTIFICATION_API_PREFIX}/mark_read`, params),
+
+  markAllRead: (params: Record<string, never>): Promise<void> =>
+    post(`${SHARED_NOTIFICATION_API_PREFIX}/mark_all_read`, params),
+
+  archive: (params: ArchiveNotificationsParam): Promise<void> =>
+    post(`${SHARED_NOTIFICATION_API_PREFIX}/archive`, params),
 }
 
 export const logRetentionApi = {

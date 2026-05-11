@@ -1,0 +1,61 @@
+{
+  "page": {
+    "title": "对象存储",
+    "description": "查看各对象存储 provider 下的上传对象、前缀和访问地址。",
+    "emptyTitle": "暂无对象",
+    "emptyDescription": "当前筛选条件下没有可展示的对象。"
+  },
+  "filters": {
+    "provider": {
+      "label": "存储 Provider",
+      "placeholder": "选择 provider"
+    },
+    "prefix": {
+      "label": "前缀",
+      "placeholder": "例如 images 或 itembank/editor-images"
+    },
+    "pageSize": {
+      "label": "每页数量",
+      "option": "{value} 条"
+    }
+  },
+  "table": {
+    "key": "对象 Key",
+    "size": "大小",
+    "storageClass": "存储类型",
+    "etag": "ETag",
+    "lastModified": "更新时间"
+  },
+  "actions": {
+    "viewDetail": "查看详情",
+    "preview": "预览",
+    "copyKey": "复制 Key",
+    "copyUrl": "复制 URL"
+  },
+  "detail": {
+    "title": "对象详情",
+    "description": "查看对象存储条目的基础元数据和访问地址。"
+  },
+  "previewDialog": {
+    "title": "图片预览",
+    "description": "放大查看已签名的图片对象。"
+  },
+  "fields": {
+    "provider": "Provider",
+    "bucket": "Bucket",
+    "key": "Key",
+    "size": "大小（字节）",
+    "etag": "ETag",
+    "storageClass": "存储类型",
+    "lastModified": "更新时间",
+    "publicUrl": "公开地址"
+  },
+  "pagination": {
+    "pageHint": "第 {page} 页，本页 {count} 条"
+  },
+  "toast": {
+    "keyCopied": "对象 Key 已复制",
+    "urlCopied": "对象 URL 已复制",
+    "previewFailed": "打开预览失败"
+  }
+}

@@ -106,7 +106,10 @@ impl AuthRepository for SqlxAuthRepository {
         Ok(row.map(Into::into))
     }
 
-    async fn find_user_by_id(&self, user_id: i64) -> AppResult<Option<domain_auth::AuthUserAccount>> {
+    async fn find_user_by_id(
+        &self,
+        user_id: i64,
+    ) -> AppResult<Option<domain_auth::AuthUserAccount>> {
         let row = sqlx::query_as::<_, AuthUserAccountRow>(
             r#"
             SELECT

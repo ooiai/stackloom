@@ -45,6 +45,8 @@ pub async fn create(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
+    let req =
+        req.normalize_avatar_url(state.cfg.as_ref(), state.object_storage_service.as_ref())?;
     let cmd: CreateUserCmd = req.into();
     let user = state.user_service.create(cmd).await?;
     let user_id = user.id;
@@ -151,6 +153,8 @@ pub async fn update(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
+    let req =
+        req.normalize_avatar_url(state.cfg.as_ref(), state.object_storage_service.as_ref())?;
     let id = req.id;
     let before_snapshot =
         logging::serialize_snapshot(UserResp::from(state.user_service.get(id).await?));

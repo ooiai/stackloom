@@ -1,0 +1,149 @@
+{
+  "page": {
+    "eyebrow": "通知中心",
+    "title": "通知管理",
+    "description": "统一管理手动发送、模板维护和自动事件规则。"
+  },
+  "actions": {
+    "send": "发送通知",
+    "newTemplate": "新建模板",
+    "createTemplate": "创建模板",
+    "saveTemplate": "保存模板",
+    "newRule": "新建规则",
+    "createRule": "创建规则",
+    "saveRule": "保存规则",
+    "markAllRead": "全部已读",
+    "archive": "归档"
+  },
+  "panels": {
+    "dispatches": "发送记录",
+    "templates": "通知模板",
+    "rules": "自动规则"
+  },
+  "dispatches": {
+    "title": "最近发送记录",
+    "description": "查看最近的手动发送和自动事件通知。"
+  },
+  "templates": {
+    "title": "通知模板",
+    "description": "维护可复用的标题/正文模板，供自动事件规则复用。"
+  },
+  "rules": {
+    "title": "自动规则",
+    "description": "将业务事件编码映射到模板和收件人策略。"
+  },
+  "dialogs": {
+    "send": {
+      "title": "发送通知",
+      "description": "向当前租户成员发送一条站内通知。"
+    },
+    "template": {
+      "description": "模板支持 {{member.username}}、{{tenant.name}} 等变量占位。"
+    },
+    "templateCreate": {
+      "title": "新建通知模板"
+    },
+    "templateUpdate": {
+      "title": "更新通知模板"
+    },
+    "rule": {
+      "description": "规则会把业务事件自动映射成通知，避免在各业务里重复拼装发送逻辑。"
+    },
+    "ruleCreate": {
+      "title": "新建自动规则"
+    },
+    "ruleUpdate": {
+      "title": "更新自动规则"
+    }
+  },
+  "table": {
+    "summary": "摘要",
+    "trigger": "触发方式",
+    "recipient": "收件人",
+    "recipientCount": "人数",
+    "createdAt": "创建时间",
+    "updatedAt": "更新时间",
+    "name": "名称",
+    "eventCode": "事件编码",
+    "locale": "语言",
+    "status": "状态",
+    "actions": "操作",
+    "template": "模板"
+  },
+  "form": {
+    "title": "标题",
+    "body": "正文",
+    "actionUrl": "跳转地址",
+    "recipientSelector": "收件人策略",
+    "recipientUsers": "指定用户",
+    "code": "编码",
+    "name": "名称",
+    "eventCode": "事件编码",
+    "locale": "语言",
+    "titleTemplate": "标题模板",
+    "bodyTemplate": "正文模板",
+    "actionUrlTemplate": "跳转地址模板",
+    "enabled": "启用",
+    "template": "模板"
+  },
+  "placeholders": {
+    "title": "输入一条简洁明确的通知标题",
+    "body": "描述通知内容和下一步动作",
+    "actionUrl": "可选，点击后打开的路由或 URL",
+    "code": "例如：member_joined_admin",
+    "name": "输入方便识别的模板/规则名称",
+    "eventCode": "例如：member.joined",
+    "titleTemplate": "例如：{{tenant.name}} 有新成员加入",
+    "bodyTemplate": "支持 {{member.username}} 这类变量占位",
+    "actionUrlTemplate": "可选，例如：/member",
+    "template": "请选择模板"
+  },
+  "selector": {
+    "tenant_all": "当前租户全部成员",
+    "tenant_admins": "当前租户管理员",
+    "explicit_users": "指定用户",
+    "actor": "事件触发人"
+  },
+  "trigger": {
+    "manual": "手动",
+    "direct": "直接",
+    "event": "事件"
+  },
+  "status": {
+    "enabled": "启用",
+    "disabled": "停用"
+  },
+  "bell": {
+    "title": "收件箱",
+    "unreadCount": "未读通知 {count} 条",
+    "empty": "暂时还没有通知。"
+  },
+  "empty": {
+    "dispatchesTitle": "暂无发送记录",
+    "dispatchesDescription": "手动发送和自动事件通知都会出现在这里。",
+    "templatesTitle": "暂无通知模板",
+    "templatesDescription": "先创建模板，再把它绑定到自动规则。",
+    "rulesTitle": "暂无自动规则",
+    "rulesDescription": "创建规则后，member.joined 等事件就能自动发通知。"
+  },
+  "toast": {
+    "sent": "通知已发送。",
+    "templateCreated": "模板已创建。",
+    "templateUpdated": "模板已更新。",
+    "ruleCreated": "规则已创建。",
+    "ruleUpdated": "规则已更新。"
+  },
+  "validation": {
+    "titleRequired": "请输入标题。",
+    "bodyRequired": "请输入正文。",
+    "actionUrlLength": "跳转地址长度过长。",
+    "recipientUsersRequired": "请至少选择一位用户。",
+    "codeRequired": "请输入编码。",
+    "nameRequired": "请输入名称。",
+    "localeRequired": "请选择语言。",
+    "titleTemplateRequired": "请输入标题模板。",
+    "bodyTemplateRequired": "请输入正文模板。",
+    "eventCodeRequired": "请输入事件编码。",
+    "templateRequired": "请选择模板。"
+  }
+}

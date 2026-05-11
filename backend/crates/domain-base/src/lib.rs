@@ -61,3 +61,13 @@ pub use operation_log::{
 pub mod log_retention_policy;
 pub use log_retention_policy::repo::LogRetentionPolicyRepository;
 pub use log_retention_policy::{LogRetentionPolicy, UpdateLogRetentionPolicyCmd};
+pub mod notification;
+pub use notification::repo::NotificationRepository;
+pub use notification::service::NotificationService;
+pub use notification::{
+    CreateNotificationRuleCmd, CreateNotificationTemplateCmd, NotificationDispatch,
+    NotificationEvent, NotificationRecipientSelector, NotificationRule, NotificationStreamSignal,
+    NotificationTemplate, PageNotificationDispatchCmd, PageNotificationRuleCmd,
+    PageNotificationTemplateCmd, PageUserNotificationCmd, PublishNotificationCmd,
+    UpdateNotificationRuleCmd, UpdateNotificationTemplateCmd, UserNotification,
+};

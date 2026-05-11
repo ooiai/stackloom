@@ -15,8 +15,15 @@ import {
 import { useHeaderContext } from "@/hooks/use-header-context"
 import { useMyTenants } from "./hooks/use-my-tenants"
 import { useWebCurrentMenus } from "./hooks/use-web-current-menus"
+import type { NotificationBellData } from "@/components/base/notifications/hooks/use-notification-bell"
+import { WebSidebarNotificationBell } from "./web-notification-bell"
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  notificationBellData,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
+  notificationBellData: NotificationBellData
+}) {
   const { user } = useHeaderContext()
   const { data: teams = [] } = useMyTenants()
   const { menus } = useWebCurrentMenus()
@@ -29,7 +36,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={menus} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="gap-2">
+        <WebSidebarNotificationBell data={notificationBellData} />
         <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />

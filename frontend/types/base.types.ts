@@ -652,3 +652,151 @@ export interface DictFormValues {
   ext: string
   parent_id?: string | null
 }
+
+export type NotificationRecipientSelectorType =
+  | "tenant_all"
+  | "tenant_admins"
+  | "explicit_users"
+  | "actor"
+
+export type NotificationTriggerType = "manual" | "direct" | "event"
+
+export type NotificationTemplateStatus = 0 | 1
+
+export interface NotificationDispatchData {
+  id: string
+  trigger_type: NotificationTriggerType
+  event_code: string | null
+  template_id: string | null
+  title: string
+  body: string
+  action_url: string | null
+  recipient_selector_type: NotificationRecipientSelectorType
+  recipient_user_ids: string[] | null
+  recipient_count: number
+  created_at: string
+}
+
+export interface NotificationTemplateData {
+  id: string
+  code: string
+  name: string
+  event_code: string | null
+  locale: string
+  title_template: string
+  body_template: string
+  action_url_template: string | null
+  status: NotificationTemplateStatus
+  created_at: string
+  updated_at: string
+}
+
+export interface NotificationRuleData {
+  id: string
+  name: string
+  event_code: string
+  template_id: string
+  template_name: string | null
+  template_code: string | null
+  recipient_selector_type: NotificationRecipientSelectorType
+  recipient_user_ids: string[] | null
+  enabled: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface UserNotificationData {
+  id: string
+  dispatch_id: string
+  title: string
+  body: string
+  action_url: string | null
+  read_at: string | null
+  archived_at: string | null
+  created_at: string
+}
+
+export interface NotificationUnreadCountData {
+  count: number
+}
+
+export interface PageNotificationDispatchParam {
+  keyword?: string
+  trigger_type?: NotificationTriggerType
+  event_code?: string
+  limit?: number
+  offset?: number
+}
+
+export interface SendNotificationParam {
+  title: string
+  body: string
+  action_url?: string
+  recipient_selector_type: Exclude<NotificationRecipientSelectorType, "actor">
+  recipient_user_ids?: string[]
+}
+
+export interface PageNotificationTemplateParam {
+  keyword?: string
+  event_code?: string
+  status?: NotificationTemplateStatus
+  limit?: number
+  offset?: number
+}
+
+export interface CreateNotificationTemplateParam {
+  code: string
+  name: string
+  event_code?: string
+  locale: string
+  title_template: string
+  body_template: string
+  action_url_template?: string
+  status: NotificationTemplateStatus
+}
+
+export interface UpdateNotificationTemplateParam
+  extends CreateNotificationTemplateParam {
+  id: string
+}
+
+export interface PageNotificationRuleParam {
+  keyword?: string
+  event_code?: string
+  enabled?: boolean
+  limit?: number
+  offset?: number
+}
+
+export interface CreateNotificationRuleParam {
+  name: string
+  event_code: string
+  template_id: string
+  recipient_selector_type: NotificationRecipientSelectorType
+  recipient_user_ids?: string[]
+  enabled: boolean
+}
+
+export interface UpdateNotificationRuleParam extends CreateNotificationRuleParam {
+  id: string
+}
+
+export interface PageUserNotificationParam {
+  unread_only?: boolean
+  archived?: boolean
+  limit?: number
+  offset?: number
+}
+
+export interface MarkReadNotificationsParam {
+  ids: string[]
+}
+
+export interface ArchiveNotificationsParam {
+  ids: string[]
+}
+
+export type PaginateNotificationDispatch = PaginateResp<NotificationDispatchData>
+export type PaginateNotificationTemplate = PaginateResp<NotificationTemplateData>
+export type PaginateNotificationRule = PaginateResp<NotificationRuleData>
+export type PaginateUserNotification = PaginateResp<UserNotificationData>

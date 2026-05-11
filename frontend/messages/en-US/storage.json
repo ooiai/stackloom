@@ -1,0 +1,61 @@
+{
+  "page": {
+    "title": "Object Storage",
+    "description": "Browse uploaded objects, prefixes, and access URLs across storage providers.",
+    "emptyTitle": "No objects found",
+    "emptyDescription": "No objects match the current filters."
+  },
+  "filters": {
+    "provider": {
+      "label": "Storage provider",
+      "placeholder": "Select a provider"
+    },
+    "prefix": {
+      "label": "Prefix",
+      "placeholder": "For example images or itembank/editor-images"
+    },
+    "pageSize": {
+      "label": "Page size",
+      "option": "{value} items"
+    }
+  },
+  "table": {
+    "key": "Object key",
+    "size": "Size",
+    "storageClass": "Storage class",
+    "etag": "ETag",
+    "lastModified": "Last modified"
+  },
+  "actions": {
+    "viewDetail": "View details",
+    "preview": "Preview",
+    "copyKey": "Copy key",
+    "copyUrl": "Copy URL"
+  },
+  "detail": {
+    "title": "Object details",
+    "description": "Inspect object metadata and the access URL."
+  },
+  "previewDialog": {
+    "title": "Image preview",
+    "description": "Inspect the signed image with zoom support."
+  },
+  "fields": {
+    "provider": "Provider",
+    "bucket": "Bucket",
+    "key": "Key",
+    "size": "Size (bytes)",
+    "etag": "ETag",
+    "storageClass": "Storage class",
+    "lastModified": "Last modified",
+    "publicUrl": "Public URL"
+  },
+  "pagination": {
+    "pageHint": "Page {page}, {count} items on this page"
+  },
+  "toast": {
+    "keyCopied": "Object key copied",
+    "urlCopied": "Object URL copied",
+    "previewFailed": "Failed to open preview"
+  }
+}

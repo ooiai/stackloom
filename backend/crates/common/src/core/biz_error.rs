@@ -49,3 +49,10 @@ pub const MEMBER_NOT_FOUND: &str = "errors.biz.members.notFound";
 pub const INVITE_CODE_INVALID: &str = "errors.biz.invite.codeInvalid";
 /// The joining user is already a member of the target tenant.
 pub const INVITE_CODE_ALREADY_MEMBER: &str = "errors.biz.invite.alreadyMember";
+
+// 418xxx: notifications
+pub const NOTIFICATION_TEMPLATE_CODE_EXISTS: &str =
+    "errors.biz.notifications.templateCodeExists";
+pub const NOTIFICATION_RECIPIENT_EMPTY: &str = "errors.biz.notifications.recipientEmpty";
+pub const NOTIFICATION_EVENT_ACTOR_REQUIRED: &str =
+    "errors.biz.notifications.eventActorRequired";

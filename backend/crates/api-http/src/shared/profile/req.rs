@@ -1,6 +1,10 @@
+use crate::object_storage::{normalize_optional_nullable_object_ref, validate_object_path_or_url};
+use ::common::config::env_config::EnvConfig;
 use domain_base::{UpdateProfileCmd, UpdateUserCmd, UpdateUserTenantCmd};
+use domain_system::aws::ObjectStorageService;
+use neocrates::response::error::AppResult;
 use neocrates::serde::Deserialize;
-use validator::{Validate, ValidateEmail, ValidateUrl, ValidationError};
+use validator::{Validate, ValidateEmail, ValidationError};
 
 fn validate_nullable_email(email: &String) -> Result<(), ValidationError> {
     let email = email.trim();
@@ -31,15 +35,6 @@ fn validate_nullable_nickname(nickname: &String) -> Result<(), ValidationError> 
     Ok(())
 }
 
-fn validate_nullable_avatar_url(avatar_url: &String) -> Result<(), ValidationError> {
-    let avatar_url = avatar_url.trim();
-    if avatar_url.is_empty() || !avatar_url.validate_url() {
-        return Err(ValidationError::new("url"));
-    }
-
-    Ok(())
-}
-
 fn validate_nullable_membership_text(value: &String) -> Result<(), ValidationError> {
     let value = value.trim();
     if value.is_empty() || value.len() > 100 {
@@ -64,7 +59,7 @@ pub struct UpdateProfileReq {
     pub nickname: Option<Option<String>>,
 
     #[serde(default)]
-    #[validate(custom(function = "validate_nullable_avatar_url"))]
+    #[validate(custom(function = "validate_object_path_or_url"))]
     pub avatar_url: Option<Option<String>>,
 
     #[serde(default)]
@@ -81,6 +76,37 @@ pub struct UpdateProfileReq {
 }
 
 impl UpdateProfileReq {
+    pub fn normalize_avatar_url(
+        self,
+        cfg: &EnvConfig,
+        object_storage_service: &dyn ObjectStorageService,
+    ) -> AppResult<Self> {
+        let Self {
+            email,
+            phone,
+            nickname,
+            avatar_url,
+            display_name,
+            employee_no,
+            job_title,
+        } = self;
+
+        Ok(Self {
+            email,
+            phone,
+            nickname,
+            avatar_url: normalize_optional_nullable_object_ref(
+                cfg,
+                object_storage_service,
+                avatar_url,
+                "avatar_url",
+            )?,
+            display_name,
+            employee_no,
+            job_title,
+        })
+    }
+
     pub fn into_cmd(self) -> UpdateProfileCmd {
         UpdateProfileCmd {
             user: UpdateUserCmd {

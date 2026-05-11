@@ -50,7 +50,9 @@ export function ManagementPageHeader({
         ) : null}
       </div>
 
-      {children ? <div className="border-t border-border/60 px-5 py-3">{children}</div> : null}
+      {children ? (
+        <div className="border-t border-border/60 px-5 py-3">{children}</div>
+      ) : null}
     </section>
   )
 }

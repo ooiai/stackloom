@@ -25,12 +25,13 @@ import { useI18n } from "@/providers/i18n-provider"
 import { cn } from "@/lib/utils"
 import type { MenuTreeNodeData } from "@/types/base.types"
 import {
-  BellIcon,
   ChevronDownIcon,
   LayoutGridIcon,
   Settings2Icon,
 } from "lucide-react"
 import { HeaderUserMenu } from "@/components/base/shared/header-user-menu"
+import { mergeBaseCurrentMenus } from "@/lib/base-navigation"
+import { NotificationBellPopover } from "@/components/base/notifications/notification-bell-popover"
 
 function isItemActive(item: MenuTreeNodeData, pathname: string): boolean {
   if (
@@ -229,11 +230,11 @@ export default function BaseHeader({
 }) {
   const { t } = useI18n()
   const pathname = usePathname()
-  const { user } = useHeaderContext()
+  const { user, menuCodes } = useHeaderContext()
   const { menus: currentMenus } = useCurrentMenus()
 
   const trees = useMemo(() => {
-    return currentMenus.map((node) => ({
+    return mergeBaseCurrentMenus(currentMenus, menuCodes).map((node) => ({
       ...node,
       name: node.name,
       children: node.children.map((child) => ({
@@ -241,7 +242,7 @@ export default function BaseHeader({
         name: child.name,
       })),
     }))
-  }, [currentMenus])
+  }, [currentMenus, menuCodes])
 
   return (
     <header className="border-b px-4 md:px-6">
@@ -327,14 +328,7 @@ export default function BaseHeader({
               onModeChange={onLayoutModeChange}
             />
           ) : null}
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={t("navigation.actions.notifications")}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <BellIcon />
-          </Button>
+          <NotificationBellPopover />
           <Button
             variant="ghost"
             size="icon-sm"

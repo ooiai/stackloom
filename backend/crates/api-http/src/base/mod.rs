@@ -2,11 +2,14 @@ use std::sync::Arc;
 
 use common::config::env_config::EnvConfig;
 use domain_base::{
-    DictService, MenuService, PermService, RoleService, SharedContextService, TenantService,
-    UserService, UserTenantRoleService, UserTenantService,
+    DictService, MenuService, NotificationService, PermService, RoleService, SharedContextService,
+    TenantService, UserService, UserTenantRoleService, UserTenantService,
 };
 use domain_base::{LogRetentionPolicyRepository, OperationLogService};
-use domain_system::{AuditLogService, SystemLogService};
+use domain_system::{
+    AuditLogService, SystemLogService,
+    aws::{ObjectStorageService, StorageBrowseService},
+};
 use neocrates::{
     axum::{Router, middleware},
     middlewares::{interceptor::interceptor, models::MiddlewareConfig},
@@ -17,8 +20,10 @@ pub mod dicts;
 mod logging;
 pub mod logs;
 pub mod menus;
+pub mod notifications;
 pub mod perms;
 pub mod roles;
+pub mod storage;
 pub mod tenants;
 pub mod users;
 
@@ -36,10 +41,13 @@ pub struct BaseHttpState {
     pub user_tenant_service: Arc<dyn UserTenantService>,
     pub user_tenant_role_service: Arc<dyn UserTenantRoleService>,
     pub shared_context_service: Arc<dyn SharedContextService>,
+    pub object_storage_service: Arc<dyn ObjectStorageService>,
+    pub storage_browse_service: Arc<dyn StorageBrowseService>,
     pub system_log_service: Arc<dyn SystemLogService>,
     pub audit_log_service: Arc<dyn AuditLogService>,
     pub operation_log_service: Arc<dyn OperationLogService>,
     pub log_retention_repo: Arc<dyn LogRetentionPolicyRepository>,
+    pub notification_service: Arc<dyn NotificationService>,
 }
 
 /// The users router, which will be nested under the `/users` path.
@@ -59,6 +67,8 @@ pub fn router(state: BaseHttpState, mw: Arc<MiddlewareConfig>) -> Router {
     let role_router = roles::router(state.clone());
     let perm_router = perms::router(state.clone());
     let logs_router = logs::router(state.clone());
+    let storage_router = storage::router(state.clone());
+    let notifications_router = notifications::router(state.clone());
 
     Router::new()
         .with_state(state.clone())
@@ -69,6 +79,8 @@ pub fn router(state: BaseHttpState, mw: Arc<MiddlewareConfig>) -> Router {
         .nest("/roles", role_router)
         .nest("/perms", perm_router)
         .nest("/logs", logs_router)
+        .nest("/storage", storage_router)
+        .nest("/notifications", notifications_router)
         .layer(middleware::from_fn_with_state(
             state,
             crate::request_logging::base_request_trace_middleware,
