@@ -6,6 +6,15 @@ export function formatBytes(bytes: number): string {
   return `${value.toFixed(i === 0 ? 0 : 1)} ${units[i]}`
 }
 
+export function formatSpeed(bytesPerSec: number): string {
+  if (bytesPerSec === 0) return "0 B/s"
+  const units = ["B/s", "KB/s", "MB/s", "GB/s"]
+  const i = Math.floor(Math.log(bytesPerSec) / Math.log(1024))
+  const clamped = Math.min(i, units.length - 1)
+  const value = bytesPerSec / Math.pow(1024, clamped)
+  return `${value.toFixed(clamped === 0 ? 0 : 1)} ${units[clamped]}`
+}
+
 export function formatPercent(used: number, total: number): number {
   if (total === 0) return 0
   return Math.round((used / total) * 100)

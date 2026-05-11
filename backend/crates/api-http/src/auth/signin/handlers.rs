@@ -1,7 +1,7 @@
 use super::{
     req::{
         AccountSigninReq, ChangePasswordReq, QuerySigninTenantsReq, RefreshTokenReq,
-        ResetPasswordReq, SendPasswordResetCodeReq,
+        ResetPasswordReq, SendPasswordResetCodeReq, SwitchTenantAuthReq,
     },
     resp::{AuthTokenResp, SigninTenantOptionResp},
 };
@@ -70,6 +70,17 @@ pub async fn account_signin(
 
     let cmd: AccountSigninCmd = req.into();
     let token = state.auth_service.account_signin(cmd).await?;
+
+    Ok(Json(AuthTokenResp::from(token)))
+}
+
+pub async fn switch_account_auth(
+    State(state): State<SigninState>,
+    Extension(auth_user): Extension<AuthModel>,
+    DetailedJson(req): DetailedJson<SwitchTenantAuthReq>,
+) -> AppResult<Json<AuthTokenResp>> {
+    let cmd = req.into_cmd(auth_user.uid);
+    let token = state.auth_service.switch_tenant_auth(cmd).await?;
 
     Ok(Json(AuthTokenResp::from(token)))
 }

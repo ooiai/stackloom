@@ -15,9 +15,9 @@ use common::core::{
 };
 use domain_auth::{
     AccountSigninCmd, AccountSignupBundle, AccountSignupCmd, AccountSignupResult, AuthRepository,
-    AuthService, AuthToken, ChangePasswordCmd, InviteSignupBundle, InviteSignupCmd,
-    QuerySigninTenantsCmd, RecoveryChannel, RefreshAuthCmd, ResetPasswordCmd,
-    SendPasswordResetCodeCmd, SendSignupCodeCmd,
+    AuthService, AuthToken, AuthUserAccount, ChangePasswordCmd, InviteSignupBundle,
+    InviteSignupCmd, QuerySigninTenantsCmd, RecoveryChannel, RefreshAuthCmd, ResetPasswordCmd,
+    SendPasswordResetCodeCmd, SendSignupCodeCmd, SigninTenantOption, SwitchTenantAuthCmd,
 };
 use domain_base::{
     CreateTenantCmd, CreateUserCmd, CreateUserTenantCmd, CreateUserTenantRoleCmd, Role,
@@ -164,11 +164,7 @@ where
     }
 
     /// Load one user by account and verify that the password and status are valid.
-    async fn load_enabled_user(
-        &self,
-        account: &str,
-        password: &str,
-    ) -> AppResult<domain_auth::AuthUserAccount> {
+    async fn load_enabled_user(&self, account: &str, password: &str) -> AppResult<AuthUserAccount> {
         let user = match self.repository.find_user_by_account(account).await? {
             Some(u) => u,
             None => {
@@ -206,6 +202,81 @@ where
         }
 
         Ok(user)
+    }
+
+    async fn load_enabled_user_by_id(&self, user_id: i64) -> AppResult<AuthUserAccount> {
+        let user = self
+            .repository
+            .find_user_by_id(user_id)
+            .await?
+            .ok_or_else(|| {
+                AppError::DataError(AUTH_ACCOUNT_NOT_FOUND, "account not found".to_string())
+            })?;
+
+        if user.status != 1 {
+            tracing::warn!(
+                user_id = %user.id,
+                status = %user.status,
+                "switch tenant failed: account status not active"
+            );
+            return Err(AppError::DataError(
+                AUTH_ACCOUNT_DISABLED,
+                "account is disabled".to_string(),
+            ));
+        }
+
+        Ok(user)
+    }
+
+    fn select_active_membership(
+        &self,
+        options: Vec<SigninTenantOption>,
+        membership_id: i64,
+        tenant_id: i64,
+    ) -> AppResult<SigninTenantOption> {
+        let selected = options
+            .into_iter()
+            .find(|option| option.membership_id == membership_id && option.tenant_id == tenant_id)
+            .ok_or(AppError::Unauthorized)?;
+
+        if selected.status != 1 {
+            return Err(AppError::ValidationError(
+                "selected tenant is unavailable".to_string(),
+            ));
+        }
+
+        Ok(selected)
+    }
+
+    async fn issue_auth_token(
+        &self,
+        user: AuthUserAccount,
+        selected: SigninTenantOption,
+    ) -> AppResult<AuthToken> {
+        let token = AuthHelper::generate_auth_token(
+            &self.redis_pool,
+            &self.prefix,
+            self.expires_at,
+            self.refresh_expires_at,
+            AuthModel {
+                uid: user.id,
+                mobile: user.phone.unwrap_or_default(),
+                nickname: user.nickname.unwrap_or_default(),
+                username: user.username,
+                tid: selected.tenant_id,
+                tname: selected.tenant_name.clone(),
+                ouid: selected.membership_id,
+                ouname: selected
+                    .display_name
+                    .clone()
+                    .unwrap_or_else(|| selected.tenant_name.clone()),
+                rids: selected.role_ids.clone(),
+                pmsids: Vec::new(),
+            },
+        )
+        .await?;
+
+        Ok(token.into())
     }
 
     fn normalize_signup_contact(channel: RecoveryChannel, contact: &str) -> AppResult<String> {
@@ -443,43 +514,19 @@ where
 
         let user = self.load_enabled_user(&cmd.account, &cmd.password).await?;
         let options = self.repository.list_signin_tenants(user.id).await?;
-        let selected = options
-            .into_iter()
-            .find(|option| {
-                option.membership_id == cmd.membership_id && option.tenant_id == cmd.tenant_id
-            })
-            .ok_or(AppError::Unauthorized)?;
+        let selected = self.select_active_membership(options, cmd.membership_id, cmd.tenant_id)?;
 
-        if selected.status != 1 {
-            return Err(AppError::ValidationError(
-                "selected tenant is unavailable".to_string(),
-            ));
-        }
+        self.issue_auth_token(user, selected).await
+    }
 
-        let token = AuthHelper::generate_auth_token(
-            &self.redis_pool,
-            &self.prefix,
-            self.expires_at,
-            self.refresh_expires_at,
-            AuthModel {
-                uid: user.id,
-                mobile: user.phone.unwrap_or_default(),
-                nickname: user.nickname.unwrap_or_default(),
-                username: user.username,
-                tid: selected.tenant_id,
-                tname: selected.tenant_name.clone(),
-                ouid: selected.membership_id,
-                ouname: selected
-                    .display_name
-                    .clone()
-                    .unwrap_or_else(|| selected.tenant_name.clone()),
-                rids: selected.role_ids.clone(),
-                pmsids: Vec::new(),
-            },
-        )
-        .await?;
+    async fn switch_tenant_auth(&self, cmd: SwitchTenantAuthCmd) -> AppResult<AuthToken> {
+        cmd.validate()?;
 
-        Ok(token.into())
+        let user = self.load_enabled_user_by_id(cmd.user_id).await?;
+        let options = self.repository.list_signin_tenants(user.id).await?;
+        let selected = self.select_active_membership(options, cmd.membership_id, cmd.tenant_id)?;
+
+        self.issue_auth_token(user, selected).await
     }
 
     /// Rotate the current access token and refresh token pair.

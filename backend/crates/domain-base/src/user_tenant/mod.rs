@@ -211,6 +211,19 @@ pub struct TenantMemberView {
     pub joined_at: DateTime<Utc>,
 }
 
+/// Read-only summary of the current user's tenant membership for workspace
+/// switching surfaces.
+#[derive(Debug, Clone)]
+pub struct MyTenantMembershipView {
+    pub membership_id: i64,
+    pub tenant_id: i64,
+    pub tenant_name: String,
+    pub tenant_slug: String,
+    pub plan_code: Option<String>,
+    pub is_default: bool,
+    pub role_names: Vec<String>,
+}
+
 /// Command for paginating tenant members via the web API.
 #[derive(Debug, Clone, Default)]
 pub struct PageTenantMemberCmd {

@@ -40,7 +40,11 @@
     },
     "teamSwitcher": {
       "switchLabel": "Switch workspace",
-      "addTeam": "Add workspace"
+      "addTeam": "Add workspace",
+      "confirmTitle": "Switch workspace",
+      "confirmDescription": "You will continue in {team} with a fresh session.",
+      "confirmAction": "Switch",
+      "confirmCancel": "Cancel"
     },
     "navMain": {
       "dashboard": "Dashboard",

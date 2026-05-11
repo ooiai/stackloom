@@ -22,6 +22,14 @@ export interface SystemSnapshot {
   load_avg_1: number
   load_avg_5: number
   load_avg_15: number
+  disk_read_speed: number
+  disk_write_speed: number
+  net_rx_speed: number
+  net_tx_speed: number
+  hostname: string
+  os_name: string
+  os_version: string
+  kernel_version: string
 }
 
 export interface GpuDeviceInfo {

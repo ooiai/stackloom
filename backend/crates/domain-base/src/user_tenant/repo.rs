@@ -1,7 +1,7 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
 use crate::{
-    UserTenant,
+    MyTenantMembershipView, UserTenant,
     user_tenant::{TenantMemberPageQuery, TenantMemberView, UserTenantPageQuery},
 };
 
@@ -21,6 +21,10 @@ pub trait UserTenantRepository: Send + Sync {
         &self,
         query: &TenantMemberPageQuery,
     ) -> AppResult<(Vec<TenantMemberView>, i64)>;
+
+    /// List tenant memberships for the current user together with tenant role
+    /// labels used by workspace switchers.
+    async fn list_my_tenants(&self, user_id: i64) -> AppResult<Vec<MyTenantMembershipView>>;
 
     /// Update an existing UserTenant.
     async fn update(&self, user_tenant: &UserTenant) -> AppResult<UserTenant>;

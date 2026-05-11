@@ -25,6 +25,14 @@ pub struct SystemSnapshotResp {
     pub load_avg_1: f64,
     pub load_avg_5: f64,
     pub load_avg_15: f64,
+    pub disk_read_speed: u64,
+    pub disk_write_speed: u64,
+    pub net_rx_speed: u64,
+    pub net_tx_speed: u64,
+    pub hostname: String,
+    pub os_name: String,
+    pub os_version: String,
+    pub kernel_version: String,
 }
 
 #[derive(Debug, Serialize)]

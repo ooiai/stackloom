@@ -3,8 +3,9 @@ use std::sync::Arc;
 use chrono::Utc;
 use common::core::{biz_error, constants::SIGNUP_MEMBER_CODE};
 use domain_base::{
-    CreateUserTenantCmd, PageTenantMemberCmd, PageUserTenantCmd, RoleRepository, TenantMemberView,
-    UpdateUserTenantCmd, UserTenant, UserTenantRepository, UserTenantService,
+    CreateUserTenantCmd, MyTenantMembershipView, PageTenantMemberCmd, PageUserTenantCmd,
+    RoleRepository, TenantMemberView, UpdateUserTenantCmd, UserTenant, UserTenantRepository,
+    UserTenantService,
     user_tenant::{TenantMemberPageQuery, UserTenantPageQuery},
 };
 use neocrates::{
@@ -96,6 +97,10 @@ where
         };
 
         self.repository.page(&query).await
+    }
+
+    async fn list_my_tenants(&self, user_id: i64) -> AppResult<Vec<MyTenantMembershipView>> {
+        self.repository.list_my_tenants(user_id).await
     }
 
     async fn update(&self, id: i64, cmd: UpdateUserTenantCmd) -> AppResult<UserTenant> {

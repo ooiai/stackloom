@@ -52,6 +52,22 @@ pub struct SystemSnapshot {
     pub load_avg_5: f64,
     /// 15-minute load average.
     pub load_avg_15: f64,
+    /// Disk read speed in bytes/sec (delta over last 1-second interval).
+    pub disk_read_speed: u64,
+    /// Disk write speed in bytes/sec (delta over last 1-second interval).
+    pub disk_write_speed: u64,
+    /// Network receive speed in bytes/sec (delta over last 1-second interval).
+    pub net_rx_speed: u64,
+    /// Network transmit speed in bytes/sec (delta over last 1-second interval).
+    pub net_tx_speed: u64,
+    /// Hostname of the machine.
+    pub hostname: String,
+    /// OS name (e.g. "Ubuntu").
+    pub os_name: String,
+    /// OS version (e.g. "22.04").
+    pub os_version: String,
+    /// Kernel version string.
+    pub kernel_version: String,
 }
 
 /// A single GPU device's current metrics.

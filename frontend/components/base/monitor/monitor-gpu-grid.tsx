@@ -11,6 +11,12 @@ interface MonitorGpuGridProps {
   gpuStats: GpuStats
 }
 
+const IDLE_PSTATES = ["P8", "P12", "P16"]
+
+function isIdlePState(pstate: string | null): boolean {
+  return pstate != null && IDLE_PSTATES.includes(pstate.toUpperCase())
+}
+
 export function MonitorGpuGrid({ gpuStats }: MonitorGpuGridProps) {
   const { t } = useI18n()
 
@@ -45,12 +51,17 @@ export function MonitorGpuGrid({ gpuStats }: MonitorGpuGridProps) {
                 : "default"
             : "default"
 
+        const idle = isIdlePState(device.pstate)
+        const utilHint = idle
+          ? `${device.name} · ${t("monitor.gpu_idle")} (${device.pstate})`
+          : device.name
+
         return (
           <div key={device.index} className="grid grid-cols-2 gap-4 xl:grid-cols-6">
             <MetricCard
               label={`GPU ${device.index} · ${t("monitor.gpu_utilization")}`}
               value={`${device.utilization_gpu}%`}
-              hint={device.name}
+              hint={utilHint}
               tone={device.utilization_gpu >= 90 ? "warning" : "default"}
               icon={<MonitorIcon className="size-4" />}
               className="xl:col-span-2"
@@ -89,6 +100,14 @@ export function MonitorGpuGrid({ gpuStats }: MonitorGpuGridProps) {
                     ? "warning"
                     : "default"
                 }
+                icon={<ZapIcon className="size-4" />}
+              />
+            )}
+            {device.fan_speed_percent != null && device.fan_speed_percent > 0 && (
+              <MetricCard
+                label={t("monitor.gpu_fan")}
+                value={`${device.fan_speed_percent}%`}
+                tone="default"
                 icon={<ZapIcon className="size-4" />}
               />
             )}

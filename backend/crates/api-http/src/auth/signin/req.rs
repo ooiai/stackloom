@@ -1,6 +1,6 @@
 use domain_auth::{
     AccountSigninCmd, ChangePasswordCmd, QuerySigninTenantsCmd, RecoveryChannel, RefreshAuthCmd,
-    ResetPasswordCmd, SendPasswordResetCodeCmd,
+    ResetPasswordCmd, SendPasswordResetCodeCmd, SwitchTenantAuthCmd,
 };
 use neocrates::{helper::core::serde_helpers, serde::Deserialize};
 use validator::Validate;
@@ -59,6 +59,24 @@ impl From<AccountSigninReq> for AccountSigninCmd {
             code: req.code,
             membership_id: req.membership_id,
             tenant_id: req.tenant_id,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Validate)]
+pub struct SwitchTenantAuthReq {
+    #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
+    pub membership_id: i64,
+    #[serde(deserialize_with = "serde_helpers::deserialize_i64")]
+    pub tenant_id: i64,
+}
+
+impl SwitchTenantAuthReq {
+    pub fn into_cmd(self, user_id: i64) -> SwitchTenantAuthCmd {
+        SwitchTenantAuthCmd {
+            user_id,
+            membership_id: self.membership_id,
+            tenant_id: self.tenant_id,
         }
     }
 }

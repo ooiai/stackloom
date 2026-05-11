@@ -5,7 +5,7 @@ pub use repo::SqlxUserTenantRepository;
 pub use service::UserTenantServiceImpl;
 
 use chrono::{DateTime, Utc};
-use domain_base::{TenantMemberView, UserTenant};
+use domain_base::{MyTenantMembershipView, TenantMemberView, UserTenant};
 use sqlx::FromRow;
 
 #[derive(Debug, Clone, FromRow)]
@@ -81,6 +81,31 @@ impl From<TenantMemberViewRow> for TenantMemberView {
             status: row.status,
             is_tenant_admin: row.is_tenant_admin,
             joined_at: row.joined_at,
+        }
+    }
+}
+
+#[derive(Debug, Clone, FromRow)]
+pub struct MyTenantMembershipViewRow {
+    pub membership_id: i64,
+    pub tenant_id: i64,
+    pub tenant_name: String,
+    pub tenant_slug: String,
+    pub plan_code: Option<String>,
+    pub is_default: bool,
+    pub role_names: Vec<String>,
+}
+
+impl From<MyTenantMembershipViewRow> for MyTenantMembershipView {
+    fn from(row: MyTenantMembershipViewRow) -> Self {
+        Self {
+            membership_id: row.membership_id,
+            tenant_id: row.tenant_id,
+            tenant_name: row.tenant_name,
+            tenant_slug: row.tenant_slug,
+            plan_code: row.plan_code,
+            is_default: row.is_default,
+            role_names: row.role_names,
         }
     }
 }

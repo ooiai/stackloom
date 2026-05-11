@@ -6,33 +6,40 @@ import { ManagementPageHeader } from "@/components/base/shared/management-page-h
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { useI18n } from "@/providers/i18n-provider"
-import type { MonitorMetrics } from "@/types/monitor.types"
+import type { MonitorMetrics, SystemSnapshot } from "@/types/monitor.types"
 import { MonitorAppStatsGrid } from "./monitor-app-stats-grid"
 import { MonitorBusinessSummary } from "./monitor-business-summary"
 import { MonitorCpuCoresGrid } from "./monitor-cpu-cores-grid"
 import { MonitorDatabaseGrid } from "./monitor-database-grid"
 import { MonitorDatabaseTopQueries } from "./monitor-database-top-queries"
+import { MonitorDbRowsChart } from "./monitor-db-rows-chart"
+import { MonitorGpuChart } from "./monitor-gpu-chart"
 import { MonitorGpuGrid } from "./monitor-gpu-grid"
 import { MonitorLatencyChart } from "./monitor-latency-chart"
 import { MonitorLoadAvgGrid } from "./monitor-load-avg-grid"
+import { MonitorNetworkChart } from "./monitor-network-chart"
 import { MonitorNetworkGrid } from "./monitor-network-grid"
 import { MonitorOverviewStrip } from "./monitor-overview-strip"
 import { MonitorProcessGrid } from "./monitor-process-grid"
 import { MonitorRedisGrid } from "./monitor-redis-grid"
+import { MonitorRedisHitChart } from "./monitor-redis-hit-chart"
 import { MonitorRequestChart } from "./monitor-request-chart"
 import { MonitorSectionGroup } from "./monitor-section-group"
 import { MonitorSnapshotGrid } from "./monitor-snapshot-grid"
 import { MonitorStatusChart } from "./monitor-status-chart"
+import { MonitorSystemInfo } from "./monitor-system-info"
 import { MonitorTopEndpoints } from "./monitor-top-endpoints"
 
 interface MonitorPageContainerProps {
   metrics: MonitorMetrics
+  snapshotHistory: SystemSnapshot[]
   isFetching: boolean
   onRefresh: () => void
 }
 
 export function MonitorPageContainer({
   metrics,
+  snapshotHistory,
   isFetching,
   onRefresh,
 }: MonitorPageContainerProps) {
@@ -81,9 +88,11 @@ export function MonitorPageContainer({
         title={t("monitor.group_system")}
         description={t("monitor.group_system_description")}
       >
-        <MonitorSnapshotGrid snapshot={metrics.snapshot} />
+        <MonitorSystemInfo snapshot={metrics.snapshot} />
+        <MonitorSnapshotGrid snapshot={metrics.snapshot} snapshotHistory={snapshotHistory} />
         <MonitorCpuCoresGrid snapshot={metrics.snapshot} />
-        <MonitorNetworkGrid snapshot={metrics.snapshot} />
+        <MonitorNetworkGrid snapshot={metrics.snapshot} snapshotHistory={snapshotHistory} />
+        <MonitorNetworkChart snapshot={metrics.snapshot} />
         <MonitorLoadAvgGrid snapshot={metrics.snapshot} />
       </MonitorSectionGroup>
 
@@ -93,6 +102,7 @@ export function MonitorPageContainer({
         description={t("monitor.group_gpu_description")}
       >
         <MonitorGpuGrid gpuStats={metrics.gpu_stats} />
+        <MonitorGpuChart gpuStats={metrics.gpu_stats} />
       </MonitorSectionGroup>
 
       {/* Group 2: App Runtime */}
@@ -109,6 +119,7 @@ export function MonitorPageContainer({
         description={t("monitor.group_database_description")}
       >
         <MonitorDatabaseGrid databaseStats={metrics.database_stats} />
+        <MonitorDbRowsChart databaseStats={metrics.database_stats} />
         <MonitorDatabaseTopQueries databaseStats={metrics.database_stats} />
       </MonitorSectionGroup>
 
@@ -118,6 +129,7 @@ export function MonitorPageContainer({
         description={t("monitor.group_redis_description")}
       >
         <MonitorRedisGrid redisStats={metrics.redis_stats} />
+        <MonitorRedisHitChart redisStats={metrics.redis_stats} />
       </MonitorSectionGroup>
 
       {/* Group 5: App Performance */}

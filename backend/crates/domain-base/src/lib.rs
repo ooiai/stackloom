@@ -26,8 +26,8 @@ pub mod user_tenant;
 pub use user_tenant::repo::UserTenantRepository;
 pub use user_tenant::service::UserTenantService;
 pub use user_tenant::{
-    CreateUserTenantCmd, PageTenantMemberCmd, PageUserTenantCmd, TenantMemberView,
-    UpdateUserTenantCmd, UserTenant,
+    CreateUserTenantCmd, MyTenantMembershipView, PageTenantMemberCmd, PageUserTenantCmd,
+    TenantMemberView, UpdateUserTenantCmd, UserTenant,
 };
 pub mod user_tenant_role;
 pub use user_tenant_role::repo::UserTenantRoleRepository;

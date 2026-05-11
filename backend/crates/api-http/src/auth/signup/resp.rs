@@ -1,6 +1,17 @@
 use domain_auth::AccountSignupResult;
 use neocrates::serde::Serialize;
 
+#[derive(Debug, Clone, Serialize)]
+pub struct SendSignupCodeResp {
+    pub success: bool,
+}
+
+impl SendSignupCodeResp {
+    pub fn new() -> Self {
+        Self { success: true }
+    }
+}
+
 /// HTTP response returned after self-service signup succeeds.
 ///
 /// The response echoes the verified signup contact together with the generated

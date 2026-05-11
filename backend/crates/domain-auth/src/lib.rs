@@ -127,6 +127,36 @@ impl AccountSigninCmd {
     }
 }
 
+/// Domain command for switching the authenticated user into another active
+/// tenant membership they already belong to.
+#[derive(Debug, Clone)]
+pub struct SwitchTenantAuthCmd {
+    pub user_id: i64,
+    pub membership_id: i64,
+    pub tenant_id: i64,
+}
+
+impl SwitchTenantAuthCmd {
+    pub fn validate(&self) -> AppResult<()> {
+        if self.user_id <= 0 {
+            return Err(AppError::ValidationError(
+                "user_id must be greater than 0".to_string(),
+            ));
+        }
+        if self.membership_id <= 0 {
+            return Err(AppError::ValidationError(
+                "membership_id must be greater than 0".to_string(),
+            ));
+        }
+        if self.tenant_id <= 0 {
+            return Err(AppError::ValidationError(
+                "tenant_id must be greater than 0".to_string(),
+            ));
+        }
+        Ok(())
+    }
+}
+
 /// Domain command for access token refresh.
 #[derive(Debug, Clone)]
 pub struct RefreshAuthCmd {

@@ -26,6 +26,11 @@ export interface AccountSigninParam {
   tenant_id: string
 }
 
+export interface SwitchTenantAuthParam {
+  membership_id: string
+  tenant_id: string
+}
+
 export interface AccountSignupParam {
   channel: RecoveryChannel
   contact: string

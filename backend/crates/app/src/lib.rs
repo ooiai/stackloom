@@ -214,7 +214,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         cfg: cfg.clone(),
         menu_service,
         shared_context_service,
-        tenant_service,
+        user_tenant_service,
         object_storage_service: sys.object_storage_service.clone(),
         notification_service: notification_service.clone(),
     };

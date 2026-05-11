@@ -1,6 +1,6 @@
 use super::{
     req::{AccountSignupReq, InviteSignupReq, SendSignupCodeReq},
-    resp::AccountSignupResp,
+    resp::{AccountSignupResp, SendSignupCodeResp},
 };
 use crate::auth::AuthHttpState;
 use domain_auth::{AccountSignupCmd, InviteSignupCmd, SendSignupCodeCmd};
@@ -20,12 +20,14 @@ pub type SignupState = AuthHttpState;
 pub async fn send_signup_code(
     State(state): State<SignupState>,
     DetailedJson(req): DetailedJson<SendSignupCodeReq>,
-) -> AppResult<()> {
+) -> AppResult<Json<SendSignupCodeResp>> {
     req.validate()
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
     let cmd: SendSignupCodeCmd = req.try_into()?;
-    state.auth_service.send_signup_code(cmd).await
+    state.auth_service.send_signup_code(cmd).await?;
+
+    Ok(Json(SendSignupCodeResp::new()))
 }
 
 /// Create a new account, tenant, and initial membership for self-service signup.

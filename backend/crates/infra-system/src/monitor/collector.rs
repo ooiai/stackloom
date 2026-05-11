@@ -47,6 +47,14 @@ impl SystemMetricsCollector {
             load_avg_1: 0.0,
             load_avg_5: 0.0,
             load_avg_15: 0.0,
+            disk_read_speed: 0,
+            disk_write_speed: 0,
+            net_rx_speed: 0,
+            net_tx_speed: 0,
+            hostname: String::new(),
+            os_name: String::new(),
+            os_version: String::new(),
+            kernel_version: String::new(),
         }));
 
         let snapshot_clone = latest_snapshot.clone();
@@ -59,6 +67,18 @@ impl SystemMetricsCollector {
 
             // Wait a bit to ensure the first refresh is complete and initial data is collected
             tokio::time::sleep(Duration::from_millis(100)).await;
+
+            // Static system info — collected once, stable for lifetime of the process
+            let hostname = System::host_name().unwrap_or_default();
+            let os_name = System::name().unwrap_or_default();
+            let os_version = System::os_version().unwrap_or_default();
+            let kernel_version = System::kernel_version().unwrap_or_default();
+
+            // Previous cumulative values used to compute per-second deltas
+            let mut prev_net_rx: u64 = 0;
+            let mut prev_net_tx: u64 = 0;
+            let mut prev_disk_read: u64 = 0;
+            let mut prev_disk_write: u64 = 0;
 
             // Main loop: refresh at regular intervals
             let mut interval = tokio::time::interval(Duration::from_secs(1));
@@ -73,13 +93,27 @@ impl SystemMetricsCollector {
 
                 // Collect disk info
                 let disks = Disks::new_with_refreshed_list();
-                let (disk_used, disk_total) =
-                    disks.iter().fold((0u64, 0u64), |(used, total), d| {
-                        let d_total = d.total_space();
-                        let d_avail = d.available_space();
-                        let d_used = d_total.saturating_sub(d_avail);
-                        (used + d_used, total + d_total)
-                    });
+                let (disk_used, disk_total, disk_total_read, disk_total_write) =
+                    disks
+                        .iter()
+                        .fold((0u64, 0u64, 0u64, 0u64), |(used, total, dr, dw), d| {
+                            let d_total = d.total_space();
+                            let d_avail = d.available_space();
+                            let d_used = d_total.saturating_sub(d_avail);
+                            let usage = d.usage();
+                            (
+                                used + d_used,
+                                total + d_total,
+                                dr + usage.total_read_bytes,
+                                dw + usage.total_written_bytes,
+                            )
+                        });
+
+                // Per-second disk I/O speed deltas
+                let disk_read_speed = disk_total_read.saturating_sub(prev_disk_read);
+                let disk_write_speed = disk_total_write.saturating_sub(prev_disk_write);
+                prev_disk_read = disk_total_read;
+                prev_disk_write = disk_total_write;
 
                 // Collect network info
                 let networks = Networks::new_with_refreshed_list();
@@ -87,6 +121,12 @@ impl SystemMetricsCollector {
                     networks.iter().fold((0u64, 0u64), |(rx, tx), (_, data)| {
                         (rx + data.total_received(), tx + data.total_transmitted())
                     });
+
+                // Per-second speed deltas
+                let net_rx_speed = net_rx_bytes.saturating_sub(prev_net_rx);
+                let net_tx_speed = net_tx_bytes.saturating_sub(prev_net_tx);
+                prev_net_rx = net_rx_bytes;
+                prev_net_tx = net_tx_bytes;
 
                 // Collect process info
                 let (process_memory_bytes, process_virtual_memory_bytes, process_cpu_percent) =
@@ -150,6 +190,14 @@ impl SystemMetricsCollector {
                     load_avg_1: load.one,
                     load_avg_5: load.five,
                     load_avg_15: load.fifteen,
+                    disk_read_speed,
+                    disk_write_speed,
+                    net_rx_speed,
+                    net_tx_speed,
+                    hostname: hostname.clone(),
+                    os_name: os_name.clone(),
+                    os_version: os_version.clone(),
+                    kernel_version: kernel_version.clone(),
                 };
 
                 *snapshot_clone.write().await = snapshot;

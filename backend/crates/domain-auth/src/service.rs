@@ -3,7 +3,7 @@ use neocrates::{async_trait::async_trait, response::error::AppResult};
 use crate::{
     AccountSigninCmd, AccountSignupCmd, AccountSignupResult, AuthToken, ChangePasswordCmd,
     InviteSignupCmd, QuerySigninTenantsCmd, RefreshAuthCmd, ResetPasswordCmd,
-    SendPasswordResetCodeCmd, SendSignupCodeCmd, SigninTenantOption,
+    SendPasswordResetCodeCmd, SendSignupCodeCmd, SigninTenantOption, SwitchTenantAuthCmd,
 };
 
 /// Domain service contract for auth flows.
@@ -26,6 +26,10 @@ pub trait AuthService: Send + Sync {
     /// The selected membership determines which tenant context and role set are
     /// embedded into the generated auth token payload.
     async fn account_signin(&self, cmd: AccountSigninCmd) -> AppResult<AuthToken>;
+
+    /// Switch the current authenticated session into another active tenant
+    /// membership of the same user and issue a fresh token pair.
+    async fn switch_tenant_auth(&self, cmd: SwitchTenantAuthCmd) -> AppResult<AuthToken>;
 
     /// Refresh the current auth token pair.
     ///

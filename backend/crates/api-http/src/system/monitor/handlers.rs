@@ -74,6 +74,14 @@ pub async fn metrics(
             load_avg_1: snapshot.load_avg_1,
             load_avg_5: snapshot.load_avg_5,
             load_avg_15: snapshot.load_avg_15,
+            disk_read_speed: snapshot.disk_read_speed,
+            disk_write_speed: snapshot.disk_write_speed,
+            net_rx_speed: snapshot.net_rx_speed,
+            net_tx_speed: snapshot.net_tx_speed,
+            hostname: snapshot.hostname,
+            os_name: snapshot.os_name,
+            os_version: snapshot.os_version,
+            kernel_version: snapshot.kernel_version,
         },
         hourly_stats: hourly_stats
             .into_iter()

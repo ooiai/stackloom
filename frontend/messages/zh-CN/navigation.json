@@ -40,7 +40,11 @@
     },
     "teamSwitcher": {
       "switchLabel": "切换工作区",
-      "addTeam": "新建工作区"
+      "addTeam": "新建工作区",
+      "confirmTitle": "确认切换工作区",
+      "confirmDescription": "切换后将以 {team} 的最新会话重新进入。",
+      "confirmAction": "切换",
+      "confirmCancel": "取消"
     },
     "navMain": {
       "dashboard": "概览",

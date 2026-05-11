@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use ::common::config::env_config::EnvConfig;
-use domain_base::{MenuService, NotificationService, SharedContextService, TenantService};
+use domain_base::{MenuService, NotificationService, SharedContextService, UserTenantService};
 use domain_system::aws::ObjectStorageService;
 use neocrates::{
     axum::{Router, middleware},
@@ -18,7 +18,7 @@ pub struct SharedHttpState {
     pub cfg: Arc<EnvConfig>,
     pub menu_service: Arc<dyn MenuService>,
     pub shared_context_service: Arc<dyn SharedContextService>,
-    pub tenant_service: Arc<dyn TenantService>,
+    pub user_tenant_service: Arc<dyn UserTenantService>,
     pub object_storage_service: Arc<dyn ObjectStorageService>,
     pub notification_service: Arc<dyn NotificationService>,
 }

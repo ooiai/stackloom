@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use chrono::Utc;
 use domain_base::{
-    TenantMemberView, UserTenant, UserTenantRepository,
+    MyTenantMembershipView, TenantMemberView, UserTenant, UserTenantRepository,
     user_tenant::{TenantMemberPageQuery, UserTenantPageQuery},
 };
 use neocrates::{
@@ -13,7 +13,7 @@ use neocrates::{
 };
 use sqlx::QueryBuilder;
 
-use super::{TenantMemberViewRow, UserTenantRow};
+use super::{MyTenantMembershipViewRow, TenantMemberViewRow, UserTenantRow};
 
 #[derive(Debug, Clone)]
 pub struct SqlxUserTenantRepository {
@@ -211,6 +211,46 @@ impl UserTenantRepository for SqlxUserTenantRepository {
             .map_err(Self::map_sqlx_error)?;
 
         Ok((rows.into_iter().map(Into::into).collect(), total))
+    }
+
+    async fn list_my_tenants(&self, user_id: i64) -> AppResult<Vec<MyTenantMembershipView>> {
+        let rows = sqlx::query_as::<_, MyTenantMembershipViewRow>(
+            r#"
+            SELECT
+                ut.id AS membership_id,
+                ut.tenant_id,
+                t.name AS tenant_name,
+                t.slug AS tenant_slug,
+                t.plan_code,
+                ut.is_default,
+                COALESCE(
+                    ARRAY_REMOVE(
+                        ARRAY_AGG(DISTINCT r.name) FILTER (WHERE r.name IS NOT NULL),
+                        NULL
+                    ),
+                    ARRAY[]::TEXT[]
+                ) AS role_names
+            FROM user_tenants ut
+            INNER JOIN tenants t
+                ON t.id = ut.tenant_id
+               AND t.deleted_at IS NULL
+            LEFT JOIN user_tenant_roles utr
+                ON utr.user_tenant_id = ut.id
+            LEFT JOIN roles r
+                ON r.id = utr.role_id
+               AND r.deleted_at IS NULL
+            WHERE ut.user_id = $1
+              AND ut.deleted_at IS NULL
+            GROUP BY ut.id, ut.tenant_id, t.name, t.slug, t.plan_code, ut.is_default
+            ORDER BY ut.is_default DESC, t.name ASC, ut.id ASC
+            "#,
+        )
+        .bind(user_id)
+        .fetch_all(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(rows.into_iter().map(Into::into).collect())
     }
 
     async fn update(&self, user_tenant: &UserTenant) -> AppResult<UserTenant> {

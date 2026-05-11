@@ -85,13 +85,14 @@ pub async fn my_tenants(
         auth_user.tid,
     );
 
-    let tenants = state.tenant_service.list_by_user_id(auth_user.uid).await?;
+    let tenants = state
+        .user_tenant_service
+        .list_my_tenants(auth_user.uid)
+        .await?;
 
     let resp = tenants
         .into_iter()
-        .map(|(tenant, is_default)| {
-            MyTenantResp::from_tenant_with_default(tenant, is_default, auth_user.tid)
-        })
+        .map(|tenant| MyTenantResp::from_membership(tenant, auth_user.tid))
         .collect();
 
     Ok(Json(resp))

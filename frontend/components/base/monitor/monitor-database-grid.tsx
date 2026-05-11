@@ -93,20 +93,12 @@ export function MonitorDatabaseGrid({ databaseStats }: MonitorDatabaseGridProps)
         className="xl:col-span-2"
       />
       <MetricCard
-        label={t("monitor.db_rows_read")}
-        value={databaseStats.rows_returned.toLocaleString()}
-        hint={`${t("monitor.db_rows_fetched")}: ${databaseStats.rows_fetched.toLocaleString()}`}
-        tone="default"
-        icon={<DatabaseIcon className="size-4" />}
-        className="xl:col-span-3"
-      />
-      <MetricCard
-        label={t("monitor.db_rows_write")}
-        value={databaseStats.rows_inserted.toLocaleString()}
-        hint={`${t("monitor.db_rows_updated")}: ${databaseStats.rows_updated.toLocaleString()} · ${t("monitor.db_rows_deleted")}: ${databaseStats.rows_deleted.toLocaleString()} · ${t("monitor.db_deadlocks")}: ${databaseStats.deadlocks.toLocaleString()}`}
+        label={t("monitor.db_deadlocks")}
+        value={databaseStats.deadlocks.toLocaleString()}
+        hint={`${t("monitor.db_temp_bytes")}: ${formatBytes(databaseStats.temp_bytes)}`}
         tone={databaseStats.deadlocks > 0 ? "warning" : "default"}
         icon={<ShieldAlertIcon className="size-4" />}
-        className="xl:col-span-3"
+        className="xl:col-span-2"
       />
     </div>
   )

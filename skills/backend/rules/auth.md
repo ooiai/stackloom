@@ -15,7 +15,7 @@ api-http/src/auth/
 ├── mod.rs            — AuthHttpState, router(), request trace middleware
 ├── signin/
 │   ├── mod.rs        — route wiring
-│   ├── handlers.rs   — query_tenants, account_signin, refresh_token, logout
+│   ├── handlers.rs   — query_tenants, account_signin, switch_account_auth, refresh_token, logout
 │   ├── req.rs        — QuerySigninTenantsReq, AccountSigninReq, RefreshTokenReq
 │   └── resp.rs       — SigninTenantOptionResp, AuthTokenResp
 └── signup/
@@ -46,6 +46,7 @@ All auth routes are nested under `/auth`.
 |---|---|---|---|
 | `/auth/signin/tenants` | POST | `query_tenants` | Phase 1: verify credentials + captcha, return tenant options |
 | `/auth/signin/account` | POST | `account_signin` | Phase 2: select membership, issue JWT token pair |
+| `/auth/signin/switch_account_auth` | POST | `switch_account_auth` | Authenticated tenant switch: issue a fresh token pair for another active membership |
 | `/auth/signin/refresh_token` | POST | `refresh_token` | Rotate access + refresh token pair |
 | `/auth/signin/logout` | POST | `logout` | Revoke the current session (requires auth header) |
 | `/auth/signup/send_code` | POST | `send_signup_code` | Verify slider captcha, then send phone/email signup code |
@@ -92,6 +93,18 @@ They are defined as constants in `common/src/core/biz_error.rs`.
    - Verifies the selected membership has `status == 1`.
    - Issues a token pair via `AuthHelper::generate_auth_token`.
 4. Returns `AuthTokenResp { access_token, refresh_token, expires_at, refresh_expires_at }`.
+
+### Phase 2.5 — Tenant Switch (`switch_account_auth`)
+
+`switch_account_auth` is the authenticated version of the same membership-selection logic:
+
+1. Read the current authenticated user id from `AuthModel`.
+2. Validate the requested `membership_id + tenant_id`.
+3. Load that user's existing signin tenant options via `list_signin_tenants(user.id)`.
+4. Require the target membership to exist and have `status == 1`.
+5. Re-issue a fresh opaque token pair via `AuthHelper::generate_auth_token(...)`.
+
+Use this endpoint for workspace switchers. Do **not** fake a tenant switch by only updating local UI state.
 
 The session data (`AuthModel`) stored under the token contains:
 

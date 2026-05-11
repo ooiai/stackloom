@@ -12,6 +12,7 @@ import type {
   SendPasswordResetCodeParam,
   SendSignupCodeParam,
   SigninTenantOption,
+  SwitchTenantAuthParam,
 } from "@/types/auth.types"
 
 const BASIC_AUTH_HEADER = {
@@ -33,6 +34,11 @@ export const signinApi = {
     return post(`${AUTH_SIGNIN_API_PREFIX}/account`, params, {
       headers: BASIC_AUTH_HEADER,
     })
+  },
+  switchAccountAuth: async (
+    params: SwitchTenantAuthParam
+  ): Promise<AuthTokenResult> => {
+    return post(`${AUTH_SIGNIN_API_PREFIX}/switch_account_auth`, params)
   },
   logout: async (): Promise<void> => {
     await post(`${AUTH_SIGNIN_API_PREFIX}/logout`, {})

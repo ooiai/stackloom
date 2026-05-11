@@ -1,8 +1,8 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
 use crate::{
-    CreateUserTenantCmd, PageTenantMemberCmd, PageUserTenantCmd, TenantMemberView,
-    UpdateUserTenantCmd, UserTenant,
+    CreateUserTenantCmd, MyTenantMembershipView, PageTenantMemberCmd, PageUserTenantCmd,
+    TenantMemberView, UpdateUserTenantCmd, UserTenant,
 };
 
 #[async_trait]
@@ -18,6 +18,8 @@ pub trait UserTenantService: Send + Sync {
         &self,
         cmd: PageTenantMemberCmd,
     ) -> AppResult<(Vec<TenantMemberView>, i64)>;
+
+    async fn list_my_tenants(&self, user_id: i64) -> AppResult<Vec<MyTenantMembershipView>>;
 
     async fn update(&self, id: i64, cmd: UpdateUserTenantCmd) -> AppResult<UserTenant>;
 

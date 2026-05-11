@@ -173,12 +173,14 @@ export interface UpdateUserProfileParam {
 }
 
 export interface MyTenantData {
+  membership_id: string
   id: string
   name: string
   slug: string
   plan_code: string | null
   is_default: boolean
   is_current: boolean
+  role_names: string[]
 }
 
 export interface TenantData {

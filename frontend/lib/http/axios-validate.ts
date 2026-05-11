@@ -57,7 +57,7 @@ export function useAxiosErrorHandler() {
     // Prefer stable string key returned by backend DataError
     if (error.error_key) {
       toast.warning(t(error.error_key))
-      return Promise.reject(error)
+      return
     }
 
     // Generic fallback handling by numeric code
@@ -118,7 +118,6 @@ export function useAxiosErrorHandler() {
       default:
         toast.error(t("errors.http.unknown"))
     }
-    return Promise.reject(error)
   }
 
   // 处理 HTTP 状态码
