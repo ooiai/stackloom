@@ -38,7 +38,9 @@
   },
   "previewDialog": {
     "title": "图片预览",
-    "description": "放大查看已签名的图片对象。"
+    "description": "放大查看已签名的图片对象。",
+    "loadErrorTitle": "图片加载失败",
+    "loadErrorDescription": "该对象无法在内置预览弹层中渲染。"
   },
   "fields": {
     "provider": "Provider",

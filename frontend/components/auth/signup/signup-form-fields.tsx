@@ -15,6 +15,8 @@ interface SignupFormFieldsProps {
   values: SignupFormValues
   errors: SignupFormErrors
   isLoading: boolean
+  showTenantField: boolean
+  inviteTenantName?: string | null
   onValueChange: (key: keyof SignupFormValues, value: string) => void
 }
 
@@ -22,6 +24,8 @@ export function SignupFormFields({
   values,
   errors,
   isLoading,
+  showTenantField,
+  inviteTenantName,
   onValueChange,
 }: SignupFormFieldsProps) {
   const { t } = useI18n()
@@ -62,22 +66,37 @@ export function SignupFormFields({
         {errors.nickname ? <FieldError>{errors.nickname}</FieldError> : null}
       </Field>
 
-      <LabelField
-        label={t("auth.signup.tenantLabel")}
-        htmlFor="form-signup-tenant"
-        invalid={!!errors.tenant_name}
-        error={errors.tenant_name}
-        tooltip={{ content: t("auth.signup.tenantHint") }}
-      >
-        <Input
-          id="form-signup-tenant"
-          type="text"
-          placeholder={t("auth.signup.tenantPlaceholder")}
-          disabled={isLoading}
-          value={values.tenant_name}
-          onChange={(event) => onValueChange("tenant_name", event.target.value)}
-        />
-      </LabelField>
+      {showTenantField ? (
+        <LabelField
+          label={t("auth.signup.tenantLabel")}
+          htmlFor="form-signup-tenant"
+          invalid={!!errors.tenant_name}
+          error={errors.tenant_name}
+          tooltip={{ content: t("auth.signup.tenantHint") }}
+        >
+          <Input
+            id="form-signup-tenant"
+            type="text"
+            placeholder={t("auth.signup.tenantPlaceholder")}
+            disabled={isLoading}
+            value={values.tenant_name}
+            onChange={(event) => onValueChange("tenant_name", event.target.value)}
+          />
+        </LabelField>
+      ) : (
+        <Field>
+          <FieldLabel htmlFor="form-signup-invite-tenant">
+            {t("auth.signup.invite.tenantLabel")}
+          </FieldLabel>
+          <Input
+            id="form-signup-invite-tenant"
+            type="text"
+            disabled
+            readOnly
+            value={inviteTenantName ?? ""}
+          />
+        </Field>
+      )}
 
       <Field data-invalid={!!errors.password}>
         <FieldLabel htmlFor="form-signup-password">

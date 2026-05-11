@@ -7,14 +7,15 @@ use common::core::{
         AUTH_CREDENTIAL_INVALID, AUTH_RECOVERY_CODE_INVALID, AUTH_TENANT_EXISTS,
     },
     constants::{
-        CACHE_PASSWORD_RESET_EMAIL_CODE, CACHE_PASSWORD_RESET_PHONE_CODE,
+        CACHE_INVITE_CODE_LOOKUP, CACHE_PASSWORD_RESET_EMAIL_CODE, CACHE_PASSWORD_RESET_PHONE_CODE,
         CACHE_PASSWORD_RESET_SEND_COOLDOWN, SIGNUP_ADMIN_CODE, get_email_regex, get_mobile_regex,
     },
 };
 use domain_auth::{
     AccountSigninCmd, AccountSignupBundle, AccountSignupCmd, AccountSignupResult, AuthRepository,
-    AuthService, AuthToken, ChangePasswordCmd, QuerySigninTenantsCmd, RecoveryChannel,
-    RefreshAuthCmd, ResetPasswordCmd, SendPasswordResetCodeCmd,
+    AuthService, AuthToken, ChangePasswordCmd, InviteSignupBundle, InviteSignupCmd,
+    QuerySigninTenantsCmd, RecoveryChannel, RefreshAuthCmd, ResetPasswordCmd,
+    SendPasswordResetCodeCmd,
 };
 use domain_base::{
     CreateTenantCmd, CreateUserCmd, CreateUserTenantCmd, CreateUserTenantRoleCmd, Role,
@@ -276,6 +277,44 @@ where
                 ))
             })
     }
+
+    /// Resolve an invite code to the existing tenant summary needed for
+    /// invite-aware signup.
+    async fn resolve_invited_tenant(
+        &self,
+        invite_code: &str,
+    ) -> AppResult<domain_auth::AuthTenantSummary> {
+        let lookup_key = format!("{}{}{}", self.prefix, CACHE_INVITE_CODE_LOOKUP, invite_code);
+        let tenant_id_str = self
+            .redis_pool
+            .get::<_, String>(&lookup_key)
+            .await
+            .ok()
+            .flatten()
+            .ok_or_else(|| {
+                AppError::DataError(
+                    common::core::biz_error::INVITE_CODE_INVALID,
+                    format!("invite code not found or expired: {invite_code}"),
+                )
+            })?;
+
+        let tenant_id: i64 = tenant_id_str.parse().map_err(|_| {
+            AppError::DataError(
+                common::core::biz_error::INVITE_CODE_INVALID,
+                format!("invalid tenant_id in invite lookup: {tenant_id_str}"),
+            )
+        })?;
+
+        self.repository
+            .find_tenant_by_id(tenant_id)
+            .await?
+            .ok_or_else(|| {
+                AppError::DataError(
+                    common::core::biz_error::INVITE_CODE_INVALID,
+                    format!("tenant not found for invite code: {invite_code}"),
+                )
+            })
+    }
 }
 
 #[async_trait]
@@ -501,6 +540,80 @@ where
             username,
             tenant_name,
             tenant_slug,
+        })
+    }
+
+    /// Create a new account directly inside the tenant referenced by the invite.
+    async fn invite_signup(&self, cmd: InviteSignupCmd) -> AppResult<AccountSignupResult> {
+        cmd.validate()?;
+        self.validate_slider_captcha(&cmd.account, &cmd.code, true)
+            .await?;
+
+        let normalized_account = cmd.account.trim().to_string();
+        if self
+            .repository
+            .find_user_by_account(&normalized_account)
+            .await?
+            .is_some()
+        {
+            return Err(AppError::DataError(
+                AUTH_ACCOUNT_EXISTS,
+                "account already exists".to_string(),
+            ));
+        }
+
+        let tenant = self.resolve_invited_tenant(cmd.invite_code.trim()).await?;
+        let password_hash = Crypto::hash_password(&cmd.password)
+            .map_err(|err| AppError::data_here(format!("failed to hash signup password: {err}")))?;
+        let nickname = cmd
+            .nickname
+            .as_ref()
+            .map(|value| value.trim().to_string())
+            .filter(|value| !value.is_empty());
+        let display_name = nickname
+            .clone()
+            .or_else(|| Some(normalized_account.clone()));
+
+        let (username, phone) = Self::build_signup_identity(&normalized_account);
+        let user = User::new(CreateUserCmd {
+            id: generate_sonyflake_id() as i64,
+            username: username.clone(),
+            email: None,
+            phone,
+            password_hash,
+            nickname: nickname.clone(),
+            avatar_url: None,
+            gender: 0,
+            // Invite signup must create an account that can sign in immediately.
+            status: 1,
+            bio: None,
+        })
+        .map_err(|err| AppError::ValidationError(err.to_string()))?;
+
+        let user_tenant = UserTenant::new(CreateUserTenantCmd {
+            id: generate_sonyflake_id() as i64,
+            user_id: user.id,
+            tenant_id: tenant.id,
+            display_name,
+            employee_no: None,
+            job_title: None,
+            status: 1,
+            is_default: true,
+            is_tenant_admin: false,
+            joined_at: Utc::now(),
+            invited_by: None,
+        })
+        .map_err(|err| AppError::ValidationError(err.to_string()))?;
+
+        self.repository
+            .create_invite_signup_bundle(&InviteSignupBundle { user, user_tenant })
+            .await?;
+
+        Ok(AccountSignupResult {
+            account: normalized_account,
+            username,
+            tenant_name: tenant.name,
+            tenant_slug: tenant.slug,
         })
     }
 

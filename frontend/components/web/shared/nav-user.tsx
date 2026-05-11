@@ -3,6 +3,7 @@
 import { useState } from "react"
 
 import {
+  Bell,
   ChevronsUpDown,
   KeyRound,
   LogOut,
@@ -13,6 +14,7 @@ import {
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 
+import type { NotificationBellData } from "@/components/base/notifications/hooks/use-notification-bell"
 import { AccountSettingsDialog } from "@/components/base/shared/account-settings-dialog"
 import { ChangePasswordDialog } from "@/components/base/shared/change-password-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -37,7 +39,13 @@ import { signinApi } from "@/stores/auth-api"
 import type { HeaderContextUserData } from "@/types/base.types"
 import { getNameAbbr } from "@/lib/core"
 
-export function NavUser({ user }: { user: HeaderContextUserData | null }) {
+export function NavUser({
+  user,
+  notificationBellData,
+}: {
+  user: HeaderContextUserData | null
+  notificationBellData: NotificationBellData
+}) {
   const { isMobile } = useSidebar()
   const router = useRouter()
   const t = useTranslations("navigation.dashboard.navUser")
@@ -104,6 +112,11 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
     window.setTimeout(() => {
       setChangePasswordOpen(true)
     }, 0)
+  }
+
+  function handleOpenNotifications() {
+    setMenuOpen(false)
+    router.push(ROUTER_ENUM.NOTIFICATIONS)
   }
 
   return (
@@ -181,6 +194,21 @@ export function NavUser({ user }: { user: HeaderContextUserData | null }) {
               >
                 <Settings2 className="size-4" />
                 {t("account")}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={handleOpenNotifications}
+                className="gap-1.5 rounded-md px-2 py-2 hover:bg-primary/5 focus:bg-primary/5"
+              >
+                <Bell className="size-4" />
+                <span>{t("notifications")}</span>
+                {notificationBellData.unreadCount > 0 ? (
+                  <span className="ml-auto inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-medium text-primary-foreground">
+                    {notificationBellData.unreadCount > 99
+                      ? "99+"
+                      : notificationBellData.unreadCount}
+                  </span>
+                ) : null}
               </DropdownMenuItem>
 
               <DropdownMenuItem

@@ -2,8 +2,8 @@ use neocrates::{async_trait::async_trait, response::error::AppResult};
 
 use crate::{
     AccountSigninCmd, AccountSignupCmd, AccountSignupResult, AuthToken, ChangePasswordCmd,
-    QuerySigninTenantsCmd, RefreshAuthCmd, ResetPasswordCmd, SendPasswordResetCodeCmd,
-    SigninTenantOption,
+    InviteSignupCmd, QuerySigninTenantsCmd, RefreshAuthCmd, ResetPasswordCmd,
+    SendPasswordResetCodeCmd, SigninTenantOption,
 };
 
 /// Domain service contract for auth flows.
@@ -38,6 +38,12 @@ pub trait AuthService: Send + Sync {
     /// A successful signup creates the user, tenant, default role, and initial
     /// membership together, then returns the created account summary.
     async fn account_signup(&self, cmd: AccountSignupCmd) -> AppResult<AccountSignupResult>;
+
+    /// Execute invite-aware signup.
+    ///
+    /// A successful invite signup creates the user account plus a membership for
+    /// the tenant resolved from the invite code, without creating a new tenant.
+    async fn invite_signup(&self, cmd: InviteSignupCmd) -> AppResult<AccountSignupResult>;
 
     /// Logout the current user.
     ///

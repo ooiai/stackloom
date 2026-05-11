@@ -143,6 +143,6 @@
   },
   "tools-notifications": {
     "name": "Notifications",
-    "remark": "Manage manual sends, templates, and automatic rules"
+    "remark": "Manage manual sends, templates, and event rules"
   }
 }

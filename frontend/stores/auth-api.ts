@@ -6,6 +6,7 @@ import type {
   ChangePasswordParam,
   AccountSignupParam,
   AccountSignupResult,
+  InviteSignupParam,
   QuerySigninTenantsParam,
   ResetPasswordParam,
   SendPasswordResetCodeParam,
@@ -55,6 +56,11 @@ export const signupApi = {
     params: AccountSignupParam
   ): Promise<AccountSignupResult> => {
     return post(`${AUTH_SIGNUP_API_PREFIX}/account`, params, {
+      headers: BASIC_AUTH_HEADER,
+    })
+  },
+  inviteSignup: async (params: InviteSignupParam): Promise<AccountSignupResult> => {
+    return post(`${AUTH_SIGNUP_API_PREFIX}/invite`, params, {
       headers: BASIC_AUTH_HEADER,
     })
   },

@@ -3,6 +3,7 @@ import CryptUtil from "@/lib/crypt"
 import type {
   AccountSignupParam,
   AccountSignupResult,
+  InviteSignupParam,
 } from "@/types/auth.types"
 import type { SliderCaptcha } from "@/types/system.types"
 import { z } from "zod"
@@ -87,6 +88,22 @@ export function buildAccountSignupParam(
     nickname: values.nickname.trim() || undefined,
     // Let the backend auto-generate the tenant when the signup form leaves this blank.
     tenant_name: values.tenant_name.trim() || undefined,
+  }
+}
+
+export function buildInviteSignupParam(
+  values: SignupFormValues,
+  verifyData: { x: number; y: number },
+  inviteCode: string
+): InviteSignupParam {
+  const payload = buildSignupCaptchaPayload(values, verifyData)
+
+  return {
+    account: payload.account,
+    password: payload.password ?? "",
+    code: payload.code,
+    nickname: values.nickname.trim() || undefined,
+    invite_code: inviteCode,
   }
 }
 

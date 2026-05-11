@@ -12,10 +12,9 @@ use domain_base::{
     PageUserNotificationCmd, PublishNotificationCmd, UpdateNotificationRuleCmd,
     UpdateNotificationTemplateCmd, UserNotification,
     notification::{
-        NotificationDispatchPageQuery, NotificationRulePageQuery,
-        NotificationTemplatePageQuery, UserNotificationPageQuery,
         NOTIFICATION_STREAM_REASON_CREATED, NOTIFICATION_STREAM_REASON_REFRESH,
-        NOTIFICATION_TRIGGER_DIRECT, NOTIFICATION_TRIGGER_EVENT,
+        NOTIFICATION_TRIGGER_DIRECT, NOTIFICATION_TRIGGER_EVENT, NotificationDispatchPageQuery,
+        NotificationRulePageQuery, NotificationTemplatePageQuery, UserNotificationPageQuery,
     },
 };
 use neocrates::{
@@ -119,11 +118,7 @@ where
 
         let recipient_user_ids = self
             .repository
-            .resolve_recipient_user_ids(
-                cmd.tenant_id,
-                &cmd.recipient_selector,
-                cmd.created_by,
-            )
+            .resolve_recipient_user_ids(cmd.tenant_id, &cmd.recipient_selector, cmd.created_by)
             .await?;
 
         if recipient_user_ids.is_empty() {
@@ -245,7 +240,10 @@ impl<R> NotificationService for NotificationServiceImpl<R>
 where
     R: NotificationRepository,
 {
-    async fn create_template(&self, mut cmd: CreateNotificationTemplateCmd) -> AppResult<NotificationTemplate> {
+    async fn create_template(
+        &self,
+        mut cmd: CreateNotificationTemplateCmd,
+    ) -> AppResult<NotificationTemplate> {
         cmd.validate()
             .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
@@ -280,7 +278,9 @@ where
             .repository
             .find_template_by_id(tenant_id, id)
             .await?
-            .ok_or_else(|| AppError::not_found_here(format!("notification template not found: {id}")))?;
+            .ok_or_else(|| {
+                AppError::not_found_here(format!("notification template not found: {id}"))
+            })?;
 
         if let Some(existing) = self
             .repository
@@ -332,8 +332,8 @@ where
             })?;
 
         cmd.id = generate_sonyflake_id() as i64;
-        let rule = NotificationRule::new(cmd)
-            .map_err(|err| AppError::ValidationError(err.to_string()))?;
+        let rule =
+            NotificationRule::new(cmd).map_err(|err| AppError::ValidationError(err.to_string()))?;
         self.repository.create_rule(&rule).await
     }
 
@@ -360,7 +360,9 @@ where
             .repository
             .find_rule_by_id(tenant_id, id)
             .await?
-            .ok_or_else(|| AppError::not_found_here(format!("notification rule not found: {id}")))?;
+            .ok_or_else(|| {
+                AppError::not_found_here(format!("notification rule not found: {id}"))
+            })?;
 
         rule.apply_update(cmd)
             .map_err(|err| AppError::ValidationError(err.to_string()))?;
@@ -393,7 +395,8 @@ where
     }
 
     async fn publish_event(&self, event: NotificationEvent) -> AppResult<usize> {
-        event.validate()
+        event
+            .validate()
             .map_err(|err| AppError::ValidationError(err.to_string()))?;
 
         let rules = self
@@ -416,7 +419,8 @@ where
                 }
             };
 
-            if matches!(selector, NotificationRecipientSelector::Actor) && event.actor_user_id.is_none()
+            if matches!(selector, NotificationRecipientSelector::Actor)
+                && event.actor_user_id.is_none()
             {
                 tracing::warn!(
                     rule_id = rule.id,

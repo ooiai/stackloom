@@ -11,7 +11,7 @@ import {
 import type { TranslateFn } from "@/lib/i18n"
 import { formatDateTimeAt } from "@/lib/time"
 import type { ColumnDef } from "@tanstack/react-table"
-import { CopyIcon, EllipsisIcon, EyeIcon, ExternalLinkIcon } from "lucide-react"
+import { CopyIcon, EllipsisIcon, EyeIcon, ImageIcon } from "lucide-react"
 import type { StorageRowData } from "./helpers"
 import { formatStorageBytes, formatStorageValue } from "./helpers"
 
@@ -39,7 +39,9 @@ export function createStorageColumns({
       ),
       cell: ({ row }) => (
         <div className="space-y-1">
-          <p className="font-medium text-foreground break-all">{row.original.key}</p>
+          <p className="font-medium break-all text-foreground">
+            {row.original.key}
+          </p>
           <p className="text-xs text-muted-foreground">
             {row.original.bucket} / {row.original.provider}
           </p>
@@ -81,7 +83,9 @@ export function createStorageColumns({
         <DataGridColumnHeader title={t("storage.table.etag")} column={column} />
       ),
       cell: ({ row }) => (
-        <span className="font-mono text-xs">{formatStorageValue(row.original.etag)}</span>
+        <span className="font-mono text-xs">
+          {formatStorageValue(row.original.etag)}
+        </span>
       ),
       size: 220,
       enableSorting: false,
@@ -121,7 +125,7 @@ export function createStorageColumns({
               {t("storage.actions.viewDetail")}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onPreview(row.original)}>
-              <ExternalLinkIcon />
+              <ImageIcon />
               {t("storage.actions.preview")}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onCopyKey(row.original)}>

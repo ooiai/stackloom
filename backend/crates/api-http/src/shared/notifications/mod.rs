@@ -3,7 +3,10 @@ pub mod req;
 pub mod resp;
 
 use super::SharedHttpState;
-use neocrates::axum::{Router, routing::{get, post}};
+use neocrates::axum::{
+    Router,
+    routing::{get, post},
+};
 
 pub fn router(state: SharedHttpState) -> Router {
     Router::new()

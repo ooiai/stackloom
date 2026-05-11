@@ -211,7 +211,7 @@ export function NotificationsSendDialog({
 
             <div className="flex items-center justify-end gap-2">
               <DialogPrimitive.Close render={<Button variant="outline" type="button" />}>
-                {t("common.actions.cancel", undefined, "取消")}
+                {t("common.actions.cancel")}
               </DialogPrimitive.Close>
               <Button type="submit" disabled={isBusy}>
                 {isBusy ? <Spinner className="size-4" /> : null}

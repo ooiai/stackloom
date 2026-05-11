@@ -3,11 +3,7 @@ use domain_base::{
     PageNotificationDispatchCmd, PageNotificationRuleCmd, PageNotificationTemplateCmd,
     PublishNotificationCmd, UpdateNotificationRuleCmd, UpdateNotificationTemplateCmd,
 };
-use neocrates::{
-    helper::core::serde_helpers,
-    serde::Deserialize,
-    serde_json::json,
-};
+use neocrates::{helper::core::serde_helpers, serde::Deserialize, serde_json::json};
 use validator::{Validate, ValidationError};
 
 fn validate_recipient_selector(value: &str) -> Result<(), ValidationError> {
@@ -85,7 +81,10 @@ pub struct SendNotificationReq {
     #[validate(custom(function = "validate_recipient_selector"))]
     pub recipient_selector_type: String,
 
-    #[serde(default, deserialize_with = "serde_helpers::deserialize_vec_option_i64")]
+    #[serde(
+        default,
+        deserialize_with = "serde_helpers::deserialize_vec_option_i64"
+    )]
     pub recipient_user_ids: Option<Vec<i64>>,
 }
 
@@ -247,7 +246,10 @@ pub struct CreateNotificationRuleReq {
     #[validate(custom(function = "validate_recipient_selector"))]
     pub recipient_selector_type: String,
 
-    #[serde(default, deserialize_with = "serde_helpers::deserialize_vec_option_i64")]
+    #[serde(
+        default,
+        deserialize_with = "serde_helpers::deserialize_vec_option_i64"
+    )]
     pub recipient_user_ids: Option<Vec<i64>>,
 
     pub enabled: bool,
@@ -292,7 +294,10 @@ pub struct UpdateNotificationRuleReq {
     #[validate(custom(function = "validate_recipient_selector"))]
     pub recipient_selector_type: String,
 
-    #[serde(default, deserialize_with = "serde_helpers::deserialize_vec_option_i64")]
+    #[serde(
+        default,
+        deserialize_with = "serde_helpers::deserialize_vec_option_i64"
+    )]
     pub recipient_user_ids: Option<Vec<i64>>,
 
     pub enabled: bool,

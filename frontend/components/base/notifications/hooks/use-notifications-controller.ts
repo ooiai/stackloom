@@ -295,6 +295,15 @@ export function useNotificationsController() {
         }
         setRuleDialog((current) => ({ ...current, open }))
       },
+      onOpenCreateTemplate: () => {
+        setRuleDialog(DEFAULT_RULE_DIALOG)
+        setActivePanel("templates")
+        setTemplateDialog({
+          open: true,
+          mode: "create",
+          item: null,
+        })
+      },
       onSubmit: (values: NotificationRuleFormValues) => {
         if (ruleDialog.mode === "update" && ruleDialog.item) {
           return updateRuleMutation.mutateAsync({

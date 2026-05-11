@@ -49,6 +49,7 @@ All auth routes are nested under `/auth`.
 | `/auth/signin/refresh_token` | POST | `refresh_token` | Rotate access + refresh token pair |
 | `/auth/signin/logout` | POST | `logout` | Revoke the current session (requires auth header) |
 | `/auth/signup/account` | POST | `account_signup` | Self-service signup: create user + tenant + role binding |
+| `/auth/signup/invite` | POST | `invite_signup` | Invite-aware signup: create user + membership inside the invited tenant |
 
 ---
 
@@ -176,6 +177,33 @@ The signup role is **not hardcoded** in `infra-auth`. The role template is loade
 
 Newly signed-up users have `status = 0` (disabled). They must be activated by a tenant admin
 or via a verification flow before they can sign in.
+
+---
+
+## 6.1 Invite-Aware Signup Flow
+
+Invite-aware signup is a separate auth path for public invite acceptance. It does
+**not** reuse self-service tenant creation semantics.
+
+### Invite signup steps
+
+1. Validate the request DTO.
+2. Consume the slider captcha from Redis.
+3. Check for duplicate account (returns `errors.biz.auth.accountExists`).
+4. Resolve the tenant from Redis invite lookup data (`CACHE_INVITE_CODE_LOOKUP`).
+5. Hash the password via `Crypto::hash_password`.
+6. Detect phone vs username from the account string (11-digit all-numeric → phone).
+7. Build the aggregate records:
+   - `User` with `status = 1` so the new invitee can sign in immediately
+   - `UserTenant` with `status = 1`, `is_default = true`, `is_tenant_admin = false`
+8. Persist the user + membership transactionally via `create_invite_signup_bundle(...)`.
+9. Return `AccountSignupResp { account, username, tenant_name, tenant_slug }` for the invited tenant.
+
+### Important invite-signup rules
+
+- Do not create a new tenant in invite signup.
+- Do not bind the invitee to the self-service signup admin role template.
+- Keep invite-code resolution inside the auth service or infra layer, not in handlers.
 
 ---
 

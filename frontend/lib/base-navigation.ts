@@ -143,7 +143,7 @@ export const BASE_CURRENT_MENU_ITEMS: MenuItem[] = [
     path: "/tools/notifications",
     sort: 5,
     visible: 1,
-    remark: "管理手动通知、事件模板和自动规则",
+    remark: "管理手动通知、事件模板和事件规则",
   },
   {
     id: "tools-storage",

@@ -7,6 +7,13 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/reui/select"
 import { Spinner } from "@/components/ui/spinner"
 import { Switch } from "@/components/ui/switch"
 import { useI18n } from "@/providers/i18n-provider"
@@ -31,6 +38,7 @@ interface NotificationsRuleDialogProps {
   templateOptions: NotificationTemplateOption[]
   isBusy: boolean
   onOpenChange: (open: boolean) => void
+  onOpenCreateTemplate: () => void
   onSubmit: (values: NotificationRuleFormValues) => Promise<unknown>
 }
 
@@ -42,9 +50,11 @@ export function NotificationsRuleDialog({
   templateOptions,
   isBusy,
   onOpenChange,
+  onOpenCreateTemplate,
   onSubmit,
 }: NotificationsRuleDialogProps) {
   const { t } = useI18n()
+  const hasTemplateOptions = templateOptions.length > 0
   const [values, setValues] = useState<NotificationRuleFormValues>(
     createRuleFormValues(item)
   )
@@ -52,6 +62,13 @@ export function NotificationsRuleDialog({
     Partial<Record<keyof NotificationRuleFormValues, string>>
   >({})
   const schema = useMemo(() => createNotificationRuleSchema(t), [t])
+  const selectedTemplateLabel =
+    templateOptions.find((option) => option.id === values.template_id)?.label ??
+    undefined
+  const selectedRecipientSelectorLabel = formatRecipientSelectorLabel(
+    t,
+    values.recipient_selector_type
+  )
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen && isBusy) {
@@ -150,27 +167,50 @@ export function NotificationsRuleDialog({
                 <FieldLabel htmlFor="notification-rule-template">
                   {t("notifications.form.template")}
                 </FieldLabel>
-                <select
-                  id="notification-rule-template"
-                  disabled={isBusy}
+                <Select
                   value={values.template_id}
-                  onChange={(event) =>
+                  onValueChange={(value) =>
                     setValues((current) => ({
                       ...current,
-                      template_id: event.target.value,
+                      template_id: value ?? "",
                     }))
                   }
-                  className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <option value="">{t("notifications.placeholders.template")}</option>
-                  {templateOptions.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger
+                    className="w-full"
+                    id="notification-rule-template"
+                    disabled={isBusy || !hasTemplateOptions}
+                    aria-invalid={!!errors.template_id}
+                  >
+                    <SelectValue placeholder={t("notifications.placeholders.template")}>
+                      {selectedTemplateLabel}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {templateOptions.map((option) => (
+                      <SelectItem key={option.id} value={option.id}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 {errors.template_id ? (
                   <FieldError>{errors.template_id}</FieldError>
+                ) : null}
+                {!hasTemplateOptions ? (
+                  <div className="flex items-center justify-between gap-3 rounded-md border border-dashed border-border/70 bg-muted/30 px-3 py-2">
+                    <p className="text-xs text-muted-foreground">
+                      {t("notifications.dialogs.rule.noTemplates")}
+                    </p>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={onOpenCreateTemplate}
+                    >
+                      {t("notifications.actions.newTemplate")}
+                    </Button>
+                  </div>
                 ) : null}
               </Field>
             </div>
@@ -179,29 +219,37 @@ export function NotificationsRuleDialog({
               <FieldLabel htmlFor="notification-rule-selector">
                 {t("notifications.form.recipientSelector")}
               </FieldLabel>
-              <select
-                id="notification-rule-selector"
-                disabled={isBusy}
+              <Select
                 value={values.recipient_selector_type}
-                onChange={(event) =>
-                  setValues((current) => ({
-                    ...current,
-                    recipient_selector_type:
-                      event.target.value as NotificationRuleFormValues["recipient_selector_type"],
-                    recipient_user_ids:
-                      event.target.value === "explicit_users"
-                        ? current.recipient_user_ids
-                        : [],
-                  }))
+                onValueChange={(value) =>
+                  value
+                    ? setValues((current) => ({
+                        ...current,
+                        recipient_selector_type:
+                          value as NotificationRuleFormValues["recipient_selector_type"],
+                        recipient_user_ids:
+                          value === "explicit_users"
+                            ? current.recipient_user_ids
+                            : [],
+                      }))
+                    : undefined
                 }
-                className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                {RULE_RECIPIENT_SELECTOR_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {formatRecipientSelectorLabel(t, option.value)}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger
+                  className="w-full"
+                  id="notification-rule-selector"
+                  disabled={isBusy}
+                >
+                  <SelectValue>{selectedRecipientSelectorLabel}</SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {RULE_RECIPIENT_SELECTOR_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {formatRecipientSelectorLabel(t, option.value)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </Field>
 
             {values.recipient_selector_type === "explicit_users" ? (
@@ -245,9 +293,9 @@ export function NotificationsRuleDialog({
 
             <div className="flex items-center justify-end gap-2">
               <DialogPrimitive.Close render={<Button variant="outline" type="button" />}>
-                {t("common.actions.cancel", undefined, "取消")}
+                {t("common.actions.cancel")}
               </DialogPrimitive.Close>
-              <Button type="submit" disabled={isBusy}>
+              <Button type="submit" disabled={isBusy || !hasTemplateOptions}>
                 {isBusy ? <Spinner className="size-4" /> : null}
                 {mode === "create"
                   ? t("notifications.actions.createRule")

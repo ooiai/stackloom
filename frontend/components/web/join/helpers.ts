@@ -1,4 +1,7 @@
+import { buildInviteSignupUrl, buildSigninWithReturnTo } from "@/lib/auth-navigation"
 import { ROUTER_ENUM } from "@/lib/config/enums"
+
+export { buildSigninWithReturnTo }
 
 export function buildJoinUrl(origin: string, inviteCode: string): string {
   return `${origin}/join?code=${inviteCode}`
@@ -8,10 +11,6 @@ export function getJoinRedirectUrl(): string {
   return ROUTER_ENUM.DASHBOARD
 }
 
-export function buildSigninWithReturnTo(returnTo: string): string {
-  return `${ROUTER_ENUM.SIGNIN}?returnTo=${encodeURIComponent(returnTo)}`
-}
-
-export function buildSignupWithReturnTo(returnTo: string): string {
-  return `${ROUTER_ENUM.SIGNUP}?returnTo=${encodeURIComponent(returnTo)}`
+export function buildSignupWithInviteCode(inviteCode: string): string {
+  return buildInviteSignupUrl(inviteCode)
 }

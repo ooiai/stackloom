@@ -1,13 +1,13 @@
 use std::{collections::BTreeSet, sync::Arc};
 
-use common::core::biz_error::NOTIFICATION_TEMPLATE_CODE_EXISTS;
 use chrono::Utc;
+use common::core::biz_error::NOTIFICATION_TEMPLATE_CODE_EXISTS;
 use domain_base::{
-    NotificationDispatch, NotificationRecipientSelector, NotificationRepository,
-    NotificationRule, NotificationTemplate, UserNotification,
+    NotificationDispatch, NotificationRecipientSelector, NotificationRepository, NotificationRule,
+    NotificationTemplate, UserNotification,
     notification::{
-        NotificationDispatchPageQuery, NotificationRulePageQuery,
-        NotificationTemplatePageQuery, UserNotificationPageQuery,
+        NotificationDispatchPageQuery, NotificationRulePageQuery, NotificationTemplatePageQuery,
+        UserNotificationPageQuery,
     },
 };
 use neocrates::{
@@ -17,7 +17,9 @@ use neocrates::{
 };
 use sqlx::{Error as SqlxError, Postgres, QueryBuilder, types::Json};
 
-use super::{NotificationDispatchRow, NotificationRuleRow, NotificationTemplateRow, UserNotificationRow};
+use super::{
+    NotificationDispatchRow, NotificationRuleRow, NotificationTemplateRow, UserNotificationRow,
+};
 
 #[derive(Debug, Clone)]
 pub struct SqlxNotificationRepository {
@@ -48,12 +50,18 @@ impl SqlxNotificationRepository {
 }
 
 fn non_empty_str(value: &Option<String>) -> Option<&str> {
-    value.as_deref().map(str::trim).filter(|value| !value.is_empty())
+    value
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
 }
 
 #[async_trait]
 impl NotificationRepository for SqlxNotificationRepository {
-    async fn create_template(&self, template: &NotificationTemplate) -> AppResult<NotificationTemplate> {
+    async fn create_template(
+        &self,
+        template: &NotificationTemplate,
+    ) -> AppResult<NotificationTemplate> {
         let row = sqlx::query_as::<_, NotificationTemplateRow>(
             r#"
             INSERT INTO notification_templates (
@@ -230,7 +238,10 @@ impl NotificationRepository for SqlxNotificationRepository {
         Ok((rows.into_iter().map(Into::into).collect(), total))
     }
 
-    async fn update_template(&self, template: &NotificationTemplate) -> AppResult<NotificationTemplate> {
+    async fn update_template(
+        &self,
+        template: &NotificationTemplate,
+    ) -> AppResult<NotificationTemplate> {
         let row = sqlx::query_as::<_, NotificationTemplateRow>(
             r#"
             UPDATE notification_templates
@@ -303,7 +314,11 @@ impl NotificationRepository for SqlxNotificationRepository {
         Ok(row.into())
     }
 
-    async fn find_rule_by_id(&self, tenant_id: i64, id: i64) -> AppResult<Option<NotificationRule>> {
+    async fn find_rule_by_id(
+        &self,
+        tenant_id: i64,
+        id: i64,
+    ) -> AppResult<Option<NotificationRule>> {
         let row = sqlx::query_as::<_, NotificationRuleRow>(
             r#"
             SELECT
@@ -522,7 +537,12 @@ impl NotificationRepository for SqlxNotificationRepository {
         dispatch: &NotificationDispatch,
         recipient_user_ids: &[i64],
     ) -> AppResult<(NotificationDispatch, Vec<UserNotification>)> {
-        let mut tx = self.pool.pool().begin().await.map_err(Self::map_sqlx_error)?;
+        let mut tx = self
+            .pool
+            .pool()
+            .begin()
+            .await
+            .map_err(Self::map_sqlx_error)?;
 
         let dispatch_row = sqlx::query_as::<_, NotificationDispatchRow>(
             r#"
@@ -852,24 +872,21 @@ impl NotificationRepository for SqlxNotificationRepository {
         actor_user_id: Option<i64>,
     ) -> AppResult<Vec<i64>> {
         let mut user_ids = match selector {
-            NotificationRecipientSelector::TenantAll => {
-                sqlx::query_scalar(
-                    r#"
+            NotificationRecipientSelector::TenantAll => sqlx::query_scalar(
+                r#"
                     SELECT DISTINCT user_id
                     FROM user_tenants
                     WHERE tenant_id = $1
                       AND status = 1
                       AND deleted_at IS NULL
                     "#,
-                )
-                .bind(tenant_id)
-                .fetch_all(self.pool.pool())
-                .await
-                .map_err(Self::map_sqlx_error)?
-            }
-            NotificationRecipientSelector::TenantAdmins => {
-                sqlx::query_scalar(
-                    r#"
+            )
+            .bind(tenant_id)
+            .fetch_all(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?,
+            NotificationRecipientSelector::TenantAdmins => sqlx::query_scalar(
+                r#"
                     SELECT DISTINCT user_id
                     FROM user_tenants
                     WHERE tenant_id = $1
@@ -877,15 +894,13 @@ impl NotificationRepository for SqlxNotificationRepository {
                       AND is_tenant_admin = TRUE
                       AND deleted_at IS NULL
                     "#,
-                )
-                .bind(tenant_id)
-                .fetch_all(self.pool.pool())
-                .await
-                .map_err(Self::map_sqlx_error)?
-            }
-            NotificationRecipientSelector::ExplicitUsers(requested_user_ids) => {
-                sqlx::query_scalar(
-                    r#"
+            )
+            .bind(tenant_id)
+            .fetch_all(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?,
+            NotificationRecipientSelector::ExplicitUsers(requested_user_ids) => sqlx::query_scalar(
+                r#"
                     SELECT DISTINCT user_id
                     FROM user_tenants
                     WHERE tenant_id = $1
@@ -893,13 +908,12 @@ impl NotificationRepository for SqlxNotificationRepository {
                       AND deleted_at IS NULL
                       AND user_id = ANY($2)
                     "#,
-                )
-                .bind(tenant_id)
-                .bind(requested_user_ids)
-                .fetch_all(self.pool.pool())
-                .await
-                .map_err(Self::map_sqlx_error)?
-            }
+            )
+            .bind(tenant_id)
+            .bind(requested_user_ids)
+            .fetch_all(self.pool.pool())
+            .await
+            .map_err(Self::map_sqlx_error)?,
             NotificationRecipientSelector::Actor => {
                 if let Some(actor_user_id) = actor_user_id {
                     sqlx::query_scalar(

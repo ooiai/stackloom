@@ -2,12 +2,12 @@
 
 import { ManagementPageHeader } from "@/components/base/shared/management-page-header"
 import { EntityEmptyState } from "@/components/base/shared/entity-empty-state"
+import { LabelTooltip } from "@/components/topui/tooltip"
 import { Button } from "@/components/ui/button"
 import {
   Card,
   CardAction,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -30,6 +30,8 @@ import { PlusIcon, RefreshCwIcon } from "lucide-react"
 import {
   buildNotificationSummary,
   formatDateTime,
+  formatNotificationDisplayText,
+  formatNotificationLocaleLabel,
   formatRecipientSelectorLabel,
   formatTriggerTypeLabel,
   type NotificationsPanel,
@@ -78,7 +80,6 @@ export function NotificationsPageContainer({
   onOpenEditRule,
 }: NotificationsPageContainerProps) {
   const { t } = useI18n()
-
   const countMap = {
     dispatchCount,
     templateCount,
@@ -99,7 +100,7 @@ export function NotificationsPageContainer({
               disabled={isRefreshing}
             >
               <RefreshCwIcon className="size-4" />
-              {t("common.actions.refresh", undefined, "刷新")}
+              {t("common.actions.refresh")}
             </Button>
             <Button onClick={onOpenSend}>
               <PlusIcon className="size-4" />
@@ -128,10 +129,14 @@ export function NotificationsPageContainer({
       {activePanel === "dispatches" ? (
         <Card>
           <CardHeader>
-            <CardTitle>{t("notifications.dispatches.title")}</CardTitle>
-            <CardDescription>
-              {t("notifications.dispatches.description")}
-            </CardDescription>
+            <CardTitle>
+              <LabelTooltip
+                label={t("notifications.dispatches.title")}
+                content={t("notifications.dispatches.description")}
+                align="start"
+                className="gap-2"
+              />
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {dispatches.length === 0 ? (
@@ -191,10 +196,14 @@ export function NotificationsPageContainer({
         <Card>
           <CardHeader>
             <div>
-              <CardTitle>{t("notifications.templates.title")}</CardTitle>
-              <CardDescription>
-                {t("notifications.templates.description")}
-              </CardDescription>
+              <CardTitle>
+                <LabelTooltip
+                  label={t("notifications.templates.title")}
+                  content={t("notifications.templates.description")}
+                  align="start"
+                  className="gap-2"
+                />
+              </CardTitle>
             </div>
             <CardAction>
               <Button size="sm" onClick={onOpenCreateTemplate}>
@@ -232,8 +241,12 @@ export function NotificationsPageContainer({
                           </p>
                         </div>
                       </TableCell>
-                      <TableCell>{item.event_code ?? "-"}</TableCell>
-                      <TableCell>{item.locale}</TableCell>
+                      <TableCell>
+                        {formatNotificationDisplayText(t, item.event_code)}
+                      </TableCell>
+                      <TableCell>
+                        {formatNotificationLocaleLabel(t, item.locale)}
+                      </TableCell>
                       <TableCell>
                         {item.status === 1
                           ? t("notifications.status.enabled")
@@ -248,7 +261,7 @@ export function NotificationsPageContainer({
                           size="sm"
                           onClick={() => onOpenEditTemplate(item)}
                         >
-                          {t("common.actions.edit", undefined, "编辑")}
+                          {t("common.actions.edit")}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -264,10 +277,14 @@ export function NotificationsPageContainer({
         <Card>
           <CardHeader>
             <div>
-              <CardTitle>{t("notifications.rules.title")}</CardTitle>
-              <CardDescription>
-                {t("notifications.rules.description")}
-              </CardDescription>
+              <CardTitle>
+                <LabelTooltip
+                  label={t("notifications.rules.title")}
+                  content={t("notifications.rules.description")}
+                  align="start"
+                  className="gap-2"
+                />
+              </CardTitle>
             </div>
             <CardAction>
               <Button size="sm" onClick={onOpenCreateRule}>
@@ -300,10 +317,12 @@ export function NotificationsPageContainer({
                       <TableCell>{item.name}</TableCell>
                       <TableCell className="whitespace-normal">
                         <div className="space-y-1">
-                          <p>{item.template_name ?? "-"}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {item.template_code ?? ""}
-                          </p>
+                          <p>{formatNotificationDisplayText(t, item.template_name)}</p>
+                          {item.template_code?.trim() ? (
+                            <p className="text-xs text-muted-foreground">
+                              {item.template_code}
+                            </p>
+                          ) : null}
                         </div>
                       </TableCell>
                       <TableCell>{item.event_code}</TableCell>
@@ -324,7 +343,7 @@ export function NotificationsPageContainer({
                           size="sm"
                           onClick={() => onOpenEditRule(item)}
                         >
-                          {t("common.actions.edit", undefined, "编辑")}
+                          {t("common.actions.edit")}
                         </Button>
                       </TableCell>
                     </TableRow>

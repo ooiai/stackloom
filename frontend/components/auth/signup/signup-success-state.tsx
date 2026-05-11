@@ -1,8 +1,5 @@
-"use client"
-
 import Link from "next/link"
 
-import { useSearchParams } from "next/navigation"
 import { CheckCircle2Icon } from "lucide-react"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -11,17 +8,16 @@ import type { AccountSignupResult } from "@/types/auth.types"
 
 interface SignupSuccessStateProps {
   result: AccountSignupResult
+  signinHref: string
+  isInviteMode: boolean
 }
 
-export function SignupSuccessState({ result }: SignupSuccessStateProps) {
+export function SignupSuccessState({
+  result,
+  signinHref,
+  isInviteMode,
+}: SignupSuccessStateProps) {
   const { t } = useI18n()
-  const searchParams = useSearchParams()
-  const returnTo = searchParams.get("returnTo")
-  const safeReturnTo = returnTo && returnTo.startsWith("/") ? returnTo : null
-
-  const signinHref = safeReturnTo
-    ? `${result.signin_path}?returnTo=${encodeURIComponent(safeReturnTo)}`
-    : result.signin_path
 
   return (
     <div className="rounded-3xl border border-border/70 bg-background/95 p-6 shadow-sm">
@@ -29,9 +25,19 @@ export function SignupSuccessState({ result }: SignupSuccessStateProps) {
         <div className="flex size-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10">
           <CheckCircle2Icon className="size-7" />
         </div>
-        <h1 className="text-2xl font-bold">{t("auth.signup.success.title")}</h1>
+        <h1 className="text-2xl font-bold">
+          {t(
+            isInviteMode
+              ? "auth.signup.invite.success.title"
+              : "auth.signup.success.title"
+          )}
+        </h1>
         <p className="max-w-sm text-sm text-balance text-muted-foreground">
-          {t("auth.signup.success.description")}
+          {t(
+            isInviteMode
+              ? "auth.signup.invite.success.description"
+              : "auth.signup.success.description"
+          )}
         </p>
       </div>
 
@@ -61,7 +67,11 @@ export function SignupSuccessState({ result }: SignupSuccessStateProps) {
           href={signinHref}
           className={buttonVariants({ variant: "default", size: "lg" })}
         >
-          {t("auth.signup.success.goSignin")}
+          {t(
+            isInviteMode
+              ? "auth.signup.invite.success.goSignin"
+              : "auth.signup.success.goSignin"
+          )}
         </Link>
         <Link href="/" className={buttonVariants({ variant: "outline", size: "lg" })}>
           {t("auth.signup.success.goHome")}

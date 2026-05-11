@@ -6,19 +6,21 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 
-import { useHeaderContext } from "@/hooks/use-header-context"
+import { getStoreToken } from "@/lib/http/axios"
 import { useI18n } from "@/providers/i18n-provider"
 import { memberApi } from "@/stores/web-api"
-import { buildSigninWithReturnTo, buildSignupWithReturnTo, getJoinRedirectUrl } from "../helpers"
+import {
+  buildSigninWithReturnTo,
+  buildSignupWithInviteCode,
+  getJoinRedirectUrl,
+} from "../helpers"
 
 export function useJoinController() {
   const { t } = useI18n()
   const router = useRouter()
   const searchParams = useSearchParams()
   const inviteCode = searchParams.get("code") ?? ""
-
-  const { user, isLoading: isUserLoading } = useHeaderContext()
-  const isAuthenticated = !isUserLoading && user !== null
+  const isAuthenticated = !!getStoreToken()?.access_token
 
   const validateQuery = useQuery({
     queryKey: ["join", "validate", inviteCode],
@@ -41,7 +43,15 @@ export function useJoinController() {
     },
   })
 
+  const alreadyMember =
+    (joinMutation.error as { errorKey?: string } | null)?.errorKey ===
+    "errors.biz.invite.alreadyMember"
+
   const handleJoin = () => {
+    if (alreadyMember) {
+      router.replace(getJoinRedirectUrl())
+      return
+    }
     if (!isAuthenticated) {
       const currentUrl = `/join?code=${inviteCode}`
       router.push(buildSigninWithReturnTo(currentUrl))
@@ -51,8 +61,7 @@ export function useJoinController() {
   }
 
   const handleSignup = () => {
-    const currentUrl = `/join?code=${inviteCode}`
-    router.push(buildSignupWithReturnTo(currentUrl))
+    router.push(buildSignupWithInviteCode(inviteCode))
   }
 
   // Redirect already-authenticated users who hit an already-member error to dashboard.
@@ -67,9 +76,7 @@ export function useJoinController() {
 
   return {
     inviteCode,
-    isUserLoading,
     isAuthenticated,
-    user,
     validateQuery,
     tenantInfo: validateQuery.data ?? null,
     isValidating: validateQuery.isLoading,
@@ -77,9 +84,7 @@ export function useJoinController() {
     joinMutation,
     isJoining: joinMutation.isPending,
     isJoinSuccess: joinMutation.isSuccess,
-    alreadyMember:
-      (joinMutation.error as { errorKey?: string } | null)?.errorKey ===
-      "errors.biz.invite.alreadyMember",
+    alreadyMember,
     handleJoin,
     handleSignup,
   }

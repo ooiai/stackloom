@@ -4,7 +4,9 @@ use common::core::biz_error::{
 };
 use std::{collections::HashMap, sync::Arc};
 
-use domain_auth::{AccountSignupBundle, AuthRepository, RecoveryChannel, SigninTenantOption};
+use domain_auth::{
+    AccountSignupBundle, AuthRepository, InviteSignupBundle, RecoveryChannel, SigninTenantOption,
+};
 use neocrates::{
     async_trait::async_trait,
     response::error::{AppError, AppResult},
@@ -149,6 +151,27 @@ impl AuthRepository for SqlxAuthRepository {
             "#,
         )
         .bind(slug)
+        .fetch_optional(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(row.map(Into::into))
+    }
+
+    async fn find_tenant_by_id(
+        &self,
+        tenant_id: i64,
+    ) -> AppResult<Option<domain_auth::AuthTenantSummary>> {
+        let row = sqlx::query_as::<_, AuthTenantConflictRow>(
+            r#"
+            SELECT id, slug, name
+            FROM tenants
+            WHERE deleted_at IS NULL
+              AND id = $1
+            LIMIT 1
+            "#,
+        )
+        .bind(tenant_id)
         .fetch_optional(self.pool.pool())
         .await
         .map_err(Self::map_sqlx_error)?;
@@ -407,6 +430,105 @@ impl AuthRepository for SqlxAuthRepository {
         .bind(bundle.user_tenant_role.user_tenant_id)
         .bind(bundle.user_tenant_role.role_id)
         .bind(bundle.user_tenant_role.created_at)
+        .execute(&mut *tx)
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        tx.commit().await.map_err(Self::map_sqlx_error)?;
+
+        Ok(())
+    }
+
+    /// Persist invite-signup records atomically so account creation does not
+    /// leave an orphan membership or vice versa.
+    async fn create_invite_signup_bundle(&self, bundle: &InviteSignupBundle) -> AppResult<()> {
+        let mut tx = self
+            .pool
+            .pool()
+            .begin()
+            .await
+            .map_err(Self::map_sqlx_error)?;
+
+        sqlx::query(
+            r#"
+            INSERT INTO users (
+                id,
+                username,
+                email,
+                phone,
+                password_hash,
+                nickname,
+                avatar_url,
+                gender,
+                status,
+                bio,
+                last_login_at,
+                last_login_ip,
+                created_at,
+                updated_at,
+                deleted_at
+            )
+            VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12::inet, $13, $14, $15
+            )
+            "#,
+        )
+        .bind(bundle.user.id)
+        .bind(&bundle.user.username)
+        .bind(&bundle.user.email)
+        .bind(&bundle.user.phone)
+        .bind(&bundle.user.password_hash)
+        .bind(&bundle.user.nickname)
+        .bind(&bundle.user.avatar_url)
+        .bind(bundle.user.gender)
+        .bind(bundle.user.status)
+        .bind(&bundle.user.bio)
+        .bind(bundle.user.last_login_at)
+        .bind(&bundle.user.last_login_ip)
+        .bind(bundle.user.created_at)
+        .bind(bundle.user.updated_at)
+        .bind(bundle.user.deleted_at)
+        .execute(&mut *tx)
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        sqlx::query(
+            r#"
+            INSERT INTO user_tenants (
+                id,
+                user_id,
+                tenant_id,
+                display_name,
+                employee_no,
+                job_title,
+                status,
+                is_default,
+                is_tenant_admin,
+                joined_at,
+                invited_by,
+                created_at,
+                updated_at,
+                deleted_at
+            )
+            VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+            )
+            "#,
+        )
+        .bind(bundle.user_tenant.id)
+        .bind(bundle.user_tenant.user_id)
+        .bind(bundle.user_tenant.tenant_id)
+        .bind(&bundle.user_tenant.display_name)
+        .bind(&bundle.user_tenant.employee_no)
+        .bind(&bundle.user_tenant.job_title)
+        .bind(bundle.user_tenant.status)
+        .bind(bundle.user_tenant.is_default)
+        .bind(bundle.user_tenant.is_tenant_admin)
+        .bind(bundle.user_tenant.joined_at)
+        .bind(bundle.user_tenant.invited_by)
+        .bind(bundle.user_tenant.created_at)
+        .bind(bundle.user_tenant.updated_at)
+        .bind(bundle.user_tenant.deleted_at)
         .execute(&mut *tx)
         .await
         .map_err(Self::map_sqlx_error)?;

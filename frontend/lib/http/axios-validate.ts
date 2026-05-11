@@ -4,8 +4,9 @@
 import { toast } from "sonner"
 import { AxiosError } from "axios"
 import { useI18n } from "@/providers/i18n-provider"
-import { ROUTER_ENUM, STORAGE_ENUM } from "../config/enums"
+import { STORAGE_ENUM } from "../config/enums"
 import { removeStorageItem } from "@/hooks/use-persisted-state"
+import { redirectToSigninWithCurrentPath } from "@/lib/auth-navigation"
 import { BizErrorCode, HttpStatusCode } from "./status"
 
 // Define the error response interface
@@ -68,7 +69,7 @@ export function useAxiosErrorHandler() {
       case BizErrorCode.UNAUTHORIZED:
         toast.warning(t("errors.http.unauthorized"))
         removeStorageItem(STORAGE_ENUM.TOKEN)
-        window.location.href = ROUTER_ENUM.SIGNIN
+        redirectToSigninWithCurrentPath()
         break
       case BizErrorCode.FORBIDDEN:
         toast.warning(t("errors.http.forbidden"))
@@ -132,7 +133,7 @@ export function useAxiosErrorHandler() {
         toast.error(t("errors.http.unauthorized"))
         console.log(error)
         removeStorageItem(STORAGE_ENUM.TOKEN)
-        window.location.href = ROUTER_ENUM.SIGNIN
+        redirectToSigninWithCurrentPath()
         break
       case HttpStatusCode.FORBIDDEN:
         toast.error(t("errors.http.forbidden"))

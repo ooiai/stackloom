@@ -29,9 +29,9 @@ export default function MainLayout({
       <NuqsAdapter>
         <SidebarProvider>
           <AppSidebar notificationBellData={notificationBellData} />
-          <SidebarInset>
+          <SidebarInset className="min-h-svh">
             <AppHeader notificationBellData={notificationBellData} />
-            {children}
+            <div className="flex flex-1 flex-col">{children}</div>
           </SidebarInset>
         </SidebarProvider>
       </NuqsAdapter>

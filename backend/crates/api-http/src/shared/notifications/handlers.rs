@@ -20,7 +20,10 @@ use crate::shared::SharedHttpState;
 
 use super::{
     req::{ArchiveNotificationsReq, MarkAllReadReq, MarkReadReq, PageUserNotificationReq},
-    resp::{NotificationStreamResp, NotificationUnreadCountResp, PaginateUserNotificationResp, UserNotificationResp},
+    resp::{
+        NotificationStreamResp, NotificationUnreadCountResp, PaginateUserNotificationResp,
+        UserNotificationResp,
+    },
 };
 
 pub async fn page(
@@ -28,7 +31,11 @@ pub async fn page(
     Extension(auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<PageUserNotificationReq>,
 ) -> AppResult<Json<PaginateUserNotificationResp>> {
-    tracing::info!(tenant_id = auth_user.tid, user_id = auth_user.uid, "...Page User Notifications...");
+    tracing::info!(
+        tenant_id = auth_user.tid,
+        user_id = auth_user.uid,
+        "...Page User Notifications..."
+    );
 
     req.validate()
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
@@ -121,7 +128,9 @@ pub async fn stream(
                     }
 
                     let payload = serde_json::to_string(&NotificationStreamResp::from(signal))
-                        .unwrap_or_else(|_| "{\"reason\":\"refresh\",\"unread_count\":0}".to_string());
+                        .unwrap_or_else(|_| {
+                            "{\"reason\":\"refresh\",\"unread_count\":0}".to_string()
+                        });
 
                     return Some((Ok(Event::default().data(payload)), receiver));
                 }

@@ -34,6 +34,14 @@ export interface AccountSignupParam {
   tenant_name?: string
 }
 
+export interface InviteSignupParam {
+  account: string
+  password: string
+  code: string
+  nickname?: string
+  invite_code: string
+}
+
 export interface AccountSignupResult {
   account: string
   username: string

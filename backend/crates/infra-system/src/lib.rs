@@ -4,11 +4,11 @@ use std::sync::Arc;
 
 pub mod monitor;
 
+#[cfg(any(feature = "aws", feature = "full"))]
+pub use aws::browse::StorageBrowseServiceImpl;
 pub use monitor::MonitorServiceImpl;
 pub use monitor::SqlxMonitorRepository;
 pub use monitor::SystemMetricsCollector;
-#[cfg(any(feature = "aws", feature = "full"))]
-pub use aws::browse::StorageBrowseServiceImpl;
 
 #[cfg(any(feature = "aws", feature = "full"))]
 use domain_system::aws::{AwsStsService, ObjectStorageService};

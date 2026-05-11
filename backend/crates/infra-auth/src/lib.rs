@@ -4,7 +4,7 @@ pub mod service;
 pub use repo::SqlxAuthRepository;
 pub use service::AuthServiceImpl;
 
-use domain_auth::{AuthTenantConflict, AuthUserAccount};
+use domain_auth::{AuthTenantConflict, AuthTenantSummary, AuthUserAccount};
 use neocrates::sqlx::FromRow;
 
 /// Database row used to hydrate the domain auth account projection.
@@ -44,6 +44,17 @@ pub struct AuthTenantConflictRow {
 
 /// Convert the SQL row into the domain conflict projection.
 impl From<AuthTenantConflictRow> for AuthTenantConflict {
+    fn from(value: AuthTenantConflictRow) -> Self {
+        Self {
+            id: value.id,
+            slug: value.slug,
+            name: value.name,
+        }
+    }
+}
+
+/// Convert the SQL row into the tenant summary used by invite flows.
+impl From<AuthTenantConflictRow> for AuthTenantSummary {
     fn from(value: AuthTenantConflictRow) -> Self {
         Self {
             id: value.id,

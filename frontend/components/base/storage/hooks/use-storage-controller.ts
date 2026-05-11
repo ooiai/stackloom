@@ -11,7 +11,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import {
   DEFAULT_STORAGE_PAGE_SIZE,
-  isStorageImageKey,
   type StorageRowData,
   findStorageProviderLabel,
   normalizeStoragePrefix,
@@ -72,7 +71,10 @@ export function useStorageController() {
     queryFn: () => storageApi.get(),
   })
 
-  const providers = useMemo(() => metaQuery.data?.providers ?? [], [metaQuery.data?.providers])
+  const providers = useMemo(
+    () => metaQuery.data?.providers ?? [],
+    [metaQuery.data?.providers]
+  )
   const defaultProvider = metaQuery.data?.default_provider ?? ""
   const effectiveProvider = useMemo(() => {
     const isKnown = providers.some((item) => item.code === provider)
@@ -98,7 +100,14 @@ export function useStorageController() {
 
   const pageQuery = useQuery({
     enabled: Boolean(effectiveProvider),
-    queryKey: ["storage", "page", effectiveProvider, normalizedPrefix, currentToken, pageSize],
+    queryKey: [
+      "storage",
+      "page",
+      effectiveProvider,
+      normalizedPrefix,
+      currentToken,
+      pageSize,
+    ],
     queryFn: () =>
       storageApi.page({
         provider: effectiveProvider,
@@ -171,16 +180,11 @@ export function useStorageController() {
           bucket: item.bucket,
           key: item.key,
         })
-        if (isStorageImageKey(item.key)) {
-          setImagePreview({
-            open: true,
-            item,
-            signedUrl: result.signed_url,
-          })
-          return
-        }
-
-        window.open(result.signed_url, "_blank", "noopener,noreferrer")
+        setImagePreview({
+          open: true,
+          item,
+          signedUrl: result.signed_url,
+        })
       } catch (error) {
         console.error("[storage preview]", error)
         toast.error(t("storage.toast.previewFailed"))
@@ -239,7 +243,11 @@ export function useStorageController() {
   )
 
   const currentProviderLabel = useMemo(
-    () => findStorageProviderLabel(providers as StorageProviderData[], effectiveProvider),
+    () =>
+      findStorageProviderLabel(
+        providers as StorageProviderData[],
+        effectiveProvider
+      ),
     [effectiveProvider, providers]
   )
   const currentBucket = pageQuery.data?.provider.bucket ?? ""

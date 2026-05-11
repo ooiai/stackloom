@@ -1,7 +1,8 @@
 use neocrates::{async_trait::async_trait, response::error::AppResult};
 
 use crate::{
-    AccountSignupBundle, AuthTenantConflict, AuthUserAccount, RecoveryChannel, SigninTenantOption,
+    AccountSignupBundle, AuthTenantConflict, AuthTenantSummary, AuthUserAccount,
+    InviteSignupBundle, RecoveryChannel, SigninTenantOption,
 };
 
 /// Repository contract for auth-related persistence operations.
@@ -25,6 +26,12 @@ pub trait AuthRepository: Send + Sync {
     /// self-service signup.
     async fn find_tenant_by_slug(&self, slug: &str) -> AppResult<Option<AuthTenantConflict>>;
 
+    /// Find one tenant by id.
+    ///
+    /// Invite-aware signup uses this after resolving the invite code to the
+    /// target tenant id from Redis.
+    async fn find_tenant_by_id(&self, tenant_id: i64) -> AppResult<Option<AuthTenantSummary>>;
+
     /// Find one tenant by either display name or slug.
     ///
     /// Signup uses this method to reject tenant names/slugs that would collide
@@ -47,6 +54,12 @@ pub trait AuthRepository: Send + Sync {
     /// Implementations should treat the bundle as an atomic write so that user,
     /// tenant, membership, and membership-role binding stay consistent.
     async fn create_account_signup_bundle(&self, bundle: &AccountSignupBundle) -> AppResult<()>;
+
+    /// Persist the invite-signup aggregate in one transaction.
+    ///
+    /// The invite flow stores only the user account plus membership, because the
+    /// target tenant already exists.
+    async fn create_invite_signup_bundle(&self, bundle: &InviteSignupBundle) -> AppResult<()>;
 
     /// Find one user account by channel-specific identity (phone or email).
     async fn find_user_by_channel_account(

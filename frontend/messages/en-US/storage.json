@@ -38,7 +38,9 @@
   },
   "previewDialog": {
     "title": "Image preview",
-    "description": "Inspect the signed image with zoom support."
+    "description": "Inspect the signed image with zoom support.",
+    "loadErrorTitle": "Image could not be loaded",
+    "loadErrorDescription": "This object could not be rendered in the built-in preview dialog."
   },
   "fields": {
     "provider": "Provider",

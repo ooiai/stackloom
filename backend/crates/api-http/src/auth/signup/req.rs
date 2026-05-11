@@ -32,3 +32,34 @@ impl From<AccountSignupReq> for AccountSignupCmd {
         }
     }
 }
+
+/// Request body for invite-aware account signup.
+///
+/// The caller provides the same credential fields plus the invite code that
+/// identifies the tenant they are joining.
+#[derive(Debug, Clone, Deserialize, Validate)]
+pub struct InviteSignupReq {
+    #[validate(length(min = 1, max = 50))]
+    pub account: String,
+    #[validate(length(min = 1))]
+    pub password: String,
+    #[validate(length(min = 1))]
+    pub code: String,
+    #[validate(length(max = 100))]
+    pub nickname: Option<String>,
+    #[validate(length(min = 1))]
+    pub invite_code: String,
+}
+
+/// Convert the invite-signup transport DTO into the domain command.
+impl From<InviteSignupReq> for domain_auth::InviteSignupCmd {
+    fn from(req: InviteSignupReq) -> Self {
+        Self {
+            account: req.account,
+            password: req.password,
+            code: req.code,
+            nickname: req.nickname,
+            invite_code: req.invite_code,
+        }
+    }
+}

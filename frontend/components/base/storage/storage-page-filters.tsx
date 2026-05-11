@@ -44,11 +44,11 @@ export function StoragePageFilters({
 
   return (
     <div className="space-y-2.5">
-      <div className="grid gap-3 md:grid-cols-[220px_minmax(0,1fr)_160px_auto] md:items-end">
-        <div className="space-y-1.5">
-          <p className="text-xs font-medium text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex items-center gap-2 whitespace-nowrap">
+          <span className="text-sm font-medium text-muted-foreground">
             {t("storage.filters.provider.label")}
-          </p>
+          </span>
           <Select
             value={provider}
             onValueChange={(value) => {
@@ -58,7 +58,7 @@ export function StoragePageFilters({
             }}
             disabled={isLoading || providers.length === 0}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-[200px]">
               <SelectValue placeholder={t("storage.filters.provider.placeholder")} />
             </SelectTrigger>
             <SelectContent>
@@ -71,21 +71,22 @@ export function StoragePageFilters({
           </Select>
         </div>
 
-        <div className="space-y-1.5">
-          <p className="text-xs font-medium text-muted-foreground">
+        <div className="flex min-w-[280px] flex-1 items-center gap-2">
+          <span className="shrink-0 text-sm font-medium text-muted-foreground">
             {t("storage.filters.prefix.label")}
-          </p>
+          </span>
           <Input
+            className="min-w-[180px] flex-1"
             value={prefix}
             onChange={(event) => onPrefixChange(event.target.value)}
             placeholder={t("storage.filters.prefix.placeholder")}
           />
         </div>
 
-        <div className="space-y-1.5">
-          <p className="text-xs font-medium text-muted-foreground">
+        <div className="flex items-center gap-2 whitespace-nowrap">
+          <span className="text-sm font-medium text-muted-foreground">
             {t("storage.filters.pageSize.label")}
-          </p>
+          </span>
           <Select
             value={String(pageSize)}
             onValueChange={(value) => {
@@ -94,7 +95,7 @@ export function StoragePageFilters({
               }
             }}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-[140px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -108,12 +109,10 @@ export function StoragePageFilters({
         </div>
 
         {hasActiveFilters ? (
-          <div className="flex md:justify-end">
-            <Button variant="outline" size="sm" onClick={onClear}>
-              <FunnelXIcon />
-              {t("common.actions.clear")}
-            </Button>
-          </div>
+          <Button variant="outline" size="sm" onClick={onClear} className="sm:ml-auto">
+            <FunnelXIcon />
+            {t("common.actions.clear")}
+          </Button>
         ) : null}
       </div>
 

@@ -34,7 +34,11 @@ pub struct GetStorageResp {
 impl From<StorageGetResult> for GetStorageResp {
     fn from(result: StorageGetResult) -> Self {
         Self {
-            providers: result.providers.into_iter().map(StorageProviderResp::from).collect(),
+            providers: result
+                .providers
+                .into_iter()
+                .map(StorageProviderResp::from)
+                .collect(),
             default_provider: result.default_provider,
         }
     }
@@ -79,7 +83,11 @@ impl From<PageStorageObjectResult> for PageStorageResp {
     fn from(result: PageStorageObjectResult) -> Self {
         Self {
             provider: StorageProviderResp::from(result.provider),
-            items: result.items.into_iter().map(StorageObjectResp::from).collect(),
+            items: result
+                .items
+                .into_iter()
+                .map(StorageObjectResp::from)
+                .collect(),
             next_token: result.next_token,
             is_truncated: result.is_truncated,
         }

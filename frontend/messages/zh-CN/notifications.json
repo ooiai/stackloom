@@ -2,35 +2,46 @@
   "page": {
     "eyebrow": "通知中心",
     "title": "通知管理",
-    "description": "统一管理手动发送、模板维护和自动事件规则。"
+    "description": "统一管理手动发送、通知模板和事件规则。"
   },
   "actions": {
     "send": "发送通知",
     "newTemplate": "新建模板",
     "createTemplate": "创建模板",
     "saveTemplate": "保存模板",
-    "newRule": "新建规则",
-    "createRule": "创建规则",
-    "saveRule": "保存规则",
+    "newRule": "新建事件规则",
+    "createRule": "创建事件规则",
+    "saveRule": "保存事件规则",
     "markAllRead": "全部已读",
-    "archive": "归档"
+    "markRead": "标记已读",
+    "archive": "归档",
+    "refresh": "刷新",
+    "viewAll": "查看更多",
+    "open": "前往查看",
+    "previous": "上一页",
+    "next": "下一页"
+  },
+  "filters": {
+    "all": "全部",
+    "unreadOnly": "仅未读",
+    "archived": "已归档"
   },
   "panels": {
     "dispatches": "发送记录",
     "templates": "通知模板",
-    "rules": "自动规则"
+    "rules": "事件规则"
   },
   "dispatches": {
     "title": "最近发送记录",
-    "description": "查看最近的手动发送和自动事件通知。"
+    "description": "查看最终发送结果，包括手动发送、直接发送以及业务事件触发产生的站内通知。"
   },
   "templates": {
     "title": "通知模板",
-    "description": "维护可复用的标题/正文模板，供自动事件规则复用。"
+    "description": "维护可复用的标题和正文模板。模板中的事件编码主要用于分类和筛选，不会强制与事件规则绑定。"
   },
   "rules": {
-    "title": "自动规则",
-    "description": "将业务事件编码映射到模板和收件人策略。"
+    "title": "事件规则",
+    "description": "事件规则会在业务事件发生后，按事件编码匹配模板与收件人策略并自动发送通知"
   },
   "dialogs": {
     "send": {
@@ -38,7 +49,7 @@
       "description": "向当前租户成员发送一条站内通知。"
     },
     "template": {
-      "description": "模板支持 {{member.username}}、{{tenant.name}} 等变量占位。"
+      "description": "模板支持 {memberUsernameExample}、{tenantNameExample} 等变量占位。"
     },
     "templateCreate": {
       "title": "新建通知模板"
@@ -47,13 +58,14 @@
       "title": "更新通知模板"
     },
     "rule": {
-      "description": "规则会把业务事件自动映射成通知，避免在各业务里重复拼装发送逻辑。"
+      "description": "事件规则会把业务事件自动映射成通知，避免在各业务里重复拼装发送逻辑",
+      "noTemplates": "请先创建通知模板，再新建事件规则。"
     },
     "ruleCreate": {
-      "title": "新建自动规则"
+      "title": "新建事件规则"
     },
     "ruleUpdate": {
-      "title": "更新自动规则"
+      "title": "更新事件规则"
     }
   },
   "table": {
@@ -93,8 +105,8 @@
     "code": "例如：member_joined_admin",
     "name": "输入方便识别的模板/规则名称",
     "eventCode": "例如：member.joined",
-    "titleTemplate": "例如：{{tenant.name}} 有新成员加入",
-    "bodyTemplate": "支持 {{member.username}} 这类变量占位",
+    "titleTemplate": "例如：{tenantNameExample} 有新成员加入",
+    "bodyTemplate": "支持 {memberUsernameExample} 这类变量占位",
     "actionUrlTemplate": "可选，例如：/member",
     "template": "请选择模板"
   },
@@ -111,7 +123,22 @@
   },
   "status": {
     "enabled": "启用",
-    "disabled": "停用"
+    "disabled": "停用",
+    "unread": "未读"
+  },
+  "localeOptions": {
+    "zhCN": "简体中文",
+    "enUS": "English"
+  },
+  "inboxPage": {
+    "title": "通知中心",
+    "description": "在这里查看全部站内通知，并处理未读、归档和跳转动作。",
+    "summary": "共 {total} 条通知，未读 {unread} 条",
+    "listTitle": "全部通知",
+    "listDescription": "如果通知较多，可在这里持续查看和处理。",
+    "empty": "暂时还没有通知。",
+    "pagination": "第 {page} / {totalPages} 页，共 {total} 条",
+    "manageAction": "进入通知管理"
   },
   "bell": {
     "title": "收件箱",
@@ -122,16 +149,16 @@
     "dispatchesTitle": "暂无发送记录",
     "dispatchesDescription": "手动发送和自动事件通知都会出现在这里。",
     "templatesTitle": "暂无通知模板",
-    "templatesDescription": "先创建模板，再把它绑定到自动规则。",
-    "rulesTitle": "暂无自动规则",
-    "rulesDescription": "创建规则后，member.joined 等事件就能自动发通知。"
+    "templatesDescription": "先创建模板，再把它绑定到事件规则。",
+    "rulesTitle": "暂无事件规则",
+    "rulesDescription": "创建事件规则后，member.joined 等业务事件就能自动发通知。"
   },
   "toast": {
     "sent": "通知已发送。",
     "templateCreated": "模板已创建。",
     "templateUpdated": "模板已更新。",
-    "ruleCreated": "规则已创建。",
-    "ruleUpdated": "规则已更新。"
+    "ruleCreated": "事件规则已创建。",
+    "ruleUpdated": "事件规则已更新。"
   },
   "validation": {
     "titleRequired": "请输入标题。",

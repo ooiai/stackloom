@@ -16,7 +16,6 @@ import { useHeaderContext } from "@/hooks/use-header-context"
 import { useMyTenants } from "./hooks/use-my-tenants"
 import { useWebCurrentMenus } from "./hooks/use-web-current-menus"
 import type { NotificationBellData } from "@/components/base/notifications/hooks/use-notification-bell"
-import { WebSidebarNotificationBell } from "./web-notification-bell"
 
 export function AppSidebar({
   notificationBellData,
@@ -36,9 +35,8 @@ export function AppSidebar({
       <SidebarContent>
         <NavMain items={menus} />
       </SidebarContent>
-      <SidebarFooter className="gap-2">
-        <WebSidebarNotificationBell data={notificationBellData} />
-        <NavUser user={user} />
+      <SidebarFooter>
+        <NavUser user={user} notificationBellData={notificationBellData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

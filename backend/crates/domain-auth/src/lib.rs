@@ -30,6 +30,14 @@ pub struct AuthTenantConflict {
     pub name: String,
 }
 
+/// Tenant summary projection reused by invite-aware auth flows.
+#[derive(Debug, Clone)]
+pub struct AuthTenantSummary {
+    pub id: i64,
+    pub slug: String,
+    pub name: String,
+}
+
 /// Tenant membership option returned by the first signin step.
 ///
 /// One user may belong to multiple tenants, so the API first returns a list
@@ -292,6 +300,55 @@ impl AccountSignupCmd {
     }
 }
 
+/// Domain command for invite-aware signup.
+///
+/// This flow creates only the user account and membership for an existing
+/// tenant resolved from the invite code.
+#[derive(Debug, Clone)]
+pub struct InviteSignupCmd {
+    pub account: String,
+    pub password: String,
+    pub code: String,
+    pub nickname: Option<String>,
+    pub invite_code: String,
+}
+
+impl InviteSignupCmd {
+    /// Validate the invite-signup payload before persistence.
+    pub fn validate(&self) -> AppResult<()> {
+        if self.account.trim().is_empty() {
+            return Err(AppError::ValidationError(
+                "account cannot be empty".to_string(),
+            ));
+        }
+        if self.password.trim().is_empty() {
+            return Err(AppError::ValidationError(
+                "password cannot be empty".to_string(),
+            ));
+        }
+        if self.code.trim().is_empty() {
+            return Err(AppError::ValidationError(
+                "code cannot be empty".to_string(),
+            ));
+        }
+        if self.invite_code.trim().is_empty() {
+            return Err(AppError::ValidationError(
+                "invite_code cannot be empty".to_string(),
+            ));
+        }
+
+        if let Some(nickname) = self.nickname.as_ref() {
+            if nickname.trim().len() > 100 {
+                return Err(AppError::ValidationError(
+                    "nickname length must be less than or equal to 100".to_string(),
+                ));
+            }
+        }
+
+        Ok(())
+    }
+}
+
 /// Result returned when self-service signup succeeds.
 #[derive(Debug, Clone)]
 pub struct AccountSignupResult {
@@ -335,4 +392,14 @@ pub struct AccountSignupBundle {
     pub tenant: Tenant,
     pub user_tenant: UserTenant,
     pub user_tenant_role: UserTenantRole,
+}
+
+/// Aggregate persisted during invite-aware signup.
+///
+/// Invite signup does not create a new tenant or role binding. It only creates
+/// the account and the membership for the invited tenant.
+#[derive(Debug, Clone)]
+pub struct InviteSignupBundle {
+    pub user: User,
+    pub user_tenant: UserTenant,
 }

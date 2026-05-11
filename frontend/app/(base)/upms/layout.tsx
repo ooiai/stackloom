@@ -24,8 +24,12 @@ export default function RootLayout({
   return (
     <Suspense fallback={<SpinnerOverlay visible delay={300} />}>
       <NuqsAdapter>
-        <BaseHeader layoutMode={mode} onLayoutModeChange={setMode} />
-        <main className="mx-auto max-w-420 px-4 py-8 sm:px-6">{children}</main>
+        <div className="flex min-h-svh flex-col">
+          <BaseHeader layoutMode={mode} onLayoutModeChange={setMode} />
+          <main className="mx-auto w-full max-w-420 flex-1 px-4 py-8 sm:px-6">
+            {children}
+          </main>
+        </div>
       </NuqsAdapter>
     </Suspense>
   )

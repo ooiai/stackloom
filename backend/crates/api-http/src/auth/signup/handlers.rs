@@ -1,6 +1,9 @@
-use super::{req::AccountSignupReq, resp::AccountSignupResp};
+use super::{
+    req::{AccountSignupReq, InviteSignupReq},
+    resp::AccountSignupResp,
+};
 use crate::auth::AuthHttpState;
-use domain_auth::AccountSignupCmd;
+use domain_auth::{AccountSignupCmd, InviteSignupCmd};
 use neocrates::{
     axum::{Json, extract::State},
     helper::core::axum_extractor::DetailedJson,
@@ -31,6 +34,29 @@ pub async fn account_signup(
 
     let cmd: AccountSignupCmd = req.into();
     let result = state.auth_service.account_signup(cmd).await?;
+
+    Ok(Json(AccountSignupResp::from(result)))
+}
+
+/// Create a new account directly inside the invited tenant.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `req` - The invite signup request with account, password, captcha, nickname, and invite code.
+///
+/// # Returns
+/// * `AppResult<Json<AccountSignupResp>>` - The created account summary.
+pub async fn invite_signup(
+    State(state): State<SignupState>,
+    DetailedJson(req): DetailedJson<InviteSignupReq>,
+) -> AppResult<Json<AccountSignupResp>> {
+    tracing::info!("invite signup req: {:?}", req);
+
+    req.validate()
+        .map_err(|err| AppError::ValidationError(err.to_string()))?;
+
+    let cmd: InviteSignupCmd = req.into();
+    let result = state.auth_service.invite_signup(cmd).await?;
 
     Ok(Json(AccountSignupResp::from(result)))
 }

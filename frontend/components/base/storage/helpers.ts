@@ -38,7 +38,8 @@ export function normalizeStoragePrefix(value: string) {
 
 export function isStorageImageKey(value: string) {
   const trimmed = value.trim().split("?")[0]
-  const extension = trimmed.split(".").pop()?.toLowerCase()
+  const lastSegment = trimmed.split("/").pop() ?? ""
+  const extension = lastSegment.includes(".") ? lastSegment.split(".").pop()?.toLowerCase() : undefined
   return extension ? STORAGE_IMAGE_EXTENSIONS.has(extension) : false
 }
 

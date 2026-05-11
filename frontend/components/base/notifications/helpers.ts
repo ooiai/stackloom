@@ -1,4 +1,4 @@
-import type { TranslateFn } from "@/lib/i18n"
+import type { AppLocale, TranslateFn } from "@/lib/i18n"
 import type {
   CreateNotificationRuleParam,
   CreateNotificationTemplateParam,
@@ -111,6 +111,15 @@ export const DEFAULT_RULE_FORM_VALUES: NotificationRuleFormValues = {
   recipient_user_ids: [],
   enabled: true,
 }
+
+const NOTIFICATION_LOCALE_LABEL_KEYS: Record<AppLocale, string> = {
+  "zh-CN": "notifications.localeOptions.zhCN",
+  "en-US": "notifications.localeOptions.enUS",
+}
+
+export const NOTIFICATION_TEMPLATE_LOCALES = Object.keys(
+  NOTIFICATION_LOCALE_LABEL_KEYS
+) as AppLocale[]
 
 function normalizeOptionalText(value: string) {
   const trimmed = value.trim()
@@ -325,6 +334,19 @@ export function formatTriggerTypeLabel(
   triggerType: NotificationTriggerType
 ) {
   return t(`notifications.trigger.${triggerType}`)
+}
+
+export function formatNotificationLocaleLabel(t: TranslateFn, locale: string) {
+  const key = NOTIFICATION_LOCALE_LABEL_KEYS[locale as AppLocale]
+  return key ? t(key) : locale
+}
+
+export function formatNotificationDisplayText(
+  t: TranslateFn,
+  value: string | null | undefined
+) {
+  const trimmed = value?.trim()
+  return trimmed ? trimmed : t("common.misc.none")
 }
 
 export function formatDateTime(value: string, locale: string) {

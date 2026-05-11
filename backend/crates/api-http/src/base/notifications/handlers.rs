@@ -22,12 +22,24 @@ use super::{
     },
 };
 
+/// Page Notification Dispatches
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `auth_user` - The authenticated user information extracted from the request context.
+/// * `req` - The request payload containing pagination and filtering parameters for notification dispatches.
+///
+/// # Returns
+/// * `AppResult<Json<PaginateNotificationDispatchResp>>` - The paginated notification dispatches response wrapped in an `AppResult`.
 pub async fn page_dispatches(
     State(state): State<BaseHttpState>,
     Extension(auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<PageNotificationDispatchReq>,
 ) -> AppResult<Json<PaginateNotificationDispatchResp>> {
-    tracing::info!(tenant_id = auth_user.tid, "...Page Notification Dispatches...");
+    tracing::info!(
+        tenant_id = auth_user.tid,
+        "...Page Notification Dispatches..."
+    );
 
     req.validate()
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
@@ -38,18 +50,35 @@ pub async fn page_dispatches(
         .await?;
 
     Ok(Json(PaginateNotificationDispatchResp {
-        items: items.into_iter().map(NotificationDispatchResp::from).collect(),
+        items: items
+            .into_iter()
+            .map(NotificationDispatchResp::from)
+            .collect(),
         total: total as usize,
     }))
 }
 
+/// Send Notification
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `auth_user` - The authenticated user information extracted from the request context.
+/// * `trace_context` - The request trace context for logging purposes.
+/// * `req` - The request payload containing the details of the notification to be sent.
+///
+/// # Returns
+/// * `AppResult<Json<NotificationDispatchResp>>` - The response containing the details of the dispatched notification wrapped in an `AppResult`.
 pub async fn send(
     State(state): State<BaseHttpState>,
     Extension(auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<SendNotificationReq>,
 ) -> AppResult<Json<NotificationDispatchResp>> {
-    tracing::info!(tenant_id = auth_user.tid, operator_id = auth_user.uid, "...Send Notification...");
+    tracing::info!(
+        tenant_id = auth_user.tid,
+        operator_id = auth_user.uid,
+        "...Send Notification..."
+    );
 
     req.validate()
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
@@ -77,12 +106,24 @@ pub async fn send(
     Ok(Json(resp))
 }
 
+/// Page Notification Templates
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `auth_user` - The authenticated user information extracted from the request context.
+/// * `req` - The request payload containing pagination and filtering parameters for notification templates.
+///
+/// # Returns
+/// * `AppResult<Json<PaginateNotificationTemplateResp>>` - The paginated notification templates response wrapped in an `AppResult`.
 pub async fn page_templates(
     State(state): State<BaseHttpState>,
     Extension(auth_user): Extension<AuthModel>,
     DetailedJson(req): DetailedJson<PageNotificationTemplateReq>,
 ) -> AppResult<Json<PaginateNotificationTemplateResp>> {
-    tracing::info!(tenant_id = auth_user.tid, "...Page Notification Templates...");
+    tracing::info!(
+        tenant_id = auth_user.tid,
+        "...Page Notification Templates..."
+    );
 
     req.validate()
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
@@ -93,18 +134,35 @@ pub async fn page_templates(
         .await?;
 
     Ok(Json(PaginateNotificationTemplateResp {
-        items: items.into_iter().map(NotificationTemplateResp::from).collect(),
+        items: items
+            .into_iter()
+            .map(NotificationTemplateResp::from)
+            .collect(),
         total: total as usize,
     }))
 }
 
+/// Create Notification Template
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `auth_user` - The authenticated user information extracted from the request context.
+/// * `trace_context` - The request trace context for logging purposes.
+/// * `req` - The request payload containing the details of the notification template to be created.
+///
+/// # Returns
+/// * `AppResult<Json<NotificationTemplateResp>>` - The response containing the details of the created notification template wrapped in an `AppResult`.
 pub async fn create_template(
     State(state): State<BaseHttpState>,
     Extension(auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreateNotificationTemplateReq>,
 ) -> AppResult<Json<NotificationTemplateResp>> {
-    tracing::info!(tenant_id = auth_user.tid, operator_id = auth_user.uid, "...Create Notification Template...");
+    tracing::info!(
+        tenant_id = auth_user.tid,
+        operator_id = auth_user.uid,
+        "...Create Notification Template..."
+    );
 
     req.validate()
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
@@ -132,13 +190,28 @@ pub async fn create_template(
     Ok(Json(resp))
 }
 
+/// Update Notification Template
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `auth_user` - The authenticated user information extracted from the request context.
+/// * `trace_context` - The request trace context for logging purposes.
+/// * `req` - The request payload containing the details of the notification template to be updated, including the template ID and the fields to be updated.
+///
+/// # Returns
+/// * `AppResult<Json<NotificationTemplateResp>>` - The response containing the details of the updated notification template wrapped in an `AppResult`.
 pub async fn update_template(
     State(state): State<BaseHttpState>,
     Extension(auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdateNotificationTemplateReq>,
 ) -> AppResult<Json<NotificationTemplateResp>> {
-    tracing::info!(tenant_id = auth_user.tid, operator_id = auth_user.uid, template_id = req.id, "...Update Notification Template...");
+    tracing::info!(
+        tenant_id = auth_user.tid,
+        operator_id = auth_user.uid,
+        template_id = req.id,
+        "...Update Notification Template..."
+    );
 
     req.validate()
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
@@ -167,6 +240,15 @@ pub async fn update_template(
     Ok(Json(resp))
 }
 
+/// Page Notification Rules
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `auth_user` - The authenticated user information extracted from the request context.
+/// * `req` - The request payload containing pagination and filtering parameters for notification rules.
+///
+/// # Returns
+/// * `AppResult<Json<PaginateNotificationRuleResp>>` - The paginated notification rules response wrapped in an `AppResult`.
 pub async fn page_rules(
     State(state): State<BaseHttpState>,
     Extension(auth_user): Extension<AuthModel>,
@@ -188,13 +270,27 @@ pub async fn page_rules(
     }))
 }
 
+/// Create Notification Template
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `auth_user` - The authenticated user information extracted from the request context.
+/// * `trace_context` - The request trace context for logging purposes.
+/// * `req` - The request payload containing the details of the notification template to be created.
+///
+/// # Returns
+/// * `AppResult<Json<NotificationTemplateResp>>` - The response containing the details of the created notification template wrapped in an `AppResult`.
 pub async fn create_rule(
     State(state): State<BaseHttpState>,
     Extension(auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<CreateNotificationRuleReq>,
 ) -> AppResult<Json<NotificationRuleResp>> {
-    tracing::info!(tenant_id = auth_user.tid, operator_id = auth_user.uid, "...Create Notification Rule...");
+    tracing::info!(
+        tenant_id = auth_user.tid,
+        operator_id = auth_user.uid,
+        "...Create Notification Rule..."
+    );
 
     req.validate()
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
@@ -222,13 +318,28 @@ pub async fn create_rule(
     Ok(Json(resp))
 }
 
+/// Update Notification Rule.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `auth_user` - The authenticated user information extracted from the request context.
+/// * `trace_context` - The request trace context for logging purposes.
+/// * `req` - The request payload containing the details of the notification rule to be updated, including the rule ID and the fields to be updated.
+///
+/// # Returns
+/// * `AppResult<Json<NotificationRuleResp>>` - The response containing the details of the updated notification rule wrapped in an `AppResult`.
 pub async fn update_rule(
     State(state): State<BaseHttpState>,
     Extension(auth_user): Extension<AuthModel>,
     Extension(trace_context): Extension<RequestTraceContext>,
     DetailedJson(req): DetailedJson<UpdateNotificationRuleReq>,
 ) -> AppResult<Json<NotificationRuleResp>> {
-    tracing::info!(tenant_id = auth_user.tid, operator_id = auth_user.uid, rule_id = req.id, "...Update Notification Rule...");
+    tracing::info!(
+        tenant_id = auth_user.tid,
+        operator_id = auth_user.uid,
+        rule_id = req.id,
+        "...Update Notification Rule..."
+    );
 
     req.validate()
         .map_err(|err| AppError::ValidationError(err.to_string()))?;

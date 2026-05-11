@@ -4,14 +4,17 @@ use crate::{
     NotificationDispatch, NotificationRecipientSelector, NotificationRule, NotificationTemplate,
     UserNotification,
     notification::{
-        NotificationDispatchPageQuery, NotificationRulePageQuery,
-        NotificationTemplatePageQuery, UserNotificationPageQuery,
+        NotificationDispatchPageQuery, NotificationRulePageQuery, NotificationTemplatePageQuery,
+        UserNotificationPageQuery,
     },
 };
 
 #[async_trait]
 pub trait NotificationRepository: Send + Sync {
-    async fn create_template(&self, template: &NotificationTemplate) -> AppResult<NotificationTemplate>;
+    async fn create_template(
+        &self,
+        template: &NotificationTemplate,
+    ) -> AppResult<NotificationTemplate>;
     async fn find_template_by_id(
         &self,
         tenant_id: i64,
@@ -27,12 +30,18 @@ pub trait NotificationRepository: Send + Sync {
         &self,
         query: &NotificationTemplatePageQuery,
     ) -> AppResult<(Vec<NotificationTemplate>, i64)>;
-    async fn update_template(&self, template: &NotificationTemplate) -> AppResult<NotificationTemplate>;
+    async fn update_template(
+        &self,
+        template: &NotificationTemplate,
+    ) -> AppResult<NotificationTemplate>;
 
     async fn create_rule(&self, rule: &NotificationRule) -> AppResult<NotificationRule>;
-    async fn find_rule_by_id(&self, tenant_id: i64, id: i64) -> AppResult<Option<NotificationRule>>;
-    async fn page_rules(&self, query: &NotificationRulePageQuery)
-        -> AppResult<(Vec<NotificationRule>, i64)>;
+    async fn find_rule_by_id(&self, tenant_id: i64, id: i64)
+    -> AppResult<Option<NotificationRule>>;
+    async fn page_rules(
+        &self,
+        query: &NotificationRulePageQuery,
+    ) -> AppResult<(Vec<NotificationRule>, i64)>;
     async fn list_enabled_rules_by_event(
         &self,
         tenant_id: i64,

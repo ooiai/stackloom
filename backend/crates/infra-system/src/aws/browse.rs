@@ -96,12 +96,7 @@ impl StorageProviderConfig {
             }
 
             if let Some((scheme, host)) = base.split_once("://") {
-                return format!(
-                    "{scheme}://{}.{}{}",
-                    bucket,
-                    host,
-                    format!("/{key}")
-                );
+                return format!("{scheme}://{}.{}{}", bucket, host, format!("/{key}"));
             }
         }
 

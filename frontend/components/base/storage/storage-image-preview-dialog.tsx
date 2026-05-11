@@ -1,7 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
-import { XIcon } from "lucide-react"
+import { ImageOffIcon, XIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/providers/i18n-provider"
@@ -13,6 +14,46 @@ interface StorageImagePreviewDialogProps {
   item: StorageRowData | null
   signedUrl: string | null
   onOpenChange: (open: boolean) => void
+}
+
+function StorageImageContent({
+  signedUrl,
+  alt,
+}: {
+  signedUrl: string
+  alt: string
+}) {
+  const { t } = useI18n()
+  const [loadError, setLoadError] = useState(false)
+
+  if (loadError) {
+    return (
+      <div className="flex flex-col items-center gap-4 p-8 text-center">
+        <ImageOffIcon className="size-12 text-muted-foreground/40" />
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-foreground">
+            {t("storage.previewDialog.loadErrorTitle")}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {t("storage.previewDialog.loadErrorDescription")}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <StorageImageZoom className="max-w-full">
+      {/* Signed OSS preview URLs use dynamic hosts, so next/image is not a good fit here. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={signedUrl}
+        alt={alt}
+        className="max-h-[calc(90vh-10rem)] w-auto max-w-full rounded-2xl border border-border/60 bg-background object-contain shadow-sm"
+        onError={() => setLoadError(true)}
+      />
+    </StorageImageZoom>
+  )
 }
 
 export function StorageImagePreviewDialog({
@@ -53,15 +94,7 @@ export function StorageImagePreviewDialog({
           </div>
 
           <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-muted/20 p-4 sm:p-6">
-            <StorageImageZoom className="max-w-full">
-              {/* Signed OSS preview URLs use dynamic hosts, so next/image is not a good fit here. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={signedUrl}
-                alt={item.key}
-                className="max-h-[calc(90vh-10rem)] w-auto max-w-full rounded-2xl border border-border/60 bg-background object-contain shadow-sm"
-              />
-            </StorageImageZoom>
+            <StorageImageContent key={signedUrl} signedUrl={signedUrl} alt={item.key} />
           </div>
 
           <div className="border-t border-border/60 px-6 py-3">

@@ -143,6 +143,6 @@
   },
   "tools-notifications": {
     "name": "通知中心",
-    "remark": "管理手动通知、模板与自动规则"
+    "remark": "管理手动通知、模板与事件规则"
   }
 }

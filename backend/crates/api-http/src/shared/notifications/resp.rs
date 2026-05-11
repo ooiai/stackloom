@@ -1,5 +1,9 @@
 use domain_base::{NotificationStreamSignal, UserNotification};
-use neocrates::{chrono::{DateTime, Utc}, helper::core::serde_helpers, serde::Serialize};
+use neocrates::{
+    chrono::{DateTime, Utc},
+    helper::core::serde_helpers,
+    serde::Serialize,
+};
 
 #[derive(Debug, Clone, Serialize)]
 pub struct UserNotificationResp {

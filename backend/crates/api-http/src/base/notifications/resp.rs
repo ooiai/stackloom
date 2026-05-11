@@ -1,5 +1,11 @@
-use domain_base::{NotificationDispatch, NotificationRecipientSelector, NotificationRule, NotificationTemplate};
-use neocrates::{chrono::{DateTime, Utc}, helper::core::serde_helpers, serde::Serialize};
+use domain_base::{
+    NotificationDispatch, NotificationRecipientSelector, NotificationRule, NotificationTemplate,
+};
+use neocrates::{
+    chrono::{DateTime, Utc},
+    helper::core::serde_helpers,
+    serde::Serialize,
+};
 
 #[derive(Debug, Clone, Serialize)]
 pub struct NotificationDispatchResp {
@@ -21,10 +27,7 @@ pub struct NotificationDispatchResp {
 
 impl From<NotificationDispatch> for NotificationDispatchResp {
     fn from(value: NotificationDispatch) -> Self {
-        let recipient_user_ids = value
-            .recipient_selector()
-            .ok()
-            .and_then(selector_to_ids);
+        let recipient_user_ids = value.recipient_selector().ok().and_then(selector_to_ids);
 
         Self {
             id: value.id,
@@ -108,10 +111,7 @@ pub struct NotificationRuleResp {
 
 impl From<NotificationRule> for NotificationRuleResp {
     fn from(value: NotificationRule) -> Self {
-        let recipient_user_ids = value
-            .recipient_selector()
-            .ok()
-            .and_then(selector_to_ids);
+        let recipient_user_ids = value.recipient_selector().ok().and_then(selector_to_ids);
 
         Self {
             id: value.id,

@@ -7,15 +7,24 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/reui/select"
 import { Spinner } from "@/components/ui/spinner"
 import { Switch } from "@/components/ui/switch"
 import { useI18n } from "@/providers/i18n-provider"
 import type { NotificationTemplateData } from "@/types/base.types"
 
 import {
+  NOTIFICATION_TEMPLATE_LOCALES,
   type NotificationTemplateFormValues,
   createNotificationTemplateSchema,
   createTemplateFormValues,
+  formatNotificationLocaleLabel,
   getFormErrors,
 } from "./helpers"
 
@@ -37,6 +46,10 @@ export function NotificationsTemplateDialog({
   onSubmit,
 }: NotificationsTemplateDialogProps) {
   const { t } = useI18n()
+  const templateExamples = {
+    memberUsernameExample: "{{member.username}}",
+    tenantNameExample: "{{tenant.name}}",
+  }
   const [values, setValues] = useState<NotificationTemplateFormValues>(
     createTemplateFormValues(item)
   )
@@ -44,6 +57,7 @@ export function NotificationsTemplateDialog({
     Partial<Record<keyof NotificationTemplateFormValues, string>>
   >({})
   const schema = useMemo(() => createNotificationTemplateSchema(t), [t])
+  const selectedLocaleLabel = formatNotificationLocaleLabel(t, values.locale)
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen && isBusy) {
@@ -82,7 +96,7 @@ export function NotificationsTemplateDialog({
                 : t("notifications.dialogs.templateUpdate.title")}
             </DialogPrimitive.Title>
             <DialogPrimitive.Description className="text-sm text-muted-foreground">
-              {t("notifications.dialogs.template.description")}
+              {t("notifications.dialogs.template.description", templateExamples)}
             </DialogPrimitive.Description>
           </div>
 
@@ -150,21 +164,32 @@ export function NotificationsTemplateDialog({
                 <FieldLabel htmlFor="notification-template-locale">
                   {t("notifications.form.locale")}
                 </FieldLabel>
-                <select
-                  id="notification-template-locale"
-                  disabled={isBusy}
+                <Select
                   value={values.locale}
-                  onChange={(event) =>
-                    setValues((current) => ({
-                      ...current,
-                      locale: event.target.value,
-                    }))
+                  onValueChange={(value) =>
+                    value
+                      ? setValues((current) => ({
+                          ...current,
+                          locale: value,
+                        }))
+                      : undefined
                   }
-                  className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <option value="zh-CN">zh-CN</option>
-                  <option value="en-US">en-US</option>
-                </select>
+                  <SelectTrigger
+                    className="w-full"
+                    id="notification-template-locale"
+                    disabled={isBusy}
+                  >
+                    <SelectValue>{selectedLocaleLabel}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {NOTIFICATION_TEMPLATE_LOCALES.map((locale) => (
+                      <SelectItem key={locale} value={locale}>
+                        {formatNotificationLocaleLabel(t, locale)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </Field>
             </div>
 
@@ -182,7 +207,10 @@ export function NotificationsTemplateDialog({
                     title_template: event.target.value,
                   }))
                 }
-                placeholder={t("notifications.placeholders.titleTemplate")}
+                placeholder={t(
+                  "notifications.placeholders.titleTemplate",
+                  templateExamples
+                )}
               />
               {errors.title_template ? (
                 <FieldError>{errors.title_template}</FieldError>
@@ -203,7 +231,10 @@ export function NotificationsTemplateDialog({
                     body_template: event.target.value,
                   }))
                 }
-                placeholder={t("notifications.placeholders.bodyTemplate")}
+                placeholder={t(
+                  "notifications.placeholders.bodyTemplate",
+                  templateExamples
+                )}
                 className="min-h-36 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               {errors.body_template ? (
@@ -250,7 +281,7 @@ export function NotificationsTemplateDialog({
               <DialogPrimitive.Close
                 render={<Button variant="outline" type="button" />}
               >
-                {t("common.actions.cancel", undefined, "取消")}
+                {t("common.actions.cancel")}
               </DialogPrimitive.Close>
               <Button type="submit" disabled={isBusy}>
                 {isBusy ? <Spinner className="size-4" /> : null}

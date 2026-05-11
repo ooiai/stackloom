@@ -6,9 +6,9 @@ import { PUBLIC_BASE_URL } from "@/lib/config/constants"
 import {
   API_ENUM,
   HTTP_REQUEST_ENUM,
-  ROUTER_ENUM,
   STORAGE_ENUM,
 } from "../config/enums"
+import { redirectToSigninWithCurrentPath } from "@/lib/auth-navigation"
 import {
   getStorageItem,
   removeStorageItem,
@@ -374,14 +374,14 @@ instance.interceptors.response.use(
           processQueue(error, null)
           // clear token
           removeStorageItem(STORAGE_ENUM.TOKEN)
-          window.location.href = ROUTER_ENUM.SIGNIN
+          redirectToSigninWithCurrentPath()
           return Promise.reject(error)
         }
       } catch (err) {
         processQueue(err, null)
         // clear token
         removeStorageItem(STORAGE_ENUM.TOKEN)
-        window.location.href = ROUTER_ENUM.SIGNIN
+        redirectToSigninWithCurrentPath()
         return Promise.reject(err)
       } finally {
         isRefreshing = false
@@ -586,7 +586,7 @@ export const sse = (
           connect()
         } else {
           removeStorageItem(STORAGE_ENUM.TOKEN)
-          window.location.href = ROUTER_ENUM.SIGNIN
+          redirectToSigninWithCurrentPath()
         }
         return
       }
@@ -601,7 +601,7 @@ export const sse = (
           connect()
         } else {
           removeStorageItem(STORAGE_ENUM.TOKEN)
-          window.location.href = ROUTER_ENUM.SIGNIN
+          redirectToSigninWithCurrentPath()
         }
       }
     }

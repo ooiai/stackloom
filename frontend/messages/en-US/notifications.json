@@ -2,35 +2,46 @@
   "page": {
     "eyebrow": "Notification Center",
     "title": "Notifications",
-    "description": "Manage manual sends, reusable templates, and automatic event rules in one place."
+    "description": "Manage manual sends, notification templates, and event rules in one place."
   },
   "actions": {
     "send": "Send notification",
     "newTemplate": "New template",
     "createTemplate": "Create template",
     "saveTemplate": "Save template",
-    "newRule": "New rule",
-    "createRule": "Create rule",
-    "saveRule": "Save rule",
+    "newRule": "New event rule",
+    "createRule": "Create event rule",
+    "saveRule": "Save event rule",
     "markAllRead": "Mark all read",
-    "archive": "Archive"
+    "markRead": "Mark read",
+    "archive": "Archive",
+    "refresh": "Refresh",
+    "viewAll": "View all",
+    "open": "Open",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "filters": {
+    "all": "All",
+    "unreadOnly": "Unread only",
+    "archived": "Archived"
   },
   "panels": {
     "dispatches": "Dispatches",
     "templates": "Templates",
-    "rules": "Rules"
+    "rules": "Event rules"
   },
   "dispatches": {
     "title": "Recent dispatches",
-    "description": "Review the latest manual and automatic notifications."
+    "description": "Review final delivery records for manual sends, direct sends, and notifications generated from business events."
   },
   "templates": {
     "title": "Notification templates",
-    "description": "Maintain reusable title/body templates for event-driven notifications."
+    "description": "Maintain reusable title and body templates. The template event code is mainly for categorization and filtering, and is not strictly bound to an event rule."
   },
   "rules": {
-    "title": "Automatic rules",
-    "description": "Map event codes to templates and recipient selectors."
+    "title": "Event rules",
+    "description": "Event rules automatically send notifications after a business event occurs by matching the event code to a template and recipient selector. Scheduled, cron, and delayed time-based triggers are not supported yet."
   },
   "dialogs": {
     "send": {
@@ -38,7 +49,7 @@
       "description": "Create an in-app notification for the current tenant."
     },
     "template": {
-      "description": "Templates render variables such as {{member.username}} or {{tenant.name}}."
+      "description": "Templates render variables such as {memberUsernameExample} or {tenantNameExample}."
     },
     "templateCreate": {
       "title": "Create template"
@@ -47,13 +58,14 @@
       "title": "Update template"
     },
     "rule": {
-      "description": "Rules turn business events into notifications without changing channel logic everywhere."
+      "description": "Event rules turn business events into notifications without duplicating sending logic across features. Scheduled, cron, and delayed time-based triggers are not supported yet.",
+      "noTemplates": "Create a notification template before creating an event rule."
     },
     "ruleCreate": {
-      "title": "Create rule"
+      "title": "Create event rule"
     },
     "ruleUpdate": {
-      "title": "Update rule"
+      "title": "Update event rule"
     }
   },
   "table": {
@@ -93,8 +105,8 @@
     "code": "e.g. member_joined_admin",
     "name": "Human-readable template or rule name",
     "eventCode": "e.g. member.joined",
-    "titleTemplate": "e.g. New member joined {{tenant.name}}",
-    "bodyTemplate": "Variables like {{member.username}} are supported",
+    "titleTemplate": "e.g. New member joined {tenantNameExample}",
+    "bodyTemplate": "Variables like {memberUsernameExample} are supported",
     "actionUrlTemplate": "Optional dynamic route, such as /member",
     "template": "Select a template"
   },
@@ -111,7 +123,22 @@
   },
   "status": {
     "enabled": "Enabled",
-    "disabled": "Disabled"
+    "disabled": "Disabled",
+    "unread": "Unread"
+  },
+  "localeOptions": {
+    "zhCN": "Simplified Chinese",
+    "enUS": "English"
+  },
+  "inboxPage": {
+    "title": "Notification Center",
+    "description": "Review all in-app notifications here and handle unread, archived, and jump actions.",
+    "summary": "{total} notifications, {unread} unread",
+    "listTitle": "All notifications",
+    "listDescription": "Use this page when the inbox grows beyond the quick preview.",
+    "empty": "No notifications yet.",
+    "pagination": "Page {page} / {totalPages}, {total} total",
+    "manageAction": "Open notification management"
   },
   "bell": {
     "title": "Inbox",
@@ -123,15 +150,15 @@
     "dispatchesDescription": "Manual sends and automatic event pushes will appear here.",
     "templatesTitle": "No templates yet",
     "templatesDescription": "Create a template first, then bind it with an event rule.",
-    "rulesTitle": "No rules yet",
-    "rulesDescription": "Create a rule to turn events such as member.joined into notifications."
+    "rulesTitle": "No event rules yet",
+    "rulesDescription": "Create an event rule to turn events such as member.joined into notifications."
   },
   "toast": {
     "sent": "Notification sent.",
     "templateCreated": "Template created.",
     "templateUpdated": "Template updated.",
-    "ruleCreated": "Rule created.",
-    "ruleUpdated": "Rule updated."
+    "ruleCreated": "Event rule created.",
+    "ruleUpdated": "Event rule updated."
   },
   "validation": {
     "titleRequired": "Please enter a title.",

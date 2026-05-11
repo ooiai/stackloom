@@ -13,7 +13,15 @@ use neocrates::{
 };
 use validator::Validate;
 
-// Return provider metadata so the page can initialize against configured storage backends.
+/// Get the list of available storage providers and their configurations.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `_auth_user` - The authenticated user information extracted from the request context.
+/// * `req` - The request payload containing any necessary parameters for retrieving the storage metadata, wrapped in a `DetailedJson` extractor for validation.
+///
+/// # Returns
+/// * `AppResult<Json<GetStorageResp>>` - A result containing either a JSON response with the storage metadata or an application error if the operation fails.
 pub async fn get(
     State(state): State<BaseHttpState>,
     Extension(_auth_user): Extension<AuthModel>,
@@ -28,7 +36,15 @@ pub async fn get(
     Ok(Json(GetStorageResp::from(result)))
 }
 
-// List storage objects for the selected provider and optional bucket/prefix window.
+/// List storage objects for the selected provider and optional bucket/prefix window.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `_auth_user` - The authenticated user information extracted from the request context.
+/// * `req` - The request payload containing the details for paging storage objects, wrapped in a `DetailedJson` extractor for validation.
+///
+/// # Returns
+/// * `AppResult<Json<PageStorageResp>>` - A result containing either a JSON response with the paged storage objects or an application error if the operation fails.
 pub async fn page(
     State(state): State<BaseHttpState>,
     Extension(_auth_user): Extension<AuthModel>,
@@ -44,7 +60,15 @@ pub async fn page(
     Ok(Json(PageStorageResp::from(result)))
 }
 
-// Sign a single object from the selected provider/bucket for preview access.
+/// Sign a single object from the selected provider/bucket for preview access.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `_auth_user` - The authenticated user information extracted from the request context.
+/// * `req` - The request payload containing the details for signing a storage object, wrapped in a `DetailedJson` extractor for validation.
+///
+/// # Returns
+/// * `AppResult<Json<SignStorageResp>>` - A result containing either a JSON response with the signed URL for the storage object or an application error if the operation fails.
 pub async fn sign(
     State(state): State<BaseHttpState>,
     Extension(_auth_user): Extension<AuthModel>,

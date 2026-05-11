@@ -10,9 +10,8 @@ use neocrates::{
     helper::core::axum_extractor::DetailedJson,
     middlewares::models::AuthModel,
     response::error::{AppError, AppResult},
-    tokio,
     serde_json::json,
-    tracing,
+    tokio, tracing,
 };
 
 /// Validate an invite code and return basic tenant information.
