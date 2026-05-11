@@ -69,3 +69,4 @@ output/**
 **/**.pdf
 backend/config.yml
 spec
+spec/**
