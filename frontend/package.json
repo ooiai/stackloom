@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port ${PORT:-8606}",
+    "dev": "dotenv -e .env next dev --turbopack --port ${PORT:-8606}",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -68,6 +68,7 @@
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.4",
     "eslint-config-next": "16.1.7",
     "postcss": "^8",

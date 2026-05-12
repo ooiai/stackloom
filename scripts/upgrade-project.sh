@@ -163,23 +163,100 @@ set -e
 echo ""
 
 if [[ $MERGE_EXIT -ne 0 ]]; then
-  CONFLICT_COUNT=$(git diff --name-only --diff-filter=U | wc -l | tr -d ' ')
-  warn "${CONFLICT_COUNT} file(s) have merge conflicts:"
+  CONFLICTED_FILES=()
+  while IFS= read -r f; do
+    CONFLICTED_FILES+=("$f")
+  done < <(git diff --name-only --diff-filter=U)
+
+  TOTAL=${#CONFLICTED_FILES[@]}
+  RESOLVED=()
+  MANUAL=()
+
   echo ""
-  git diff --name-only --diff-filter=U | while read -r f; do
-    echo -e "  ${RED}✗${RESET}  $f"
+  warn "${TOTAL} file(s) have merge conflicts. Resolve each one:"
+  echo ""
+
+  for i in "${!CONFLICTED_FILES[@]}"; do
+    FILE="${CONFLICTED_FILES[$i]}"
+    HUNK_COUNT=$(grep -c "^<<<<<<< " "$FILE" 2>/dev/null || echo "?")
+    INDEX=$((i + 1))
+
+    while true; do
+      echo -e "${BOLD}── Conflict ${INDEX}/${TOTAL}: ${FILE}  [${HUNK_COUNT} conflict(s)] ──${RESET}"
+      echo ""
+      echo -e "  ${GREEN}[y]${RESET} 保留我的版本   (--ours，覆盖 upstream 改动)"
+      echo -e "  ${CYAN}[n]${RESET} 接受 upstream  (--theirs，丢弃我的改动)"
+      echo -e "  ${YELLOW}[m]${RESET} 合并两者       (保留冲突标记，手动编辑后 git add)"
+      echo -e "  ${BOLD}[d]${RESET} 查看 diff      (显示冲突内容)"
+      echo ""
+      read -r -p "  Choice [y/n/m/d]: " choice
+      echo ""
+
+      case "$choice" in
+        y|Y)
+          git checkout --ours "$FILE"
+          git add "$FILE"
+          success "  ✓  Kept YOUR version: $FILE"
+          RESOLVED+=("$FILE")
+          break
+          ;;
+        n|N)
+          git checkout --theirs "$FILE"
+          git add "$FILE"
+          success "  ✓  Accepted UPSTREAM version: $FILE"
+          RESOLVED+=("$FILE")
+          break
+          ;;
+        m|M)
+          warn "  ↩  Kept conflict markers in: $FILE"
+          warn "     Edit the file to resolve <<<<<<<  =======  >>>>>>> markers,"
+          warn "     then run: git add $FILE"
+          MANUAL+=("$FILE")
+          break
+          ;;
+        d|D)
+          echo ""
+          git --no-pager diff "$FILE" | head -60
+          echo ""
+          ;;
+        *)
+          warn "  Invalid choice. Please enter y, n, m, or d."
+          echo ""
+          ;;
+      esac
+    done
+    echo ""
   done
+
+  # ── summary ───────────────────────────────────────────────────────────────
+  echo -e "${BOLD}── Summary ──${RESET}"
   echo ""
-  warn "Resolve conflicts, then run:"
-  warn "  git add <resolved-files>"
-  warn "  git commit"
-  echo ""
-  warn "Tips:"
-  warn "  • branding.config.ts  — keep YOUR version (git checkout --ours branding.config.ts)"
-  warn "  • messages/*.json     — merge carefully; keep product copy text"
-  warn "  • backend/config.yml  — keep YOUR database/email config"
-  warn "  • Foundation core     — prefer upstream version (git checkout --theirs <file>)"
-  echo ""
+
+  if [[ ${#RESOLVED[@]} -gt 0 ]]; then
+    success "Auto-resolved (${#RESOLVED[@]} file(s)):"
+    for f in "${RESOLVED[@]}"; do
+      echo -e "  ${GREEN}✓${RESET}  $f"
+    done
+    echo ""
+  fi
+
+  if [[ ${#MANUAL[@]} -gt 0 ]]; then
+    warn "Needs manual merge (${#MANUAL[@]} file(s)):"
+    for f in "${MANUAL[@]}"; do
+      echo -e "  ${YELLOW}↩${RESET}  $f"
+    done
+    echo ""
+    warn "For each file above, edit to remove conflict markers, then:"
+    warn "  git add <file>"
+    warn "  git commit"
+    echo ""
+  else
+    success "All conflicts resolved!"
+    success "Review staged changes: git diff --staged"
+    success "Then commit with:      git commit"
+    echo ""
+  fi
+
 else
   echo ""
   success "Merge staged cleanly — no conflicts!"
