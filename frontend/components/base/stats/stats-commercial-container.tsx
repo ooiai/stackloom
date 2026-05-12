@@ -11,7 +11,7 @@ export function StatsCommercialContainer() {
       <span className="mt-2 inline-block rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
         {t("stats.commercial.coming_soon")}
       </span>
-      <p className="mt-4 max-w-md mx-auto text-sm text-muted-foreground">
+      <p className="mx-auto mt-4 max-w-md text-sm text-muted-foreground">
         {t("stats.commercial.coming_soon_desc")}
       </p>
     </div>
