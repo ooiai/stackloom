@@ -10,10 +10,10 @@ import type {
 } from "@/types/base.types"
 
 export const OAUTH_CLIENT_ACTION_PERMS = {
-  create: "BACKEND::OAUTH_CLIENT::CREATE",
-  update: "BACKEND::OAUTH_CLIENT::UPDATE",
-  rotateSecret: "BACKEND::OAUTH_CLIENT::ROTATE_SECRET",
-  remove: "BACKEND::OAUTH_CLIENT::REMOVE",
+  create: "OAUTH_CLIENT::CREATE",
+  update: "OAUTH_CLIENT::UPDATE",
+  rotateSecret: "OAUTH_CLIENT::ROTATE_SECRET",
+  remove: "OAUTH_CLIENT::REMOVE",
 } as const
 
 export const KNOWN_SCOPES = [
@@ -121,6 +121,9 @@ export function getStatusVariant(status: OAuthClientStatus) {
 export function getOAuthClientStatusOptions(t: TranslateFn) {
   return [
     { value: 1 as OAuthClientStatus, label: t("oauth-clients.status.enabled") },
-    { value: 0 as OAuthClientStatus, label: t("oauth-clients.status.disabled") },
+    {
+      value: 0 as OAuthClientStatus,
+      label: t("oauth-clients.status.disabled"),
+    },
   ]
 }

@@ -52,389 +52,399 @@ ON CONFLICT DO NOTHING;
 -- ==========================================================
 -- MENUS
 -- ==========================================================
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618732385923576423, NULL, 617691136030487143, 'BIZ', '业务管理', NULL, NULL, NULL, NULL, 1, 5, true, false, 1, '2026-05-09 10:34:00.748860+00:00', '2026-05-09 10:34:00.748860+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617691136030487143, NULL, NULL, 'BACKEND', '管理端', NULL, NULL, NULL, NULL, 1, 10, true, false, 1, '2026-05-02 06:10:07.445704+00', '2026-05-02 06:10:07.445704+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617274510210511463, NULL, 617691136030487143, 'UPMS', '用权管理', NULL, NULL, NULL, NULL, 1, 10, true, false, 1, '2026-04-29 09:11:19.105533+00:00', '2026-04-29 09:11:19.105533+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617274510210511463, NULL, 617691136030487143, 'UPMS', '用权管理', NULL, NULL, NULL, NULL, 1, 10, true, false, 1, '2026-04-29 09:11:19.105533+00', '2026-04-29 09:11:19.105533+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617691136030487143, NULL, NULL, 'BACKEND', '管理端', NULL, NULL, NULL, NULL, 1, 10, true, false, 1, '2026-05-02 06:10:07.445704+00:00', '2026-05-02 06:10:07.445704+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617274543580459623, NULL, 617691136030487143, 'TOOLS', '工具管理', NULL, NULL, NULL, NULL, 1, 20, true, false, 1, '2026-04-29 09:11:38.998592+00', '2026-04-29 09:11:38.998592+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617691413810852455, NULL, 617691176312582759, 'FRONTEND::DASHBORAD', '首页', '/dashboard', NULL, NULL, 'House', 2, 10, true, false, 1, '2026-05-02 06:12:53.019514+00:00', '2026-05-08 03:48:03.988883+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617691176312582759, NULL, NULL, 'FRONTEND', 'WEB前端', NULL, NULL, NULL, NULL, 1, 20, true, false, 1, '2026-05-02 06:10:31.454556+00', '2026-05-02 06:11:45.699062+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617274631191081575, NULL, 617274510210511463, 'UPMS::USERS', '用户管理', '/upms/users', NULL, NULL, 'Users', 2, 11, true, false, 1, '2026-04-29 09:12:31.219690+00:00', '2026-05-07 09:53:25.154151+00:00', NULL, '统一维护系统用户资料、基础联系信息与账号状态')
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617274631191081575, NULL, 617274510210511463, 'UPMS::USERS', '用户管理', '/upms/users', NULL, NULL, 'Users', 2, 11, true, false, 1, '2026-04-29 09:12:31.21969+00', '2026-05-07 09:53:25.154151+00', NULL, '统一维护系统用户资料、基础联系信息与账号状态')
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617274684458742375, NULL, 617274510210511463, 'UPMS::ROLES', '角色管理', '/upms/roles', NULL, NULL, 'UserKey', 2, 12, true, false, 1, '2026-04-29 09:13:02.964307+00:00', '2026-05-07 09:54:17.376663+00:00', NULL, '维护角色树、角色说明与内置标记')
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617274684458742375, NULL, 617274510210511463, 'UPMS::ROLES', '角色管理', '/upms/roles', NULL, NULL, 'UserKey', 2, 12, true, false, 1, '2026-04-29 09:13:02.964307+00', '2026-05-07 09:54:17.376663+00', NULL, '维护角色树、角色说明与内置标记')
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617274765375255143, NULL, 617274510210511463, 'UPMS::PERMS', '权限管理', '/upms/perms', NULL, NULL, 'UserLock', 2, 13, true, false, 1, '2026-04-29 09:13:51.195882+00:00', '2026-05-07 09:55:26.301111+00:00', NULL, '维护权限树、资源标识与动作定义')
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617274765375255143, NULL, 617274510210511463, 'UPMS::PERMS', '权限管理', '/upms/perms', NULL, NULL, 'UserLock', 2, 13, true, false, 1, '2026-04-29 09:13:51.195882+00', '2026-05-07 09:55:26.301111+00', NULL, '维护权限树、资源标识与动作定义')
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617275018593776231, NULL, 617274510210511463, 'UPMS::MENUS', '菜单管理', '/upms/menus', NULL, NULL, 'SquareMenu', 2, 15, true, false, 1, '2026-04-29 09:16:22.124075+00:00', '2026-05-07 09:56:01.724210+00:00', NULL, '维护导航菜单、页面路由与层级结构')
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617275018593776231, NULL, 617274510210511463, 'UPMS::MENUS', '菜单管理', '/upms/menus', NULL, NULL, 'SquareMenu', 2, 15, true, false, 1, '2026-04-29 09:16:22.124075+00', '2026-05-07 09:56:01.72421+00', NULL, '维护导航菜单、页面路由与层级结构')
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617595582587875943, NULL, 617274510210511463, 'UPMS::TENANTS', '租户管理', '/upms/tenants', NULL, NULL, 'Store', 2, 16, true, false, 1, '2026-05-01 14:20:53.153319+00:00', '2026-05-07 09:58:34.421279+00:00', NULL, '维护学校、校区与部门等层级租户结构')
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617595582587875943, NULL, 617274510210511463, 'UPMS::TENANTS', '租户管理', '/upms/tenants', NULL, NULL, 'Store', 2, 16, true, false, 1, '2026-05-01 14:20:53.153319+00', '2026-05-07 09:58:34.421279+00', NULL, '维护学校、校区与部门等层级租户结构')
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617274543580459623, NULL, 617691136030487143, 'TOOLS', '工具管理', NULL, NULL, NULL, NULL, 1, 20, true, false, 1, '2026-04-29 09:11:38.998592+00:00', '2026-04-29 09:11:38.998592+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617274590825099879, NULL, 617274543580459623, 'TOOLS::DICT', '字典管理', '/tools/dicts', NULL, NULL, 'BookA', 2, 22, true, false, 1, '2026-04-29 09:12:07.15863+00', '2026-05-07 09:59:00.719807+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617691176312582759, NULL, NULL, 'FRONTEND', 'WEB前端', NULL, NULL, NULL, NULL, 1, 20, true, false, 1, '2026-05-02 06:10:31.454556+00:00', '2026-05-02 06:11:45.699062+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618432504411533927, NULL, 617274543580459623, 'TOOLS::SYS::LOG', '系统日志', '/tools/system-logs', NULL, NULL, 'ClipboardClock', 2, 24, true, false, 1, '2026-05-07 08:54:57.436991+00', '2026-05-07 09:59:45.359193+00', NULL, '查看请求链路、状态码与耗时摘要')
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618607871768146535, NULL, 617691176312582759, 'FRONTEND::WORKSPACE', '工作区', NULL, NULL, NULL, 'BriefcaseBusiness', 1, 20, true, false, 1, '2026-05-08 13:57:04.520368+00:00', '2026-05-08 13:58:28.488879+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618432605393531495, NULL, 617274543580459623, 'TOOLS::AUDIT::LOG', '审计日志', '/tools/audit-logs', NULL, NULL, 'FileClock', 2, 26, true, false, 1, '2026-05-07 08:55:57.622282+00', '2026-05-07 10:00:10.34916+00', NULL, '查询敏感操作与安全审计留痕')
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617274590825099879, NULL, 617274543580459623, 'TOOLS::DICT', '字典管理', '/tools/dicts', NULL, NULL, 'BookA', 2, 22, true, false, 1, '2026-04-29 09:12:07.158630+00:00', '2026-05-07 09:59:00.719807+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618432681159438951, NULL, 617274543580459623, 'TOOLS::OPS::LOG', '操作日志', '/tools/operation-logs', NULL, NULL, 'CalendarClock', 2, 27, true, false, 1, '2026-05-07 08:56:42.785354+00', '2026-05-07 10:00:59.194736+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (619011592637395559, NULL, 617274543580459623, 'TOOLS::NOTICE', '通知管理', '/tools/notifications', NULL, NULL, 'Bell', 2, 23, true, false, 1, '2026-05-11 08:47:40.911960+00:00', '2026-05-11 08:49:59.581490+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (617691413810852455, NULL, 617691176312582759, 'FRONTEND::DASHBORAD', '首页', '/dashboard', NULL, NULL, 'House', 2, 10, true, false, 1, '2026-05-02 06:12:53.019514+00', '2026-05-08 03:48:03.988883+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618432504411533927, NULL, 617274543580459623, 'TOOLS::SYS::LOG', '系统日志', '/tools/system-logs', NULL, NULL, 'ClipboardClock', 2, 24, true, false, 1, '2026-05-07 08:54:57.436991+00:00', '2026-05-07 09:59:45.359193+00:00', NULL, '查看请求链路、状态码与耗时摘要')
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618593685742891623, NULL, 617274543580459623, 'TOOLS::MONITOR', '系统监控', '/tools/monitor', NULL, NULL, 'SquareActivity', 2, 30, true, false, 1, '2026-05-08 11:36:08.997698+00', '2026-05-08 11:36:08.997698+00', NULL, '监控硬件性能和系统性能')
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (619011788159136359, NULL, 617274543580459623, 'TOOLS::STORAGE', '存储管理', '/tools/storage', NULL, NULL, 'FolderUp', 2, 24, true, false, 1, '2026-05-11 08:49:37.459177+00:00', '2026-05-11 08:49:37.459177+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618607871768146535, NULL, 617691176312582759, 'FRONTEND::WORKSPACE', '工作区', NULL, NULL, NULL, 'BriefcaseBusiness', 1, 20, true, false, 1, '2026-05-08 13:57:04.520368+00', '2026-05-08 13:58:28.488879+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618432605393531495, NULL, 617274543580459623, 'TOOLS::AUDIT::LOG', '审计日志', '/tools/audit-logs', NULL, NULL, 'FileClock', 2, 26, true, false, 1, '2026-05-07 08:55:57.622282+00:00', '2026-05-07 10:00:10.349160+00:00', NULL, '查询敏感操作与安全审计留痕')
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618608067960975975, NULL, 617691176312582759, 'FRONTEND::SETTING', '设置', NULL, NULL, NULL, 'BriefcaseBusiness', 1, 30, true, false, 1, '2026-05-08 13:59:01.469286+00', '2026-05-08 13:59:01.469286+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618432681159438951, NULL, 617274543580459623, 'TOOLS::OPS::LOG', '操作日志', '/tools/operation-logs', NULL, NULL, 'CalendarClock', 2, 27, true, false, 1, '2026-05-07 08:56:42.785354+00:00', '2026-05-07 10:00:59.194736+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618608268465484391, NULL, 618608067960975975, 'FRONTEND::GENERAL', '通用', '/settings/general', NULL, NULL, 'Settings', 2, 301, true, false, 1, '2026-05-08 14:01:00.976271+00', '2026-05-08 14:01:00.976271+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (619200000000000008, NULL, 617274543580459623, 'TOOLS::OAUTH', 'OAuth 客户端', '/oauth/clients', NULL, NULL, 'Key', 2, 28, true, false, 1, '2026-05-12 07:29:00.333408+00:00', '2026-05-12 07:29:00.333408+00:00', NULL, 'OAuth 2.0 应用客户端管理')
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618615142258651751, NULL, 618607871768146535, 'FRONTEND::MEMBER', '成员管理', '/space/member', NULL, NULL, NULL, 2, 201, true, false, 1, '2026-05-08 15:09:18.075531+00', '2026-05-08 15:09:31.804307+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618593685742891623, NULL, 617274543580459623, 'TOOLS::MONITOR', '系统监控', '/tools/monitor', NULL, NULL, 'SquareActivity', 2, 30, true, false, 1, '2026-05-08 11:36:08.997698+00:00', '2026-05-08 11:36:08.997698+00:00', NULL, '监控硬件性能和系统性能')
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618732385923576423, NULL, 617691136030487143, 'BIZ', '业务管理', NULL, NULL, NULL, NULL, 1, 5, true, false, 1, '2026-05-09 10:34:00.74886+00', '2026-05-09 10:34:00.74886+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618608067960975975, NULL, 617691176312582759, 'FRONTEND::SETTING', '设置', NULL, NULL, NULL, 'BriefcaseBusiness', 1, 30, true, false, 1, '2026-05-08 13:59:01.469286+00:00', '2026-05-08 13:59:01.469286+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618733394066485863, NULL, 618732385923576423, 'BIZ::APPLY', '申请管理', '/biz/apply', NULL, NULL, 'FingerprintPattern', 2, 1011, true, false, 1, '2026-05-09 10:44:01.646428+00', '2026-05-09 10:47:58.867921+00', NULL, '用户和租户创建申请')
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618615142258651751, NULL, 618607871768146535, 'FRONTEND::MEMBER', '成员管理', '/space/member', NULL, NULL, NULL, 2, 201, true, false, 1, '2026-05-08 15:09:18.075531+00:00', '2026-05-08 15:09:31.804307+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (619011788159136359, NULL, 617274543580459623, 'TOOLS::STORAGE', '存储管理', '/tools/storage', NULL, NULL, 'FolderUp', 2, 24, true, false, 1, '2026-05-11 08:49:37.459177+00', '2026-05-11 08:49:37.459177+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618608268465484391, NULL, 618608067960975975, 'FRONTEND::GENERAL', '通用', '/settings/general', NULL, NULL, 'Settings', 2, 301, true, false, 1, '2026-05-08 14:01:00.976271+00:00', '2026-05-08 14:01:00.976271+00:00', NULL, NULL)
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (619011592637395559, NULL, 617274543580459623, 'TOOLS::NOTICE', '通知管理', '/tools/notifications', NULL, NULL, 'Bell', 2, 23, true, false, 1, '2026-05-11 08:47:40.91196+00', '2026-05-11 08:49:59.58149+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (619200000000000001, NULL, 618732385923576423, 'BIZ::STATS', '统计分析', '/biz/stats', NULL, '/biz/stats/overview', 'BarChart2', 1, 1009, true, false, 1, '2026-05-12 07:29:00.333408+00:00', '2026-05-12 07:29:00.333408+00:00', NULL, '用户增长、留存与行为统计')
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (619200000000000008, NULL, 617274543580459623, 'TOOLS::OAUTH', 'OAuth 客户端', '/oauth/clients', NULL, NULL, 'Key', 2, 28, true, false, 1, '2026-05-12 07:29:00.333408+00', '2026-05-12 07:29:00.333408+00', NULL, 'OAuth 2.0 应用客户端管理')
 ON CONFLICT DO NOTHING;
-INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (618733394066485863, NULL, 618732385923576423, 'BIZ::APPLY', '申请管理', '/biz/apply', NULL, NULL, 'FingerprintPattern', 2, 1011, true, false, 1, '2026-05-09 10:44:01.646428+00:00', '2026-05-09 10:47:58.867921+00:00', NULL, '用户和租户创建申请')
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (619200000000000001, NULL, 618732385923576423, 'BIZ::STATS', '统计分析', '/biz/stats', NULL, '/biz/stats/overview', 'BarChart2', 1, 1015, true, false, 1, '2026-05-12 07:29:00.333408+00', '2026-05-12 07:36:08.29164+00', NULL, '用户增长、留存与行为统计')
 ON CONFLICT DO NOTHING;
 
 -- ==========================================================
 -- PERMS
 -- ==========================================================
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000001, NULL, 'AUTH::SIGNIN::SWITCH_ACCOUNT', '切换账户认证', '', '/auth/signin/switch_account_auth', NULL, 1, 618474663223243367, 0, '2026-05-12 02:55:03.526231+00:00', '2026-05-12 02:55:03.526231+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368398, NULL, 'SHARED::COMMON::HEADER_CONTEXT', '查询头部上下文', NULL, '/shared/common/header_context', NULL, 1, 618474870740693607, 1512, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000020, NULL, 'BACKEND::STATS', '统计分析', '', '', NULL, 1, 617702910851035751, 0, '2026-05-12 03:17:49.753536+00:00', '2026-05-12 03:17:49.753536+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618840327075148391, NULL, 'SIGNIN::REST_PASSWORD', '重置密码', NULL, '/auth/signin/recover/reset', '重置密码', 1, 618474663223243367, 516, '2026-05-10 04:26:18.681542+00', '2026-05-12 12:47:36.677842+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000021, NULL, 'BACKEND::STATS::OVERVIEW', '数据总览', '', '/base/stats/overview', NULL, 1, 619100000000000020, 0, '2026-05-12 03:17:49.753536+00:00', '2026-05-12 03:17:49.753536+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368436, NULL, 'AUTH::SIGNUP::INVITE', '邀请注册', NULL, '/auth/signup/invite', '邀请注册权限', 1, 618475205597082215, 56, '2026-05-11 00:00:00+00', '2026-05-12 12:48:12.523284+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000061, NULL, 'AUTH::OAUTH::AUTHORIZE', '发起授权', NULL, '/auth/oauth/authorize', NULL, 1, 619100000000000060, 0, '2026-05-13 00:00:00+00:00', '2026-05-13 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368438, NULL, 'BACKEND::APPLY::PAGE', '分页申请列表', NULL, '/base/applies/page', NULL, 1, 618523608989368437, 1101, '2026-05-11 00:00:00+00', '2026-05-12 12:50:01.425311+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000071, NULL, 'OPENAPI::USER', 'OpenAPI 用户', NULL, NULL, NULL, 1, 619100000000000070, 0, '2026-05-13 00:00:00+00:00', '2026-05-13 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368439, NULL, 'BACKEND::APPLY::APPROVE', '通过申请', NULL, '/base/applies/approve', NULL, 1, 618523608989368437, 1102, '2026-05-11 00:00:00+00', '2026-05-12 12:50:07.912599+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000072, NULL, 'OPENAPI::USER::ME', '获取当前用户信息', NULL, '/openapi/v1/user/me', NULL, 1, 619100000000000071, 0, '2026-05-13 00:00:00+00:00', '2026-05-13 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (617702910851035751, NULL, 'BACKEND', '后端权限', 'base', NULL, NULL, 1, NULL, 10, '2026-05-02 08:07:05.781178+00', '2026-05-08 11:39:19.362155+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000022, NULL, 'BACKEND::STATS::GROWTH', '用户增长', '', '/base/stats/growth', NULL, 1, 619100000000000020, 1, '2026-05-12 03:17:49.753536+00:00', '2026-05-12 03:17:49.753536+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (617718642611663463, NULL, 'SYSTEM', '系统权限', 'system', NULL, NULL, 1, NULL, 20, '2026-05-02 10:43:22.648278+00', '2026-05-08 11:39:38.517859+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000062, NULL, 'AUTH::OAUTH::TOKEN', '获取Token', NULL, '/auth/oauth/token', NULL, 1, 619100000000000060, 1, '2026-05-13 00:00:00+00:00', '2026-05-13 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (617702958531883623, NULL, 'FRONTEND', 'WEB权限', 'web', NULL, 'WEB前端权限', 1, NULL, 30, '2026-05-02 08:07:34.201045+00', '2026-05-08 11:39:46.805083+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000023, NULL, 'BACKEND::STATS::RETENTION', '用户留存', '', '/base/stats/retention', NULL, 1, 619100000000000020, 2, '2026-05-12 03:17:49.753536+00:00', '2026-05-12 03:17:49.753536+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618696577740976743, NULL, 'FRONTEND:MEMBER', '成员权限', 'member', NULL, NULL, 1, 617702958531883623, 324, '2026-05-09 04:38:17.406594+00', '2026-05-09 04:38:17.406594+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000063, NULL, 'AUTH::OAUTH::REVOKE', '撤销Token', NULL, '/auth/oauth/revoke', NULL, 1, 619100000000000060, 2, '2026-05-13 00:00:00+00:00', '2026-05-13 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618696689057870439, NULL, 'MEMBER::PAGE', '成员分页', 'page', '/web/members/page', NULL, 1, 618696577740976743, 3011, '2026-05-09 04:39:23.753141+00', '2026-05-09 04:39:23.753141+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000024, NULL, 'BACKEND::STATS::BEHAVIOR', '行为分析', '', '/base/stats/behavior', NULL, 1, 619100000000000020, 3, '2026-05-12 03:17:49.753536+00:00', '2026-05-12 03:17:49.753536+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618704249257210471, NULL, 'MEMBER::INVITE_CODE', '成员邀请码', 'page', '/web/members/invite-code', NULL, 1, 618696577740976743, 3023, '2026-05-09 05:54:29.981318+00', '2026-05-09 06:07:52.535916+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000064, NULL, 'AUTH::OAUTH::PROVIDER_LOGIN', '第三方登录跳转', NULL, '/auth/oauth/providers/{provider}/login', NULL, 1, 619100000000000060, 3, '2026-05-13 00:00:00+00:00', '2026-05-13 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618729102169354855, NULL, 'JOIN::JOIN', '成员加入', NULL, '/web/join', NULL, 1, 618728576421737063, 3042, '2026-05-09 10:01:23.471524+00', '2026-05-09 10:22:03.316262+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000025, NULL, 'BACKEND::STATS::FUNNEL', '转化漏斗', '', '/base/stats/funnel', NULL, 1, 619100000000000020, 4, '2026-05-12 03:17:49.753536+00:00', '2026-05-12 03:17:49.753536+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618840575428342375, NULL, 'EMAIL::SEND_CAPTCHA', '发送邮件验证码', NULL, '/sys/email/captcha', '发送邮件验证码', 1, 618840414216073831, 1535, '2026-05-10 04:28:46.715645+00', '2026-05-10 04:28:46.715645+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000065, NULL, 'AUTH::OAUTH::PROVIDER_EXCHANGE', '第三方授权码兑换', NULL, '/auth/oauth/providers/exchange', NULL, 1, 619100000000000060, 4, '2026-05-13 00:00:00+00:00', '2026-05-13 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618905031277621863, NULL, 'LOGS:RETENTION', '留存日志', 'retention', NULL, NULL, 1, 618523608989368384, 151, '2026-05-10 15:09:05.398412+00', '2026-05-10 15:09:05.398412+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618474627991155303, NULL, 'AUTH', '授权权限', 'auth', NULL, NULL, 1, NULL, 5, '2026-05-07 15:53:25.049815+00:00', '2026-05-08 11:39:07.586066+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618919251796832871, NULL, 'SIGNIN::CHANGE_PASSWORD', '更改密码', NULL, '/auth/signin/change_password', '更改密码', 1, 618474663223243367, 517, '2026-05-10 17:30:21.485327+00', '2026-05-10 17:30:21.485327+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (617702910851035751, NULL, 'BACKEND', '后端权限', 'base', NULL, NULL, 1, NULL, 10, '2026-05-02 08:07:05.781178+00:00', '2026-05-08 11:39:19.362155+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368413, NULL, 'SHARED::NOTIFICATION::PAGE', '分页个人通知', NULL, '/shared/notifications/page', NULL, 1, 618523608989368404, 1531, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618474804990784103, NULL, 'SHARED', '共享权限', 'shared', NULL, NULL, 1, NULL, 15, '2026-05-07 15:55:10.547761+00:00', '2026-05-08 11:39:28.578880+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368414, NULL, 'SHARED::NOTIFICATION::UNREAD_COUNT', '查询未读通知数', NULL, '/shared/notifications/unread_count', NULL, 1, 618523608989368404, 1532, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (617718642611663463, NULL, 'SYSTEM', '系统权限', 'system', NULL, NULL, 1, NULL, 20, '2026-05-02 10:43:22.648278+00:00', '2026-05-08 11:39:38.517859+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368415, NULL, 'SHARED::NOTIFICATION::MARK_READ', '标记通知已读', NULL, '/shared/notifications/mark_read', NULL, 1, 618523608989368404, 1533, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000070, NULL, 'OPENAPI', 'OpenAPI', 'openapi', NULL, NULL, 1, NULL, 20, '2026-05-13 00:00:00+00:00', '2026-05-13 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368416, NULL, 'SHARED::NOTIFICATION::MARK_ALL_READ', '全部通知已读', NULL, '/shared/notifications/mark_all_read', NULL, 1, 618523608989368404, 1534, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (617702958531883623, NULL, 'FRONTEND', 'WEB权限', 'web', NULL, 'WEB前端权限', 1, NULL, 30, '2026-05-02 08:07:34.201045+00:00', '2026-05-08 11:39:46.805083+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368417, NULL, 'SHARED::NOTIFICATION::ARCHIVE', '归档通知', NULL, '/shared/notifications/archive', NULL, 1, 618523608989368404, 1535, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618474663223243367, NULL, 'AUTH::SIGNIN', '登录权限', NULL, NULL, NULL, 1, 618474627991155303, 51, '2026-05-07 15:53:46.040515+00:00', '2026-05-07 15:53:46.040515+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368418, NULL, 'SHARED::NOTIFICATION::STREAM', '订阅通知流', NULL, '/shared/notifications/stream', NULL, 1, 618523608989368404, 1536, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618475205597082215, NULL, 'AUTH::SIGNUP', '注册权限', NULL, NULL, NULL, 1, 618474627991155303, 52, '2026-05-07 15:59:09.323649+00:00', '2026-05-07 15:59:09.323649+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618906763776832103, NULL, 'LOGS::RETENTION::UPDATE_POLICY', '更新留存日志策略', NULL, '/base/logs/retention/update', NULL, 1, 618905031277621863, 1073, '2026-05-10 15:26:18.047285+00', '2026-05-11 10:25:20.763684+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000060, NULL, 'AUTH::OAUTH', 'OAuth2 授权', NULL, NULL, NULL, 1, 618474627991155303, 53, '2026-05-13 00:00:00+00:00', '2026-05-13 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618906714770584167, NULL, 'LOGS::RETENTION::GET_POLICY', '获取留存日志策略', NULL, '/base/logs/retention/get', NULL, 1, 618905031277621863, 1072, '2026-05-10 15:25:48.838169+00', '2026-05-11 10:25:29.271596+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618475372111016551, NULL, 'AUTH::SIGNUP::ACCOUNT', '账号注册', NULL, '/auth/signup/account', '账号注册权限', 1, 618475205597082215, 55, '2026-05-07 16:00:48.578763+00:00', '2026-05-07 16:01:06.580042+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368437, NULL, 'BACKEND::APPLY', '申请审核', NULL, NULL, NULL, 1, 617702910851035751, 110, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368436, NULL, 'AUTH::SIGNUP::INVITE', '邀请注册', NULL, '/auth/signup/invite', '邀请注册权限', 1, 618475205597082215, 56, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000001, NULL, 'AUTH::SIGNIN::SWITCH_ACCOUNT', '切换账户认证', '', '/auth/signin/switch_account_auth', NULL, 1, 618474663223243367, 0, '2026-05-12 02:55:03.526231+00', '2026-05-12 02:55:03.526231+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (617703014181974631, NULL, 'BACKEND::USER', '用户管理', NULL, NULL, NULL, 1, 617702910851035751, 101, '2026-05-02 08:08:07.379611+00:00', '2026-05-02 08:08:07.379611+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000020, NULL, 'BACKEND::STATS', '统计分析', '', '', NULL, 1, 617702910851035751, 0, '2026-05-12 03:17:49.753536+00', '2026-05-12 03:17:49.753536+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368325, NULL, 'BACKEND::TENANT', '租户管理', NULL, NULL, NULL, 1, 617702910851035751, 102, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000021, NULL, 'BACKEND::STATS::OVERVIEW', '数据总览', '', '/base/stats/overview', NULL, 1, 619100000000000020, 0, '2026-05-12 03:17:49.753536+00', '2026-05-12 03:17:49.753536+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368326, NULL, 'BACKEND::DICT', '字典管理', NULL, NULL, NULL, 1, 617702910851035751, 103, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000022, NULL, 'BACKEND::STATS::GROWTH', '用户增长', '', '/base/stats/growth', NULL, 1, 619100000000000020, 1, '2026-05-12 03:17:49.753536+00', '2026-05-12 03:17:49.753536+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368327, NULL, 'BACKEND::MENU', '菜单管理', NULL, NULL, NULL, 1, 617702910851035751, 104, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000023, NULL, 'BACKEND::STATS::RETENTION', '用户留存', '', '/base/stats/retention', NULL, 1, 619100000000000020, 2, '2026-05-12 03:17:49.753536+00', '2026-05-12 03:17:49.753536+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368328, NULL, 'BACKEND::ROLE', '角色管理', NULL, NULL, NULL, 1, 617702910851035751, 105, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000024, NULL, 'BACKEND::STATS::BEHAVIOR', '行为分析', '', '/base/stats/behavior', NULL, 1, 619100000000000020, 3, '2026-05-12 03:17:49.753536+00', '2026-05-12 03:17:49.753536+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368329, NULL, 'BACKEND::PERM', '权限管理', NULL, NULL, NULL, 1, 617702910851035751, 106, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000025, NULL, 'BACKEND::STATS::FUNNEL', '转化漏斗', '', '/base/stats/funnel', NULL, 1, 619100000000000020, 4, '2026-05-12 03:17:49.753536+00', '2026-05-12 03:17:49.753536+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368330, NULL, 'BACKEND::OPERATION_LOG', '操作日志', NULL, NULL, NULL, 1, 618523608989368384, 107, '2026-05-08 00:00:00+00:00', '2026-05-10 14:52:27.763326+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368440, NULL, 'BACKEND::APPLY::REJECT', '拒绝申请', NULL, '/base/applies/reject', NULL, 1, 618523608989368437, 1103, '2026-05-11 00:00:00+00', '2026-05-12 12:50:13.749151+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368399, NULL, 'BACKEND::STORAGE', '对象存储', NULL, NULL, NULL, 1, 617702910851035751, 108, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368441, NULL, 'BACKEND::APPLY::BAN', '禁止申请人', NULL, '/base/applies/ban', NULL, 1, 618523608989368437, 1104, '2026-05-11 00:00:00+00', '2026-05-12 12:50:20.934323+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368403, NULL, 'BACKEND::NOTIFICATION', '通知管理', NULL, NULL, NULL, 1, 617702910851035751, 109, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368410, NULL, 'BACKEND::NOTIFICATION::RULE_PAGE', '分页通知规则', NULL, '/base/notifications/rules/page', NULL, 1, 618523608989368403, 1096, '2026-05-11 00:00:00+00', '2026-05-12 12:51:03.783378+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368437, NULL, 'BACKEND::APPLY', '申请审核', NULL, NULL, NULL, 1, 617702910851035751, 110, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368411, NULL, 'BACKEND::NOTIFICATION::RULE_CREATE', '创建通知规则', NULL, '/base/notifications/rules/create', NULL, 1, 618523608989368403, 1097, '2026-05-11 00:00:00+00', '2026-05-12 12:51:09.25986+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618474870740693607, NULL, 'SHARED::COMMON', '公用权限', NULL, NULL, NULL, 1, 618474804990784103, 151, '2026-05-07 15:55:49.734606+00:00', '2026-05-07 15:55:49.734606+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368412, NULL, 'BACKEND::NOTIFICATION::RULE_UPDATE', '更新通知规则', NULL, '/base/notifications/rules/update', NULL, 1, 618523608989368403, 1098, '2026-05-11 00:00:00+00', '2026-05-12 12:51:14.811557+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618905031277621863, NULL, 'LOGS:RETENTION', '留存日志', 'retention', NULL, NULL, 1, 618523608989368384, 151, '2026-05-10 15:09:05.398412+00:00', '2026-05-10 15:09:05.398412+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619191980274037351, NULL, 'AUTH::OAUTH::CLIENT', 'OAuth2 授权客户端', NULL, NULL, NULL, 1, 618474627991155303, 55, '2026-05-12 14:39:40.329267+00', '2026-05-12 14:39:40.329267+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368395, NULL, 'SHARED::PROFILE', '个人信息', NULL, NULL, NULL, 1, 618474804990784103, 152, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (617703014181974631, NULL, 'BACKEND::USER', '用户管理', NULL, NULL, NULL, 1, 617702910851035751, 101, '2026-05-02 08:08:07.379611+00', '2026-05-02 08:08:07.379611+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368404, NULL, 'SHARED::NOTIFICATION', '站内通知', NULL, NULL, NULL, 1, 618474804990784103, 153, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618593783654724199, NULL, 'SYSTEM:MONITOR', '监控权限', NULL, NULL, NULL, 1, 617718642611663463, 1530, '2026-05-08 11:37:07.359594+00', '2026-05-08 11:38:05.337131+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368430, NULL, 'FRONTEND::MEMBER', '成员中心', NULL, NULL, NULL, 1, 617702958531883623, 202, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618474627991155303, NULL, 'AUTH', '授权权限', 'auth', NULL, NULL, 1, NULL, 5, '2026-05-07 15:53:25.049815+00', '2026-05-08 11:39:07.586066+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618696577740976743, NULL, 'FRONTEND:MEMBER', '成员权限', 'member', NULL, NULL, 1, 617702958531883623, 324, '2026-05-09 04:38:17.406594+00:00', '2026-05-09 04:38:17.406594+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618474804990784103, NULL, 'SHARED', '共享权限', 'shared', NULL, NULL, 1, NULL, 15, '2026-05-07 15:55:10.547761+00', '2026-05-08 11:39:28.57888+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368321, NULL, 'AUTH::SIGNIN::TENANTS', '查询登录租户', NULL, '/auth/signin/tenants', NULL, 1, 618474663223243367, 511, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618594269875155559, NULL, 'SYSTEM::MONITOR', '监控指标', NULL, '/sys/monitor/metrics', NULL, 1, 618593783654724199, 1531, '2026-05-08 11:41:57.161271+00', '2026-05-08 11:41:57.161271+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368322, NULL, 'AUTH::SIGNIN::ACCOUNT', '账号登录', NULL, '/auth/signin/account', NULL, 1, 618474663223243367, 512, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618729001606787687, NULL, 'JOIN::VALIDATE', '验证邀请', NULL, '/web/join/validate', NULL, 1, 618728576421737063, 3041, '2026-05-09 10:00:23.536359+00', '2026-05-09 10:00:23.536359+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368323, NULL, 'AUTH::SIGNIN::REFRESH_TOKEN', '刷新令牌', NULL, '/auth/signin/refresh_token', NULL, 1, 618474663223243367, 513, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618728576421737063, NULL, 'FRONTEND::JOIN', '成员加入权限', 'join', NULL, NULL, 1, 617702958531883623, 3040, '2026-05-09 09:56:10.102912+00', '2026-05-09 10:00:30.302828+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368324, NULL, 'AUTH::SIGNIN::LOGOUT', '登出', NULL, '/auth/signin/logout', NULL, 1, 618474663223243367, 514, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618761955045290599, NULL, 'TENANT::ANCESTORS', '租户祖先', NULL, '/base/tenants/ancestors', NULL, 1, 618523608989368325, 1029, '2026-05-09 15:27:45.315294+00', '2026-05-09 15:27:45.315294+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618840262147322471, NULL, 'SIGNIN::REST::SEND_CODE', '重制密码发送验证码', NULL, '/auth/signin/recover/send_code', '重置密码发送手机或邮件验证码', 1, 618474663223243367, 515, '2026-05-10 04:25:39.983371+00:00', '2026-05-10 04:25:39.983371+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618840262147322471, NULL, 'SIGNIN::REST::SEND_CODE', '重制密码发送验证码', NULL, '/auth/signin/recover/send_code', '重置密码发送手机或邮件验证码', 1, 618474663223243367, 515, '2026-05-10 04:25:39.983371+00', '2026-05-10 04:25:39.983371+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368420, NULL, 'AUTH::SIGNIN::RECOVER_SEND_CODE', '发送密码找回验证码', NULL, '/auth/signin/recover/send_code', NULL, 1, 618474663223243367, 516, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618840414216073831, NULL, 'EMAIL', '邮件权限', 'email', NULL, NULL, 1, 617718642611663463, 1550, '2026-05-10 04:27:10.628778+00', '2026-05-10 04:27:21.853367+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618840327075148391, NULL, 'SIGNIN::REST_PASSWORD', '重制密码', NULL, '/auth/signin/recover/reset', '重置密码', 1, 618474663223243367, 516, '2026-05-10 04:26:18.681542+00:00', '2026-05-10 04:26:18.681542+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368393, NULL, 'SYSTEM:LOGS:AUDIT:PAGE', '分页审计日志', NULL, '/base/logs/audit/page', NULL, 1, 618523608989368391, 1513, '2026-05-08 00:00:00+00', '2026-05-10 14:51:28.496616+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368421, NULL, 'AUTH::SIGNIN::RECOVER_RESET', '重置密码', NULL, '/auth/signin/recover/reset', NULL, 1, 618474663223243367, 517, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368330, NULL, 'BACKEND::OPERATION_LOG', '操作日志', NULL, NULL, NULL, 1, 618523608989368384, 107, '2026-05-08 00:00:00+00', '2026-05-10 14:52:27.763326+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618919251796832871, NULL, 'SIGNIN::CHANGE_PASSWORD', '更改密码', NULL, '/auth/signin/change_password', '更改密码', 1, 618474663223243367, 517, '2026-05-10 17:30:21.485327+00:00', '2026-05-10 17:30:21.485327+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618915628220232295, NULL, 'SHARED::PROFILE::UPDATE', '更新个人信息', NULL, '/shared/profile/update', NULL, 1, 618523608989368395, 1522, '2026-05-10 16:54:21.669479+00', '2026-05-10 16:54:39.074031+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368331, NULL, 'BACKEND::USER::CREATE', '创建用户', NULL, '/base/users/create', NULL, 1, 617703014181974631, 1011, '2026-05-08 00:00:00+00:00', '2026-05-08 07:22:44.854427+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368399, NULL, 'BACKEND::STORAGE', '对象存储', NULL, NULL, NULL, 1, 617702910851035751, 108, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368332, NULL, 'BACKEND::USER::GET', '查询用户', NULL, '/base/users/get', NULL, 1, 617703014181974631, 1012, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368403, NULL, 'BACKEND::NOTIFICATION', '通知管理', NULL, NULL, NULL, 1, 617702910851035751, 109, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368333, NULL, 'BACKEND::USER::UPDATE', '更新用户', NULL, '/base/users/update', NULL, 1, 617703014181974631, 1013, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368404, NULL, 'SHARED::NOTIFICATION', '站内通知', NULL, NULL, NULL, 1, 618474804990784103, 153, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368334, NULL, 'BACKEND::USER::PAGE', '分页用户', NULL, '/base/users/page', NULL, 1, 617703014181974631, 1014, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618704141195162215, NULL, 'MEMBER::UPDATE_STATUS', '成员更新状态', 'page', '/web/members/update-status', NULL, 1, 618696577740976743, 3025, '2026-05-09 05:53:25.571818+00', '2026-05-11 14:57:43.605429+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368335, NULL, 'BACKEND::USER::REMOVE', '删除用户', NULL, '/base/users/remove', NULL, 1, 617703014181974631, 1015, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (617718700392395367, NULL, 'SYSTEM:AWS', 'AWS权限', NULL, NULL, NULL, 1, 617718642611663463, 1510, '2026-05-02 10:43:57.087049+00', '2026-05-02 10:44:07.201243+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368336, NULL, 'BACKEND::USER::GET_ROLES', '查询用户角色', NULL, '/base/users/get_roles', NULL, 1, 617703014181974631, 1016, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (617718814779388519, NULL, 'SYSTEM:CAPTCHA', '验证码权限', NULL, NULL, NULL, 1, 617718642611663463, 1511, '2026-05-02 10:45:05.262909+00', '2026-05-02 10:45:05.262909+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368337, NULL, 'BACKEND::USER::ASSIGN_ROLES', '分配用户角色', NULL, '/base/users/assign_roles', NULL, 1, 617703014181974631, 1017, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618474663223243367, NULL, 'AUTH::SIGNIN', '登录权限', NULL, NULL, NULL, 1, 618474627991155303, 51, '2026-05-07 15:53:46.040515+00', '2026-05-07 15:53:46.040515+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368338, NULL, 'BACKEND::TENANT::CREATE', '创建租户', NULL, '/base/tenants/create', NULL, 1, 618523608989368325, 1021, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618474870740693607, NULL, 'SHARED::COMMON', '公用权限', NULL, NULL, NULL, 1, 618474804990784103, 151, '2026-05-07 15:55:49.734606+00', '2026-05-07 15:55:49.734606+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368339, NULL, 'BACKEND::TENANT::GET', '查询租户', NULL, '/base/tenants/get', NULL, 1, 618523608989368325, 1022, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618475205597082215, NULL, 'AUTH::SIGNUP', '注册权限', NULL, NULL, NULL, 1, 618474627991155303, 52, '2026-05-07 15:59:09.323649+00', '2026-05-07 15:59:09.323649+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368340, NULL, 'BACKEND::TENANT::UPDATE', '更新租户', NULL, '/base/tenants/update', NULL, 1, 618523608989368325, 1023, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618475372111016551, NULL, 'AUTH::SIGNUP::ACCOUNT', '账号注册', NULL, '/auth/signup/account', '账号注册权限', 1, 618475205597082215, 55, '2026-05-07 16:00:48.578763+00', '2026-05-07 16:01:06.580042+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368341, NULL, 'BACKEND::TENANT::PAGE', '分页租户', NULL, '/base/tenants/page', NULL, 1, 618523608989368325, 1024, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368321, NULL, 'AUTH::SIGNIN::TENANTS', '查询登录租户', NULL, '/auth/signin/tenants', NULL, 1, 618474663223243367, 511, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368342, NULL, 'BACKEND::TENANT::TREE', '租户树', NULL, '/base/tenants/tree', NULL, 1, 618523608989368325, 1025, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368322, NULL, 'AUTH::SIGNIN::ACCOUNT', '账号登录', NULL, '/auth/signin/account', NULL, 1, 618474663223243367, 512, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368343, NULL, 'BACKEND::TENANT::CHILDREN', '子租户列表', NULL, '/base/tenants/children', NULL, 1, 618523608989368325, 1026, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368323, NULL, 'AUTH::SIGNIN::REFRESH_TOKEN', '刷新令牌', NULL, '/auth/signin/refresh_token', NULL, 1, 618474663223243367, 513, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368344, NULL, 'BACKEND::TENANT::REMOVE', '删除租户', NULL, '/base/tenants/remove', NULL, 1, 618523608989368325, 1027, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368324, NULL, 'AUTH::SIGNIN::LOGOUT', '登出', NULL, '/auth/signin/logout', NULL, 1, 618474663223243367, 514, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368345, NULL, 'BACKEND::TENANT::REMOVE_CASCADE', '级联删除租户', NULL, '/base/tenants/remove_cascade', NULL, 1, 618523608989368325, 1028, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368325, NULL, 'BACKEND::TENANT', '租户管理', NULL, NULL, NULL, 1, 617702910851035751, 102, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368422, NULL, 'BACKEND::TENANT::ANCESTORS', '租户祖先链路', NULL, '/base/tenants/ancestors', NULL, 1, 618523608989368325, 1029, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368326, NULL, 'BACKEND::DICT', '字典管理', NULL, NULL, NULL, 1, 617702910851035751, 103, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618761955045290599, NULL, 'TENANT::ANCESTORS', '租户祖先', NULL, '/base/tenants/ancestors', NULL, 1, 618523608989368325, 1029, '2026-05-09 15:27:45.315294+00:00', '2026-05-09 15:27:45.315294+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368327, NULL, 'BACKEND::MENU', '菜单管理', NULL, NULL, NULL, 1, 617702910851035751, 104, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368346, NULL, 'BACKEND::DICT::CREATE', '创建字典', NULL, '/base/dicts/create', NULL, 1, 618523608989368326, 1031, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368328, NULL, 'BACKEND::ROLE', '角色管理', NULL, NULL, NULL, 1, 617702910851035751, 105, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368347, NULL, 'BACKEND::DICT::GET', '查询字典', NULL, '/base/dicts/get', NULL, 1, 618523608989368326, 1032, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368329, NULL, 'BACKEND::PERM', '权限管理', NULL, NULL, NULL, 1, 617702910851035751, 106, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368348, NULL, 'BACKEND::DICT::UPDATE', '更新字典', NULL, '/base/dicts/update', NULL, 1, 618523608989368326, 1033, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368405, NULL, 'BACKEND::NOTIFICATION::PAGE', '分页通知记录', NULL, '/base/notifications/page', NULL, 1, 618523608989368403, 1091, '2026-05-11 00:00:00+00', '2026-05-12 12:50:30.817915+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368349, NULL, 'BACKEND::DICT::PAGE', '分页字典', NULL, '/base/dicts/page', NULL, 1, 618523608989368326, 1034, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368332, NULL, 'BACKEND::USER::GET', '查询用户', NULL, '/base/users/get', NULL, 1, 617703014181974631, 1012, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368350, NULL, 'BACKEND::DICT::TREE', '字典树', NULL, '/base/dicts/tree', NULL, 1, 618523608989368326, 1035, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368333, NULL, 'BACKEND::USER::UPDATE', '更新用户', NULL, '/base/users/update', NULL, 1, 617703014181974631, 1013, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368351, NULL, 'BACKEND::DICT::CHILDREN', '子字典列表', NULL, '/base/dicts/children', NULL, 1, 618523608989368326, 1036, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368334, NULL, 'BACKEND::USER::PAGE', '分页用户', NULL, '/base/users/page', NULL, 1, 617703014181974631, 1014, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368352, NULL, 'BACKEND::DICT::REMOVE', '删除字典', NULL, '/base/dicts/remove', NULL, 1, 618523608989368326, 1037, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368335, NULL, 'BACKEND::USER::REMOVE', '删除用户', NULL, '/base/users/remove', NULL, 1, 617703014181974631, 1015, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368353, NULL, 'BACKEND::DICT::REMOVE_CASCADE', '级联删除字典', NULL, '/base/dicts/remove_cascade', NULL, 1, 618523608989368326, 1038, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368336, NULL, 'BACKEND::USER::GET_ROLES', '查询用户角色', NULL, '/base/users/get_roles', NULL, 1, 617703014181974631, 1016, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368354, NULL, 'BACKEND::MENU::CREATE', '创建菜单', NULL, '/base/menus/create', NULL, 1, 618523608989368327, 1041, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368337, NULL, 'BACKEND::USER::ASSIGN_ROLES', '分配用户角色', NULL, '/base/users/assign_roles', NULL, 1, 617703014181974631, 1017, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368355, NULL, 'BACKEND::MENU::GET', '查询菜单', NULL, '/base/menus/get', NULL, 1, 618523608989368327, 1042, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368338, NULL, 'BACKEND::TENANT::CREATE', '创建租户', NULL, '/base/tenants/create', NULL, 1, 618523608989368325, 1021, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368356, NULL, 'BACKEND::MENU::UPDATE', '更新菜单', NULL, '/base/menus/update', NULL, 1, 618523608989368327, 1043, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368339, NULL, 'BACKEND::TENANT::GET', '查询租户', NULL, '/base/tenants/get', NULL, 1, 618523608989368325, 1022, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368357, NULL, 'BACKEND::MENU::PAGE', '分页菜单', NULL, '/base/menus/page', NULL, 1, 618523608989368327, 1044, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368340, NULL, 'BACKEND::TENANT::UPDATE', '更新租户', NULL, '/base/tenants/update', NULL, 1, 618523608989368325, 1023, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368358, NULL, 'BACKEND::MENU::TREE', '菜单树', NULL, '/base/menus/tree', NULL, 1, 618523608989368327, 1045, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368341, NULL, 'BACKEND::TENANT::PAGE', '分页租户', NULL, '/base/tenants/page', NULL, 1, 618523608989368325, 1024, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368359, NULL, 'BACKEND::MENU::CHILDREN', '子菜单列表', NULL, '/base/menus/children', NULL, 1, 618523608989368327, 1046, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368342, NULL, 'BACKEND::TENANT::TREE', '租户树', NULL, '/base/tenants/tree', NULL, 1, 618523608989368325, 1025, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368360, NULL, 'BACKEND::MENU::REMOVE', '删除菜单', NULL, '/base/menus/remove', NULL, 1, 618523608989368327, 1047, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368343, NULL, 'BACKEND::TENANT::CHILDREN', '子租户列表', NULL, '/base/tenants/children', NULL, 1, 618523608989368325, 1026, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368361, NULL, 'BACKEND::MENU::REMOVE_CASCADE', '级联删除菜单', NULL, '/base/menus/remove_cascade', NULL, 1, 618523608989368327, 1048, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368344, NULL, 'BACKEND::TENANT::REMOVE', '删除租户', NULL, '/base/tenants/remove', NULL, 1, 618523608989368325, 1027, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368362, NULL, 'BACKEND::ROLE::CREATE', '创建角色', NULL, '/base/roles/create', NULL, 1, 618523608989368328, 1051, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368406, NULL, 'BACKEND::NOTIFICATION::SEND', '发送通知', NULL, '/base/notifications/send', NULL, 1, 618523608989368403, 1092, '2026-05-11 00:00:00+00', '2026-05-12 12:50:37.468138+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368363, NULL, 'BACKEND::ROLE::GET', '查询角色', NULL, '/base/roles/get', NULL, 1, 618523608989368328, 1052, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368407, NULL, 'BACKEND::NOTIFICATION::TEMPLATE_PAGE', '分页通知模板', NULL, '/base/notifications/templates/page', NULL, 1, 618523608989368403, 1093, '2026-05-11 00:00:00+00', '2026-05-12 12:50:43.853405+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368364, NULL, 'BACKEND::ROLE::UPDATE', '更新角色', NULL, '/base/roles/update', NULL, 1, 618523608989368328, 1053, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368408, NULL, 'BACKEND::NOTIFICATION::TEMPLATE_CREATE', '创建通知模板', NULL, '/base/notifications/templates/create', NULL, 1, 618523608989368403, 1094, '2026-05-11 00:00:00+00', '2026-05-12 12:50:49.538865+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368365, NULL, 'BACKEND::ROLE::PAGE', '分页角色', NULL, '/base/roles/page', NULL, 1, 618523608989368328, 1054, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368409, NULL, 'BACKEND::NOTIFICATION::TEMPLATE_UPDATE', '更新通知模板', NULL, '/base/notifications/templates/update', NULL, 1, 618523608989368403, 1095, '2026-05-11 00:00:00+00', '2026-05-12 12:50:57.942707+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368366, NULL, 'BACKEND::ROLE::TREE', '角色树', NULL, '/base/roles/tree', NULL, 1, 618523608989368328, 1055, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368400, NULL, 'BACKEND::STORAGE::GET', '查询对象存储元信息', NULL, '/base/storage/get', NULL, 1, 618523608989368399, 1081, '2026-05-08 00:00:00+00', '2026-05-12 12:51:25.570111+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368367, NULL, 'BACKEND::ROLE::CHILDREN', '子角色列表', NULL, '/base/roles/children', NULL, 1, 618523608989368328, 1056, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368401, NULL, 'BACKEND::STORAGE::PAGE', '分页对象存储对象', NULL, '/base/storage/page', NULL, 1, 618523608989368399, 1082, '2026-05-08 00:00:00+00', '2026-05-12 12:51:32.398966+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368368, NULL, 'BACKEND::ROLE::REMOVE', '删除角色', NULL, '/base/roles/remove', NULL, 1, 618523608989368328, 1057, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368402, NULL, 'BACKEND::STORAGE::SIGN', '签名对象存储对象', NULL, '/base/storage/sign', NULL, 1, 618523608989368399, 1083, '2026-05-08 00:00:00+00', '2026-05-12 12:51:38.356257+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368369, NULL, 'BACKEND::ROLE::REMOVE_CASCADE', '级联删除角色', NULL, '/base/roles/remove_cascade', NULL, 1, 618523608989368328, 1058, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619197169634652775, NULL, 'OAUTH::CLIENT::CREATE', '创建授权客服端', NULL, '/base/oauth_clients/create', NULL, 1, 619191980274037351, 5501, '2026-05-12 15:31:13.420533+00', '2026-05-12 15:31:44.529009+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368370, NULL, 'BACKEND::ROLE::GET_MENUS', '查询角色菜单', NULL, '/base/roles/get_menus', NULL, 1, 618523608989368328, 1059, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619197253587841639, NULL, 'OAUTH::CLIENT::GET', '获取授权客服端', NULL, '/base/oauth_clients/get', NULL, 1, 619191980274037351, 5502, '2026-05-12 15:32:03.463671+00', '2026-05-12 15:32:03.463671+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368371, NULL, 'BACKEND::ROLE::ASSIGN_MENUS', '分配角色菜单', NULL, '/base/roles/assign_menus', NULL, 1, 618523608989368328, 1060, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368345, NULL, 'BACKEND::TENANT::REMOVE_CASCADE', '级联删除租户', NULL, '/base/tenants/remove_cascade', NULL, 1, 618523608989368325, 1028, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368372, NULL, 'BACKEND::ROLE::GET_PERMS', '查询角色权限', NULL, '/base/roles/get_perms', NULL, 1, 618523608989368328, 1061, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368346, NULL, 'BACKEND::DICT::CREATE', '创建字典', NULL, '/base/dicts/create', NULL, 1, 618523608989368326, 1031, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368374, NULL, 'BACKEND::PERM::CREATE', '创建权限', NULL, '/base/perms/create', NULL, 1, 618523608989368329, 1061, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368347, NULL, 'BACKEND::DICT::GET', '查询字典', NULL, '/base/dicts/get', NULL, 1, 618523608989368326, 1032, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368373, NULL, 'BACKEND::ROLE::ASSIGN_PERMS', '分配角色权限', NULL, '/base/roles/assign_perms', NULL, 1, 618523608989368328, 1062, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368348, NULL, 'BACKEND::DICT::UPDATE', '更新字典', NULL, '/base/dicts/update', NULL, 1, 618523608989368326, 1033, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368375, NULL, 'BACKEND::PERM::GET', '查询权限', NULL, '/base/perms/get', NULL, 1, 618523608989368329, 1062, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368349, NULL, 'BACKEND::DICT::PAGE', '分页字典', NULL, '/base/dicts/page', NULL, 1, 618523608989368326, 1034, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368376, NULL, 'BACKEND::PERM::UPDATE', '更新权限', NULL, '/base/perms/update', NULL, 1, 618523608989368329, 1063, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368350, NULL, 'BACKEND::DICT::TREE', '字典树', NULL, '/base/dicts/tree', NULL, 1, 618523608989368326, 1035, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368377, NULL, 'BACKEND::PERM::PAGE', '分页权限', NULL, '/base/perms/page', NULL, 1, 618523608989368329, 1064, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368351, NULL, 'BACKEND::DICT::CHILDREN', '子字典列表', NULL, '/base/dicts/children', NULL, 1, 618523608989368326, 1036, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368378, NULL, 'BACKEND::PERM::TREE', '权限树', NULL, '/base/perms/tree', NULL, 1, 618523608989368329, 1065, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368352, NULL, 'BACKEND::DICT::REMOVE', '删除字典', NULL, '/base/dicts/remove', NULL, 1, 618523608989368326, 1037, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368379, NULL, 'BACKEND::PERM::CHILDREN', '子权限列表', NULL, '/base/perms/children', NULL, 1, 618523608989368329, 1066, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368353, NULL, 'BACKEND::DICT::REMOVE_CASCADE', '级联删除字典', NULL, '/base/dicts/remove_cascade', NULL, 1, 618523608989368326, 1038, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368380, NULL, 'BACKEND::PERM::REMOVE', '删除权限', NULL, '/base/perms/remove', NULL, 1, 618523608989368329, 1067, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368354, NULL, 'BACKEND::MENU::CREATE', '创建菜单', NULL, '/base/menus/create', NULL, 1, 618523608989368327, 1041, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368381, NULL, 'BACKEND::PERM::REMOVE_CASCADE', '级联删除权限', NULL, '/base/perms/remove_cascade', NULL, 1, 618523608989368329, 1068, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368355, NULL, 'BACKEND::MENU::GET', '查询菜单', NULL, '/base/menus/get', NULL, 1, 618523608989368327, 1042, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368382, NULL, 'BACKEND::OPERATION_LOG::PAGE', '分页操作日志', NULL, '/base/logs/operation/page', NULL, 1, 618523608989368330, 1071, '2026-05-08 00:00:00+00:00', '2026-05-11 10:23:39.714052+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368356, NULL, 'BACKEND::MENU::UPDATE', '更新菜单', NULL, '/base/menus/update', NULL, 1, 618523608989368327, 1043, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618906714770584167, NULL, 'LOGS::RETENTION::GET_POLICY', '获取留存日志策略', NULL, '/base/logs/retention/get', NULL, 1, 618905031277621863, 1072, '2026-05-10 15:25:48.838169+00:00', '2026-05-11 10:25:29.271596+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368357, NULL, 'BACKEND::MENU::PAGE', '分页菜单', NULL, '/base/menus/page', NULL, 1, 618523608989368327, 1044, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618906763776832103, NULL, 'LOGS::RETENTION::UPDATE_POLICY', '更新留存日志策略', NULL, '/base/logs/retention/update', NULL, 1, 618905031277621863, 1073, '2026-05-10 15:26:18.047285+00:00', '2026-05-11 10:25:20.763684+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368358, NULL, 'BACKEND::MENU::TREE', '菜单树', NULL, '/base/menus/tree', NULL, 1, 618523608989368327, 1045, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368400, NULL, 'BACKEND::STORAGE::GET', '查询对象存储元信息', NULL, '/base/storage/get', NULL, 1, 618523608989368399, 1081, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368359, NULL, 'BACKEND::MENU::CHILDREN', '子菜单列表', NULL, '/base/menus/children', NULL, 1, 618523608989368327, 1046, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368401, NULL, 'BACKEND::STORAGE::PAGE', '分页对象存储对象', NULL, '/base/storage/page', NULL, 1, 618523608989368399, 1082, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368360, NULL, 'BACKEND::MENU::REMOVE', '删除菜单', NULL, '/base/menus/remove', NULL, 1, 618523608989368327, 1047, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368402, NULL, 'BACKEND::STORAGE::SIGN', '签名对象存储对象', NULL, '/base/storage/sign', NULL, 1, 618523608989368399, 1083, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368361, NULL, 'BACKEND::MENU::REMOVE_CASCADE', '级联删除菜单', NULL, '/base/menus/remove_cascade', NULL, 1, 618523608989368327, 1048, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368405, NULL, 'BACKEND::NOTIFICATION::PAGE', '分页通知记录', NULL, '/base/notifications/page', NULL, 1, 618523608989368403, 1091, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368362, NULL, 'BACKEND::ROLE::CREATE', '创建角色', NULL, '/base/roles/create', NULL, 1, 618523608989368328, 1051, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368406, NULL, 'BACKEND::NOTIFICATION::SEND', '发送通知', NULL, '/base/notifications/send', NULL, 1, 618523608989368403, 1092, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368363, NULL, 'BACKEND::ROLE::GET', '查询角色', NULL, '/base/roles/get', NULL, 1, 618523608989368328, 1052, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368407, NULL, 'BACKEND::NOTIFICATION::TEMPLATE_PAGE', '分页通知模板', NULL, '/base/notifications/templates/page', NULL, 1, 618523608989368403, 1093, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368364, NULL, 'BACKEND::ROLE::UPDATE', '更新角色', NULL, '/base/roles/update', NULL, 1, 618523608989368328, 1053, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368408, NULL, 'BACKEND::NOTIFICATION::TEMPLATE_CREATE', '创建通知模板', NULL, '/base/notifications/templates/create', NULL, 1, 618523608989368403, 1094, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368365, NULL, 'BACKEND::ROLE::PAGE', '分页角色', NULL, '/base/roles/page', NULL, 1, 618523608989368328, 1054, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368409, NULL, 'BACKEND::NOTIFICATION::TEMPLATE_UPDATE', '更新通知模板', NULL, '/base/notifications/templates/update', NULL, 1, 618523608989368403, 1095, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368366, NULL, 'BACKEND::ROLE::TREE', '角色树', NULL, '/base/roles/tree', NULL, 1, 618523608989368328, 1055, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368410, NULL, 'BACKEND::NOTIFICATION::RULE_PAGE', '分页通知规则', NULL, '/base/notifications/rules/page', NULL, 1, 618523608989368403, 1096, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368367, NULL, 'BACKEND::ROLE::CHILDREN', '子角色列表', NULL, '/base/roles/children', NULL, 1, 618523608989368328, 1056, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368411, NULL, 'BACKEND::NOTIFICATION::RULE_CREATE', '创建通知规则', NULL, '/base/notifications/rules/create', NULL, 1, 618523608989368403, 1097, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368368, NULL, 'BACKEND::ROLE::REMOVE', '删除角色', NULL, '/base/roles/remove', NULL, 1, 618523608989368328, 1057, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368412, NULL, 'BACKEND::NOTIFICATION::RULE_UPDATE', '更新通知规则', NULL, '/base/notifications/rules/update', NULL, 1, 618523608989368403, 1098, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368331, NULL, 'BACKEND::USER::CREATE', '创建用户', NULL, '/base/users/create', NULL, 1, 617703014181974631, 1011, '2026-05-08 00:00:00+00', '2026-05-08 07:22:44.854427+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368438, NULL, 'BACKEND::APPLY::PAGE', '分页申请列表', NULL, '/base/applies/page', NULL, 1, 618523608989368437, 1101, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368369, NULL, 'BACKEND::ROLE::REMOVE_CASCADE', '级联删除角色', NULL, '/base/roles/remove_cascade', NULL, 1, 618523608989368328, 1058, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368439, NULL, 'BACKEND::APPLY::APPROVE', '通过申请', NULL, '/base/applies/approve', NULL, 1, 618523608989368437, 1102, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368370, NULL, 'BACKEND::ROLE::GET_MENUS', '查询角色菜单', NULL, '/base/roles/get_menus', NULL, 1, 618523608989368328, 1059, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368440, NULL, 'BACKEND::APPLY::REJECT', '拒绝申请', NULL, '/base/applies/reject', NULL, 1, 618523608989368437, 1103, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368371, NULL, 'BACKEND::ROLE::ASSIGN_MENUS', '分配角色菜单', NULL, '/base/roles/assign_menus', NULL, 1, 618523608989368328, 1060, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368441, NULL, 'BACKEND::APPLY::BAN', '禁止申请人', NULL, '/base/applies/ban', NULL, 1, 618523608989368437, 1104, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368372, NULL, 'BACKEND::ROLE::GET_PERMS', '查询角色权限', NULL, '/base/roles/get_perms', NULL, 1, 618523608989368328, 1061, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (617718700392395367, NULL, 'SYSTEM:AWS', 'AWS权限', NULL, NULL, NULL, 1, 617718642611663463, 1510, '2026-05-02 10:43:57.087049+00:00', '2026-05-02 10:44:07.201243+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368373, NULL, 'BACKEND::ROLE::ASSIGN_PERMS', '分配角色权限', NULL, '/base/roles/assign_perms', NULL, 1, 618523608989368328, 1062, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (617718814779388519, NULL, 'SYSTEM:CAPTCHA', '验证码权限', NULL, NULL, NULL, 1, 617718642611663463, 1511, '2026-05-02 10:45:05.262909+00:00', '2026-05-02 10:45:05.262909+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368374, NULL, 'BACKEND::PERM::CREATE', '创建权限', NULL, '/base/perms/create', NULL, 1, 618523608989368329, 1061, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368396, NULL, 'SHARED::COMMON::TREE_BY_CODE', '按编码查询菜单树', NULL, '/shared/common/tree_by_code', NULL, 1, 618474870740693607, 1511, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368375, NULL, 'BACKEND::PERM::GET', '查询权限', NULL, '/base/perms/get', NULL, 1, 618523608989368329, 1062, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368383, NULL, 'SYSTEM:SMS', '短信权限', NULL, NULL, NULL, 1, 617718642611663463, 1512, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368376, NULL, 'BACKEND::PERM::UPDATE', '更新权限', NULL, '/base/perms/update', NULL, 1, 618523608989368329, 1063, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368398, NULL, 'SHARED::COMMON::HEADER_CONTEXT', '查询头部上下文', NULL, '/shared/common/header_context', NULL, 1, 618474870740693607, 1512, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368377, NULL, 'BACKEND::PERM::PAGE', '分页权限', NULL, '/base/perms/page', NULL, 1, 618523608989368329, 1064, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368384, NULL, 'SYSTEM:LOGS', '日志权限', NULL, NULL, NULL, 1, 617702910851035751, 1513, '2026-05-08 00:00:00+00:00', '2026-05-10 14:49:51.526541+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368378, NULL, 'BACKEND::PERM::TREE', '权限树', NULL, '/base/perms/tree', NULL, 1, 618523608989368329, 1065, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368393, NULL, 'SYSTEM:LOGS:AUDIT:PAGE', '分页审计日志', NULL, '/base/logs/audit/page', NULL, 1, 618523608989368391, 1513, '2026-05-08 00:00:00+00:00', '2026-05-10 14:51:28.496616+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368379, NULL, 'BACKEND::PERM::CHILDREN', '子权限列表', NULL, '/base/perms/children', NULL, 1, 618523608989368329, 1066, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368394, NULL, 'SYSTEM:LOGS:SYSTEM:PAGE', '分页系统日志', NULL, '/base/logs/system/page', NULL, 1, 618523608989368392, 1513, '2026-05-08 00:00:00+00:00', '2026-05-10 14:51:46.365428+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368380, NULL, 'BACKEND::PERM::REMOVE', '删除权限', NULL, '/base/perms/remove', NULL, 1, 618523608989368329, 1067, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368423, NULL, 'SHARED::COMMON::MY_TENANTS', '查询我的租户', NULL, '/shared/common/my_tenants', NULL, 1, 618474870740693607, 1513, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368381, NULL, 'BACKEND::PERM::REMOVE_CASCADE', '级联删除权限', NULL, '/base/perms/remove_cascade', NULL, 1, 618523608989368329, 1068, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368425, NULL, 'SYSTEM:EMAIL', '邮件权限', NULL, NULL, NULL, 1, 617718642611663463, 1514, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368383, NULL, 'SYSTEM:SMS', '短信权限', NULL, NULL, NULL, 1, 617718642611663463, 1512, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618595947512869479, NULL, 'SHARED::COMMON:TENANT', '当前住户列表', NULL, '/shared/common/my_tenants', NULL, 1, 618474870740693607, 1514, '2026-05-08 11:58:37.110531+00:00', '2026-05-08 11:58:37.110531+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619197289994465895, NULL, 'OAUTH::CLIENT::PAGE', '分页授权客服端', NULL, '/base/oauth_clients/page', NULL, 1, 619191980274037351, 5503, '2026-05-12 15:32:25.169639+00', '2026-05-12 15:32:25.169639+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368397, NULL, 'SHARED::PROFILE::GET', '查询个人信息', NULL, '/shared/profile/get', NULL, 1, 618523608989368395, 1521, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368385, NULL, 'SYSTEM:AWS:STS', 'STS临时凭证', NULL, '/sys/aws/sts', NULL, 1, 617718700392395367, 15101, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618915628220232295, NULL, 'SHARED::PROFILE::UPDATE', '更新个人信息', NULL, '/shared/profile/update', NULL, 1, 618523608989368395, 1522, '2026-05-10 16:54:21.669479+00:00', '2026-05-10 16:54:39.074031+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368386, NULL, 'SYSTEM:AWS:SIGN_URL', '签名URL', NULL, '/sys/aws/sign_url', NULL, 1, 617718700392395367, 15102, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618593783654724199, NULL, 'SYSTEM:MONITOR', '监控权限', NULL, NULL, NULL, 1, 617718642611663463, 1530, '2026-05-08 11:37:07.359594+00:00', '2026-05-08 11:38:05.337131+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368387, NULL, 'SYSTEM:AWS:UPLOAD_REMOTE_IMAGE', '上传远程图片', NULL, '/sys/aws/upload_remote_image', NULL, 1, 617718700392395367, 15103, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368413, NULL, 'SHARED::NOTIFICATION::PAGE', '分页个人通知', NULL, '/shared/notifications/page', NULL, 1, 618523608989368404, 1531, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368388, NULL, 'SYSTEM:AWS:UPLOAD_REMOTE_OBJECT', '上传远程对象', NULL, '/sys/aws/upload_remote_object', NULL, 1, 617718700392395367, 15104, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618594269875155559, NULL, 'SYSTEM::MONITOR', '监控指标', NULL, '/sys/monitor/metrics', NULL, 1, 618593783654724199, 1531, '2026-05-08 11:41:57.161271+00:00', '2026-05-08 11:41:57.161271+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368389, NULL, 'SYSTEM:CAPTCHA:SLIDER', '滑块验证码', NULL, '/sys/captcha/slider', NULL, 1, 617718814779388519, 15111, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368414, NULL, 'SHARED::NOTIFICATION::UNREAD_COUNT', '查询未读通知数', NULL, '/shared/notifications/unread_count', NULL, 1, 618523608989368404, 1532, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368390, NULL, 'SYSTEM:SMS:SIGNIN', '发送登录短信验证码', NULL, '/sys/sms/signin', NULL, 1, 618523608989368383, 15121, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368415, NULL, 'SHARED::NOTIFICATION::MARK_READ', '标记通知已读', NULL, '/shared/notifications/mark_read', NULL, 1, 618523608989368404, 1533, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368391, NULL, 'SYSTEM:LOGS:AUDIT', '审计日志', NULL, NULL, NULL, 1, 618523608989368384, 15131, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368416, NULL, 'SHARED::NOTIFICATION::MARK_ALL_READ', '全部通知已读', NULL, '/shared/notifications/mark_all_read', NULL, 1, 618523608989368404, 1534, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368392, NULL, 'SYSTEM:LOGS:SYSTEM', '系统日志', NULL, NULL, NULL, 1, 618523608989368384, 15132, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368417, NULL, 'SHARED::NOTIFICATION::ARCHIVE', '归档通知', NULL, '/shared/notifications/archive', NULL, 1, 618523608989368404, 1535, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368395, NULL, 'SHARED::PROFILE', '个人信息', NULL, NULL, NULL, 1, 618474804990784103, 152, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618840575428342375, NULL, 'EMAIL::SEND_CAPTCHA', '发送邮件验证码', NULL, '/sys/email/captcha', '发送邮件验证码', 1, 618840414216073831, 1535, '2026-05-10 04:28:46.715645+00:00', '2026-05-10 04:28:46.715645+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368396, NULL, 'SHARED::COMMON::TREE_BY_CODE', '按编码查询菜单树', NULL, '/shared/common/tree_by_code', NULL, 1, 618474870740693607, 1511, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368418, NULL, 'SHARED::NOTIFICATION::STREAM', '订阅通知流', NULL, '/shared/notifications/stream', NULL, 1, 618523608989368404, 1536, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368397, NULL, 'SHARED::PROFILE::GET', '查询个人信息', NULL, '/shared/profile/get', NULL, 1, 618523608989368395, 1521, '2026-05-08 00:00:00+00', '2026-05-08 00:00:00+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618840414216073831, NULL, 'EMAIL', '邮件权限', 'email', NULL, NULL, 1, 617718642611663463, 1550, '2026-05-10 04:27:10.628778+00:00', '2026-05-10 04:27:21.853367+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618595947512869479, NULL, 'SHARED::COMMON:TENANT', '当前住户列表', NULL, '/shared/common/my_tenants', NULL, 1, 618474870740693607, 1514, '2026-05-08 11:58:37.110531+00', '2026-05-08 11:58:37.110531+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368431, NULL, 'FRONTEND::JOIN::JOIN', '加入租户', NULL, '/web/join', NULL, 1, 618523608989368429, 2011, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368384, NULL, 'SYSTEM:LOGS', '日志权限', NULL, NULL, NULL, 1, 617702910851035751, 1513, '2026-05-08 00:00:00+00', '2026-05-10 14:49:51.526541+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368432, NULL, 'FRONTEND::JOIN::VALIDATE', '校验邀请信息', NULL, '/web/join/validate', NULL, 1, 618523608989368429, 2012, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368394, NULL, 'SYSTEM:LOGS:SYSTEM:PAGE', '分页系统日志', NULL, '/base/logs/system/page', NULL, 1, 618523608989368392, 1513, '2026-05-08 00:00:00+00', '2026-05-10 14:51:46.365428+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368433, NULL, 'FRONTEND::MEMBER::PAGE', '分页成员', NULL, '/web/members/page', NULL, 1, 618523608989368430, 2021, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368382, NULL, 'BACKEND::OPERATION_LOG::PAGE', '分页操作日志', NULL, '/base/logs/operation/page', NULL, 1, 618523608989368330, 1071, '2026-05-08 00:00:00+00', '2026-05-11 10:23:39.714052+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368434, NULL, 'FRONTEND::MEMBER::UPDATE_STATUS', '更新成员状态', NULL, '/web/members/update-status', NULL, 1, 618523608989368430, 2022, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619197326417801831, NULL, 'OAUTH::CLIENT::UPDATE', '更新授权客服端', NULL, '/base/oauth_clients/update', NULL, 1, 619191980274037351, 5504, '2026-05-12 15:32:46.875397+00', '2026-05-12 15:32:46.875397+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368435, NULL, 'FRONTEND::MEMBER::INVITE_CODE', '获取邀请链接', NULL, '/web/members/invite-code', NULL, 1, 618523608989368430, 2023, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619197374199247463, NULL, 'OAUTH::CLIENT::REMOVE', '删除授权客服端', NULL, '/base/oauth_clients/remove', NULL, 1, 619191980274037351, 5505, '2026-05-12 15:33:15.350924+00', '2026-05-12 15:33:15.350924+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618696689057870439, NULL, 'MEMBER::PAGE', '成员分页', 'page', '/web/members/page', NULL, 1, 618696577740976743, 3011, '2026-05-09 04:39:23.753141+00:00', '2026-05-09 04:39:23.753141+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000061, NULL, 'AUTH::OAUTH::AUTHORIZE', '发起授权', NULL, '/auth/oauth/authorize', NULL, 1, 619100000000000060, 0, '2026-05-13 00:00:00+00', '2026-05-12 12:48:22.715562+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618704249257210471, NULL, 'MEMBER::INVITE_CODE', '成员邀请码', 'page', '/web/members/invite-code', NULL, 1, 618696577740976743, 3023, '2026-05-09 05:54:29.981318+00:00', '2026-05-09 06:07:52.535916+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000062, NULL, 'AUTH::OAUTH::TOKEN', '获取Token', NULL, '/auth/oauth/token', NULL, 1, 619100000000000060, 1, '2026-05-13 00:00:00+00', '2026-05-12 12:48:37.49705+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618704141195162215, NULL, 'MEMBER::UPDATE_STATUS', '成员更新状态', 'page', '/web/members/update-status', NULL, 1, 618696577740976743, 3025, '2026-05-09 05:53:25.571818+00:00', '2026-05-11 14:57:43.605429+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000063, NULL, 'AUTH::OAUTH::REVOKE', '撤销Token', NULL, '/auth/oauth/revoke', NULL, 1, 619100000000000060, 2, '2026-05-13 00:00:00+00', '2026-05-12 12:48:44.98782+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618728576421737063, NULL, 'FRONTEND::JOIN', '成员加入权限', 'join', NULL, NULL, 1, 617702958531883623, 3040, '2026-05-09 09:56:10.102912+00:00', '2026-05-09 10:00:30.302828+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000072, NULL, 'OPENAPI::USER::ME', '获取当前用户信息', NULL, '/openapi/v1/user/me', NULL, 1, 619100000000000071, 0, '2026-05-13 00:00:00+00', '2026-05-12 12:54:00.570142+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618729001606787687, NULL, 'JOIN::VALIDATE', '验证邀请', NULL, '/web/join/validate', NULL, 1, 618728576421737063, 3041, '2026-05-09 10:00:23.536359+00:00', '2026-05-09 10:00:23.536359+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368433, NULL, 'FRONTEND::MEMBER::PAGE', '分页成员', NULL, '/web/members/page', NULL, 1, 618523608989368430, 2021, '2026-05-11 00:00:00+00', '2026-05-12 12:54:32.104531+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618729102169354855, NULL, 'JOIN::JOIN', '成员加入', NULL, '/web/join', NULL, 1, 618728576421737063, 3042, '2026-05-09 10:01:23.471524+00:00', '2026-05-09 10:22:03.316262+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368434, NULL, 'FRONTEND::MEMBER::UPDATE_STATUS', '更新成员状态', NULL, '/web/members/update-status', NULL, 1, 618523608989368430, 2022, '2026-05-11 00:00:00+00', '2026-05-12 12:54:37.429782+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368385, NULL, 'SYSTEM:AWS:STS', 'STS临时凭证', NULL, '/sys/aws/sts', NULL, 1, 617718700392395367, 15101, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368435, NULL, 'FRONTEND::MEMBER::INVITE_CODE', '获取邀请链接', NULL, '/web/members/invite-code', NULL, 1, 618523608989368430, 2023, '2026-05-11 00:00:00+00', '2026-05-12 12:54:44.616508+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368386, NULL, 'SYSTEM:AWS:SIGN_URL', '签名URL', NULL, '/sys/aws/sign_url', NULL, 1, 617718700392395367, 15102, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000065, NULL, 'AUTH::OAUTH::PROVIDER_EXCHANGE', '第三方授权码兑换', NULL, '/auth/oauth/providers/exchange', NULL, 1, 619100000000000060, 4, '2026-05-13 00:00:00+00', '2026-05-12 14:37:25.18801+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368387, NULL, 'SYSTEM:AWS:UPLOAD_REMOTE_IMAGE', '上传远程图片', NULL, '/sys/aws/upload_remote_image', NULL, 1, 617718700392395367, 15103, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000064, NULL, 'AUTH::OAUTH::PROVIDER_LOGIN', '第三方登录跳转', NULL, '/auth/oauth/providers/{provider}/login', NULL, 1, 619100000000000060, 3, '2026-05-13 00:00:00+00', '2026-05-12 14:37:32.149304+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368388, NULL, 'SYSTEM:AWS:UPLOAD_REMOTE_OBJECT', '上传远程对象', NULL, '/sys/aws/upload_remote_object', NULL, 1, 617718700392395367, 15104, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619197495817351783, NULL, 'OAUTH::CLIENT::ROTATE_SECRET', '轮换密钥', NULL, '/base/oauth_clients/rotate_secret', NULL, 1, 619191980274037351, 5506, '2026-05-12 15:34:27.848621+00', '2026-05-12 15:34:27.848621+00', NULL, 'POST')
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368389, NULL, 'SYSTEM:CAPTCHA:SLIDER', '滑块验证码', NULL, '/sys/captcha/slider', NULL, 1, 617718814779388519, 15111, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368422, NULL, 'BACKEND::TENANT::ANCESTORS', '租户祖先链路', NULL, '/base/tenants/ancestors', NULL, 1, 618523608989368325, 1029, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368390, NULL, 'SYSTEM:SMS:SIGNIN', '发送登录短信验证码', NULL, '/sys/sms/signin', NULL, 1, 618523608989368383, 15121, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368423, NULL, 'SHARED::COMMON::MY_TENANTS', '查询我的租户', NULL, '/shared/common/my_tenants', NULL, 1, 618474870740693607, 1513, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368391, NULL, 'SYSTEM:LOGS:AUDIT', '审计日志', NULL, NULL, NULL, 1, 618523608989368384, 15131, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368425, NULL, 'SYSTEM:EMAIL', '邮件权限', NULL, NULL, NULL, 1, 617718642611663463, 1514, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368392, NULL, 'SYSTEM:LOGS:SYSTEM', '系统日志', NULL, NULL, NULL, 1, 618523608989368384, 15132, '2026-05-08 00:00:00+00:00', '2026-05-08 00:00:00+00:00', NULL, 'POST')
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368427, NULL, 'SYSTEM:EMAIL:CAPTCHA', '发送邮件验证码', NULL, '/sys/email/captcha', NULL, 1, 618523608989368425, 15141, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368427, NULL, 'SYSTEM:EMAIL:CAPTCHA', '发送邮件验证码', NULL, '/sys/email/captcha', NULL, 1, 618523608989368425, 15141, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368428, NULL, 'SYSTEM:MONITOR:METRICS', '查询监控指标', NULL, '/sys/monitor/metrics', NULL, 1, 618523608989368426, 15151, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
-INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368428, NULL, 'SYSTEM:MONITOR:METRICS', '查询监控指标', NULL, '/sys/monitor/metrics', NULL, 1, 618523608989368426, 15151, '2026-05-11 00:00:00+00:00', '2026-05-11 00:00:00+00:00', NULL, NULL)
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368430, NULL, 'FRONTEND::MEMBER', '成员中心', NULL, NULL, NULL, 1, 617702958531883623, 202, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
+ON CONFLICT DO NOTHING;
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368431, NULL, 'FRONTEND::JOIN::JOIN', '加入租户', NULL, '/web/join', NULL, 1, 618523608989368429, 2011, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
+ON CONFLICT DO NOTHING;
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (618523608989368432, NULL, 'FRONTEND::JOIN::VALIDATE', '校验邀请信息', NULL, '/web/join/validate', NULL, 1, 618523608989368429, 2012, '2026-05-11 00:00:00+00', '2026-05-11 00:00:00+00', NULL, NULL)
+ON CONFLICT DO NOTHING;
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000060, NULL, 'AUTH::OAUTH', 'OAuth2 授权', NULL, NULL, NULL, 1, 618474627991155303, 53, '2026-05-13 00:00:00+00', '2026-05-13 00:00:00+00', NULL, NULL)
+ON CONFLICT DO NOTHING;
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000070, NULL, 'OPENAPI', 'OpenAPI', 'openapi', NULL, NULL, 1, NULL, 20, '2026-05-13 00:00:00+00', '2026-05-13 00:00:00+00', NULL, NULL)
+ON CONFLICT DO NOTHING;
+INSERT INTO perms (id, tenant_id, code, name, resource, action, description, status, parent_id, sort, created_at, updated_at, deleted_at, method) VALUES (619100000000000071, NULL, 'OPENAPI::USER', 'OpenAPI 用户', NULL, NULL, NULL, 1, 619100000000000070, 0, '2026-05-13 00:00:00+00', '2026-05-13 00:00:00+00', NULL, NULL)
 ON CONFLICT DO NOTHING;
 
 -- ==========================================================
@@ -452,1829 +462,1905 @@ ON CONFLICT DO NOTHING;
 -- ==========================================================
 -- ROLE_MENUS
 -- ==========================================================
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745109095, 617702518717231719, 617274510210511463, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619300000000000008, 617702636392624743, 619200000000000001, '2026-05-12 07:29:53.441774+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846762213991, 617702518717231719, 617274543580459623, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619300000000000015, 617702732609958503, 619200000000000001, '2026-05-12 07:29:53.441774+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745502311, 617702518717231719, 617274590825099879, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619300000000000022, 617702680885801575, 619200000000000001, '2026-05-12 07:29:53.441774+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745174631, 617702518717231719, 617274631191081575, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619300000000000030, 617702636392624743, 619200000000000008, '2026-05-12 07:29:53.441774+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745240167, 617702518717231719, 617274684458742375, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190806741267047, 617702829666153063, 617691176312582759, '2026-05-12 14:28:00.840386+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745305703, 617702518717231719, 617274765375255143, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190806741332583, 617702829666153063, 617691413810852455, '2026-05-12 14:28:00.840386+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745371239, 617702518717231719, 617275018593776231, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190806741398119, 617702829666153063, 618607871768146535, '2026-05-12 14:28:00.840386+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745436775, 617702518717231719, 617595582587875943, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190806758044263, 617702829666153063, 618608067960975975, '2026-05-12 14:28:00.840386+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846762148455, 617702518717231719, 617691136030487143, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190806758109799, 617702829666153063, 618615142258651751, '2026-05-12 14:28:00.840386+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745895527, 617702518717231719, 617691176312582759, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190806758175335, 617702829666153063, 618608268465484391, '2026-05-12 14:28:00.840386+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745764455, 617702518717231719, 617691413810852455, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876929725031, 617702636392624743, 617274510210511463, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745567847, 617702518717231719, 618432504411533927, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876929790567, 617702636392624743, 617274631191081575, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745633383, 617702518717231719, 618432605393531495, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876929856103, 617702636392624743, 617274684458742375, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745698919, 617702518717231719, 618432681159438951, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876929921639, 617702636392624743, 617274765375255143, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745829991, 617702518717231719, 618593685742891623, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876929987175, 617702636392624743, 617275018593776231, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846745961063, 617702518717231719, 618607871768146535, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930052711, 617702636392624743, 617595582587875943, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846746026599, 617702518717231719, 618608067960975975, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930118247, 617702636392624743, 617274590825099879, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846761951847, 617702518717231719, 618608268465484391, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930183783, 617702636392624743, 617691413810852455, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846761886311, 617702518717231719, 618615142258651751, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930249319, 617702636392624743, 617691136030487143, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846762017383, 617702518717231719, 618732385923576423, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930314855, 617702636392624743, 618732385923576423, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846762082919, 617702518717231719, 618733394066485863, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930380391, 617702636392624743, 617274543580459623, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846762279527, 617702518717231719, 619011592637395559, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930445927, 617702636392624743, 618733394066485863, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619011846762345063, 617702518717231719, 619011788159136359, '2026-05-11 08:50:12.374739+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930511463, 617702636392624743, 619011592637395559, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619300000000000001, 617702518717231719, 619200000000000001, '2026-05-12 07:29:53.441774+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (618572930112041575, 617702566632895079, 617274631191081575, '2026-05-08 08:09:57.674687+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619300000000000029, 617702518717231719, 619200000000000008, '2026-05-12 07:29:53.441774+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (618572930112107111, 617702566632895079, 617595582587875943, '2026-05-08 08:09:57.674687+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (618572930112041575, 617702566632895079, 617274631191081575, '2026-05-08 08:09:57.674687+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (618572930112172647, 617702566632895079, 618432504411533927, '2026-05-08 08:09:57.674687+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (618572930112107111, 617702566632895079, 617595582587875943, '2026-05-08 08:09:57.674687+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (618572930112238183, 617702566632895079, 618432605393531495, '2026-05-08 08:09:57.674687+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (618572930112172647, 617702566632895079, 618432504411533927, '2026-05-08 08:09:57.674687+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (618572930112303719, 617702566632895079, 618432681159438951, '2026-05-08 08:09:57.674687+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (618572930112238183, 617702566632895079, 618432605393531495, '2026-05-08 08:09:57.674687+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930576999, 617702636392624743, 619011788159136359, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (618572930112303719, 617702566632895079, 618432681159438951, '2026-05-08 08:09:57.674687+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930642535, 617702636392624743, 618432504411533927, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876929725031, 617702636392624743, 617274510210511463, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930708071, 617702636392624743, 618432605393531495, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930380391, 617702636392624743, 617274543580459623, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930773607, 617702636392624743, 618432681159438951, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930118247, 617702636392624743, 617274590825099879, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930839143, 617702636392624743, 618593685742891623, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876929790567, 617702636392624743, 617274631191081575, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930904679, 617702636392624743, 617691176312582759, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876929856103, 617702636392624743, 617274684458742375, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930970215, 617702636392624743, 618607871768146535, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876929921639, 617702636392624743, 617274765375255143, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876931035751, 617702636392624743, 618608067960975975, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876929987175, 617702636392624743, 617275018593776231, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876931101287, 617702636392624743, 618615142258651751, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930052711, 617702636392624743, 617595582587875943, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876931166823, 617702636392624743, 618608268465484391, '2026-05-11 14:58:04.084114+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930249319, 617702636392624743, 617691136030487143, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896508736103, 617702680885801575, 617691136030487143, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930904679, 617702636392624743, 617691176312582759, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896508801639, 617702680885801575, 618732385923576423, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930183783, 617702636392624743, 617691413810852455, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896508867175, 617702680885801575, 617274510210511463, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930642535, 617702636392624743, 618432504411533927, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896508932711, 617702680885801575, 617274543580459623, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930708071, 617702636392624743, 618432605393531495, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896508998247, 617702680885801575, 618733394066485863, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930773607, 617702636392624743, 618432681159438951, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509063783, 617702680885801575, 617274631191081575, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930839143, 617702636392624743, 618593685742891623, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509129319, 617702680885801575, 617274684458742375, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930970215, 617702636392624743, 618607871768146535, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509194855, 617702680885801575, 617274765375255143, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876931035751, 617702636392624743, 618608067960975975, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509260391, 617702680885801575, 617275018593776231, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876931166823, 617702636392624743, 618608268465484391, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509325927, 617702680885801575, 617595582587875943, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876931101287, 617702636392624743, 618615142258651751, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509391463, 617702680885801575, 617274590825099879, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930314855, 617702636392624743, 618732385923576423, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509456999, 617702680885801575, 619011592637395559, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930445927, 617702636392624743, 618733394066485863, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525513319, 617702680885801575, 619011788159136359, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930511463, 617702636392624743, 619011592637395559, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525578855, 617702680885801575, 618432504411533927, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048876930576999, 617702636392624743, 619011788159136359, '2026-05-11 14:58:04.084114+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525644391, 617702680885801575, 618432605393531495, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619300000000000008, 617702636392624743, 619200000000000001, '2026-05-12 07:29:53.441774+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525709927, 617702680885801575, 618432681159438951, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619300000000000030, 617702636392624743, 619200000000000008, '2026-05-12 07:29:53.441774+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525775463, 617702680885801575, 618593685742891623, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896508867175, 617702680885801575, 617274510210511463, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525840999, 617702680885801575, 617691176312582759, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896508932711, 617702680885801575, 617274543580459623, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525906535, 617702680885801575, 617691413810852455, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509391463, 617702680885801575, 617274590825099879, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525972071, 617702680885801575, 618607871768146535, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509063783, 617702680885801575, 617274631191081575, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896526037607, 617702680885801575, 618608067960975975, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509129319, 617702680885801575, 617274684458742375, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896526103143, 617702680885801575, 618615142258651751, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509194855, 617702680885801575, 617274765375255143, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896526168679, 617702680885801575, 618608268465484391, '2026-05-11 14:58:15.757845+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509260391, 617702680885801575, 617275018593776231, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064336999, 617702732609958503, 617691136030487143, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509325927, 617702680885801575, 617595582587875943, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064402535, 617702732609958503, 618732385923576423, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896508736103, 617702680885801575, 617691136030487143, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064468071, 617702732609958503, 617274510210511463, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525840999, 617702680885801575, 617691176312582759, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064533607, 617702732609958503, 617274543580459623, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525906535, 617702680885801575, 617691413810852455, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064599143, 617702732609958503, 618733394066485863, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525578855, 617702680885801575, 618432504411533927, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064664679, 617702732609958503, 617274631191081575, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525644391, 617702680885801575, 618432605393531495, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064730215, 617702732609958503, 617274684458742375, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525709927, 617702680885801575, 618432681159438951, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064795751, 617702732609958503, 617274765375255143, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525775463, 617702680885801575, 618593685742891623, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064861287, 617702732609958503, 617275018593776231, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525972071, 617702680885801575, 618607871768146535, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064926823, 617702732609958503, 617595582587875943, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896526037607, 617702680885801575, 618608067960975975, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064992359, 617702732609958503, 617274590825099879, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896526168679, 617702680885801575, 618608268465484391, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065057895, 617702732609958503, 619011592637395559, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896526103143, 617702680885801575, 618615142258651751, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065123431, 617702732609958503, 619011788159136359, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896508801639, 617702680885801575, 618732385923576423, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065188967, 617702732609958503, 618432504411533927, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896508998247, 617702680885801575, 618733394066485863, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065254503, 617702732609958503, 618432605393531495, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896509456999, 617702680885801575, 619011592637395559, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065320039, 617702732609958503, 618432681159438951, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048896525513319, 617702680885801575, 619011788159136359, '2026-05-11 14:58:15.757845+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065385575, 617702732609958503, 618593685742891623, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619300000000000022, 617702680885801575, 619200000000000001, '2026-05-12 07:29:53.441774+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065451111, 617702732609958503, 617691176312582759, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064468071, 617702732609958503, 617274510210511463, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065516647, 617702732609958503, 617691413810852455, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064533607, 617702732609958503, 617274543580459623, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065582183, 617702732609958503, 618607871768146535, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064992359, 617702732609958503, 617274590825099879, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065647719, 617702732609958503, 618608067960975975, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064664679, 617702732609958503, 617274631191081575, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065713255, 617702732609958503, 618615142258651751, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064730215, 617702732609958503, 617274684458742375, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065778791, 617702732609958503, 618608268465484391, '2026-05-11 14:58:26.819036+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064795751, 617702732609958503, 617274765375255143, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048971016352359, 618278982499971687, 617691176312582759, '2026-05-11 14:59:00.161314+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064861287, 617702732609958503, 617275018593776231, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048971016417895, 618278982499971687, 617691413810852455, '2026-05-11 14:59:00.161314+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064926823, 617702732609958503, 617595582587875943, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048971016483431, 618278982499971687, 618607871768146535, '2026-05-11 14:59:00.161314+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064336999, 617702732609958503, 617691136030487143, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048971016548967, 618278982499971687, 618608067960975975, '2026-05-11 14:59:00.161314+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065451111, 617702732609958503, 617691176312582759, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048971016614503, 618278982499971687, 618615142258651751, '2026-05-11 14:59:00.161314+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065516647, 617702732609958503, 617691413810852455, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048971016680039, 618278982499971687, 618608268465484391, '2026-05-11 14:59:00.161314+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065188967, 617702732609958503, 618432504411533927, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750755697255, 617702518717231719, 619200000000000001, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065254503, 617702732609958503, 618432605393531495, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750755762791, 617702518717231719, 619200000000000008, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065320039, 617702732609958503, 618432681159438951, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750755828327, 617702518717231719, 617274510210511463, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065385575, 617702732609958503, 618593685742891623, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750755893863, 617702518717231719, 617274631191081575, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065582183, 617702732609958503, 618607871768146535, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750755959399, 617702518717231719, 617274684458742375, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065647719, 617702732609958503, 618608067960975975, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750756024935, 617702518717231719, 617274765375255143, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065778791, 617702732609958503, 618608268465484391, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750756090471, 617702518717231719, 617275018593776231, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065713255, 617702732609958503, 618615142258651751, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750756156007, 617702518717231719, 617595582587875943, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064402535, 617702732609958503, 618732385923576423, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750756221543, 617702518717231719, 617274590825099879, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915064599143, 617702732609958503, 618733394066485863, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750756287079, 617702518717231719, 618432504411533927, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065057895, 617702732609958503, 619011592637395559, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750756352615, 617702518717231719, 618432605393531495, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048915065123431, 617702732609958503, 619011788159136359, '2026-05-11 14:58:26.819036+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750772474471, 617702518717231719, 618432681159438951, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619300000000000015, 617702732609958503, 619200000000000001, '2026-05-12 07:29:53.441774+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750772540007, 617702518717231719, 617691413810852455, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048982374527591, 617702829666153063, 617691176312582759, '2026-05-11 14:59:06.931135+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750772605543, 617702518717231719, 618593685742891623, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048982374593127, 617702829666153063, 617691413810852455, '2026-05-11 14:59:06.931135+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750772671079, 617702518717231719, 617691176312582759, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048982374658663, 617702829666153063, 618607871768146535, '2026-05-11 14:59:06.931135+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750772736615, 617702518717231719, 618607871768146535, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048982374724199, 617702829666153063, 618608067960975975, '2026-05-11 14:59:06.931135+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750772802151, 617702518717231719, 618608067960975975, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048982374855271, 617702829666153063, 618608268465484391, '2026-05-11 14:59:06.931135+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750772867687, 617702518717231719, 618615142258651751, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048982374789735, 617702829666153063, 618615142258651751, '2026-05-11 14:59:06.931135+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750772933223, 617702518717231719, 618608268465484391, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048971016352359, 618278982499971687, 617691176312582759, '2026-05-11 14:59:00.161314+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750772998759, 617702518717231719, 618732385923576423, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048971016417895, 618278982499971687, 617691413810852455, '2026-05-11 14:59:00.161314+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750773064295, 617702518717231719, 618733394066485863, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048971016483431, 618278982499971687, 618607871768146535, '2026-05-11 14:59:00.161314+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750773129831, 617702518717231719, 617691136030487143, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048971016548967, 618278982499971687, 618608067960975975, '2026-05-11 14:59:00.161314+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750773195367, 617702518717231719, 617274543580459623, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048971016680039, 618278982499971687, 618608268465484391, '2026-05-11 14:59:00.161314+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750773260903, 617702518717231719, 619011592637395559, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619048971016614503, 618278982499971687, 618615142258651751, '2026-05-11 14:59:00.161314+00:00')
+INSERT INTO role_menus (id, role_id, menu_id, created_at) VALUES (619190750773326439, 617702518717231719, 619011788159136359, '2026-05-12 14:27:27.475228+00')
 ON CONFLICT DO NOTHING;
 
 -- ==========================================================
 -- ROLE_PERMS
 -- ==========================================================
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474891420263, 617702518717231719, 617702910851035751, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992448270951, 617702829666153063, 617718700392395367, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474857734759, 617702518717231719, 617702958531883623, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992448336487, 617702829666153063, 617718814779388519, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474891551335, 617702518717231719, 617703014181974631, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000032, 617702636392624743, 619100000000000020, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474857800295, 617702518717231719, 617718642611663463, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000033, 617702680885801575, 619100000000000020, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474857865831, 617702518717231719, 617718700392395367, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000034, 617702732609958503, 619100000000000020, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474857931367, 617702518717231719, 617718814779388519, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098206823, 617702566632895079, 618523608989368385, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474857996903, 617702518717231719, 618474627991155303, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098272359, 617702566632895079, 618523608989368386, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474858062439, 617702518717231719, 618474663223243367, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000037, 617702636392624743, 619100000000000021, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474874511975, 617702518717231719, 618474804990784103, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000038, 617702680885801575, 619100000000000021, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474874577511, 617702518717231719, 618474870740693607, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000039, 617702732609958503, 619100000000000021, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474874643047, 617702518717231719, 618475205597082215, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098337895, 617702566632895079, 618523608989368387, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474874708583, 617702518717231719, 618475372111016551, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098403431, 617702566632895079, 618523608989368388, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474874774119, 617702518717231719, 618523608989368321, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000042, 617702636392624743, 619100000000000022, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474874839655, 617702518717231719, 618523608989368322, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000043, 617702680885801575, 619100000000000022, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474874905191, 617702518717231719, 618523608989368323, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000044, 617702732609958503, 619100000000000022, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474874970727, 617702518717231719, 618523608989368324, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098468967, 617702566632895079, 618523608989368389, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474891616871, 617702518717231719, 618523608989368325, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098534503, 617702566632895079, 618523608989368390, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474891682407, 617702518717231719, 618523608989368326, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000047, 617702636392624743, 619100000000000023, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474891747943, 617702518717231719, 618523608989368327, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000048, 617702680885801575, 619100000000000023, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474891813479, 617702518717231719, 618523608989368328, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000049, 617702732609958503, 619100000000000023, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474891879015, 617702518717231719, 618523608989368329, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098600039, 617702566632895079, 618523608989368391, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474925236839, 617702518717231719, 618523608989368330, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098665575, 617702566632895079, 618523608989368392, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892534375, 617702518717231719, 618523608989368331, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000052, 617702636392624743, 619100000000000024, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892599911, 617702518717231719, 618523608989368332, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000053, 617702680885801575, 619100000000000024, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892665447, 617702518717231719, 618523608989368333, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000054, 617702732609958503, 619100000000000024, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892730983, 617702518717231719, 618523608989368334, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098731111, 617702566632895079, 618523608989368393, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892796519, 617702518717231719, 618523608989368335, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098796647, 617702566632895079, 618523608989368394, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892862055, 617702518717231719, 618523608989368336, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000057, 617702636392624743, 619100000000000025, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892927591, 617702518717231719, 618523608989368337, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000058, 617702680885801575, 619100000000000025, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892993127, 617702518717231719, 618523608989368338, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000059, 617702732609958503, 619100000000000025, '2026-05-12 03:17:49.757837+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474893058663, 617702518717231719, 618523608989368339, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992448402023, 617702829666153063, 618474663223243367, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474893124199, 617702518717231719, 618523608989368340, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992448467559, 617702829666153063, 618475205597082215, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474893189735, 617702518717231719, 618523608989368341, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992448533095, 617702829666153063, 618475372111016551, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474893255271, 617702518717231719, 618523608989368342, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992448598631, 617702829666153063, 618523608989368321, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474893320807, 617702518717231719, 618523608989368343, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992448664167, 617702829666153063, 618523608989368322, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474893386343, 617702518717231719, 618523608989368344, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296369791591, 618278982499971687, 617702958531883623, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908066407, 617702518717231719, 618523608989368345, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296369857127, 618278982499971687, 617718700392395367, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908197479, 617702518717231719, 618523608989368346, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296369922663, 618278982499971687, 617718814779388519, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908263015, 617702518717231719, 618523608989368347, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296369988199, 618278982499971687, 618474804990784103, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908328551, 617702518717231719, 618523608989368348, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370053735, 618278982499971687, 618474870740693607, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908394087, 617702518717231719, 618523608989368349, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370119271, 618278982499971687, 618523608989368383, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908459623, 617702518717231719, 618523608989368350, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370184807, 618278982499971687, 618523608989368385, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908525159, 617702518717231719, 618523608989368351, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370250343, 618278982499971687, 618523608989368386, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908590695, 617702518717231719, 618523608989368352, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370315879, 618278982499971687, 618523608989368387, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908656231, 617702518717231719, 618523608989368353, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370381415, 618278982499971687, 618523608989368388, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908721767, 617702518717231719, 618523608989368354, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370446951, 618278982499971687, 618523608989368389, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908787303, 617702518717231719, 618523608989368355, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370512487, 618278982499971687, 618523608989368390, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908852839, 617702518717231719, 618523608989368356, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370578023, 618278982499971687, 618523608989368395, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908918375, 617702518717231719, 618523608989368357, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370643559, 618278982499971687, 618523608989368396, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908983911, 617702518717231719, 618523608989368358, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370709095, 618278982499971687, 618523608989368397, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909049447, 617702518717231719, 618523608989368359, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370774631, 618278982499971687, 618523608989368398, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909114983, 617702518717231719, 618523608989368360, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370840167, 618278982499971687, 618523608989368404, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909180519, 617702518717231719, 618523608989368361, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370905703, 618278982499971687, 618523608989368413, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909246055, 617702518717231719, 618523608989368362, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370971239, 618278982499971687, 618523608989368414, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909311591, 617702518717231719, 618523608989368363, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371036775, 618278982499971687, 618523608989368415, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909377127, 617702518717231719, 618523608989368364, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371102311, 618278982499971687, 618523608989368416, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909442663, 617702518717231719, 618523608989368365, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371167847, 618278982499971687, 618523608989368417, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909508199, 617702518717231719, 618523608989368366, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371233383, 618278982499971687, 618523608989368418, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909573735, 617702518717231719, 618523608989368367, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371298919, 618278982499971687, 618595947512869479, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909639271, 617702518717231719, 618523608989368368, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371364455, 618278982499971687, 618696577740976743, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909704807, 617702518717231719, 618523608989368369, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371429991, 618278982499971687, 618696689057870439, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909770343, 617702518717231719, 618523608989368370, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371495527, 618278982499971687, 618704141195162215, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909835879, 617702518717231719, 618523608989368371, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371561063, 618278982499971687, 618704249257210471, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909901415, 617702518717231719, 618523608989368372, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371626599, 618278982499971687, 618728576421737063, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474909966951, 617702518717231719, 618523608989368373, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371692135, 618278982499971687, 618729001606787687, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910032487, 617702518717231719, 618523608989368374, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371757671, 618278982499971687, 618729102169354855, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910098023, 617702518717231719, 618523608989368375, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371823207, 618278982499971687, 618840414216073831, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910163559, 617702518717231719, 618523608989368376, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371888743, 618278982499971687, 618840575428342375, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910229095, 617702518717231719, 618523608989368377, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371954279, 618278982499971687, 618915628220232295, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910294631, 617702518717231719, 618523608989368378, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992448729703, 617702829666153063, 618523608989368323, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910360167, 617702518717231719, 618523608989368379, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992448795239, 617702829666153063, 618523608989368324, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910425703, 617702518717231719, 618523608989368380, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992448860775, 617702829666153063, 618523608989368383, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910491239, 617702518717231719, 618523608989368381, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992448926311, 617702829666153063, 618523608989368385, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474925498983, 617702518717231719, 618523608989368382, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992448991847, 617702829666153063, 618523608989368386, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875036263, 617702518717231719, 618523608989368383, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449057383, 617702829666153063, 618523608989368387, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892141159, 617702518717231719, 618523608989368384, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449122919, 617702829666153063, 618523608989368388, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875101799, 617702518717231719, 618523608989368385, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449188455, 617702829666153063, 618523608989368389, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875167335, 617702518717231719, 618523608989368386, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449253991, 617702829666153063, 618523608989368390, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875232871, 617702518717231719, 618523608989368387, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449319527, 617702829666153063, 618523608989368405, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875298407, 617702518717231719, 618523608989368388, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449385063, 617702829666153063, 618523608989368407, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875363943, 617702518717231719, 618523608989368389, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098862183, 617702566632895079, 618523608989368395, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875429479, 617702518717231719, 618523608989368390, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098927719, 617702566632895079, 618523608989368396, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474925367911, 617702518717231719, 618523608989368391, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098993255, 617702566632895079, 618523608989368397, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474925433447, 617702518717231719, 618523608989368392, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795099058791, 617702566632895079, 618523608989368398, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474925695591, 617702518717231719, 618523608989368393, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795099124327, 617702566632895079, 618523608989368403, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474925761127, 617702518717231719, 618523608989368394, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795099189863, 617702566632895079, 618523608989368404, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875495015, 617702518717231719, 618523608989368395, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795099255399, 617702566632895079, 618523608989368405, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875560551, 617702518717231719, 618523608989368396, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795099320935, 617702566632895079, 618523608989368406, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875626087, 617702518717231719, 618523608989368397, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795099386471, 617702566632895079, 618523608989368407, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875691623, 617702518717231719, 618523608989368398, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795099452007, 617702566632895079, 618523608989368408, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474891944551, 617702518717231719, 618523608989368399, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795099517543, 617702566632895079, 618523608989368409, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910556775, 617702518717231719, 618523608989368400, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795114656359, 617702566632895079, 618523608989368410, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910622311, 617702518717231719, 618523608989368401, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795114721895, 617702566632895079, 618523608989368411, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910687847, 617702518717231719, 618523608989368402, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795114787431, 617702566632895079, 618523608989368412, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892010087, 617702518717231719, 618523608989368403, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795114852967, 617702566632895079, 618523608989368413, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875757159, 617702518717231719, 618523608989368404, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795114918503, 617702566632895079, 618523608989368414, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910753383, 617702518717231719, 618523608989368405, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795114984039, 617702566632895079, 618523608989368415, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910818919, 617702518717231719, 618523608989368406, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115049575, 617702566632895079, 618523608989368416, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910884455, 617702518717231719, 618523608989368407, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115115111, 617702566632895079, 618523608989368417, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474910949991, 617702518717231719, 618523608989368408, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115180647, 617702566632895079, 618523608989368418, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474911015527, 617702518717231719, 618523608989368409, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115246183, 617702566632895079, 618523608989368436, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474911081063, 617702518717231719, 618523608989368410, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115311719, 617702566632895079, 618523608989368437, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474924843623, 617702518717231719, 618523608989368411, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115377255, 617702566632895079, 618523608989368438, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474924909159, 617702518717231719, 618523608989368412, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115442791, 617702566632895079, 618523608989368439, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875822695, 617702518717231719, 618523608989368413, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115508327, 617702566632895079, 618523608989368440, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875888231, 617702518717231719, 618523608989368414, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115573863, 617702566632895079, 618523608989368441, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474875953767, 617702518717231719, 618523608989368415, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115639399, 617702566632895079, 618593783654724199, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876019303, 617702518717231719, 618523608989368416, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115704935, 617702566632895079, 618594269875155559, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876084839, 617702518717231719, 618523608989368417, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115770471, 617702566632895079, 618595947512869479, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876150375, 617702518717231719, 618523608989368418, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115836007, 617702566632895079, 618696577740976743, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876215911, 617702518717231719, 618523608989368436, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115901543, 617702566632895079, 618696689057870439, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892075623, 617702518717231719, 618523608989368437, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795115967079, 617702566632895079, 618704141195162215, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474924974695, 617702518717231719, 618523608989368438, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795116032615, 617702566632895079, 618704249257210471, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474925040231, 617702518717231719, 618523608989368439, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795116098151, 617702566632895079, 618728576421737063, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474925105767, 617702518717231719, 618523608989368440, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795116163687, 617702566632895079, 618729001606787687, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474925171303, 617702518717231719, 618523608989368441, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795116229223, 617702566632895079, 618729102169354855, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876281447, 617702518717231719, 618593783654724199, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795116294759, 617702566632895079, 618761955045290599, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876346983, 617702518717231719, 618594269875155559, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795116360295, 617702566632895079, 619100000000000060, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876412519, 617702518717231719, 618595947512869479, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795116425831, 617702566632895079, 619100000000000061, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876478055, 617702518717231719, 618696577740976743, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795116491367, 617702566632895079, 619100000000000062, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876543591, 617702518717231719, 618696689057870439, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795116556903, 617702566632895079, 619100000000000063, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876609127, 617702518717231719, 618704141195162215, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795116622439, 617702566632895079, 619100000000000064, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876674663, 617702518717231719, 618704249257210471, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386568807, 618278982499971687, 618474627991155303, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876740199, 617702518717231719, 618728576421737063, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386634343, 618278982499971687, 618474663223243367, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876805735, 617702518717231719, 618729001606787687, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386699879, 618278982499971687, 618475205597082215, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876871271, 617702518717231719, 618729102169354855, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386765415, 618278982499971687, 619100000000000001, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474908131943, 617702518717231719, 618761955045290599, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386830951, 618278982499971687, 618523608989368321, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474876936807, 617702518717231719, 618840262147322471, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386896487, 618278982499971687, 618523608989368322, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474877002343, 617702518717231719, 618840327075148391, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386962023, 618278982499971687, 618523608989368323, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474877067879, 617702518717231719, 618840414216073831, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296387027559, 618278982499971687, 618523608989368324, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474877133415, 617702518717231719, 618840575428342375, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296387093095, 618278982499971687, 618840262147322471, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474925302375, 617702518717231719, 618905031277621863, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296387158631, 618278982499971687, 618840327075148391, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474925564519, 617702518717231719, 618906714770584167, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296387224167, 618278982499971687, 618919251796832871, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474925630055, 617702518717231719, 618906763776832103, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296387289703, 618278982499971687, 618475372111016551, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474877198951, 617702518717231719, 618915628220232295, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296387355239, 618278982499971687, 618523608989368436, '2026-05-12 02:57:29.431926+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474891289191, 617702518717231719, 618919251796832871, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795116687975, 617702566632895079, 619100000000000065, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474891354727, 617702518717231719, 619100000000000001, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449450599, 617702829666153063, 618523608989368410, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474891485799, 617702518717231719, 619100000000000020, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449516135, 617702829666153063, 618523608989368436, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892206695, 617702518717231719, 619100000000000021, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449581671, 617702829666153063, 618696577740976743, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892272231, 617702518717231719, 619100000000000022, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449647207, 617702829666153063, 618696689057870439, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892337767, 617702518717231719, 619100000000000023, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449712743, 617702829666153063, 618704141195162215, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892403303, 617702518717231719, 619100000000000024, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449778279, 617702829666153063, 618704249257210471, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123474892468839, 617702518717231719, 619100000000000025, '2026-05-12 03:19:07.916485+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449843815, 617702829666153063, 618728576421737063, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000100, 617702518717231719, 619100000000000060, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449909351, 617702829666153063, 618729001606787687, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000110, 617702518717231719, 619100000000000061, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992449974887, 617702829666153063, 618729102169354855, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000120, 617702518717231719, 619100000000000062, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992450040423, 617702829666153063, 618840262147322471, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000130, 617702518717231719, 619100000000000063, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992450105959, 617702829666153063, 618840327075148391, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000140, 617702518717231719, 619100000000000064, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992450171495, 617702829666153063, 618919251796832871, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000150, 617702518717231719, 619100000000000065, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465048167, 617702829666153063, 619100000000000001, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000160, 617702518717231719, 619100000000000070, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465113703, 617702829666153063, 618523608989368430, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000170, 617702518717231719, 619100000000000071, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465179239, 617702829666153063, 618523608989368433, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000180, 617702518717231719, 619100000000000072, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465244775, 617702829666153063, 618523608989368434, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495564228175, 617702566632895079, 617702910851035751, '2026-05-12 07:17:09.426523+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465310311, 617702829666153063, 618523608989368435, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495476933223, 617702566632895079, 617702958531883623, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465375847, 617702829666153063, 617702958531883623, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495476998759, 617702566632895079, 617703014181974631, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465441383, 617702829666153063, 618523608989368425, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477064295, 617702566632895079, 617718642611663463, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465506919, 617702829666153063, 618523608989368427, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477129831, 617702566632895079, 617718700392395367, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465572455, 617702829666153063, 618840414216073831, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477195367, 617702566632895079, 617718814779388519, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465637991, 617702829666153063, 618840575428342375, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477260903, 617702566632895079, 618474627991155303, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465703527, 617702829666153063, 618474804990784103, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477326439, 617702566632895079, 618474663223243367, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465769063, 617702829666153063, 618474870740693607, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477391975, 617702566632895079, 618474804990784103, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465834599, 617702829666153063, 618523608989368395, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477457511, 617702566632895079, 618474870740693607, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465900135, 617702829666153063, 618523608989368404, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477523047, 617702566632895079, 618475205597082215, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992465965671, 617702829666153063, 618523608989368396, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477588583, 617702566632895079, 618475372111016551, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466031207, 617702829666153063, 618523608989368398, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477654119, 617702566632895079, 618523608989368321, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466096743, 617702829666153063, 618523608989368423, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477719655, 617702566632895079, 618523608989368322, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466162279, 617702829666153063, 618595947512869479, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477785191, 617702566632895079, 618523608989368323, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466227815, 617702829666153063, 618523608989368397, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495477850727, 617702566632895079, 618523608989368324, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466293351, 617702829666153063, 618915628220232295, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495493710439, 617702566632895079, 618523608989368325, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466358887, 617702829666153063, 618523608989368413, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495493775975, 617702566632895079, 618523608989368330, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466424423, 617702829666153063, 618523608989368414, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495493841511, 617702566632895079, 618523608989368331, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466489959, 617702829666153063, 618523608989368415, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495493907047, 617702566632895079, 618523608989368332, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466555495, 617702829666153063, 618523608989368416, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495493972583, 617702566632895079, 618523608989368333, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466621031, 617702829666153063, 618523608989368417, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494038119, 617702566632895079, 618523608989368334, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466686567, 617702829666153063, 618523608989368418, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494103655, 617702566632895079, 618523608989368335, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466752103, 617702829666153063, 619100000000000064, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494169191, 617702566632895079, 618523608989368336, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466817639, 617702829666153063, 619100000000000065, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494234727, 617702566632895079, 618523608989368337, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190992466883175, 617702829666153063, 619100000000000062, '2026-05-12 14:29:51.532073+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494300263, 617702566632895079, 618523608989368338, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524003009127, 617702518717231719, 617702910851035751, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494365799, 617702566632895079, 618523608989368339, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524003074663, 617702518717231719, 617702958531883623, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494431335, 617702566632895079, 618523608989368340, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000012, 617702636392624743, 619100000000000001, '2026-05-12 02:55:03.53009+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494496871, 617702566632895079, 618523608989368341, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524003140199, 617702518717231719, 617703014181974631, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494562407, 617702566632895079, 618523608989368342, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524003205735, 617702518717231719, 617718642611663463, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494627943, 617702566632895079, 618523608989368343, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524003271271, 617702518717231719, 617718700392395367, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494693479, 617702566632895079, 618523608989368344, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524003336807, 617702518717231719, 617718814779388519, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494759015, 617702566632895079, 618523608989368345, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000013, 617702680885801575, 619100000000000001, '2026-05-12 02:55:03.53009+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494824551, 617702566632895079, 618523608989368382, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000014, 617702732609958503, 619100000000000001, '2026-05-12 02:55:03.53009+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494890087, 617702566632895079, 618523608989368383, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795131433575, 617702566632895079, 619100000000000070, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495494955623, 617702566632895079, 618523608989368384, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524003402343, 617702518717231719, 618474663223243367, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495495021159, 617702566632895079, 618523608989368385, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524003467879, 617702518717231719, 618474804990784103, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495495086695, 617702566632895079, 618523608989368386, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524003533415, 617702518717231719, 618474870740693607, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495495152231, 617702566632895079, 618523608989368387, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524019786343, 617702518717231719, 618475205597082215, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495495217767, 617702566632895079, 618523608989368388, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524019851879, 617702518717231719, 618475372111016551, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495495283303, 617702566632895079, 618523608989368389, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524019917415, 617702518717231719, 618523608989368321, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495495348839, 617702566632895079, 618523608989368390, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524019982951, 617702518717231719, 618523608989368322, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495495414375, 617702566632895079, 618523608989368391, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524020048487, 617702518717231719, 618523608989368323, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495495479911, 617702566632895079, 618523608989368392, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524020114023, 617702518717231719, 618523608989368324, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495495545447, 617702566632895079, 618523608989368393, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795131499111, 617702566632895079, 619100000000000071, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495544042087, 617702566632895079, 618523608989368394, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795131564647, 617702566632895079, 619100000000000072, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495560819303, 617702566632895079, 618523608989368395, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795131630183, 617702566632895079, 618474804990784103, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495560884839, 617702566632895079, 618523608989368396, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524020179559, 617702518717231719, 618523608989368325, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495560950375, 617702566632895079, 618523608989368397, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524020245095, 617702518717231719, 618523608989368326, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561015911, 617702566632895079, 618523608989368398, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524020310631, 617702518717231719, 618523608989368327, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561081447, 617702566632895079, 618523608989368403, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524020376167, 617702518717231719, 618523608989368328, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561146983, 617702566632895079, 618523608989368404, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795131695719, 617702566632895079, 618474870740693607, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561212519, 617702566632895079, 618523608989368405, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795131761255, 617702566632895079, 618523608989368423, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561278055, 617702566632895079, 618523608989368406, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795131826791, 617702566632895079, 617718642611663463, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561343591, 617702566632895079, 618523608989368407, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795131892327, 617702566632895079, 618523608989368425, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561409127, 617702566632895079, 618523608989368408, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795131957863, 617702566632895079, 618523608989368427, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561474663, 617702566632895079, 618523608989368409, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795132023399, 617702566632895079, 617702958531883623, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561540199, 617702566632895079, 618523608989368410, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795132088935, 617702566632895079, 618523608989368430, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561605735, 617702566632895079, 618523608989368411, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795132154471, 617702566632895079, 618523608989368433, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561671271, 617702566632895079, 618523608989368412, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795132220007, 617702566632895079, 618523608989368434, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561736807, 617702566632895079, 618523608989368413, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795132285543, 617702566632895079, 618523608989368435, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561802343, 617702566632895079, 618523608989368414, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524020441703, 617702518717231719, 618523608989368329, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561867879, 617702566632895079, 618523608989368415, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524020507239, 617702518717231719, 618523608989368330, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561933415, 617702566632895079, 618523608989368416, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524020572775, 617702518717231719, 618523608989368331, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495561998951, 617702566632895079, 618523608989368417, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524020638311, 617702518717231719, 618523608989368332, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562064487, 617702566632895079, 618523608989368418, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524020703847, 617702518717231719, 618523608989368333, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562130023, 617702566632895079, 618523608989368436, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524020769383, 617702518717231719, 618523608989368334, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562195559, 617702566632895079, 618523608989368437, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524036563559, 617702518717231719, 618523608989368335, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562261095, 617702566632895079, 618523608989368438, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524036629095, 617702518717231719, 618523608989368336, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562326631, 617702566632895079, 618523608989368439, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524036694631, 617702518717231719, 618523608989368337, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562392167, 617702566632895079, 618523608989368440, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524036760167, 617702518717231719, 618523608989368338, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562457703, 617702566632895079, 618523608989368441, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524036825703, 617702518717231719, 618523608989368339, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562523239, 617702566632895079, 618593783654724199, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524036891239, 617702518717231719, 618523608989368340, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562588775, 617702566632895079, 618594269875155559, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524036956775, 617702518717231719, 618523608989368341, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562654311, 617702566632895079, 618595947512869479, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037022311, 617702518717231719, 618523608989368342, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562719847, 617702566632895079, 618696577740976743, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037087847, 617702518717231719, 618523608989368343, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562785383, 617702566632895079, 618696689057870439, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037153383, 617702518717231719, 618523608989368344, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562850919, 617702566632895079, 618704141195162215, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037218919, 617702518717231719, 618523608989368345, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562916455, 617702566632895079, 618704249257210471, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037284455, 617702518717231719, 618523608989368346, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495562981991, 617702566632895079, 618728576421737063, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037349991, 617702518717231719, 618523608989368347, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563047527, 617702566632895079, 618729001606787687, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037415527, 617702518717231719, 618523608989368348, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563113063, 617702566632895079, 618729102169354855, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037481063, 617702518717231719, 618523608989368349, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563178599, 617702566632895079, 618761955045290599, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037546599, 617702518717231719, 618523608989368350, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563244135, 617702566632895079, 618840262147322471, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037612135, 617702518717231719, 618523608989368351, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563309671, 617702566632895079, 618840327075148391, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037677671, 617702518717231719, 618523608989368352, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563375207, 617702566632895079, 618840414216073831, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037743207, 617702518717231719, 618523608989368353, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563440743, 617702566632895079, 618840575428342375, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037808743, 617702518717231719, 618523608989368354, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563506279, 617702566632895079, 618905031277621863, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037874279, 617702518717231719, 618523608989368355, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563571815, 617702566632895079, 618906714770584167, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524037939815, 617702518717231719, 618523608989368356, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563637351, 617702566632895079, 618906763776832103, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524038005351, 617702518717231719, 618523608989368357, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563702887, 617702566632895079, 618915628220232295, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524038070887, 617702518717231719, 618523608989368358, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563768423, 617702566632895079, 618919251796832871, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524038136423, 617702518717231719, 618523608989368359, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563833959, 617702566632895079, 619100000000000001, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524038201959, 617702518717231719, 618523608989368360, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563899495, 617702566632895079, 619100000000000020, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524038267495, 617702518717231719, 618523608989368361, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495563965031, 617702566632895079, 619100000000000021, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524038333031, 617702518717231719, 618523608989368362, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495564030567, 617702566632895079, 619100000000000022, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524038398567, 617702518717231719, 618523608989368363, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495564096103, 617702566632895079, 619100000000000023, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524038464103, 617702518717231719, 618523608989368364, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495564161639, 617702566632895079, 619100000000000024, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524038529639, 617702518717231719, 618523608989368365, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619123495564227175, 617702566632895079, 619100000000000025, '2026-05-12 03:19:20.206339+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524053340775, 617702518717231719, 618523608989368366, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000101, 617702566632895079, 619100000000000060, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524053406311, 617702518717231719, 618523608989368367, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000111, 617702566632895079, 619100000000000061, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524053471847, 617702518717231719, 618523608989368368, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000121, 617702566632895079, 619100000000000062, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524053537383, 617702518717231719, 618523608989368369, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000131, 617702566632895079, 619100000000000063, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524053602919, 617702518717231719, 618523608989368370, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000141, 617702566632895079, 619100000000000064, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524053668455, 617702518717231719, 618523608989368371, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000151, 617702566632895079, 619100000000000065, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524053733991, 617702518717231719, 618523608989368372, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000161, 617702566632895079, 619100000000000070, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524053799527, 617702518717231719, 618523608989368373, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000171, 617702566632895079, 619100000000000071, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524053865063, 617702518717231719, 618523608989368374, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000181, 617702566632895079, 619100000000000072, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524053930599, 617702518717231719, 618523608989368375, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271909479, 617702636392624743, 617702910851035751, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524053996135, 617702518717231719, 618523608989368376, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323551847, 617702636392624743, 617702958531883623, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054061671, 617702518717231719, 618523608989368377, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888287900263, 617702636392624743, 617703014181974631, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054127207, 617702518717231719, 618523608989368378, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322634343, 617702636392624743, 617718642611663463, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054192743, 617702518717231719, 618523608989368379, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322699879, 617702636392624743, 617718700392395367, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054258279, 617702518717231719, 618523608989368380, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322765415, 617702636392624743, 617718814779388519, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054323815, 617702518717231719, 618523608989368381, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271123047, 617702636392624743, 618474627991155303, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054389351, 617702518717231719, 618523608989368382, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271188583, 617702636392624743, 618474663223243367, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054454887, 617702518717231719, 618523608989368383, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321651303, 617702636392624743, 618474804990784103, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054520423, 617702518717231719, 618523608989368384, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321716839, 617702636392624743, 618474870740693607, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054585959, 617702518717231719, 618523608989368385, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271254119, 617702636392624743, 618475205597082215, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054651495, 617702518717231719, 618523608989368386, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271778407, 617702636392624743, 618475372111016551, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054717031, 617702518717231719, 618523608989368387, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271319655, 617702636392624743, 618523608989368321, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054782567, 617702518717231719, 618523608989368388, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271385191, 617702636392624743, 618523608989368322, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054848103, 617702518717231719, 618523608989368389, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271450727, 617702636392624743, 618523608989368323, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054913639, 617702518717231719, 618523608989368390, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271516263, 617702636392624743, 618523608989368324, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524054979175, 617702518717231719, 618523608989368391, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888287965799, 617702636392624743, 618523608989368325, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524055044711, 617702518717231719, 618523608989368392, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288031335, 617702636392624743, 618523608989368326, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524055110247, 617702518717231719, 618523608989368393, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288096871, 617702636392624743, 618523608989368327, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524055175783, 617702518717231719, 618523608989368394, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288162407, 617702636392624743, 618523608989368328, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524055241319, 617702518717231719, 618523608989368395, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288227943, 617702636392624743, 618523608989368329, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524055306855, 617702518717231719, 618523608989368396, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308216423, 617702636392624743, 618523608989368330, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524055372391, 617702518717231719, 618523608989368397, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288490087, 617702636392624743, 618523608989368331, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524055437927, 617702518717231719, 618523608989368398, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288555623, 617702636392624743, 618523608989368332, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524055503463, 617702518717231719, 618523608989368399, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288621159, 617702636392624743, 618523608989368333, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524055568999, 617702518717231719, 618523608989368400, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288686695, 617702636392624743, 618523608989368334, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524055634535, 617702518717231719, 618523608989368401, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288752231, 617702636392624743, 618523608989368335, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524055700071, 617702518717231719, 618523608989368402, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288817767, 617702636392624743, 618523608989368336, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524055765607, 617702518717231719, 618523608989368403, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288883303, 617702636392624743, 618523608989368337, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070117991, 617702518717231719, 618523608989368404, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288948839, 617702636392624743, 618523608989368338, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070183527, 617702518717231719, 618523608989368405, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888289014375, 617702636392624743, 618523608989368339, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070249063, 617702518717231719, 618523608989368406, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888304677479, 617702636392624743, 618523608989368340, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070314599, 617702518717231719, 618523608989368407, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888304743015, 617702636392624743, 618523608989368341, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070380135, 617702518717231719, 618523608989368408, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888304808551, 617702636392624743, 618523608989368342, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070445671, 617702518717231719, 618523608989368409, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888304874087, 617702636392624743, 618523608989368343, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070511207, 617702518717231719, 618523608989368410, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888304939623, 617702636392624743, 618523608989368344, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070576743, 617702518717231719, 618523608989368411, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305005159, 617702636392624743, 618523608989368345, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070642279, 617702518717231719, 618523608989368412, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305136231, 617702636392624743, 618523608989368346, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070707815, 617702518717231719, 618523608989368413, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305201767, 617702636392624743, 618523608989368347, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070773351, 617702518717231719, 618523608989368414, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305267303, 617702636392624743, 618523608989368348, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070838887, 617702518717231719, 618523608989368415, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305332839, 617702636392624743, 618523608989368349, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070904423, 617702518717231719, 618523608989368416, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305398375, 617702636392624743, 618523608989368350, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524070969959, 617702518717231719, 618523608989368417, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305463911, 617702636392624743, 618523608989368351, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524071035495, 617702518717231719, 618523608989368418, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305529447, 617702636392624743, 618523608989368352, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524071101031, 617702518717231719, 618523608989368422, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305594983, 617702636392624743, 618523608989368353, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524071166567, 617702518717231719, 618523608989368423, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305660519, 617702636392624743, 618523608989368354, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524071232103, 617702518717231719, 618523608989368425, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305726055, 617702636392624743, 618523608989368355, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524071297639, 617702518717231719, 618523608989368427, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305791591, 617702636392624743, 618523608989368356, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524071363175, 617702518717231719, 618523608989368430, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305857127, 617702636392624743, 618523608989368357, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524071428711, 617702518717231719, 618523608989368433, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305922663, 617702636392624743, 618523608989368358, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524071494247, 617702518717231719, 618523608989368434, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305988199, 617702636392624743, 618523608989368359, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524086895207, 617702518717231719, 618523608989368435, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306053735, 617702636392624743, 618523608989368360, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524086960743, 617702518717231719, 618523608989368436, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306119271, 617702636392624743, 618523608989368361, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087026279, 617702518717231719, 618523608989368437, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306184807, 617702636392624743, 618523608989368362, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087091815, 617702518717231719, 618523608989368438, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306250343, 617702636392624743, 618523608989368363, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087157351, 617702518717231719, 618523608989368439, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306315879, 617702636392624743, 618523608989368364, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087222887, 617702518717231719, 618523608989368440, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306381415, 617702636392624743, 618523608989368365, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087288423, 617702518717231719, 618523608989368441, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306446951, 617702636392624743, 618523608989368366, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087353959, 617702518717231719, 618593783654724199, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306512487, 617702636392624743, 618523608989368367, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087419495, 617702518717231719, 618594269875155559, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306578023, 617702636392624743, 618523608989368368, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087485031, 617702518717231719, 618595947512869479, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306643559, 617702636392624743, 618523608989368369, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087550567, 617702518717231719, 618696577740976743, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306709095, 617702636392624743, 618523608989368370, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087616103, 617702518717231719, 618696689057870439, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306774631, 617702636392624743, 618523608989368371, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087681639, 617702518717231719, 618704141195162215, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306840167, 617702636392624743, 618523608989368372, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087747175, 617702518717231719, 618704249257210471, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306905703, 617702636392624743, 618523608989368373, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087812711, 617702518717231719, 618728576421737063, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306971239, 617702636392624743, 618523608989368374, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087878247, 617702518717231719, 618729001606787687, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307036775, 617702636392624743, 618523608989368375, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524087943783, 617702518717231719, 618729102169354855, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307102311, 617702636392624743, 618523608989368376, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524088009319, 617702518717231719, 618761955045290599, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307167847, 617702636392624743, 618523608989368377, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524088074855, 617702518717231719, 618840262147322471, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307233383, 617702636392624743, 618523608989368378, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524088140391, 617702518717231719, 618840327075148391, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307298919, 617702636392624743, 618523608989368379, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524088205927, 617702518717231719, 618840414216073831, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307364455, 617702636392624743, 618523608989368380, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524103672423, 617702518717231719, 618840575428342375, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307429991, 617702636392624743, 618523608989368381, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524103737959, 617702518717231719, 618905031277621863, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308478567, 617702636392624743, 618523608989368382, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524103803495, 617702518717231719, 618906714770584167, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322830951, 617702636392624743, 618523608989368383, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524103869031, 617702518717231719, 618906763776832103, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288424551, 617702636392624743, 618523608989368384, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524103934567, 617702518717231719, 618915628220232295, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323027559, 617702636392624743, 618523608989368385, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104000103, 617702518717231719, 618919251796832871, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323093095, 617702636392624743, 618523608989368386, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104065639, 617702518717231719, 619100000000000001, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323158631, 617702636392624743, 618523608989368387, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104131175, 617702518717231719, 619100000000000020, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323224167, 617702636392624743, 618523608989368388, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104196711, 617702518717231719, 619100000000000021, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323289703, 617702636392624743, 618523608989368389, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104262247, 617702518717231719, 619100000000000022, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323355239, 617702636392624743, 618523608989368390, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104327783, 617702518717231719, 619100000000000023, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308347495, 617702636392624743, 618523608989368391, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104393319, 617702518717231719, 619100000000000024, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308413031, 617702636392624743, 618523608989368392, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104458855, 617702518717231719, 619100000000000025, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321520231, 617702636392624743, 618523608989368393, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104524391, 617702518717231719, 619100000000000060, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321585767, 617702636392624743, 618523608989368394, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104589927, 617702518717231719, 619100000000000061, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321782375, 617702636392624743, 618523608989368395, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104655463, 617702518717231719, 619100000000000062, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321913447, 617702636392624743, 618523608989368396, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104720999, 617702518717231719, 619100000000000063, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322110055, 617702636392624743, 618523608989368397, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104786535, 617702518717231719, 619100000000000064, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321978983, 617702636392624743, 618523608989368398, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104852071, 617702518717231719, 619100000000000065, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288293479, 617702636392624743, 618523608989368399, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104917607, 617702518717231719, 619100000000000070, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307495527, 617702636392624743, 618523608989368400, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524104983143, 617702518717231719, 619100000000000071, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307561063, 617702636392624743, 618523608989368401, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524105048679, 617702518717231719, 619100000000000072, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307626599, 617702636392624743, 618523608989368402, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524120449639, 617702518717231719, 618474627991155303, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288359015, 617702636392624743, 618523608989368403, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524120515175, 617702518717231719, 619191980274037351, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321847911, 617702636392624743, 618523608989368404, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524120580711, 617702518717231719, 619197169634652775, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307692135, 617702636392624743, 618523608989368405, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524120646247, 617702518717231719, 619197253587841639, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307757671, 617702636392624743, 618523608989368406, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524120711783, 617702518717231719, 619197289994465895, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307823207, 617702636392624743, 618523608989368407, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524120777319, 617702518717231719, 619197326417801831, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307888743, 617702636392624743, 618523608989368408, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524120842855, 617702518717231719, 619197374199247463, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307954279, 617702636392624743, 618523608989368409, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619197524120908391, 617702518717231719, 619197495817351783, '2026-05-12 15:34:44.644979+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308019815, 617702636392624743, 618523608989368410, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271123047, 617702636392624743, 618474627991155303, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308085351, 617702636392624743, 618523608989368411, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271188583, 617702636392624743, 618474663223243367, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308150887, 617702636392624743, 618523608989368412, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271254119, 617702636392624743, 618475205597082215, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322241127, 617702636392624743, 618523608989368413, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271319655, 617702636392624743, 618523608989368321, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322306663, 617702636392624743, 618523608989368414, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271385191, 617702636392624743, 618523608989368322, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322372199, 617702636392624743, 618523608989368415, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271450727, 617702636392624743, 618523608989368323, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322437735, 617702636392624743, 618523608989368416, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271516263, 617702636392624743, 618523608989368324, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322503271, 617702636392624743, 618523608989368417, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271581799, 617702636392624743, 618840262147322471, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322568807, 617702636392624743, 618523608989368418, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271647335, 617702636392624743, 618840327075148391, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271843943, 617702636392624743, 618523608989368436, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271712871, 617702636392624743, 618919251796832871, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322896487, 617702636392624743, 618593783654724199, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271778407, 617702636392624743, 618475372111016551, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323420775, 617702636392624743, 618594269875155559, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271843943, 617702636392624743, 618523608989368436, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322044519, 617702636392624743, 618595947512869479, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271909479, 617702636392624743, 617702910851035751, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323617383, 617702636392624743, 618696577740976743, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888287900263, 617702636392624743, 617703014181974631, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323748455, 617702636392624743, 618696689057870439, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888287965799, 617702636392624743, 618523608989368325, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323879527, 617702636392624743, 618704141195162215, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288031335, 617702636392624743, 618523608989368326, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323813991, 617702636392624743, 618704249257210471, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288096871, 617702636392624743, 618523608989368327, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323682919, 617702636392624743, 618728576421737063, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288162407, 617702636392624743, 618523608989368328, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323945063, 617702636392624743, 618729001606787687, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288227943, 617702636392624743, 618523608989368329, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888324010599, 617702636392624743, 618729102169354855, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288293479, 617702636392624743, 618523608989368399, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305070695, 617702636392624743, 618761955045290599, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288359015, 617702636392624743, 618523608989368403, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271581799, 617702636392624743, 618840262147322471, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288424551, 617702636392624743, 618523608989368384, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271647335, 617702636392624743, 618840327075148391, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879008359, 617702732609958503, 618474627991155303, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322962023, 617702636392624743, 618840414216073831, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879073895, 617702732609958503, 618474663223243367, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323486311, 617702636392624743, 618840575428342375, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879139431, 617702732609958503, 618475205597082215, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308281959, 617702636392624743, 618905031277621863, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879204967, 617702732609958503, 618523608989368321, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308544103, 617702636392624743, 618906714770584167, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879270503, 617702732609958503, 618523608989368322, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321454695, 617702636392624743, 618906763776832103, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879336039, 617702732609958503, 618523608989368323, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322175591, 617702636392624743, 618915628220232295, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879401575, 617702732609958503, 618523608989368324, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888271712871, 617702636392624743, 618919251796832871, '2026-05-11 14:58:10.847511+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879467111, 617702732609958503, 618840262147322471, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000012, 617702636392624743, 619100000000000001, '2026-05-12 02:55:03.530090+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879532647, 617702732609958503, 618840327075148391, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000032, 617702636392624743, 619100000000000020, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879598183, 617702732609958503, 618919251796832871, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000037, 617702636392624743, 619100000000000021, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879663719, 617702732609958503, 618475372111016551, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000042, 617702636392624743, 619100000000000022, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924895785575, 617702732609958503, 618523608989368436, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000047, 617702636392624743, 619100000000000023, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924895851111, 617702732609958503, 617702910851035751, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000052, 617702636392624743, 619100000000000024, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924895916647, 617702732609958503, 617703014181974631, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000057, 617702636392624743, 619100000000000025, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924895982183, 617702732609958503, 618523608989368325, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000102, 617702636392624743, 619100000000000060, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896047719, 617702732609958503, 618523608989368326, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000112, 617702636392624743, 619100000000000061, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896113255, 617702732609958503, 618523608989368327, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000122, 617702636392624743, 619100000000000062, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896178791, 617702732609958503, 618523608989368328, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000132, 617702636392624743, 619100000000000063, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896244327, 617702732609958503, 618523608989368329, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000142, 617702636392624743, 619100000000000064, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896309863, 617702732609958503, 618523608989368399, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000152, 617702636392624743, 619100000000000065, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896375399, 617702732609958503, 618523608989368403, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000162, 617702636392624743, 619100000000000070, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896440935, 617702732609958503, 618523608989368384, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000172, 617702636392624743, 619100000000000071, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896506471, 617702732609958503, 618523608989368331, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000182, 617702636392624743, 619100000000000072, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896572007, 617702732609958503, 618523608989368332, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683148391, 617702680885801575, 617702910851035751, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896637543, 617702732609958503, 618523608989368333, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718406759, 617702680885801575, 617702958531883623, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896703079, 617702732609958503, 618523608989368334, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683213927, 617702680885801575, 617703014181974631, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896768615, 617702732609958503, 618523608989368335, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717489255, 617702680885801575, 617718642611663463, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896834151, 617702732609958503, 618523608989368336, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717554791, 617702680885801575, 617718700392395367, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896899687, 617702732609958503, 618523608989368337, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717620327, 617702680885801575, 617718814779388519, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896965223, 617702732609958503, 618523608989368338, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682361959, 617702680885801575, 618474627991155303, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924897030759, 617702732609958503, 618523608989368339, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682427495, 617702680885801575, 618474663223243367, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924897096295, 617702732609958503, 618523608989368340, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716506215, 617702680885801575, 618474804990784103, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924897161831, 617702732609958503, 618523608989368341, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716571751, 617702680885801575, 618474870740693607, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924897227367, 617702732609958503, 618523608989368342, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682493031, 617702680885801575, 618475205597082215, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912562791, 617702732609958503, 618523608989368343, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683017319, 617702680885801575, 618475372111016551, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912628327, 617702732609958503, 618523608989368344, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682558567, 617702680885801575, 618523608989368321, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912693863, 617702732609958503, 618523608989368345, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682624103, 617702680885801575, 618523608989368322, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912759399, 617702732609958503, 618761955045290599, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682689639, 617702680885801575, 618523608989368323, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912824935, 617702732609958503, 618523608989368346, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682755175, 617702680885801575, 618523608989368324, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912890471, 617702732609958503, 618523608989368347, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683279463, 617702680885801575, 618523608989368325, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912956007, 617702732609958503, 618523608989368348, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683344999, 617702680885801575, 618523608989368326, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913021543, 617702732609958503, 618523608989368349, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683410535, 617702680885801575, 618523608989368327, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913087079, 617702732609958503, 618523608989368350, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699139175, 617702680885801575, 618523608989368328, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913152615, 617702732609958503, 618523608989368351, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699204711, 617702680885801575, 618523608989368329, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913218151, 617702732609958503, 618523608989368352, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907715916391, 617702680885801575, 618523608989368330, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913283687, 617702732609958503, 618523608989368353, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699466855, 617702680885801575, 618523608989368331, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913349223, 617702732609958503, 618523608989368354, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699532391, 617702680885801575, 618523608989368332, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913414759, 617702732609958503, 618523608989368355, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699597927, 617702680885801575, 618523608989368333, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913480295, 617702732609958503, 618523608989368356, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699663463, 617702680885801575, 618523608989368334, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913545831, 617702732609958503, 618523608989368357, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699728999, 617702680885801575, 618523608989368335, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913611367, 617702732609958503, 618523608989368358, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699794535, 617702680885801575, 618523608989368336, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913676903, 617702732609958503, 618523608989368359, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699860071, 617702680885801575, 618523608989368337, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913742439, 617702732609958503, 618523608989368360, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699925607, 617702680885801575, 618523608989368338, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913807975, 617702732609958503, 618523608989368361, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699991143, 617702680885801575, 618523608989368339, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913873511, 617702732609958503, 618523608989368362, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700056679, 617702680885801575, 618523608989368340, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913939047, 617702732609958503, 618523608989368363, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700122215, 617702680885801575, 618523608989368341, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914004583, 617702732609958503, 618523608989368364, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700187751, 617702680885801575, 618523608989368342, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914070119, 617702732609958503, 618523608989368365, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700253287, 617702680885801575, 618523608989368343, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914135655, 617702732609958503, 618523608989368366, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700318823, 617702680885801575, 618523608989368344, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914201191, 617702732609958503, 618523608989368367, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700384359, 617702680885801575, 618523608989368345, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914266727, 617702732609958503, 618523608989368368, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700515431, 617702680885801575, 618523608989368346, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914332263, 617702732609958503, 618523608989368369, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700580967, 617702680885801575, 618523608989368347, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914397799, 617702732609958503, 618523608989368370, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700646503, 617702680885801575, 618523608989368348, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914463335, 617702732609958503, 618523608989368371, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700712039, 617702680885801575, 618523608989368349, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914528871, 617702732609958503, 618523608989368372, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700777575, 617702680885801575, 618523608989368350, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914594407, 617702732609958503, 618523608989368373, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700843111, 617702680885801575, 618523608989368351, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914659943, 617702732609958503, 618523608989368374, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700908647, 617702680885801575, 618523608989368352, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914725479, 617702732609958503, 618523608989368375, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700974183, 617702680885801575, 618523608989368353, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914791015, 617702732609958503, 618523608989368376, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701039719, 617702680885801575, 618523608989368354, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914856551, 617702732609958503, 618523608989368377, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701105255, 617702680885801575, 618523608989368355, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914922087, 617702732609958503, 618523608989368378, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701170791, 617702680885801575, 618523608989368356, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914987623, 617702732609958503, 618523608989368379, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701236327, 617702680885801575, 618523608989368357, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915053159, 617702732609958503, 618523608989368380, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701301863, 617702680885801575, 618523608989368358, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915118695, 617702732609958503, 618523608989368381, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701367399, 617702680885801575, 618523608989368359, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915184231, 617702732609958503, 618523608989368400, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701432935, 617702680885801575, 618523608989368360, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915249767, 617702732609958503, 618523608989368401, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701498471, 617702680885801575, 618523608989368361, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915315303, 617702732609958503, 618523608989368402, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701564007, 617702680885801575, 618523608989368362, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915380839, 617702732609958503, 618523608989368405, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701629543, 617702680885801575, 618523608989368363, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915446375, 617702732609958503, 618523608989368406, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701695079, 617702680885801575, 618523608989368364, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915511911, 617702732609958503, 618523608989368407, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701760615, 617702680885801575, 618523608989368365, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915577447, 617702732609958503, 618523608989368408, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701826151, 617702680885801575, 618523608989368366, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915642983, 617702732609958503, 618523608989368409, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701891687, 617702680885801575, 618523608989368367, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915708519, 617702732609958503, 618523608989368410, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701957223, 617702680885801575, 618523608989368368, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915774055, 617702732609958503, 618523608989368411, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702022759, 617702680885801575, 618523608989368369, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915839591, 617702732609958503, 618523608989368412, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702088295, 617702680885801575, 618523608989368370, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915905127, 617702732609958503, 618523608989368330, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702153831, 617702680885801575, 618523608989368371, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915970663, 617702732609958503, 618905031277621863, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702219367, 617702680885801575, 618523608989368372, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916036199, 617702732609958503, 618523608989368391, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702284903, 617702680885801575, 618523608989368373, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916101735, 617702732609958503, 618523608989368392, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702350439, 617702680885801575, 618523608989368374, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916167271, 617702732609958503, 618523608989368382, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702415975, 617702680885801575, 618523608989368375, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916232807, 617702732609958503, 618906714770584167, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702481511, 617702680885801575, 618523608989368376, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916298343, 617702732609958503, 618906763776832103, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702547047, 617702680885801575, 618523608989368377, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916363879, 617702732609958503, 618523608989368393, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702612583, 617702680885801575, 618523608989368378, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916429415, 617702732609958503, 618523608989368394, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702678119, 617702680885801575, 618523608989368379, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916494951, 617702732609958503, 618474804990784103, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702743655, 617702680885801575, 618523608989368380, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916560487, 617702732609958503, 618474870740693607, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702809191, 617702680885801575, 618523608989368381, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916626023, 617702732609958503, 618523608989368395, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716178535, 617702680885801575, 618523608989368382, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916691559, 617702732609958503, 618523608989368404, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717685863, 617702680885801575, 618523608989368383, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916757095, 617702732609958503, 618523608989368396, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699401319, 617702680885801575, 618523608989368384, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929340007, 617702732609958503, 618523608989368398, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717882471, 617702680885801575, 618523608989368385, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929405543, 617702732609958503, 618595947512869479, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717948007, 617702680885801575, 618523608989368386, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929471079, 617702732609958503, 618523608989368397, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718013543, 617702680885801575, 618523608989368387, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929536615, 617702732609958503, 618915628220232295, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718079079, 617702680885801575, 618523608989368388, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929602151, 617702732609958503, 618523608989368413, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718144615, 617702680885801575, 618523608989368389, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929667687, 617702732609958503, 618523608989368414, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718210151, 617702680885801575, 618523608989368390, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929733223, 617702732609958503, 618523608989368415, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716047463, 617702680885801575, 618523608989368391, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929798759, 617702732609958503, 618523608989368416, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716112999, 617702680885801575, 618523608989368392, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929864295, 617702732609958503, 618523608989368417, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716375143, 617702680885801575, 618523608989368393, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929929831, 617702732609958503, 618523608989368418, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716440679, 617702680885801575, 618523608989368394, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929995367, 617702732609958503, 617718642611663463, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716637287, 617702680885801575, 618523608989368395, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930060903, 617702732609958503, 617718700392395367, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716768359, 617702680885801575, 618523608989368396, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930126439, 617702732609958503, 617718814779388519, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716964967, 617702680885801575, 618523608989368397, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930191975, 617702732609958503, 618523608989368383, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716833895, 617702680885801575, 618523608989368398, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930257511, 617702732609958503, 618593783654724199, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699270247, 617702680885801575, 618523608989368399, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930323047, 617702732609958503, 618840414216073831, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702874727, 617702680885801575, 618523608989368400, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930388583, 617702732609958503, 618523608989368385, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702940263, 617702680885801575, 618523608989368401, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930454119, 617702732609958503, 618523608989368386, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703005799, 617702680885801575, 618523608989368402, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930519655, 617702732609958503, 618523608989368387, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699335783, 617702680885801575, 618523608989368403, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930585191, 617702732609958503, 618523608989368388, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716702823, 617702680885801575, 618523608989368404, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930650727, 617702732609958503, 618523608989368389, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703071335, 617702680885801575, 618523608989368405, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930716263, 617702732609958503, 618523608989368390, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703136871, 617702680885801575, 618523608989368406, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930781799, 617702732609958503, 618594269875155559, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703202407, 617702680885801575, 618523608989368407, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930847335, 617702732609958503, 618840575428342375, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703267943, 617702680885801575, 618523608989368408, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930912871, 617702732609958503, 617702958531883623, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703333479, 617702680885801575, 618523608989368409, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930978407, 617702732609958503, 618696577740976743, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703399015, 617702680885801575, 618523608989368410, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924931043943, 617702732609958503, 618728576421737063, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703464551, 617702680885801575, 618523608989368411, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924946117223, 617702732609958503, 618696689057870439, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703530087, 617702680885801575, 618523608989368412, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924946182759, 617702732609958503, 618704249257210471, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717096039, 617702680885801575, 618523608989368413, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288490087, 617702636392624743, 618523608989368331, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717161575, 617702680885801575, 618523608989368414, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288555623, 617702636392624743, 618523608989368332, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717227111, 617702680885801575, 618523608989368415, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288621159, 617702636392624743, 618523608989368333, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717292647, 617702680885801575, 618523608989368416, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288686695, 617702636392624743, 618523608989368334, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717358183, 617702680885801575, 618523608989368417, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288752231, 617702636392624743, 618523608989368335, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717423719, 617702680885801575, 618523608989368418, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288817767, 617702636392624743, 618523608989368336, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683082855, 617702680885801575, 618523608989368436, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288883303, 617702636392624743, 618523608989368337, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717751399, 617702680885801575, 618593783654724199, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888288948839, 617702636392624743, 618523608989368338, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718275687, 617702680885801575, 618594269875155559, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888289014375, 617702636392624743, 618523608989368339, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716899431, 617702680885801575, 618595947512869479, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888304677479, 617702636392624743, 618523608989368340, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718472295, 617702680885801575, 618696577740976743, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888304743015, 617702636392624743, 618523608989368341, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718603367, 617702680885801575, 618696689057870439, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888304808551, 617702636392624743, 618523608989368342, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718734439, 617702680885801575, 618704141195162215, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888304874087, 617702636392624743, 618523608989368343, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718668903, 617702680885801575, 618704249257210471, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888304939623, 617702636392624743, 618523608989368344, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718537831, 617702680885801575, 618728576421737063, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305005159, 617702636392624743, 618523608989368345, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718799975, 617702680885801575, 618729001606787687, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305070695, 617702636392624743, 618761955045290599, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718865511, 617702680885801575, 618729102169354855, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305136231, 617702636392624743, 618523608989368346, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700449895, 617702680885801575, 618761955045290599, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305201767, 617702636392624743, 618523608989368347, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682820711, 617702680885801575, 618840262147322471, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305267303, 617702636392624743, 618523608989368348, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682886247, 617702680885801575, 618840327075148391, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305332839, 617702636392624743, 618523608989368349, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717816935, 617702680885801575, 618840414216073831, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305398375, 617702636392624743, 618523608989368350, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718341223, 617702680885801575, 618840575428342375, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305463911, 617702636392624743, 618523608989368351, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907715981927, 617702680885801575, 618905031277621863, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305529447, 617702636392624743, 618523608989368352, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716244071, 617702680885801575, 618906714770584167, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305594983, 617702636392624743, 618523608989368353, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716309607, 617702680885801575, 618906763776832103, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305660519, 617702636392624743, 618523608989368354, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717030503, 617702680885801575, 618915628220232295, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305726055, 617702636392624743, 618523608989368355, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682951783, 617702680885801575, 618919251796832871, '2026-05-11 14:58:22.418234+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305791591, 617702636392624743, 618523608989368356, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000013, 617702680885801575, 619100000000000001, '2026-05-12 02:55:03.530090+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305857127, 617702636392624743, 618523608989368357, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000033, 617702680885801575, 619100000000000020, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305922663, 617702636392624743, 618523608989368358, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000038, 617702680885801575, 619100000000000021, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888305988199, 617702636392624743, 618523608989368359, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000043, 617702680885801575, 619100000000000022, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306053735, 617702636392624743, 618523608989368360, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000048, 617702680885801575, 619100000000000023, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306119271, 617702636392624743, 618523608989368361, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000053, 617702680885801575, 619100000000000024, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306184807, 617702636392624743, 618523608989368362, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000058, 617702680885801575, 619100000000000025, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306250343, 617702636392624743, 618523608989368363, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000103, 617702680885801575, 619100000000000060, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306315879, 617702636392624743, 618523608989368364, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000113, 617702680885801575, 619100000000000061, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306381415, 617702636392624743, 618523608989368365, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000123, 617702680885801575, 619100000000000062, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306446951, 617702636392624743, 618523608989368366, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000133, 617702680885801575, 619100000000000063, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306512487, 617702636392624743, 618523608989368367, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000143, 617702680885801575, 619100000000000064, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306578023, 617702636392624743, 618523608989368368, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000153, 617702680885801575, 619100000000000065, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306643559, 617702636392624743, 618523608989368369, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000163, 617702680885801575, 619100000000000070, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306709095, 617702636392624743, 618523608989368370, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000173, 617702680885801575, 619100000000000071, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306774631, 617702636392624743, 618523608989368371, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000183, 617702680885801575, 619100000000000072, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306840167, 617702636392624743, 618523608989368372, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924895851111, 617702732609958503, 617702910851035751, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306905703, 617702636392624743, 618523608989368373, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930912871, 617702732609958503, 617702958531883623, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888306971239, 617702636392624743, 618523608989368374, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924895916647, 617702732609958503, 617703014181974631, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307036775, 617702636392624743, 618523608989368375, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929995367, 617702732609958503, 617718642611663463, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307102311, 617702636392624743, 618523608989368376, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930060903, 617702732609958503, 617718700392395367, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307167847, 617702636392624743, 618523608989368377, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930126439, 617702732609958503, 617718814779388519, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307233383, 617702636392624743, 618523608989368378, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879008359, 617702732609958503, 618474627991155303, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307298919, 617702636392624743, 618523608989368379, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879073895, 617702732609958503, 618474663223243367, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307364455, 617702636392624743, 618523608989368380, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916494951, 617702732609958503, 618474804990784103, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307429991, 617702636392624743, 618523608989368381, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916560487, 617702732609958503, 618474870740693607, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307495527, 617702636392624743, 618523608989368400, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879139431, 617702732609958503, 618475205597082215, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307561063, 617702636392624743, 618523608989368401, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879663719, 617702732609958503, 618475372111016551, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307626599, 617702636392624743, 618523608989368402, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879204967, 617702732609958503, 618523608989368321, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307692135, 617702636392624743, 618523608989368405, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879270503, 617702732609958503, 618523608989368322, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307757671, 617702636392624743, 618523608989368406, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879336039, 617702732609958503, 618523608989368323, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307823207, 617702636392624743, 618523608989368407, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879401575, 617702732609958503, 618523608989368324, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307888743, 617702636392624743, 618523608989368408, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924895982183, 617702732609958503, 618523608989368325, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888307954279, 617702636392624743, 618523608989368409, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896047719, 617702732609958503, 618523608989368326, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308019815, 617702636392624743, 618523608989368410, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896113255, 617702732609958503, 618523608989368327, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308085351, 617702636392624743, 618523608989368411, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896178791, 617702732609958503, 618523608989368328, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308150887, 617702636392624743, 618523608989368412, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896244327, 617702732609958503, 618523608989368329, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308216423, 617702636392624743, 618523608989368330, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915905127, 617702732609958503, 618523608989368330, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308281959, 617702636392624743, 618905031277621863, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896506471, 617702732609958503, 618523608989368331, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308347495, 617702636392624743, 618523608989368391, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896572007, 617702732609958503, 618523608989368332, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308413031, 617702636392624743, 618523608989368392, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896637543, 617702732609958503, 618523608989368333, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308478567, 617702636392624743, 618523608989368382, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896703079, 617702732609958503, 618523608989368334, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888308544103, 617702636392624743, 618906714770584167, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896768615, 617702732609958503, 618523608989368335, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321454695, 617702636392624743, 618906763776832103, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896834151, 617702732609958503, 618523608989368336, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321520231, 617702636392624743, 618523608989368393, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896899687, 617702732609958503, 618523608989368337, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321585767, 617702636392624743, 618523608989368394, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896965223, 617702732609958503, 618523608989368338, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321651303, 617702636392624743, 618474804990784103, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924897030759, 617702732609958503, 618523608989368339, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321716839, 617702636392624743, 618474870740693607, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924897096295, 617702732609958503, 618523608989368340, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321782375, 617702636392624743, 618523608989368395, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924897161831, 617702732609958503, 618523608989368341, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321847911, 617702636392624743, 618523608989368404, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924897227367, 617702732609958503, 618523608989368342, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321913447, 617702636392624743, 618523608989368396, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912562791, 617702732609958503, 618523608989368343, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888321978983, 617702636392624743, 618523608989368398, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912628327, 617702732609958503, 618523608989368344, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322044519, 617702636392624743, 618595947512869479, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912693863, 617702732609958503, 618523608989368345, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322110055, 617702636392624743, 618523608989368397, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912824935, 617702732609958503, 618523608989368346, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322175591, 617702636392624743, 618915628220232295, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912890471, 617702732609958503, 618523608989368347, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322241127, 617702636392624743, 618523608989368413, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912956007, 617702732609958503, 618523608989368348, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322306663, 617702636392624743, 618523608989368414, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913021543, 617702732609958503, 618523608989368349, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322372199, 617702636392624743, 618523608989368415, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913087079, 617702732609958503, 618523608989368350, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322437735, 617702636392624743, 618523608989368416, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913152615, 617702732609958503, 618523608989368351, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322503271, 617702636392624743, 618523608989368417, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913218151, 617702732609958503, 618523608989368352, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322568807, 617702636392624743, 618523608989368418, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913283687, 617702732609958503, 618523608989368353, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322634343, 617702636392624743, 617718642611663463, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913349223, 617702732609958503, 618523608989368354, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322699879, 617702636392624743, 617718700392395367, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913414759, 617702732609958503, 618523608989368355, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322765415, 617702636392624743, 617718814779388519, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913480295, 617702732609958503, 618523608989368356, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322830951, 617702636392624743, 618523608989368383, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913545831, 617702732609958503, 618523608989368357, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322896487, 617702636392624743, 618593783654724199, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913611367, 617702732609958503, 618523608989368358, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888322962023, 617702636392624743, 618840414216073831, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913676903, 617702732609958503, 618523608989368359, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323027559, 617702636392624743, 618523608989368385, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913742439, 617702732609958503, 618523608989368360, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323093095, 617702636392624743, 618523608989368386, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913807975, 617702732609958503, 618523608989368361, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323158631, 617702636392624743, 618523608989368387, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913873511, 617702732609958503, 618523608989368362, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323224167, 617702636392624743, 618523608989368388, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924913939047, 617702732609958503, 618523608989368363, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323289703, 617702636392624743, 618523608989368389, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914004583, 617702732609958503, 618523608989368364, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323355239, 617702636392624743, 618523608989368390, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914070119, 617702732609958503, 618523608989368365, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323420775, 617702636392624743, 618594269875155559, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914135655, 617702732609958503, 618523608989368366, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323486311, 617702636392624743, 618840575428342375, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914201191, 617702732609958503, 618523608989368367, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323551847, 617702636392624743, 617702958531883623, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914266727, 617702732609958503, 618523608989368368, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323617383, 617702636392624743, 618696577740976743, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914332263, 617702732609958503, 618523608989368369, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323682919, 617702636392624743, 618728576421737063, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914397799, 617702732609958503, 618523608989368370, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323748455, 617702636392624743, 618696689057870439, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914463335, 617702732609958503, 618523608989368371, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323813991, 617702636392624743, 618704249257210471, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914528871, 617702732609958503, 618523608989368372, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323879527, 617702636392624743, 618704141195162215, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914594407, 617702732609958503, 618523608989368373, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888323945063, 617702636392624743, 618729001606787687, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914659943, 617702732609958503, 618523608989368374, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048888324010599, 617702636392624743, 618729102169354855, '2026-05-11 14:58:10.847511+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914725479, 617702732609958503, 618523608989368375, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682361959, 617702680885801575, 618474627991155303, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914791015, 617702732609958503, 618523608989368376, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682427495, 617702680885801575, 618474663223243367, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914856551, 617702732609958503, 618523608989368377, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682493031, 617702680885801575, 618475205597082215, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914922087, 617702732609958503, 618523608989368378, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682558567, 617702680885801575, 618523608989368321, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924914987623, 617702732609958503, 618523608989368379, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682624103, 617702680885801575, 618523608989368322, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915053159, 617702732609958503, 618523608989368380, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682689639, 617702680885801575, 618523608989368323, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915118695, 617702732609958503, 618523608989368381, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682755175, 617702680885801575, 618523608989368324, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916167271, 617702732609958503, 618523608989368382, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682820711, 617702680885801575, 618840262147322471, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930191975, 617702732609958503, 618523608989368383, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682886247, 617702680885801575, 618840327075148391, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896440935, 617702732609958503, 618523608989368384, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907682951783, 617702680885801575, 618919251796832871, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930388583, 617702732609958503, 618523608989368385, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683017319, 617702680885801575, 618475372111016551, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930454119, 617702732609958503, 618523608989368386, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683082855, 617702680885801575, 618523608989368436, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930519655, 617702732609958503, 618523608989368387, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683148391, 617702680885801575, 617702910851035751, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930585191, 617702732609958503, 618523608989368388, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683213927, 617702680885801575, 617703014181974631, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930650727, 617702732609958503, 618523608989368389, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683279463, 617702680885801575, 618523608989368325, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930716263, 617702732609958503, 618523608989368390, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683344999, 617702680885801575, 618523608989368326, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916036199, 617702732609958503, 618523608989368391, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907683410535, 617702680885801575, 618523608989368327, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916101735, 617702732609958503, 618523608989368392, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699139175, 617702680885801575, 618523608989368328, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916363879, 617702732609958503, 618523608989368393, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699204711, 617702680885801575, 618523608989368329, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916429415, 617702732609958503, 618523608989368394, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699270247, 617702680885801575, 618523608989368399, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916626023, 617702732609958503, 618523608989368395, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699335783, 617702680885801575, 618523608989368403, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916757095, 617702732609958503, 618523608989368396, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699401319, 617702680885801575, 618523608989368384, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929471079, 617702732609958503, 618523608989368397, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699466855, 617702680885801575, 618523608989368331, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929340007, 617702732609958503, 618523608989368398, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699532391, 617702680885801575, 618523608989368332, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896309863, 617702732609958503, 618523608989368399, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699597927, 617702680885801575, 618523608989368333, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915184231, 617702732609958503, 618523608989368400, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699663463, 617702680885801575, 618523608989368334, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915249767, 617702732609958503, 618523608989368401, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699728999, 617702680885801575, 618523608989368335, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915315303, 617702732609958503, 618523608989368402, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699794535, 617702680885801575, 618523608989368336, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924896375399, 617702732609958503, 618523608989368403, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699860071, 617702680885801575, 618523608989368337, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916691559, 617702732609958503, 618523608989368404, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699925607, 617702680885801575, 618523608989368338, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915380839, 617702732609958503, 618523608989368405, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907699991143, 617702680885801575, 618523608989368339, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915446375, 617702732609958503, 618523608989368406, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700056679, 617702680885801575, 618523608989368340, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915511911, 617702732609958503, 618523608989368407, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700122215, 617702680885801575, 618523608989368341, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915577447, 617702732609958503, 618523608989368408, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700187751, 617702680885801575, 618523608989368342, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915642983, 617702732609958503, 618523608989368409, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700253287, 617702680885801575, 618523608989368343, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915708519, 617702732609958503, 618523608989368410, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700318823, 617702680885801575, 618523608989368344, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915774055, 617702732609958503, 618523608989368411, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700384359, 617702680885801575, 618523608989368345, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915839591, 617702732609958503, 618523608989368412, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700449895, 617702680885801575, 618761955045290599, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929602151, 617702732609958503, 618523608989368413, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700515431, 617702680885801575, 618523608989368346, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929667687, 617702732609958503, 618523608989368414, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700580967, 617702680885801575, 618523608989368347, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929733223, 617702732609958503, 618523608989368415, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700646503, 617702680885801575, 618523608989368348, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929798759, 617702732609958503, 618523608989368416, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700712039, 617702680885801575, 618523608989368349, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929864295, 617702732609958503, 618523608989368417, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700777575, 617702680885801575, 618523608989368350, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929929831, 617702732609958503, 618523608989368418, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700843111, 617702680885801575, 618523608989368351, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924895785575, 617702732609958503, 618523608989368436, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700908647, 617702680885801575, 618523608989368352, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930257511, 617702732609958503, 618593783654724199, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907700974183, 617702680885801575, 618523608989368353, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930781799, 617702732609958503, 618594269875155559, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701039719, 617702680885801575, 618523608989368354, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929405543, 617702732609958503, 618595947512869479, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701105255, 617702680885801575, 618523608989368355, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930978407, 617702732609958503, 618696577740976743, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701170791, 617702680885801575, 618523608989368356, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924946117223, 617702732609958503, 618696689057870439, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701236327, 617702680885801575, 618523608989368357, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924946248295, 617702732609958503, 618704141195162215, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701301863, 617702680885801575, 618523608989368358, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924946182759, 617702732609958503, 618704249257210471, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701367399, 617702680885801575, 618523608989368359, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924931043943, 617702732609958503, 618728576421737063, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701432935, 617702680885801575, 618523608989368360, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924946313831, 617702732609958503, 618729001606787687, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701498471, 617702680885801575, 618523608989368361, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924946379367, 617702732609958503, 618729102169354855, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701564007, 617702680885801575, 618523608989368362, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924912759399, 617702732609958503, 618761955045290599, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701629543, 617702680885801575, 618523608989368363, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879467111, 617702732609958503, 618840262147322471, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701695079, 617702680885801575, 618523608989368364, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879532647, 617702732609958503, 618840327075148391, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701760615, 617702680885801575, 618523608989368365, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930323047, 617702732609958503, 618840414216073831, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701826151, 617702680885801575, 618523608989368366, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924930847335, 617702732609958503, 618840575428342375, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701891687, 617702680885801575, 618523608989368367, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924915970663, 617702732609958503, 618905031277621863, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907701957223, 617702680885801575, 618523608989368368, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916232807, 617702732609958503, 618906714770584167, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702022759, 617702680885801575, 618523608989368369, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924916298343, 617702732609958503, 618906763776832103, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702088295, 617702680885801575, 618523608989368370, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924929536615, 617702732609958503, 618915628220232295, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702153831, 617702680885801575, 618523608989368371, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924879598183, 617702732609958503, 618919251796832871, '2026-05-11 14:58:32.663375+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702219367, 617702680885801575, 618523608989368372, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000014, 617702732609958503, 619100000000000001, '2026-05-12 02:55:03.530090+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702284903, 617702680885801575, 618523608989368373, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000034, 617702732609958503, 619100000000000020, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702350439, 617702680885801575, 618523608989368374, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000039, 617702732609958503, 619100000000000021, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702415975, 617702680885801575, 618523608989368375, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000044, 617702732609958503, 619100000000000022, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702481511, 617702680885801575, 618523608989368376, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000049, 617702732609958503, 619100000000000023, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702547047, 617702680885801575, 618523608989368377, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000054, 617702732609958503, 619100000000000024, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702612583, 617702680885801575, 618523608989368378, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000059, 617702732609958503, 619100000000000025, '2026-05-12 03:17:49.757837+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702678119, 617702680885801575, 618523608989368379, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000104, 617702732609958503, 619100000000000060, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702743655, 617702680885801575, 618523608989368380, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000114, 617702732609958503, 619100000000000061, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702809191, 617702680885801575, 618523608989368381, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000124, 617702732609958503, 619100000000000062, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702874727, 617702680885801575, 618523608989368400, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000134, 617702732609958503, 619100000000000063, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907702940263, 617702680885801575, 618523608989368401, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000144, 617702732609958503, 619100000000000064, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703005799, 617702680885801575, 618523608989368402, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000154, 617702732609958503, 619100000000000065, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703071335, 617702680885801575, 618523608989368405, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000164, 617702732609958503, 619100000000000070, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703136871, 617702680885801575, 618523608989368406, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000174, 617702732609958503, 619100000000000071, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703202407, 617702680885801575, 618523608989368407, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000184, 617702732609958503, 619100000000000072, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703267943, 617702680885801575, 618523608989368408, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306402566759, 617702829666153063, 617702958531883623, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703333479, 617702680885801575, 618523608989368409, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306419343975, 617702829666153063, 617718700392395367, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703399015, 617702680885801575, 618523608989368410, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306419409511, 617702829666153063, 617718814779388519, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703464551, 617702680885801575, 618523608989368411, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420720231, 617702829666153063, 618474627991155303, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907703530087, 617702680885801575, 618523608989368412, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420785767, 617702829666153063, 618474663223243367, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907715916391, 617702680885801575, 618523608989368330, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420851303, 617702829666153063, 618475205597082215, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907715981927, 617702680885801575, 618905031277621863, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306421441127, 617702829666153063, 618475372111016551, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716047463, 617702680885801575, 618523608989368391, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420982375, 617702829666153063, 618523608989368321, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716112999, 617702680885801575, 618523608989368392, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306421047911, 617702829666153063, 618523608989368322, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716178535, 617702680885801575, 618523608989368382, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306421113447, 617702829666153063, 618523608989368323, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716244071, 617702680885801575, 618906714770584167, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306421178983, 617702829666153063, 618523608989368324, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716309607, 617702680885801575, 618906763776832103, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306419475047, 617702829666153063, 618523608989368383, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716375143, 617702680885801575, 618523608989368393, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306419540583, 617702829666153063, 618523608989368385, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716440679, 617702680885801575, 618523608989368394, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306419606119, 617702829666153063, 618523608989368386, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716506215, 617702680885801575, 618474804990784103, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306419671655, 617702829666153063, 618523608989368387, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716571751, 617702680885801575, 618474870740693607, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306419737191, 617702829666153063, 618523608989368388, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716637287, 617702680885801575, 618523608989368395, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306419802727, 617702829666153063, 618523608989368389, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716702823, 617702680885801575, 618523608989368404, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306419868263, 617702829666153063, 618523608989368390, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716768359, 617702680885801575, 618523608989368396, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306419933799, 617702829666153063, 618523608989368405, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716833895, 617702680885801575, 618523608989368398, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306419999335, 617702829666153063, 618523608989368407, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716899431, 617702680885801575, 618595947512869479, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420064871, 617702829666153063, 618523608989368408, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907716964967, 617702680885801575, 618523608989368397, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420130407, 617702829666153063, 618523608989368410, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717030503, 617702680885801575, 618915628220232295, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420195943, 617702829666153063, 618523608989368411, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717096039, 617702680885801575, 618523608989368413, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306421506663, 617702829666153063, 618523608989368436, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717161575, 617702680885801575, 618523608989368414, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420261479, 617702829666153063, 618696577740976743, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717227111, 617702680885801575, 618523608989368415, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420327015, 617702829666153063, 618696689057870439, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717292647, 617702680885801575, 618523608989368416, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420392551, 617702829666153063, 618704141195162215, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717358183, 617702680885801575, 618523608989368417, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420458087, 617702829666153063, 618704249257210471, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717423719, 617702680885801575, 618523608989368418, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420523623, 617702829666153063, 618728576421737063, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717489255, 617702680885801575, 617718642611663463, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420589159, 617702829666153063, 618729001606787687, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717554791, 617702680885801575, 617718700392395367, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420654695, 617702829666153063, 618729102169354855, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717620327, 617702680885801575, 617718814779388519, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306421244519, 617702829666153063, 618840262147322471, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717685863, 617702680885801575, 618523608989368383, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306421310055, 617702829666153063, 618840327075148391, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717751399, 617702680885801575, 618593783654724199, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306421375591, 617702829666153063, 618919251796832871, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717816935, 617702680885801575, 618840414216073831, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121306420916839, 617702829666153063, 619100000000000001, '2026-05-12 02:57:35.419620+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717882471, 617702680885801575, 618523608989368385, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000105, 617702829666153063, 619100000000000060, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907717948007, 617702680885801575, 618523608989368386, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000115, 617702829666153063, 619100000000000061, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718013543, 617702680885801575, 618523608989368387, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000125, 617702829666153063, 619100000000000062, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718079079, 617702680885801575, 618523608989368388, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000135, 617702829666153063, 619100000000000063, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718144615, 617702680885801575, 618523608989368389, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000145, 617702829666153063, 619100000000000064, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718210151, 617702680885801575, 618523608989368390, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000155, 617702829666153063, 619100000000000065, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718275687, 617702680885801575, 618594269875155559, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296369791591, 618278982499971687, 617702958531883623, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718341223, 617702680885801575, 618840575428342375, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296369857127, 618278982499971687, 617718700392395367, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718406759, 617702680885801575, 617702958531883623, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296369922663, 618278982499971687, 617718814779388519, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718472295, 617702680885801575, 618696577740976743, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386568807, 618278982499971687, 618474627991155303, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718537831, 617702680885801575, 618728576421737063, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386634343, 618278982499971687, 618474663223243367, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718603367, 617702680885801575, 618696689057870439, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296369988199, 618278982499971687, 618474804990784103, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718668903, 617702680885801575, 618704249257210471, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370053735, 618278982499971687, 618474870740693607, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718734439, 617702680885801575, 618704141195162215, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386699879, 618278982499971687, 618475205597082215, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718799975, 617702680885801575, 618729001606787687, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296387289703, 618278982499971687, 618475372111016551, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048907718865511, 617702680885801575, 618729102169354855, '2026-05-11 14:58:22.418234+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386830951, 618278982499971687, 618523608989368321, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924946248295, 617702732609958503, 618704141195162215, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386896487, 618278982499971687, 618523608989368322, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924946313831, 617702732609958503, 618729001606787687, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386962023, 618278982499971687, 618523608989368323, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619048924946379367, 617702732609958503, 618729102169354855, '2026-05-11 14:58:32.663375+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296387027559, 618278982499971687, 618523608989368324, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000102, 617702636392624743, 619100000000000060, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370119271, 618278982499971687, 618523608989368383, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000103, 617702680885801575, 619100000000000060, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370184807, 618278982499971687, 618523608989368385, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000104, 617702732609958503, 619100000000000060, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370250343, 618278982499971687, 618523608989368386, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000106, 618278982499971687, 619100000000000060, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370315879, 618278982499971687, 618523608989368387, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000112, 617702636392624743, 619100000000000061, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370381415, 618278982499971687, 618523608989368388, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000113, 617702680885801575, 619100000000000061, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370446951, 618278982499971687, 618523608989368389, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000114, 617702732609958503, 619100000000000061, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370512487, 618278982499971687, 618523608989368390, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000116, 618278982499971687, 619100000000000061, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370578023, 618278982499971687, 618523608989368395, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000122, 617702636392624743, 619100000000000062, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370643559, 618278982499971687, 618523608989368396, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000123, 617702680885801575, 619100000000000062, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370709095, 618278982499971687, 618523608989368397, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000124, 617702732609958503, 619100000000000062, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370774631, 618278982499971687, 618523608989368398, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000126, 618278982499971687, 619100000000000062, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370840167, 618278982499971687, 618523608989368404, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000132, 617702636392624743, 619100000000000063, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370905703, 618278982499971687, 618523608989368413, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000133, 617702680885801575, 619100000000000063, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296370971239, 618278982499971687, 618523608989368414, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000134, 617702732609958503, 619100000000000063, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371036775, 618278982499971687, 618523608989368415, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000136, 618278982499971687, 619100000000000063, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371102311, 618278982499971687, 618523608989368416, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000142, 617702636392624743, 619100000000000064, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371167847, 618278982499971687, 618523608989368417, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000143, 617702680885801575, 619100000000000064, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371233383, 618278982499971687, 618523608989368418, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000144, 617702732609958503, 619100000000000064, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296387355239, 618278982499971687, 618523608989368436, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000146, 618278982499971687, 619100000000000064, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371298919, 618278982499971687, 618595947512869479, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000152, 617702636392624743, 619100000000000065, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371364455, 618278982499971687, 618696577740976743, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000153, 617702680885801575, 619100000000000065, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371429991, 618278982499971687, 618696689057870439, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000154, 617702732609958503, 619100000000000065, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371495527, 618278982499971687, 618704141195162215, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000156, 618278982499971687, 619100000000000065, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371561063, 618278982499971687, 618704249257210471, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000162, 617702636392624743, 619100000000000070, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371626599, 618278982499971687, 618728576421737063, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000163, 617702680885801575, 619100000000000070, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371692135, 618278982499971687, 618729001606787687, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000164, 617702732609958503, 619100000000000070, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371757671, 618278982499971687, 618729102169354855, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000172, 617702636392624743, 619100000000000071, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296387093095, 618278982499971687, 618840262147322471, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000173, 617702680885801575, 619100000000000071, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296387158631, 618278982499971687, 618840327075148391, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000174, 617702732609958503, 619100000000000071, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371823207, 618278982499971687, 618840414216073831, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000182, 617702636392624743, 619100000000000072, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371888743, 618278982499971687, 618840575428342375, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000183, 617702680885801575, 619100000000000072, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296371954279, 618278982499971687, 618915628220232295, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000184, 617702732609958503, 619100000000000072, '2026-05-13 00:00:00+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296387224167, 618278982499971687, 618919251796832871, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795064324711, 617702566632895079, 618840262147322471, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619121296386765415, 618278982499971687, 619100000000000001, '2026-05-12 02:57:29.431926+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795064390247, 617702566632895079, 618840327075148391, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000106, 618278982499971687, 619100000000000060, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795064455783, 617702566632895079, 618840414216073831, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000116, 618278982499971687, 619100000000000061, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795064521319, 617702566632895079, 618840575428342375, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000126, 618278982499971687, 619100000000000062, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795064586855, 617702566632895079, 618905031277621863, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000136, 618278982499971687, 619100000000000063, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795064652391, 617702566632895079, 618906714770584167, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000146, 618278982499971687, 619100000000000064, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795064717927, 617702566632895079, 618906763776832103, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
-INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619100000000000156, 618278982499971687, 619100000000000065, '2026-05-13 00:00:00+00:00')
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795064783463, 617702566632895079, 618915628220232295, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795064848999, 617702566632895079, 618919251796832871, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795064914535, 617702566632895079, 619100000000000001, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795064980071, 617702566632895079, 619100000000000020, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795065045607, 617702566632895079, 619100000000000021, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795065111143, 617702566632895079, 619100000000000022, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795065176679, 617702566632895079, 619100000000000023, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795065242215, 617702566632895079, 619100000000000024, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795065307751, 617702566632895079, 619100000000000025, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795065373287, 617702566632895079, 617703014181974631, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795065438823, 617702566632895079, 617718700392395367, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795065504359, 617702566632895079, 617718814779388519, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795065569895, 617702566632895079, 618474627991155303, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081101927, 617702566632895079, 618474663223243367, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081167463, 617702566632895079, 618475205597082215, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081232999, 617702566632895079, 618475372111016551, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081298535, 617702566632895079, 618523608989368321, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081364071, 617702566632895079, 618523608989368322, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081429607, 617702566632895079, 618523608989368323, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081495143, 617702566632895079, 618523608989368324, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081560679, 617702566632895079, 618523608989368330, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081626215, 617702566632895079, 618523608989368331, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081691751, 617702566632895079, 618523608989368332, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081757287, 617702566632895079, 618523608989368333, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081822823, 617702566632895079, 618523608989368334, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081888359, 617702566632895079, 618523608989368335, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795081953895, 617702566632895079, 618523608989368336, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795082019431, 617702566632895079, 618523608989368337, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795082084967, 617702566632895079, 618523608989368338, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795082150503, 617702566632895079, 618523608989368339, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795082216039, 617702566632895079, 618523608989368340, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795082281575, 617702566632895079, 618523608989368341, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795082347111, 617702566632895079, 618523608989368342, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795082412647, 617702566632895079, 618523608989368343, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795097879143, 617702566632895079, 618523608989368344, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795097944679, 617702566632895079, 618523608989368345, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098010215, 617702566632895079, 618523608989368382, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098075751, 617702566632895079, 618523608989368383, '2026-05-12 14:27:53.882826+00')
+ON CONFLICT DO NOTHING;
+INSERT INTO role_perms (id, role_id, perm_id, created_at) VALUES (619190795098141287, 617702566632895079, 618523608989368384, '2026-05-12 14:27:53.882826+00')
 ON CONFLICT DO NOTHING;
 
 -- ==========================================================
