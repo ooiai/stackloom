@@ -85,7 +85,9 @@ fi
 
 # ── resolve source directory (where this script lives) ───────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SOURCE_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+# When invoked via `stackloom create`, the CLI sets STACKLOOM_SOURCE to the
+# global npm package root so we copy from there instead of the script location.
+SOURCE_DIR="${STACKLOOM_SOURCE:-$(cd "${SCRIPT_DIR}/.." && pwd)}"
 
 OUTPUT_DIR="$(realpath -m "$OUTPUT_DIR")"
 
@@ -194,6 +196,12 @@ BRAND_FILES=(
   frontend/messages/en-US/legal.json
   frontend/messages/zh-CN/pricing.json
   frontend/messages/en-US/pricing.json
+  "frontend/app/(base)/layout.tsx"
+  "frontend/app/(auth)/layout.tsx"
+  "frontend/app/(web)/layout.tsx"
+  "frontend/app/(web)/terms/page.tsx"
+  "frontend/app/(web)/privacy/page.tsx"
+  "frontend/app/(web)/pricing/page.tsx"
 )
 
 for file in "${BRAND_FILES[@]}"; do

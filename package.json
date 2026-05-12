@@ -1,0 +1,30 @@
+{
+  "name": "@ooiai/stackloom",
+  "version": "0.1.0",
+  "description": "Multi-tenant SaaS admin scaffold and foundation toolkit",
+  "type": "module",
+  "bin": {
+    "stackloom": "bin/stackloom.js"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "scaffold",
+    "saas",
+    "admin",
+    "foundation",
+    "multi-tenant"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ooiai/stackloom.git"
+  }
+}

@@ -24,7 +24,8 @@ MIGRATE_SOURCE := .$(subst ./backend,,$(MIGRATE_PATH))
 
 .PHONY: help git-run git-commit clean add install web server check \
 	nbm be-module new-backend-module new_backend_module \
-	migrate-check migrate-add migrate-run migrate-revert migrate-info
+	migrate-check migrate-add migrate-run migrate-revert migrate-info \
+	publish-cli
 
 help:
 	@echo "Available commands:"
@@ -166,3 +167,9 @@ migrate-revert: migrate-check
 migrate-info: migrate-check
 	@echo "Showing migration info for $(MIGRATE_TARGET) from $(MIGRATE_PATH)..."
 	$(CD) $(BACKEND_PATH) && sqlx migrate info --ignore-missing --source "$(MIGRATE_SOURCE)"
+
+# Publish the stackloom CLI to npm
+# Usage: make publish-cli
+publish-cli:
+	@echo "Publishing stackloom CLI to npm..."
+	npm publish --access public

@@ -22,6 +22,7 @@ StackLoom (github.com/ooiai/stackloom)   ← upstream foundation
 ```
 
 Your product project is a **copy** of StackLoom with:
+
 - Your branding applied
 - A `upstream` git remote pointing to StackLoom
 - Your product code added in the designated [product zones](#product-zones)
@@ -30,9 +31,25 @@ Your product project is a **copy** of StackLoom with:
 
 ## Quick Start
 
-### 1. Create a new product project
+### Option A — via CLI (recommended)
 
-Run this from the StackLoom directory:
+Install the `stackloom` CLI globally:
+
+```bash
+npm install -g @ooiai/stackloom
+```
+
+Then create a new product project:
+
+```bash
+stackloom create --name "MySchool" --slug "myschool" --email "support@myschool.com"
+```
+
+> First-time use without installing: `npx @ooiai/stackloom create ...`
+
+### Option B — run scripts directly
+
+Clone StackLoom and run from its directory:
 
 ```bash
 bash scripts/create-project.sh \
@@ -42,10 +59,11 @@ bash scripts/create-project.sh \
   --output "../myschool"
 ```
 
-This will:
-- Copy StackLoom to `../myschool/`
+The create command will:
+
+- Copy StackLoom to `../myschool/` (or `--output` path)
 - Set `upstream` remote to `git@github.com:ooiai/stackloom.git`
-- Replace all branding (app name, DB name, email config)
+- Replace all branding (app name, page titles, DB name, email config)
 - Make an initial commit
 
 ### 2. Configure your project
@@ -83,6 +101,10 @@ without modifying the foundation.
 ### 4. Upgrade from StackLoom periodically
 
 ```bash
+# via CLI (from product project root)
+stackloom update
+
+# or directly
 bash scripts/upgrade-project.sh
 ```
 
@@ -94,24 +116,30 @@ All branding is centralized in `branding.config.ts` at the project root.
 
 ```typescript
 export const branding = {
-  appName:      "MySchool",
-  appSlug:      "myschool",
-  appDescription: "MySchool — powered by StackLoom",
-  supportEmail: "support@myschool.com",
-  upstreamUrl:  "git@github.com:ooiai/stackloom.git",  // do not change
-} as const
+    appName: "MySchool",
+    appSlug: "myschool",
+    appDescription: "MySchool — powered by StackLoom",
+    supportEmail: "support@myschool.com",
+    upstreamUrl: "git@github.com:ooiai/stackloom.git", // do not change
+} as const;
 ```
 
 The create script writes this file and applies the values to:
 
-| File | What gets replaced |
-|---|---|
-| `frontend/messages/*/auth.json` | Logo alt text |
-| `frontend/messages/*/metadata.json` | Page titles, descriptions |
-| `frontend/messages/*/navigation.json` | Nav header title |
-| `frontend/messages/*/legal.json` | Company name, support email |
-| `frontend/messages/*/pricing.json` | Product name in pricing |
-| `backend/config.yml` | Database name, email sender |
+| File                                  | What gets replaced          |
+| ------------------------------------- | --------------------------- |
+| `frontend/messages/*/auth.json`       | Logo alt text               |
+| `frontend/messages/*/metadata.json`   | Page titles, descriptions   |
+| `frontend/messages/*/navigation.json` | Nav header title            |
+| `frontend/messages/*/legal.json`      | Company name, support email |
+| `frontend/messages/*/pricing.json`    | Product name in pricing     |
+| `frontend/app/(base)/layout.tsx`      | Metadata fallback title     |
+| `frontend/app/(auth)/layout.tsx`      | Metadata fallback title     |
+| `frontend/app/(web)/layout.tsx`       | Metadata fallback title     |
+| `frontend/app/(web)/terms/page.tsx`   | Terms page title            |
+| `frontend/app/(web)/privacy/page.tsx` | Privacy page title          |
+| `frontend/app/(web)/pricing/page.tsx` | Pricing page title          |
+| `backend/config.yml`                  | Database name, email sender |
 
 To update branding later, edit `branding.config.ts` and update the above files
 manually (or run `sed` replacements as the create script does).
@@ -125,29 +153,29 @@ Foundation updates **will not conflict** with changes you make here.
 
 ### Frontend
 
-| Zone | What to add |
-|---|---|
-| `frontend/app/(web)/` | Web-facing public pages (landing, pricing, etc.) |
-| `frontend/components/base/<feature>/` | New admin pages (follow base feature pattern) |
-| `frontend/messages/*/` | Copy/i18n text for your features |
-| `frontend/public/` | Logo, favicon, product assets |
+| Zone                                  | What to add                                      |
+| ------------------------------------- | ------------------------------------------------ |
+| `frontend/app/(web)/`                 | Web-facing public pages (landing, pricing, etc.) |
+| `frontend/components/base/<feature>/` | New admin pages (follow base feature pattern)    |
+| `frontend/messages/*/`                | Copy/i18n text for your features                 |
+| `frontend/public/`                    | Logo, favicon, product assets                    |
 
 ### Backend
 
-| Zone | What to add |
-|---|---|
-| `backend/crates/domain-web/` | Web-side domain entities and service traits |
-| `backend/crates/infra-web/` | Web-side SQL repos and service impls |
-| `backend/migrations/webmigrate/` | Product-specific DB schema migrations |
-| New crates `domain-<name>/` | New product domain modules |
-| New crates `infra-<name>/` | New product infra modules |
+| Zone                             | What to add                                 |
+| -------------------------------- | ------------------------------------------- |
+| `backend/crates/domain-web/`     | Web-side domain entities and service traits |
+| `backend/crates/infra-web/`      | Web-side SQL repos and service impls        |
+| `backend/migrations/webmigrate/` | Product-specific DB schema migrations       |
+| New crates `domain-<name>/`      | New product domain modules                  |
+| New crates `infra-<name>/`       | New product infra modules                   |
 
 ### Configuration
 
-| File | Product use |
-|---|---|
+| File                 | Product use                                     |
+| -------------------- | ----------------------------------------------- |
 | `backend/config.yml` | DB connection, SMTP, Redis, OAuth provider keys |
-| `branding.config.ts` | Product name and branding |
+| `branding.config.ts` | Product name and branding                       |
 
 ---
 
@@ -192,6 +220,7 @@ bash scripts/upgrade-project.sh
 ```
 
 The script will:
+
 1. Run `check-boundaries.sh` to warn you about any foundation files you've modified
 2. Fetch the latest upstream StackLoom commits
 3. Show you the changelog (new commits from upstream)
@@ -208,13 +237,13 @@ git commit              # complete the merge
 
 After upgrade, conflicts fall into predictable categories:
 
-| File type | Strategy |
-|---|---|
-| `branding.config.ts` | Keep yours: `git checkout --ours branding.config.ts` |
-| `backend/config.yml` | Keep yours: `git checkout --ours backend/config.yml` |
-| `frontend/messages/*/` | Merge manually — keep your copy, add new keys from upstream |
-| Foundation core files | Usually keep upstream: `git checkout --theirs <file>` |
-| New files (no conflict) | Automatically added, nothing to resolve |
+| File type               | Strategy                                                    |
+| ----------------------- | ----------------------------------------------------------- |
+| `branding.config.ts`    | Keep yours: `git checkout --ours branding.config.ts`        |
+| `backend/config.yml`    | Keep yours: `git checkout --ours backend/config.yml`        |
+| `frontend/messages/*/`  | Merge manually — keep your copy, add new keys from upstream |
+| Foundation core files   | Usually keep upstream: `git checkout --theirs <file>`       |
+| New files (no conflict) | Automatically added, nothing to resolve                     |
 
 ### Check boundaries before upgrading
 
@@ -300,6 +329,7 @@ No code modification needed.
 
 **Q: What if StackLoom changes a foundation file I need to customize?**  
 This is the one case that requires careful handling. Options:
+
 1. Override behavior via extension points if available
 2. Fork that specific file and accept manual merge on upgrade
 3. Contribute the customization point upstream to StackLoom
