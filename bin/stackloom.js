@@ -128,24 +128,36 @@ switch (command) {
 
   case "update":
   case "upgrade": {
-    const local = path.join(process.cwd(), "scripts", "upgrade-project.sh")
-    if (!fs.existsSync(local)) {
-      error("scripts/upgrade-project.sh not found in current directory.")
+    // Always run the script bundled inside this npm package so that fixes to
+    // the upgrade script take effect immediately after `npm install -g @ooiai/stackloom@latest`
+    // without requiring the product project to re-copy the scripts.
+    const pkgScript = path.join(PACKAGE_ROOT, "scripts", "upgrade-project.sh")
+    if (!fs.existsSync(pkgScript)) {
+      error(`Package script not found: ${pkgScript}`)
+      process.exit(1)
+    }
+    // Verify we are inside a StackLoom-based product project before delegating.
+    if (!fs.existsSync(path.join(process.cwd(), ".foundation"))) {
+      error("No .foundation file found in current directory.")
       error("Make sure you are running this from a StackLoom-based project root.")
       process.exit(1)
     }
-    runScript(local, rest)
+    runScript(pkgScript, rest)
     break
   }
 
   case "check": {
-    const local = path.join(process.cwd(), "scripts", "check-boundaries.sh")
-    if (!fs.existsSync(local)) {
-      error("scripts/check-boundaries.sh not found in current directory.")
+    const pkgScript = path.join(PACKAGE_ROOT, "scripts", "check-boundaries.sh")
+    if (!fs.existsSync(pkgScript)) {
+      error(`Package script not found: ${pkgScript}`)
+      process.exit(1)
+    }
+    if (!fs.existsSync(path.join(process.cwd(), ".foundation"))) {
+      error("No .foundation file found in current directory.")
       error("Make sure you are running this from a StackLoom-based project root.")
       process.exit(1)
     }
-    runScript(local, rest)
+    runScript(pkgScript, rest)
     break
   }
 
