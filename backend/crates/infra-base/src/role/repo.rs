@@ -706,4 +706,15 @@ impl RoleRepository for SqlxRoleRepository {
         tx.commit().await.map_err(Self::map_sqlx_error)?;
         Ok(())
     }
+
+    async fn list_all_ids(&self) -> AppResult<Vec<i64>> {
+        let ids = sqlx::query_scalar::<_, i64>(
+            "SELECT id FROM roles WHERE deleted_at IS NULL ORDER BY id ASC",
+        )
+        .fetch_all(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(ids)
+    }
 }

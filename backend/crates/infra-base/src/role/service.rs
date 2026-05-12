@@ -512,6 +512,20 @@ where
         self.refresh_role_perm_actions_cache(cmd.role_id).await;
         Ok(())
     }
+
+    async fn warm_perm_action_caches(&self) {
+        match self.repository.list_all_ids().await {
+            Ok(ids) => {
+                tracing::info!(count = ids.len(), "warming perm action cache for all roles");
+                for role_id in ids {
+                    self.refresh_role_perm_actions_cache(role_id).await;
+                }
+            }
+            Err(e) => {
+                tracing::warn!(error = %e, "warm_perm_action_caches: failed to list role ids");
+            }
+        }
+    }
 }
 
 #[async_trait]

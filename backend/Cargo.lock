@@ -254,6 +254,7 @@ dependencies = [
  "common",
  "diesel",
  "diesel_migrations",
+ "domain-base",
  "domain-web",
  "infra-auth",
  "infra-base",
@@ -3856,7 +3857,7 @@ dependencies = [
 
 [[package]]
 name = "neocrates"
-version = "0.1.52"
+version = "0.1.53"
 dependencies = [
  "anyhow",
  "argon2",

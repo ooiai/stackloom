@@ -40,7 +40,10 @@ export function useRoleAssignMenus() {
   const assignMutation = useMutation({
     mutationFn: (menuIds: string[]) =>
       roleApi.assignMenus({ role_id: dialog.role!.id, menu_ids: menuIds }),
-    onSuccess: async () => {
+    onSuccess: async (_, menuIds) => {
+      queryClient.setQueryData(["base", "roles", "menus", dialog.role?.id], {
+        items: menuIds,
+      })
       await queryClient.invalidateQueries({
         queryKey: ["base", "roles", "menus", dialog.role?.id],
       })

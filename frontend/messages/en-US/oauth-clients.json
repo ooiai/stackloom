@@ -1,0 +1,79 @@
+{
+  "page": {
+    "title": "OAuth Applications",
+    "subtitle": "Manage developer app credentials, scopes, and redirect URIs.",
+    "create": "New Application",
+    "emptyTitle": "No OAuth applications",
+    "emptyDescription": "Adjust your filters or create the first developer application."
+  },
+  "filters": {
+    "keywordLabel": "Keyword",
+    "keywordPlaceholder": "Search by application name",
+    "statusLabel": "Status"
+  },
+  "table": {
+    "name": "Application",
+    "clientId": "Client ID",
+    "scopes": "Scopes",
+    "status": "Status",
+    "createdAt": "Created",
+    "actions": "Actions"
+  },
+  "toast": {
+    "created": "Application created",
+    "updated": "Application updated",
+    "deleted": "Application deleted",
+    "rotated": "Client secret rotated"
+  },
+  "sheet": {
+    "createTitle": "New OAuth Application",
+    "createDescription": "Fill in the details to generate a client_id and client_secret.",
+    "editTitle": "Edit OAuth Application",
+    "editDescription": "Update scopes, redirect URIs, and other settings.",
+    "submit": "Save",
+    "cancel": "Cancel"
+  },
+  "form": {
+    "nameLabel": "Application Name",
+    "namePlaceholder": "Enter application name",
+    "secretLabel": "Client Secret",
+    "secretPlaceholder": "Enter initial client secret (min 16 chars)",
+    "redirectUrisLabel": "Redirect URIs",
+    "redirectUrisPlaceholder": "One URI per line, e.g.:\nhttps://example.com/callback",
+    "redirectUrisDescription": "One allowed callback URL per line.",
+    "scopesLabel": "Allowed Scopes",
+    "scopesDescription": "Select the scopes this application can request.",
+    "descriptionLabel": "Notes",
+    "descriptionPlaceholder": "Optional description",
+    "statusLabel": "Status"
+  },
+  "secretDialog": {
+    "title": "Client Secret",
+    "description": "This client secret is shown only once. Copy and store it securely before closing this dialog.",
+    "clientIdLabel": "Client ID",
+    "secretLabel": "Client Secret",
+    "copy": "Copy",
+    "copied": "Copied",
+    "close": "I've saved it, close",
+    "rotateTitle": "New Client Secret",
+    "rotateDescription": "The old secret has been invalidated. This new secret is shown only once — copy it now."
+  },
+  "actions": {
+    "edit": "Edit",
+    "rotateSecret": "Rotate Secret",
+    "delete": "Delete",
+    "deleteConfirmTitle": "Confirm Delete",
+    "deleteConfirmDescription": "This action cannot be undone. Delete application \"{{name}}\"?"
+  },
+  "status": {
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  },
+  "scopes": {
+    "userRead": "user:read",
+    "itembankRead": "itembank:read",
+    "itembankWrite": "itembank:write",
+    "parseCreate": "parse:create",
+    "parseRead": "parse:read"
+  }
+}

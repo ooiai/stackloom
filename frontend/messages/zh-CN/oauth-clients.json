@@ -1,0 +1,79 @@
+{
+  "page": {
+    "title": "OAuth 应用管理",
+    "subtitle": "管理第三方开发者应用的 client_id / client_secret 及授权配置",
+    "create": "创建应用",
+    "emptyTitle": "暂无 OAuth 应用",
+    "emptyDescription": "尝试调整筛选条件，或创建第一个开发者应用"
+  },
+  "filters": {
+    "keywordLabel": "关键词",
+    "keywordPlaceholder": "搜索应用名称",
+    "statusLabel": "状态"
+  },
+  "table": {
+    "name": "应用名称",
+    "clientId": "Client ID",
+    "scopes": "授权范围",
+    "status": "状态",
+    "createdAt": "创建时间",
+    "actions": "操作"
+  },
+  "toast": {
+    "created": "应用已创建",
+    "updated": "应用已更新",
+    "deleted": "应用已删除",
+    "rotated": "Client Secret 已轮换"
+  },
+  "sheet": {
+    "createTitle": "创建 OAuth 应用",
+    "createDescription": "填写应用信息以生成 client_id / client_secret",
+    "editTitle": "编辑 OAuth 应用",
+    "editDescription": "修改授权范围、重定向 URI 等配置",
+    "submit": "保存",
+    "cancel": "取消"
+  },
+  "form": {
+    "nameLabel": "应用名称",
+    "namePlaceholder": "输入应用名称",
+    "secretLabel": "Client Secret",
+    "secretPlaceholder": "输入初始 client secret（至少 16 位）",
+    "redirectUrisLabel": "重定向 URI",
+    "redirectUrisPlaceholder": "每行一个 URI，例如：\nhttps://example.com/callback",
+    "redirectUrisDescription": "每行填写一个允许的回调地址",
+    "scopesLabel": "授权范围",
+    "scopesDescription": "选择此应用可申请的 scope",
+    "descriptionLabel": "备注",
+    "descriptionPlaceholder": "可选说明文字",
+    "statusLabel": "状态"
+  },
+  "secretDialog": {
+    "title": "Client Secret",
+    "description": "以下 Client Secret 只展示一次，请立即复制并安全保存。关闭后将无法再次查看。",
+    "clientIdLabel": "Client ID",
+    "secretLabel": "Client Secret",
+    "copy": "复制",
+    "copied": "已复制",
+    "close": "我已保存，关闭",
+    "rotateTitle": "新的 Client Secret",
+    "rotateDescription": "旧的 Client Secret 已失效。以下新 Secret 只展示一次，请立即复制并安全保存。"
+  },
+  "actions": {
+    "edit": "编辑",
+    "rotateSecret": "轮换 Secret",
+    "delete": "删除",
+    "deleteConfirmTitle": "确认删除",
+    "deleteConfirmDescription": "此操作不可撤销，确认要删除应用 \"{{name}}\" 吗？"
+  },
+  "status": {
+    "enabled": "已启用",
+    "disabled": "已禁用"
+  },
+  "scopes": {
+    "userRead": "user:read",
+    "itembankRead": "itembank:read",
+    "itembankWrite": "itembank:write",
+    "parseCreate": "parse:create",
+    "parseRead": "parse:read"
+  }
+}

@@ -79,3 +79,26 @@ export const signupApi = {
 }
 
 export const applyApi = {}
+
+const AUTH_OAUTH_API_PREFIX = "/apiv1/auth/oauth"
+
+export const oauthProviderApi = {
+  /** Returns the provider's authorization URL for the browser to navigate to. */
+  providerLogin: async (
+    provider: string
+  ): Promise<{ redirect_url: string }> => {
+    return post(`${AUTH_OAUTH_API_PREFIX}/providers/${provider}/login`, {})
+  },
+  /** Exchange the code+state from the provider callback for session tokens. */
+  providerExchange: async (
+    provider: string,
+    code: string,
+    state: string
+  ): Promise<AuthTokenResult> => {
+    return post(`${AUTH_OAUTH_API_PREFIX}/providers/exchange`, {
+      provider,
+      code,
+      state,
+    })
+  },
+}

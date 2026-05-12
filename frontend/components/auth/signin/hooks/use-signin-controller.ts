@@ -10,7 +10,7 @@ import { toast } from "sonner"
 import { setStorageItem } from "@/hooks/use-persisted-state"
 import { STORAGE_ENUM } from "@/lib/config/enums"
 import { useI18n } from "@/providers/i18n-provider"
-import { signinApi } from "@/stores/auth-api"
+import { signinApi, oauthProviderApi } from "@/stores/auth-api"
 import type {
   AccountSigninParam,
   QuerySigninTenantsParam,
@@ -294,6 +294,18 @@ export function useSigninController() {
     [accountSigninMutation, captchaFormData, router, t]
   )
 
+  const handleOAuthLogin = useCallback(
+    async (provider: string) => {
+      try {
+        const data = await oauthProviderApi.providerLogin(provider)
+        window.location.href = data.redirect_url
+      } catch {
+        toast.error(t("signin.oauth.loginError"))
+      }
+    },
+    [t]
+  )
+
   return {
     view: {
       values,
@@ -305,6 +317,7 @@ export function useSigninController() {
       onForgotPassword: handleOpenForgotPassword,
       onVerifySuccess: handleVerifySuccess,
       onVerifyError: handleVerifyError,
+      onOAuthLogin: handleOAuthLogin,
     },
     dialog: {
       open: showTenantDialog,

@@ -6,6 +6,7 @@ use api_http::{
     auth_router, base_router, openapi_router, shared_router, system_router, web_router,
 };
 use common::config::env_config::EnvConfig;
+use domain_base::RoleService;
 
 use neocrates::{
     axum::{self, Router, http::HeaderValue, routing::get},
@@ -116,6 +117,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         redis_pool.clone(),
         cfg.server.prefix.clone(),
     ));
+    tracing::info!("warming perm action caches...");
+    role_service.warm_perm_action_caches().await;
     let perm_service = Arc::new(PermServiceImpl::new(base_pool.clone()));
     let user_tenant_service = Arc::new(UserTenantServiceImpl::new(base_pool.clone()));
     let user_tenant_role_service = Arc::new(UserTenantRoleServiceImpl::new(base_pool.clone()));

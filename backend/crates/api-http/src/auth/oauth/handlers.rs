@@ -1,21 +1,19 @@
 use super::{
-    req::{AuthorizeReq, ProviderCallbackQuery, ProviderLoginQuery, RevokeReq, TokenReq},
-    resp::{AuthorizeResp, OAuthTokenResp},
+    req::{AuthorizeReq, ProviderExchangeReq, ProviderLoginReq, RevokeReq, TokenReq},
+    resp::{AuthorizeResp, OAuthTokenResp, ProviderLoginResp},
 };
 use crate::auth::{signin::resp::AuthTokenResp, AuthHttpState};
 use domain_auth::oauth::{AuthorizeCmd, ExchangeCodeCmd, RefreshOAuthTokenCmd, RevokeOAuthTokenCmd};
 use neocrates::{
     axum::{
         Extension, Json,
-        extract::{Path, Query, State},
-        response::{IntoResponse, Redirect, Response},
+        extract::{Path, State},
     },
     helper::core::axum_extractor::DetailedJson,
     middlewares::models::AuthModel,
     response::error::{AppError, AppResult},
     tracing,
 };
-use reqwest::Url;
 use validator::Validate;
 
 pub type OAuthState = AuthHttpState;
@@ -114,53 +112,44 @@ pub async fn revoke(
     Ok(Json(()))
 }
 
-/// Redirect the browser to the third-party provider's authorization page.
+/// Return the provider's authorization URL for the browser to navigate to.
 ///
-/// Generates a CSRF state token, stores it in Redis, and issues a 302 redirect
-/// to the provider's login URL.
+/// Generates a CSRF state token, stores it in Redis, and returns a JSON
+/// `{redirect_url}` pointing to the third-party provider's login page.
 pub async fn provider_login_handler(
     State(state): State<OAuthState>,
     Path(provider): Path<String>,
-    Query(query): Query<ProviderLoginQuery>,
-) -> AppResult<Redirect> {
-    tracing::info!("oauth provider login redirect: provider={}", provider);
+    DetailedJson(req): DetailedJson<ProviderLoginReq>,
+) -> AppResult<Json<ProviderLoginResp>> {
+    tracing::info!("oauth provider login: provider={}", provider);
 
-    let (url, _state) = state
+    let (redirect_url, _state_token) = state
         .oauth_service
-        .provider_login_url(&provider, query.redirect_after)
+        .provider_login_url(&provider, req.redirect_after)
         .await?;
 
-    Ok(Redirect::to(&url))
+    Ok(Json(ProviderLoginResp { redirect_url }))
 }
 
-/// Handle the OAuth2 callback from a third-party provider.
+/// Exchange the authorization code returned by a third-party provider for a
+/// system session token.
 ///
-/// Validates the CSRF state, exchanges the code with the provider, and either
-/// redirects to `redirect_after` with token query params or returns a JSON token.
-pub async fn provider_callback_handler(
+/// The frontend callback page collects `code` and `state` from its URL query
+/// string and POSTs them here to receive an `AuthTokenResp`.
+pub async fn provider_exchange_handler(
     State(state): State<OAuthState>,
-    Path(provider): Path<String>,
-    Query(query): Query<ProviderCallbackQuery>,
-) -> AppResult<Response> {
-    tracing::info!("oauth provider callback: provider={}", provider);
+    DetailedJson(req): DetailedJson<ProviderExchangeReq>,
+) -> AppResult<Json<AuthTokenResp>> {
+    tracing::info!("oauth provider exchange: provider={}", req.provider);
 
-    let (info, redirect_after) = state
+    req.validate()
+        .map_err(|e| AppError::ValidationError(e.to_string()))?;
+
+    let (info, _redirect_after) = state
         .oauth_service
-        .exchange_provider_code(&provider, &query.code, &query.state)
+        .exchange_provider_code(&req.provider, &req.code, &req.state)
         .await?;
 
     let token = state.auth_service.provider_login_or_signup(info).await?;
-    let resp = AuthTokenResp::from(token);
-
-    if let Some(redirect_url) = redirect_after {
-        let mut url = Url::parse(&redirect_url).map_err(|e| {
-            AppError::ValidationError(format!("invalid redirect_after URL: {e}"))
-        })?;
-        url.query_pairs_mut()
-            .append_pair("access_token", &resp.access_token)
-            .append_pair("refresh_token", &resp.refresh_token);
-        return Ok(Redirect::to(url.as_str()).into_response());
-    }
-
-    Ok(Json(resp).into_response())
+    Ok(Json(AuthTokenResp::from(token)))
 }

@@ -888,3 +888,74 @@ export interface BanTenantApplyParam {
 
 export type PaginateTenantApply = PaginateResp<TenantApplyData>
 
+export type OAuthClientStatus = 0 | 1
+export type OAuthClientMutateMode = "create" | "update"
+
+export interface OAuthClientData {
+  id: string
+  tenant_id: string
+  name: string
+  client_id: string
+  redirect_uris: string[]
+  allowed_scopes: string[]
+  status: OAuthClientStatus
+  description: string | null
+}
+
+export interface OAuthClientCreatedData {
+  id: string
+  client_id: string
+  client_secret: string
+}
+
+export interface RotateSecretResult {
+  client_secret: string
+}
+
+export interface PageOAuthClientParam {
+  keyword?: string
+  status?: OAuthClientStatus
+  limit?: number
+  offset?: number
+}
+
+export interface CreateOAuthClientParam {
+  name: string
+  client_secret: string
+  redirect_uris: string[]
+  allowed_scopes: string[]
+  description?: string
+}
+
+export interface UpdateOAuthClientParam {
+  id: string
+  name?: string
+  redirect_uris?: string[]
+  allowed_scopes?: string[]
+  status?: OAuthClientStatus
+  description?: string
+}
+
+export interface DeleteOAuthClientParam {
+  ids: string[]
+}
+
+export interface GetOAuthClientParam {
+  id: string
+}
+
+export interface RotateOAuthClientSecretParam {
+  id: string
+}
+
+export interface OAuthClientFormValues {
+  name: string
+  client_secret: string
+  redirect_uris: string
+  allowed_scopes: string[]
+  description: string
+  status: OAuthClientStatus
+}
+
+export type PaginateOAuthClient = PaginateResp<OAuthClientData>
+

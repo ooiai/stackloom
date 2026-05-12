@@ -31,3 +31,10 @@ impl From<OAuthToken> for OAuthTokenResp {
         }
     }
 }
+
+/// Response from the provider login endpoint — contains the URL to navigate the
+/// browser to for third-party authentication.
+#[derive(Debug, Clone, Serialize)]
+pub struct ProviderLoginResp {
+    pub redirect_url: String,
+}

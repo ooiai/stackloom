@@ -100,6 +100,16 @@ import type {
     PageTenantApplyParam,
     PaginateTenantApply,
     RejectTenantApplyParam,
+    OAuthClientData,
+    OAuthClientCreatedData,
+    RotateSecretResult,
+    PageOAuthClientParam,
+    CreateOAuthClientParam,
+    UpdateOAuthClientParam,
+    DeleteOAuthClientParam,
+    GetOAuthClientParam,
+    RotateOAuthClientSecretParam,
+    PaginateOAuthClient,
 } from "@/types/base.types"
 import type { LogRetentionPolicy } from "@/types/logs.types"
 
@@ -431,4 +441,30 @@ export const tenantApplyApi = {
 
   ban: (params: BanTenantApplyParam): Promise<void> =>
     post(`${BASE_TENANT_APPLY_API_PREFIX}/ban`, params),
+}
+
+const BASE_OAUTH_CLIENT_API_PREFIX = "/apiv1/base/oauth_clients"
+
+export const oauthClientApi = {
+  create: (params: CreateOAuthClientParam): Promise<OAuthClientCreatedData> =>
+    post(`${BASE_OAUTH_CLIENT_API_PREFIX}/create`, params),
+
+  get: (params: GetOAuthClientParam): Promise<OAuthClientData> =>
+    post(`${BASE_OAUTH_CLIENT_API_PREFIX}/get`, params),
+
+  page: (params: PageOAuthClientParam): Promise<PaginateOAuthClient> =>
+    post(`${BASE_OAUTH_CLIENT_API_PREFIX}/page`, params),
+
+  update: (params: UpdateOAuthClientParam): Promise<OAuthClientData> =>
+    post(`${BASE_OAUTH_CLIENT_API_PREFIX}/update`, params),
+
+  remove: (ids: string[]): Promise<void> => {
+    const params: DeleteOAuthClientParam = { ids }
+    return post(`${BASE_OAUTH_CLIENT_API_PREFIX}/remove`, params)
+  },
+
+  rotateSecret: (
+    params: RotateOAuthClientSecretParam
+  ): Promise<RotateSecretResult> =>
+    post(`${BASE_OAUTH_CLIENT_API_PREFIX}/rotate_secret`, params),
 }

@@ -45,19 +45,25 @@ pub struct RevokeReq {
     pub client_secret: String,
 }
 
-/// Query parameters for the provider login redirect endpoint.
+/// POST body for the provider login endpoint.
 ///
-/// `redirect_after` is an optional URL to redirect the user to after successful
-/// authentication (with `access_token` and `refresh_token` as query params).
-/// When absent the callback returns a JSON token response instead.
-#[derive(Debug, Clone, Deserialize)]
-pub struct ProviderLoginQuery {
+/// Returns a `{redirect_url}` JSON response pointing to the third-party
+/// provider's authorization page.
+#[derive(Debug, Clone, Deserialize, Default)]
+pub struct ProviderLoginReq {
     pub redirect_after: Option<String>,
 }
 
-/// Query parameters delivered by the provider on the OAuth2 callback.
-#[derive(Debug, Clone, Deserialize)]
-pub struct ProviderCallbackQuery {
+/// POST body for the provider exchange endpoint.
+///
+/// The frontend callback page collects `code` and `state` from the URL that
+/// the OAuth provider redirected to, then POSTs them here to obtain tokens.
+#[derive(Debug, Clone, Deserialize, Validate)]
+pub struct ProviderExchangeReq {
+    #[validate(length(min = 1))]
+    pub provider: String,
+    #[validate(length(min = 1))]
     pub code: String,
+    #[validate(length(min = 1))]
     pub state: String,
 }

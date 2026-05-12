@@ -145,6 +145,14 @@ pub trait RoleService: Send + Sync {
     /// # Returns
     /// * `AppResult<()>` - The result of the assign operation.
     async fn assign_perms(&self, cmd: AssignRolePermsCmd) -> AppResult<()>;
+
+    /// Populate the Redis perm-action cache for every role.
+    ///
+    /// Called once at application startup so that the interceptor can
+    /// authorise requests immediately, even before any `assign_perms` API
+    /// call has been made.  Failures are logged as warnings rather than
+    /// returned as errors so they do not abort the startup sequence.
+    async fn warm_perm_action_caches(&self);
 }
 
 #[async_trait]

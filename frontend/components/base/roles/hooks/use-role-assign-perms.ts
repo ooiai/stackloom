@@ -40,7 +40,10 @@ export function useRoleAssignPerms() {
   const assignMutation = useMutation({
     mutationFn: (permIds: string[]) =>
       roleApi.assignPerms({ role_id: dialog.role!.id, perm_ids: permIds }),
-    onSuccess: async () => {
+    onSuccess: async (_, permIds) => {
+      queryClient.setQueryData(["base", "roles", "perms", dialog.role?.id], {
+        items: permIds,
+      })
       await queryClient.invalidateQueries({
         queryKey: ["base", "roles", "perms", dialog.role?.id],
       })

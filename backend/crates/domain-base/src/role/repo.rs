@@ -113,4 +113,7 @@ pub trait RoleRepository: Send + Sync {
 
     /// Replace all perms for a role.
     async fn replace_role_perms(&self, role_id: i64, perm_ids: &[i64]) -> AppResult<()>;
+
+    /// List IDs of all non-deleted roles (used for startup cache warm-up).
+    async fn list_all_ids(&self) -> AppResult<Vec<i64>>;
 }
