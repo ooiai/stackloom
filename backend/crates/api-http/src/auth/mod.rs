@@ -1,7 +1,7 @@
 use common::config::env_config::EnvConfig;
 use std::sync::Arc;
 
-use domain_auth::AuthService;
+use domain_auth::{AuthService, OAuthService};
 use domain_base::NotificationService;
 use domain_system::SystemLogService;
 use neocrates::{
@@ -12,6 +12,7 @@ use neocrates::{
     sms::sms_service::SmsConfig,
 };
 
+pub mod oauth;
 pub mod signin;
 pub mod signup;
 
@@ -23,6 +24,7 @@ pub mod signup;
 #[derive(Clone)]
 pub struct AuthHttpState {
     pub auth_service: Arc<dyn AuthService>,
+    pub oauth_service: Arc<dyn OAuthService>,
     pub notification_service: Arc<dyn NotificationService>,
     pub system_log_service: Arc<dyn SystemLogService>,
     pub sms_config: Arc<SmsConfig>,
@@ -33,17 +35,19 @@ pub struct AuthHttpState {
 
 /// Build the `/auth` router and attach common auth middleware.
 ///
-/// The router nests the signin and signup submodules, then applies:
+/// The router nests the signin, signup, and oauth submodules, then applies:
 /// 1. request trace logging specialized for auth requests;
 /// 2. the common request interceptor middleware.
 pub fn router(state: AuthHttpState, mw: Arc<MiddlewareConfig>) -> Router {
     let signin_router = signin::router(state.clone());
     let signup_router = signup::router(state.clone());
+    let oauth_router = oauth::router(state.clone());
 
     Router::new()
         .with_state(state.clone())
         .nest("/signin", signin_router)
         .nest("/signup", signup_router)
+        .nest("/oauth", oauth_router)
         .layer(middleware::from_fn_with_state(
             state,
             crate::request_logging::auth_request_trace_middleware,

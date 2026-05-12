@@ -56,6 +56,7 @@ pub async fn metrics(
             cpu_usage_cores: snapshot.cpu_usage_cores,
             per_core_usage: snapshot.per_core_usage,
             cpu_temp_celsius: snapshot.cpu_temp_celsius,
+            cpu_power_watts: snapshot.cpu_power_watts,
             cpu_freq_mhz: snapshot.cpu_freq_mhz,
             memory_used: snapshot.memory_used,
             memory_total: snapshot.memory_total,

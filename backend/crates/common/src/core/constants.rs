@@ -12,6 +12,8 @@ pub const CACHE_SIGNUP_SEND_COOLDOWN: &str = ":signup_send_cooldown:";
 pub const CACHE_PASSWORD_RESET_PHONE_CODE: &str = ":pwd_reset_phone_code:";
 pub const CACHE_PASSWORD_RESET_EMAIL_CODE: &str = ":pwd_reset_email_code:";
 pub const CACHE_PASSWORD_RESET_SEND_COOLDOWN: &str = ":pwd_reset_send_cooldown:";
+/// Daily dedup gate for login event recording. Key: `{prefix}{CACHE_LOGIN_EVENT_DEDUP}{user_id}:{YYYYMMDD}`, TTL 48 h.
+pub const CACHE_LOGIN_EVENT_DEDUP: &str = ":login_event:";
 
 pub static MOBILE_REGEXS: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^1[3-9]\d{9}$").expect("Failed to compile mobile regex"));
@@ -56,3 +58,7 @@ pub const CACHE_MENUS_TREE_BY_CODE_RID: &str = ":menus:tree_roleid:";
 pub const CACHE_SHARED_CTX_TID_PREFIX: &str = ":shared_ctx:tid:";
 /// Shared header context cache key segment for user id.
 pub const CACHE_SHARED_CTX_UID_SEGMENT: &str = ":uid:";
+/// OAuth2 authorization code cache key prefix.
+pub const CACHE_OAUTH_CODE: &str = ":oauth:code:";
+/// Third-party provider CSRF state cache key prefix.
+pub const CACHE_OAUTH_PROVIDER_STATE: &str = ":oauth:pstate:";

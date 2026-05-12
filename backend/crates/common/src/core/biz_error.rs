@@ -63,3 +63,27 @@ pub const NOTIFICATION_EVENT_ACTOR_REQUIRED: &str = "errors.biz.notifications.ev
 pub const TENANT_APPLY_NOT_FOUND: &str = "errors.biz.tenantApply.notFound";
 /// The tenant application has already been processed (approved, rejected, or banned).
 pub const TENANT_APPLY_ALREADY_PROCESSED: &str = "errors.biz.tenantApply.alreadyProcessed";
+
+// 420xxx: oauth2 clients
+/// The OAuth2 client was not found or has been deleted.
+pub const OAUTH_CLIENT_NOT_FOUND: &str = "errors.biz.oauth.clientNotFound";
+/// The OAuth2 client is disabled.
+pub const OAUTH_CLIENT_DISABLED: &str = "errors.biz.oauth.clientDisabled";
+/// The OAuth2 client_id already exists.
+pub const OAUTH_CLIENT_ID_EXISTS: &str = "errors.biz.oauth.clientIdExists";
+/// The redirect_uri provided does not match any registered URI for this client.
+pub const OAUTH_REDIRECT_URI_MISMATCH: &str = "errors.biz.oauth.redirectUriMismatch";
+/// The authorization code is invalid or has expired.
+pub const OAUTH_CODE_INVALID: &str = "errors.biz.oauth.codeInvalid";
+/// The PKCE code_verifier does not match the stored code_challenge.
+pub const OAUTH_PKCE_INVALID: &str = "errors.biz.oauth.pkceInvalid";
+/// The token is invalid, expired, or has been revoked.
+pub const OAUTH_TOKEN_INVALID: &str = "errors.biz.oauth.tokenInvalid";
+/// The requested scope is not allowed for this client.
+pub const OAUTH_SCOPE_INVALID: &str = "errors.biz.oauth.scopeInvalid";
+/// The client_secret does not match.
+pub const OAUTH_CLIENT_SECRET_INVALID: &str = "errors.biz.oauth.clientSecretInvalid";
+/// The third-party provider binding was not found.
+pub const OAUTH_PROVIDER_NOT_FOUND: &str = "errors.biz.oauth.providerNotFound";
+/// The OAuth2 CSRF state token is invalid, expired, or has already been used.
+pub const OAUTH_STATE_INVALID: &str = "errors.biz.oauth.stateInvalid";

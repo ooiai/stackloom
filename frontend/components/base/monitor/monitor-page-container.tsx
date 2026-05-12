@@ -89,7 +89,11 @@ export function MonitorPageContainer({
         description={t("monitor.group_system_description")}
       >
         <MonitorSystemInfo snapshot={metrics.snapshot} />
-        <MonitorSnapshotGrid snapshot={metrics.snapshot} snapshotHistory={snapshotHistory} />
+        <MonitorSnapshotGrid
+          snapshot={metrics.snapshot}
+          snapshotHistory={snapshotHistory}
+          gpuStats={metrics.gpu_stats}
+        />
         <MonitorCpuCoresGrid snapshot={metrics.snapshot} />
         <MonitorNetworkGrid snapshot={metrics.snapshot} snapshotHistory={snapshotHistory} />
         <MonitorNetworkChart snapshot={metrics.snapshot} />

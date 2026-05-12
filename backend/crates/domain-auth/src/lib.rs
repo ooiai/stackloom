@@ -1,6 +1,13 @@
+pub mod oauth;
 pub mod repo;
 pub mod service;
 
+pub use oauth::{OAuthRepository, OAuthService};
+pub use oauth::{
+    AuthorizeCmd, AuthorizeResult, BindOAuthProviderCmd, CreateOAuthClientCmd, ExchangeCodeCmd,
+    OAuthClient, OAuthProviderBinding, OAuthProviderUserInfo, OAuthToken, RefreshOAuthTokenCmd,
+    RevokeOAuthTokenCmd, RotateOAuthClientSecretCmd, UpdateOAuthClientCmd,
+};
 pub use repo::AuthRepository;
 pub use service::AuthService;
 

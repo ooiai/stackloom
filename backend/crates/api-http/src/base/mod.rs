@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use common::config::env_config::EnvConfig;
+use domain_auth::OAuthService;
 use domain_base::{
     DictService, MenuService, NotificationService, PermService, RoleService, SharedContextService,
     StatsService, TenantApplyService, TenantService, UserService, UserTenantRoleService,
@@ -23,6 +24,7 @@ mod logging;
 pub mod logs;
 pub mod menus;
 pub mod notifications;
+pub mod oauth_clients;
 pub mod perms;
 pub mod roles;
 pub mod stats;
@@ -53,6 +55,7 @@ pub struct BaseHttpState {
     pub notification_service: Arc<dyn NotificationService>,
     pub tenant_apply_service: Arc<dyn TenantApplyService>,
     pub stats_service: Arc<dyn StatsService>,
+    pub oauth_service: Arc<dyn OAuthService>,
 }
 
 /// The users router, which will be nested under the `/users` path.
@@ -76,6 +79,7 @@ pub fn router(state: BaseHttpState, mw: Arc<MiddlewareConfig>) -> Router {
     let notifications_router = notifications::router(state.clone());
     let applies_router = applies::router(state.clone());
     let stats_router = stats::router(state.clone());
+    let oauth_clients_router = oauth_clients::router(state.clone());
 
     Router::new()
         .with_state(state.clone())
@@ -90,6 +94,7 @@ pub fn router(state: BaseHttpState, mw: Arc<MiddlewareConfig>) -> Router {
         .nest("/notifications", notifications_router)
         .nest("/applies", applies_router)
         .nest("/stats", stats_router)
+        .nest("/oauth_clients", oauth_clients_router)
         .layer(middleware::from_fn_with_state(
             state,
             crate::request_logging::base_request_trace_middleware,

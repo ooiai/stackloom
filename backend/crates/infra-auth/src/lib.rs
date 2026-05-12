@@ -1,6 +1,12 @@
+pub mod oauth;
 pub mod repo;
 pub mod service;
 
+pub use oauth::{
+    GitHubOAuthProvider, GoogleOAuthProvider, OAuthServiceImpl, SqlxOAuthRepository,
+    WeChatOAuthProvider,
+};
+pub use domain_auth::oauth::OAuthProvider;
 pub use repo::SqlxAuthRepository;
 pub use service::AuthServiceImpl;
 

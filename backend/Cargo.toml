@@ -61,6 +61,7 @@ regex = "1"
 reqwest = { version = "0.13", default-features = false, features = [
   "json",
   "stream",
+  "form",
 ] }
 
 # web scraping

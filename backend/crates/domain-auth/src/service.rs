@@ -2,8 +2,9 @@ use neocrates::{async_trait::async_trait, response::error::AppResult};
 
 use crate::{
     AccountSigninCmd, AccountSignupCmd, AccountSignupResult, AuthToken, ChangePasswordCmd,
-    InviteSignupCmd, QuerySigninTenantsCmd, RefreshAuthCmd, ResetPasswordCmd,
-    SendPasswordResetCodeCmd, SendSignupCodeCmd, SigninTenantOption, SwitchTenantAuthCmd,
+    InviteSignupCmd, OAuthProviderUserInfo, QuerySigninTenantsCmd, RefreshAuthCmd,
+    ResetPasswordCmd, SendPasswordResetCodeCmd, SendSignupCodeCmd, SigninTenantOption,
+    SwitchTenantAuthCmd,
 };
 
 /// Domain service contract for auth flows.
@@ -66,4 +67,13 @@ pub trait AuthService: Send + Sync {
 
     /// Change password for the current authenticated user.
     async fn change_password(&self, uid: i64, cmd: ChangePasswordCmd) -> AppResult<()>;
+
+    /// Find or create a user from a third-party provider identity and issue a session token.
+    ///
+    /// If a provider binding exists, loads the existing user and issues a token.
+    /// If not, creates a new user with a default tenant, creates the binding, and issues a token.
+    async fn provider_login_or_signup(
+        &self,
+        info: OAuthProviderUserInfo,
+    ) -> AppResult<AuthToken>;
 }

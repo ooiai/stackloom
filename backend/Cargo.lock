@@ -238,6 +238,7 @@ dependencies = [
  "infra-web",
  "neocrates",
  "regex 1.12.3",
+ "reqwest",
  "serde",
  "sqlx",
  "validator",
@@ -3223,6 +3224,8 @@ dependencies = [
  "domain-base",
  "infra-base",
  "neocrates",
+ "reqwest",
+ "serde",
  "sqlx",
 ]
 
@@ -5052,6 +5055,7 @@ dependencies = [
  "rustls-platform-verifier",
  "serde",
  "serde_json",
+ "serde_urlencoded",
  "sync_wrapper",
  "tokio",
  "tokio-rustls 0.26.4",

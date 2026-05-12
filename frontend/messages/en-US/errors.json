@@ -73,6 +73,19 @@
     "tenantApply": {
       "notFound": "Application record not found or has been removed.",
       "alreadyProcessed": "This application has already been processed."
+    },
+    "oauth": {
+      "clientNotFound": "OAuth client not found.",
+      "clientDisabled": "OAuth client is disabled.",
+      "clientIdExists": "OAuth client ID already exists.",
+      "redirectUriMismatch": "Redirect URI does not match the registered URI.",
+      "codeInvalid": "Authorization code is invalid or has expired.",
+      "pkceInvalid": "PKCE verification failed.",
+      "tokenInvalid": "Access token is invalid, expired, or revoked.",
+      "scopeInvalid": "Requested scope is not permitted.",
+      "clientSecretInvalid": "Client secret is invalid.",
+      "providerNotFound": "OAuth provider binding not found.",
+      "stateInvalid": "OAuth provider state is invalid or has expired."
     }
   }
 }

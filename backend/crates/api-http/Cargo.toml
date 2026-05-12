@@ -31,5 +31,6 @@ validator = { workspace = true, features = ["derive"] }
 regex.workspace = true
 bon.workspace = true
 futures-util.workspace = true
+reqwest = { workspace = true }
 axum = { workspace = true, features = ["ws"] }
 sqlx = { workspace = true, features = ["postgres", "runtime-tokio"] }

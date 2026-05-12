@@ -73,6 +73,19 @@
     "tenantApply": {
       "notFound": "申请记录不存在或已被移除",
       "alreadyProcessed": "该申请已处理，无法重复操作"
+    },
+    "oauth": {
+      "clientNotFound": "OAuth 客户端不存在",
+      "clientDisabled": "OAuth 客户端已被禁用",
+      "clientIdExists": "OAuth 客户端 ID 已存在",
+      "redirectUriMismatch": "回调地址与注册地址不匹配",
+      "codeInvalid": "授权码无效或已过期",
+      "pkceInvalid": "PKCE 验证失败",
+      "tokenInvalid": "访问令牌无效、已过期或已吊销",
+      "scopeInvalid": "请求的权限范围不被允许",
+      "clientSecretInvalid": "客户端密钥无效",
+      "providerNotFound": "第三方登录提供商绑定不存在",
+      "stateInvalid": "第三方登录状态无效或已过期"
     }
   }
 }

@@ -16,6 +16,8 @@ pub struct SystemSnapshot {
     pub per_core_usage: Vec<f32>,
     /// CPU temperature in Celsius (if available).
     pub cpu_temp_celsius: Option<f32>,
+    /// CPU package power draw in watts (Intel RAPL; None if RAPL is unavailable or permission denied).
+    pub cpu_power_watts: Option<f32>,
     /// Per-core CPU frequency in MHz.
     pub cpu_freq_mhz: Vec<u64>,
     /// Used memory in bytes.

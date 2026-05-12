@@ -1,19 +1,24 @@
 "use client"
 
-import { CpuIcon, HardDriveIcon, MemoryStickIcon, TimerIcon } from "lucide-react"
+import { CpuIcon, HardDriveIcon, MemoryStickIcon, TimerIcon, ZapIcon } from "lucide-react"
 
 import { MetricCard } from "@/components/base/shared/metric-card"
 import { useI18n } from "@/providers/i18n-provider"
-import type { SystemSnapshot } from "@/types/monitor.types"
+import type { GpuStats, SystemSnapshot } from "@/types/monitor.types"
 import { formatBytes, formatPercent, formatSpeed, formatUptime } from "./helpers"
 import { MonitorSparkline } from "./monitor-sparkline"
 
 interface MonitorSnapshotGridProps {
   snapshot: SystemSnapshot
   snapshotHistory?: SystemSnapshot[]
+  gpuStats?: GpuStats
 }
 
-export function MonitorSnapshotGrid({ snapshot, snapshotHistory = [] }: MonitorSnapshotGridProps) {
+export function MonitorSnapshotGrid({
+  snapshot,
+  snapshotHistory = [],
+  gpuStats,
+}: MonitorSnapshotGridProps) {
   const { t } = useI18n()
 
   const cpuPercent = Math.round(snapshot.cpu_usage)
@@ -26,7 +31,22 @@ export function MonitorSnapshotGrid({ snapshot, snapshotHistory = [] }: MonitorS
       : 0
 
   const cpuValue = `${cpuPercent}%`
-  const cpuHint = `${cpuCoresUsed} of ${snapshot.cpu_count} cores`
+  // Show power + temp in the CPU card hint when available
+  const cpuHintParts: string[] = [`${cpuCoresUsed} of ${snapshot.cpu_count} cores`]
+  if (snapshot.cpu_power_watts != null) {
+    cpuHintParts.push(`${snapshot.cpu_power_watts.toFixed(0)} W`)
+  }
+  if (snapshot.cpu_temp_celsius != null) {
+    cpuHintParts.push(`${snapshot.cpu_temp_celsius.toFixed(0)}°C`)
+  }
+  const cpuHint = cpuHintParts.join(" • ")
+
+  // Total compute power (CPU + all GPUs), only shown when at least one source has data
+  const gpuTotalWatts =
+    gpuStats?.devices.reduce((sum, d) => sum + (d.power_usage_watts ?? 0), 0) ?? 0
+  const cpuWatts = snapshot.cpu_power_watts ?? 0
+  const hasPowerData = snapshot.cpu_power_watts != null || gpuTotalWatts > 0
+  const totalComputeWatts = cpuWatts + gpuTotalWatts
 
   const cpuHistory = snapshotHistory.map((s) => Math.round(s.cpu_usage))
   const memHistory = snapshotHistory.map((s) => formatPercent(s.memory_used, s.memory_total))
@@ -106,6 +126,25 @@ export function MonitorSnapshotGrid({ snapshot, snapshotHistory = [] }: MonitorS
         icon={<TimerIcon className="size-4" />}
         footer={t("monitor.runtime_summary")}
       />
+
+      {hasPowerData && (
+        <MetricCard
+          label={t("monitor.total_compute_power")}
+          value={`${totalComputeWatts.toFixed(0)} W`}
+          hint={t("monitor.total_compute_power_hint")}
+          tone="default"
+          icon={<ZapIcon className="size-4" />}
+          footer={[
+            snapshot.cpu_power_watts != null
+              ? `${t("monitor.cpu_power")}: ${snapshot.cpu_power_watts.toFixed(0)} W`
+              : null,
+            gpuTotalWatts > 0 ? `GPU: ${gpuTotalWatts.toFixed(0)} W` : null,
+          ]
+            .filter(Boolean)
+            .join(" · ")}
+          className="xl:col-span-2"
+        />
+      )}
 
       {snapshot.disk_read_speed > 0 || snapshot.disk_write_speed > 0 ? (
         <MetricCard

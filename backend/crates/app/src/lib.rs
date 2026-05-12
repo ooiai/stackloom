@@ -2,8 +2,8 @@ use apalis::layers::WorkerBuilderExt;
 use apalis::prelude::{Data, Monitor, WorkerBuilder, WorkerFactoryFn};
 use apalis_redis::{RedisStorage, connect as connect_apalis_redis};
 use api_http::{
-    AuthHttpState, BaseHttpState, SharedHttpState, SysHttpState, WebHttpState, auth_router,
-    base_router, shared_router, system_router, web_router,
+    AuthHttpState, BaseHttpState, OpenApiHttpState, SharedHttpState, SysHttpState, WebHttpState,
+    auth_router, base_router, openapi_router, shared_router, system_router, web_router,
 };
 use common::config::env_config::EnvConfig;
 
@@ -20,13 +20,16 @@ use neocrates::{
     tower_http::{cors::CorsLayer, trace::TraceLayer},
     tracing,
 };
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc};
 
 use crate::{
     email_init::EmailInit, redis_init::RedisInit, sms_init::SmsInit, sqlx_init::SqlxInit,
     sqlx_migrations::SqlxMigrations,
 };
-use infra_auth::AuthServiceImpl;
+use infra_auth::{
+    AuthServiceImpl, GitHubOAuthProvider, GoogleOAuthProvider, OAuthServiceImpl,
+    SqlxOAuthRepository, WeChatOAuthProvider,
+};
 use infra_base::{
     AuditLogServiceImpl, DictServiceImpl, LogRetentionService, MenuServiceImpl,
     NotificationRuleFireJob, NotificationRuleJobScheduler, NotificationServiceImpl,
@@ -158,6 +161,58 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         redis_pool.clone(),
         cfg.server.prefix.clone(),
     ));
+    let oauth_repo = Arc::new(SqlxOAuthRepository::new(base_pool.clone()));
+
+    // Build enabled OAuth providers from config. Only providers with all three credentials
+    // set are registered; unconfigured providers are simply absent from the map.
+    let mut oauth_providers: HashMap<String, Arc<dyn infra_auth::OAuthProvider>> =
+        HashMap::new();
+    {
+        let op = &cfg.oauth_providers;
+        if let (Some(id), Some(secret), Some(uri)) = (
+            op.google_client_id.clone(),
+            op.google_client_secret.clone(),
+            op.google_redirect_uri.clone(),
+        ) {
+            oauth_providers.insert(
+                "google".to_string(),
+                Arc::new(GoogleOAuthProvider {
+                    client_id: id,
+                    client_secret: secret,
+                    redirect_uri: uri,
+                }),
+            );
+        }
+        if let (Some(id), Some(secret), Some(uri)) = (
+            op.github_client_id.clone(),
+            op.github_client_secret.clone(),
+            op.github_redirect_uri.clone(),
+        ) {
+            oauth_providers.insert(
+                "github".to_string(),
+                Arc::new(GitHubOAuthProvider {
+                    client_id: id,
+                    client_secret: secret,
+                    redirect_uri: uri,
+                }),
+            );
+        }
+        if let (Some(id), Some(secret), Some(uri)) = (
+            op.wechat_app_id.clone(),
+            op.wechat_app_secret.clone(),
+            op.wechat_redirect_uri.clone(),
+        ) {
+            oauth_providers.insert(
+                "wechat".to_string(),
+                Arc::new(WeChatOAuthProvider {
+                    app_id: id,
+                    app_secret: secret,
+                    redirect_uri: uri,
+                }),
+            );
+        }
+    }
+
     let auth_service = Arc::new(AuthServiceImpl::new(
         base_pool.clone(),
         redis_pool.clone(),
@@ -166,6 +221,13 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         cfg.server.prefix.clone(),
         cfg.auth.expires_at,
         cfg.auth.refresh_expires_at,
+        Some(oauth_repo.clone()),
+    ));
+    let oauth_service = Arc::new(OAuthServiceImpl::new(
+        oauth_repo.clone(),
+        redis_pool.clone(),
+        cfg.server.prefix.clone(),
+        oauth_providers,
     ));
 
     // build base http state
@@ -214,6 +276,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         notification_service: notification_service.clone(),
         tenant_apply_service,
         stats_service,
+        oauth_service: oauth_service.clone(),
     };
     let shared_http_state = SharedHttpState {
         cfg: cfg.clone(),
@@ -225,6 +288,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
     };
     let auth_http_state = AuthHttpState {
         auth_service,
+        oauth_service: oauth_service.clone(),
         notification_service: notification_service.clone(),
         system_log_service: system_log_service.clone(),
         sms_config: sms_config.clone(),
@@ -245,6 +309,10 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         email_config: EmailInit::init(cfg.clone()),
         system_log_service,
         monitor_service,
+    };
+
+    let openapi_http_state = OpenApiHttpState {
+        oauth_repo: oauth_repo.clone(),
     };
 
     let router = Router::new()
@@ -269,6 +337,7 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
             "/web",
             web_router(web_http_state, middleware_config.clone()),
         )
+        .nest("/openapi", openapi_router(openapi_http_state))
         .fallback(handler_404)
         .layer(trace_layer)
         .layer(cors);

@@ -24,5 +24,7 @@ neocrates = { workspace = true, features = [
   "email",
 ] }
 chrono = { workspace = true, features = ["serde"] }
+serde = { workspace = true, features = ["derive"] }
 bon.workspace = true
+reqwest = { workspace = true }
 sqlx = { workspace = true, features = ["postgres", "runtime-tokio", "chrono", "json"] }

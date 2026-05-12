@@ -27,6 +27,8 @@ pub struct EnvConfig {
     pub email: EmailConfig,
     /// Authentication token configuration.
     pub auth: AuthConfig,
+    /// Third-party OAuth provider configuration.
+    pub oauth_providers: OAuthProvidersConfig,
     /// Basic authentication credentials or identifiers.
     pub auth_basics: Vec<String>,
     /// URL patterns that should bypass general authentication checks.
@@ -72,6 +74,10 @@ struct EnvConfigRaw {
     /// Authentication configuration section.
     auth: AuthConfig,
 
+    /// OAuth provider config mapped from `oauth-providers`.
+    #[serde(default, rename = "oauth-providers")]
+    oauth_providers: OAuthProvidersConfig,
+
     /// Basic authentication list mapped from `auth-basics`.
     #[serde(rename = "auth-basics")]
     auth_basics: Vec<String>,
@@ -104,6 +110,7 @@ impl<'de> Deserialize<'de> for EnvConfig {
             sms: raw.sms,
             email: raw.email,
             auth: raw.auth,
+            oauth_providers: raw.oauth_providers,
             auth_basics: raw.auth_basics,
             ignore_urls: raw.ignore_urls,
             pms_ignore_urls: raw.pms_ignore_urls,
@@ -295,10 +302,38 @@ pub struct EmailConfig {
     pub subject_prefix: Option<String>,
 }
 
+/// Third-party OAuth provider configuration.
+#[derive(Debug, Clone, Default, Deserialize)]
+#[serde(default)]
+pub struct OAuthProvidersConfig {
+    /// Google OAuth2 client ID.
+    pub google_client_id: Option<String>,
+    /// Google OAuth2 client secret.
+    pub google_client_secret: Option<String>,
+    /// Google OAuth2 redirect URI (must match backend callback route).
+    pub google_redirect_uri: Option<String>,
+
+    /// GitHub OAuth2 client ID.
+    pub github_client_id: Option<String>,
+    /// GitHub OAuth2 client secret.
+    pub github_client_secret: Option<String>,
+    /// GitHub OAuth2 redirect URI (must match backend callback route).
+    pub github_redirect_uri: Option<String>,
+
+    /// WeChat OAuth2 app ID.
+    pub wechat_app_id: Option<String>,
+    /// WeChat OAuth2 app secret.
+    pub wechat_app_secret: Option<String>,
+    /// WeChat OAuth2 redirect URI.
+    pub wechat_redirect_uri: Option<String>,
+
+    /// Frontend URL to redirect to after successful provider login, with token params appended.
+    pub frontend_callback_url: Option<String>,
+}
+
 /// Authentication token expiration configuration.
 #[derive(Debug, Clone, Deserialize)]
 pub struct AuthConfig {
-    /// Whether authentication is enabled.
     pub enabled: bool,
     /// Access token expiration time.
     pub expires_at: u64,

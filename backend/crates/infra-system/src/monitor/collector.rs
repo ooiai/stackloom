@@ -29,6 +29,7 @@ impl SystemMetricsCollector {
             cpu_usage_cores: 0.0,
             per_core_usage: vec![],
             cpu_temp_celsius: None,
+            cpu_power_watts: None,
             cpu_freq_mhz: vec![],
             memory_used: 0,
             memory_total: 0,
@@ -79,6 +80,17 @@ impl SystemMetricsCollector {
             let mut prev_net_tx: u64 = 0;
             let mut prev_disk_read: u64 = 0;
             let mut prev_disk_write: u64 = 0;
+
+            // RAPL CPU package energy counter state (Intel only; None on unsupported/no-permission)
+            const RAPL_ENERGY_PATH: &str =
+                "/sys/class/powercap/intel-rapl:0/energy_uj";
+            const RAPL_MAX_RANGE_PATH: &str =
+                "/sys/class/powercap/intel-rapl:0/max_energy_range_uj";
+            let rapl_max_range: u64 = std::fs::read_to_string(RAPL_MAX_RANGE_PATH)
+                .ok()
+                .and_then(|s| s.trim().parse().ok())
+                .unwrap_or(u64::MAX);
+            let mut prev_cpu_energy_uj: Option<u64> = None;
 
             // Main loop: refresh at regular intervals
             let mut interval = tokio::time::interval(Duration::from_secs(1));
@@ -159,6 +171,25 @@ impl SystemMetricsCollector {
                         .and_then(|c| c.temperature())
                 };
 
+                // Attempt to read Intel RAPL CPU package power (Linux only).
+                // Returns None if RAPL is unavailable or permission is denied.
+                // delta_µJ / 1_000_000 = watts for a ~1 s sample interval.
+                let cpu_power_watts: Option<f32> = std::fs::read_to_string(RAPL_ENERGY_PATH)
+                    .ok()
+                    .and_then(|s| s.trim().parse::<u64>().ok())
+                    .and_then(|current_uj| {
+                        let watts = prev_cpu_energy_uj.map(|prev| {
+                            let delta = if current_uj >= prev {
+                                current_uj - prev
+                            } else {
+                                rapl_max_range.saturating_sub(prev).saturating_add(current_uj)
+                            };
+                            delta as f32 / 1_000_000.0
+                        });
+                        prev_cpu_energy_uj = Some(current_uj);
+                        watts
+                    });
+
                 // Swap memory
                 let swap_used = sys.used_swap();
                 let swap_total = sys.total_swap();
@@ -172,6 +203,7 @@ impl SystemMetricsCollector {
                     cpu_usage_cores,
                     per_core_usage,
                     cpu_temp_celsius,
+                    cpu_power_watts,
                     cpu_freq_mhz,
                     memory_used: sys.used_memory(),
                     memory_total: sys.total_memory(),

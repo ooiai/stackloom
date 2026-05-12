@@ -38,6 +38,7 @@ const EMPTY_SNAPSHOT: SystemSnapshot = {
   os_name: "",
   os_version: "",
   kernel_version: "",
+  cpu_power_watts: null,
 }
 
 const EMPTY_METRICS: MonitorMetrics = {
