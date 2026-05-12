@@ -1,0 +1,53 @@
+# .foundation — Foundation Core Boundary Definition
+#
+# Lists the paths that belong to the StackLoom foundation layer.
+# Product projects SHOULD NOT modify files under these paths.
+#
+# Used by: scripts/check-boundaries.sh
+# Format:  one path prefix per line; lines starting with # are comments.
+#
+# If you modify any of these paths in a product project, you will get
+# merge conflicts when running scripts/upgrade-project.sh.
+
+# Backend: core auth / base domain / infra / HTTP / app wiring
+backend/crates/common/
+backend/crates/domain-auth/
+backend/crates/infra-auth/
+backend/crates/domain-base/
+backend/crates/infra-base/
+backend/crates/domain-system/
+backend/crates/infra-system/
+backend/crates/api-http/
+backend/crates/api-grpc/
+backend/crates/app/
+
+# Backend: base schema migrations (never modify existing files)
+backend/migrations/basemigrate/
+
+# Frontend: auth components
+frontend/components/auth/
+
+# Frontend: base admin components
+frontend/components/base/
+
+# Frontend: shared UI primitives (shadcn / reui / topui)
+frontend/components/ui/
+frontend/components/reui/
+frontend/components/topui/
+
+# Frontend: lib utilities, stores, types, hooks, providers
+frontend/lib/
+frontend/stores/
+frontend/types/
+frontend/hooks/
+frontend/providers/
+
+# Skills and scaffold tooling
+skills/
+scripts/
+
+# Foundation scripts and config
+branding.config.ts
+.foundation
+Makefile
+AGENTS.md
