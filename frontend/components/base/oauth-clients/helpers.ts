@@ -10,10 +10,10 @@ import type {
 } from "@/types/base.types"
 
 export const OAUTH_CLIENT_ACTION_PERMS = {
-  create: "OAUTH_CLIENT::CREATE",
-  update: "OAUTH_CLIENT::UPDATE",
-  rotateSecret: "OAUTH_CLIENT::ROTATE_SECRET",
-  remove: "OAUTH_CLIENT::REMOVE",
+  create: "OAUTH::CLIENT::CREATE",
+  update: "OAUTH::CLIENT::UPDATE",
+  rotateSecret: "OAUTH::CLIENT::ROTATE_SECRET",
+  remove: "OAUTH::CLIENT::REMOVE",
 } as const
 
 export const KNOWN_SCOPES = [
