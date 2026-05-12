@@ -1,6 +1,6 @@
 {
     "name": "@ooiai/stackloom",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "Multi-tenant SaaS admin scaffold and foundation toolkit",
     "type": "module",
     "bin": {

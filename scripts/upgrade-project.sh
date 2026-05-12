@@ -242,10 +242,10 @@ if [[ "$HAS_CONFLICTS" == "true" ]]; then
     while true; do
       echo -e "${BOLD}── Conflict ${INDEX}/${TOTAL}: ${FILE}  [${HUNK_COUNT} conflict(s)] ──${RESET}"
       echo ""
-      echo -e "  ${GREEN}[y]${RESET} 保留我的版本   (--ours，覆盖 upstream 改动)"
-      echo -e "  ${CYAN}[n]${RESET} 接受 upstream  (--theirs，丢弃我的改动)"
-      echo -e "  ${YELLOW}[m]${RESET} 合并两者       (保留冲突标记，手动编辑后 git add)"
-      echo -e "  ${BOLD}[d]${RESET} 查看 diff      (显示冲突内容)"
+      echo -e "  ${GREEN}[y]${RESET} Keep my version   (--ours, overwrite upstream changes)"
+      echo -e "  ${CYAN}[n]${RESET} Use upstream      (--theirs, discard my changes)"
+      echo -e "  ${YELLOW}[m]${RESET} Merge manually    (keep conflict markers, then edit and git add)"
+      echo -e "  ${BOLD}[d]${RESET} View diff         (show conflict details)"
       echo ""
       read -r -p "  Choice [y/n/m/d]: " choice
       echo ""
