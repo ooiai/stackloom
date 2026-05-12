@@ -122,24 +122,47 @@ read -r -p "Proceed? [y/N] " confirm
 # ── step 1: copy repo ─────────────────────────────────────────────────────────
 step "Copying StackLoom to ${OUTPUT_DIR}"
 
-rsync -a \
-  --exclude='.git' \
-  --exclude='node_modules' \
-  --exclude='.next' \
-  --exclude='target' \
-  --exclude='__pycache__' \
-  --exclude='*.pyc' \
-  "${SOURCE_DIR}/" "${OUTPUT_DIR}/"
+# Copy the source, including .git when available so the product project shares
+# git history with StackLoom. This is what makes `stackloom update` (git merge)
+# work — the two repos must have a common ancestor commit.
+if [[ -d "${SOURCE_DIR}/.git" ]]; then
+  cp -a "${SOURCE_DIR}/." "${OUTPUT_DIR}/"
+  # Remove build artifacts that rsync would also exclude
+  rm -rf "${OUTPUT_DIR}/node_modules" "${OUTPUT_DIR}/.next" \
+         "${OUTPUT_DIR}/target" "${OUTPUT_DIR}/__pycache__"
+else
+  # Fallback for local dev without a .git in SOURCE_DIR
+  rsync -a \
+    --exclude='.git' \
+    --exclude='node_modules' \
+    --exclude='.next' \
+    --exclude='target' \
+    --exclude='__pycache__' \
+    --exclude='*.pyc' \
+    "${SOURCE_DIR}/" "${OUTPUT_DIR}/"
+fi
 
 success "Copied StackLoom to ${OUTPUT_DIR}"
 
 cd "$OUTPUT_DIR"
 
-# ── step 2: git init ──────────────────────────────────────────────────────────
-step "Initializing git repository"
+# ── step 2: configure git repository ─────────────────────────────────────────
+step "Configuring git repository"
 
-git init --quiet
-git remote add upstream "$UPSTREAM_URL"
+if [[ -d ".git" ]]; then
+  # We have StackLoom's git history — rename origin → upstream so future
+  # `git fetch upstream` / `git merge upstream/main` works out of the box.
+  if git remote get-url origin &>/dev/null; then
+    git remote rename origin upstream
+    git remote set-url upstream "$UPSTREAM_URL"
+  elif ! git remote get-url upstream &>/dev/null; then
+    git remote add upstream "$UPSTREAM_URL"
+  fi
+else
+  # No .git at all (rsync fallback) — init a fresh repo.
+  git init --quiet
+  git remote add upstream "$UPSTREAM_URL"
+fi
 info "Remote 'upstream' → ${UPSTREAM_URL}"
 
 # ── step 3: rewrite branding.config.ts ───────────────────────────────────────

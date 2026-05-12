@@ -124,49 +124,107 @@ step "Changelog (upstream commits not yet in this project)"
 UPSTREAM_SHA=$(git rev-parse "$UPSTREAM_REF")
 MERGE_BASE=$(git merge-base HEAD "$UPSTREAM_REF" 2>/dev/null || true)
 
-if [[ "$UPSTREAM_SHA" == "$MERGE_BASE" ]]; then
+if [[ -n "$MERGE_BASE" && "$UPSTREAM_SHA" == "$MERGE_BASE" ]]; then
   success "Already up to date with ${UPSTREAM_REF}."
   exit 0
 fi
 
-COMMIT_COUNT=$(git log --oneline "${MERGE_BASE}..${UPSTREAM_REF}" | wc -l | tr -d ' ')
-info "${COMMIT_COUNT} new commit(s) from upstream:"
-echo ""
-git --no-pager log --oneline "${MERGE_BASE}..${UPSTREAM_REF}" | head -30
-if [[ $COMMIT_COUNT -gt 30 ]]; then
-  echo "  ... and $((COMMIT_COUNT - 30)) more"
+UNRELATED_HISTORIES=false
+if [[ -z "$MERGE_BASE" ]]; then
+  # Project was created without shared git history (old rsync+init flow).
+  # We'll use --allow-unrelated-histories so git can still perform a 3-way merge
+  # based on file content. Files identical in both trees produce no conflicts.
+  UNRELATED_HISTORIES=true
+  warn "No shared git history found with ${UPSTREAM_REF}."
+  warn "This project was likely created before the git-history-aware create flow."
+  warn "Merge will use --allow-unrelated-histories (file-content based 3-way merge)."
+  echo ""
+  COMMIT_COUNT=$(git log --oneline "${UPSTREAM_REF}" | wc -l | tr -d ' ')
+  info "Upstream has ${COMMIT_COUNT} total commit(s). Recent upstream commits:"
+  echo ""
+  git --no-pager log --oneline "${UPSTREAM_REF}" | head -20 || true
+else
+  COMMIT_COUNT=$(git log --oneline "${MERGE_BASE}..${UPSTREAM_REF}" | wc -l | tr -d ' ')
+  info "${COMMIT_COUNT} new commit(s) from upstream:"
+  echo ""
+  git --no-pager log --oneline "${MERGE_BASE}..${UPSTREAM_REF}" | head -30 || true
+  if [[ $COMMIT_COUNT -gt 30 ]]; then
+    echo "  ... and $((COMMIT_COUNT - 30)) more"
+  fi
 fi
 echo ""
 
 if $DRY_RUN; then
   info "[dry-run] Would merge ${UPSTREAM_REF} into HEAD."
   info "[dry-run] Files that would change:"
-  git --no-pager diff --name-only "${MERGE_BASE}..${UPSTREAM_REF}" | head -50
+  if [[ -n "$MERGE_BASE" ]]; then
+    git --no-pager diff --name-only "${MERGE_BASE}..${UPSTREAM_REF}" | head -50 || true
+  else
+    git --no-pager diff --name-only HEAD "${UPSTREAM_REF}" | head -50 || true
+  fi
   exit 0
 fi
 
-read -r -p "Merge ${COMMIT_COUNT} upstream commit(s) into this branch? [y/N] " confirm
+read -r -p "Merge upstream into this branch? [y/N] " confirm
 [[ "$confirm" =~ ^[Yy]$ ]] || { info "Aborted."; exit 0; }
 
 # ── step 4: merge ─────────────────────────────────────────────────────────────
 step "Merging ${UPSTREAM_REF} (--no-commit --no-ff)"
 
+MERGE_EXTRA_FLAGS=""
+if $UNRELATED_HISTORIES; then
+  MERGE_EXTRA_FLAGS="--allow-unrelated-histories"
+fi
+
 set +e
-git merge "$UPSTREAM_REF" --no-commit --no-ff -m "chore: upgrade from StackLoom foundation
-
-Merged upstream changes from ${UPSTREAM_REF} (${UPSTREAM_SHA:0:8}).
-
-Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>" 2>&1
+# shellcheck disable=SC2086
+git merge "$UPSTREAM_REF" --no-commit --no-ff $MERGE_EXTRA_FLAGS 2>&1
 MERGE_EXIT=$?
 set -e
 
+# Write a suggested commit message for when the user runs `git commit`.
+# We do this AFTER the merge so it works regardless of git version.
+if [[ -d ".git" ]]; then
+  cat > ".git/MERGE_MSG" << MERGE_MSG_EOF
+chore: upgrade from StackLoom foundation
+
+Merged upstream changes from ${UPSTREAM_REF} (${UPSTREAM_SHA:0:8}).
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
+MERGE_MSG_EOF
+fi
+
 echo ""
 
-if [[ $MERGE_EXIT -ne 0 ]]; then
-  CONFLICTED_FILES=()
-  while IFS= read -r f; do
-    CONFLICTED_FILES+=("$f")
-  done < <(git diff --name-only --diff-filter=U)
+# Detect conflicts via two independent signals:
+#   1. git merge exited non-zero
+#   2. unmerged paths exist (more reliable across git versions)
+CONFLICTED_FILES=()
+while IFS= read -r f; do
+  [[ -n "$f" ]] && CONFLICTED_FILES+=("$f")
+done < <(git diff --name-only --diff-filter=U 2>/dev/null)
+
+HAS_CONFLICTS=false
+if [[ $MERGE_EXIT -ne 0 ]] || [[ ${#CONFLICTED_FILES[@]} -gt 0 ]]; then
+  HAS_CONFLICTS=true
+fi
+
+if [[ "$HAS_CONFLICTS" == "true" ]]; then
+  # If MERGE_EXIT was non-zero but no diff filter found files, re-check with ls-files.
+  if [[ ${#CONFLICTED_FILES[@]} -eq 0 ]]; then
+    while IFS= read -r f; do
+      [[ -n "$f" ]] && CONFLICTED_FILES+=("$f")
+    done < <(git ls-files --unmerged 2>/dev/null | awk '{print $4}' | sort -u)
+  fi
+
+  # If still no conflicted files, the merge failed for a reason OTHER than content
+  # conflicts (e.g. binary file issues, permission problems).  Abort cleanly.
+  if [[ ${#CONFLICTED_FILES[@]} -eq 0 ]]; then
+    error "git merge exited with status ${MERGE_EXIT} but no conflicted files were found."
+    error "The merge may have failed for a non-content reason."
+    error "Run 'git merge --abort' to reset, then check 'git status' for details."
+    exit 1
+  fi
 
   TOTAL=${#CONFLICTED_FILES[@]}
   RESOLVED=()
@@ -216,7 +274,7 @@ if [[ $MERGE_EXIT -ne 0 ]]; then
           ;;
         d|D)
           echo ""
-          git --no-pager diff "$FILE" | head -60
+          git --no-pager diff "$FILE" | head -60 || true
           echo ""
           ;;
         *)
