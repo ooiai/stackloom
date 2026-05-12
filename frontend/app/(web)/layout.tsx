@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function WebLayout({
+export default async function WebRootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode

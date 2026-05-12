@@ -16,6 +16,7 @@ Always read the relevant skill before writing or reviewing code.
 | Backend auth flow (signin, signup, JWT) | `skills/backend/rules/auth.md` |
 | Backend domain/infra layers | `skills/backend/rules/domain-infra.md` |
 | Backend HTTP handlers/routes/DTOs | `skills/backend/rules/api-http.md` |
+| Backend handlers.rs (comments, tracing, audit log) | `skills/backend/rules/handlers.md` |
 | Backend SQLx queries, migrations | `skills/backend/rules/sqlx.md` |
 | Backend errors, validation, bigint serde | `skills/backend/rules/error-serde.md` |
 | Backend logging, audit, tracing | `skills/backend/rules/logging.md` |

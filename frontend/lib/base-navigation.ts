@@ -156,11 +156,47 @@ export const BASE_CURRENT_MENU_ITEMS: MenuItem[] = [
     visible: 1,
     remark: "浏览对象存储文件、前缀和访问地址",
   },
+  {
+    id: "biz-group",
+    pid: "base-root",
+    name: "业务管理",
+    code: "biz",
+    icon: "ClipboardCheck",
+    path: "/biz",
+    sort: 3,
+    visible: 1,
+    remark: "业务审核与运营管理",
+  },
+  {
+    id: "biz-apply",
+    pid: "biz-group",
+    name: "申请审核",
+    code: "biz-apply",
+    icon: "FileCheck",
+    path: "/biz/apply",
+    sort: 1,
+    visible: 1,
+    remark: "审核自助注册用户的租户申请",
+  },
+  {
+    id: "biz-stats",
+    pid: "biz-group",
+    name: "统计分析",
+    code: "biz-stats",
+    icon: "BarChart2",
+    path: "/biz/stats",
+    sort: 2,
+    visible: 1,
+    remark: "用户增长、留存与行为统计",
+  },
 ]
 
 const TOOLS_MENU_CODE = "tools"
 const TOOLS_STORAGE_MENU_CODE = "tools-storage"
 const TOOLS_NOTIFICATIONS_MENU_CODE = "tools-notifications"
+const BIZ_MENU_CODE = "biz"
+const BIZ_APPLY_MENU_CODE = "biz-apply"
+const BIZ_STATS_MENU_CODE = "biz-stats"
 
 function compareMenuNodes(a: MenuTreeNodeData, b: MenuTreeNodeData) {
   const sortDiff = a.sort - b.sort
@@ -260,27 +296,43 @@ const BASE_NOTIFICATIONS_MENU = findMenuNode(
   BASE_CURRENT_MENU_TREE,
   TOOLS_NOTIFICATIONS_MENU_CODE
 )
+const BASE_BIZ_GROUP_MENU = BASE_CURRENT_MENU_TREE.find(
+  (node) => node.code === BIZ_MENU_CODE
+) ?? null
+const BASE_BIZ_APPLY_MENU = findMenuNode(BASE_CURRENT_MENU_TREE, BIZ_APPLY_MENU_CODE)
+const BASE_BIZ_STATS_MENU = findMenuNode(BASE_CURRENT_MENU_TREE, BIZ_STATS_MENU_CODE)
 
 export function mergeBaseCurrentMenus(
   nodes: MenuTreeNodeData[],
   menuCodes: string[]
 ): MenuTreeNodeData[] {
-  if (!menuCodes.includes(TOOLS_MENU_CODE)) {
-    return nodes
-  }
-
   let nextNodes = nodes
 
-  if (BASE_NOTIFICATIONS_MENU && !hasMenuCode(nextNodes, TOOLS_NOTIFICATIONS_MENU_CODE)) {
-    nextNodes = appendMissingChildMenu(
-      nextNodes,
-      TOOLS_MENU_CODE,
-      BASE_NOTIFICATIONS_MENU
-    )
+  if (menuCodes.includes(TOOLS_MENU_CODE)) {
+    if (BASE_NOTIFICATIONS_MENU && !hasMenuCode(nextNodes, TOOLS_NOTIFICATIONS_MENU_CODE)) {
+      nextNodes = appendMissingChildMenu(
+        nextNodes,
+        TOOLS_MENU_CODE,
+        BASE_NOTIFICATIONS_MENU
+      )
+    }
+
+    if (BASE_STORAGE_MENU && !hasMenuCode(nextNodes, TOOLS_STORAGE_MENU_CODE)) {
+      nextNodes = appendMissingChildMenu(nextNodes, TOOLS_MENU_CODE, BASE_STORAGE_MENU)
+    }
   }
 
-  if (BASE_STORAGE_MENU && !hasMenuCode(nextNodes, TOOLS_STORAGE_MENU_CODE)) {
-    nextNodes = appendMissingChildMenu(nextNodes, TOOLS_MENU_CODE, BASE_STORAGE_MENU)
+  // Always surface the biz group for admin users (biz-apply and biz-stats are system-level pages).
+  if (BASE_BIZ_APPLY_MENU || BASE_BIZ_STATS_MENU) {
+    if (!hasMenuCode(nextNodes, BIZ_MENU_CODE) && BASE_BIZ_GROUP_MENU) {
+      nextNodes = [...nextNodes, BASE_BIZ_GROUP_MENU].sort(compareMenuNodes)
+    }
+    if (BASE_BIZ_APPLY_MENU && !hasMenuCode(nextNodes, BIZ_APPLY_MENU_CODE)) {
+      nextNodes = appendMissingChildMenu(nextNodes, BIZ_MENU_CODE, BASE_BIZ_APPLY_MENU)
+    }
+    if (BASE_BIZ_STATS_MENU && !hasMenuCode(nextNodes, BIZ_STATS_MENU_CODE)) {
+      nextNodes = appendMissingChildMenu(nextNodes, BIZ_MENU_CODE, BASE_BIZ_STATS_MENU)
+    }
   }
 
   return nextNodes

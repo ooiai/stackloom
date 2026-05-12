@@ -107,9 +107,15 @@ When a task is primarily about one backend layer or concern, read the matching r
 - `rules/api-http.md`
     - `req.rs` / `resp.rs` / `handlers.rs` / `mod.rs`
     - Axum handler conventions
-    - handler comment requirements
     - route design
     - HTTP state and DTO mapping
+
+- `rules/handlers.md`
+    - handler function structure and signature conventions
+    - doc-comment and inline-comment standards
+    - tracing log patterns (`{:?}` form vs structured key=value form)
+    - audit logging integration (`write_mutation_logs`)
+    - handler anti-patterns
 
 - `rules/sqlx.md`
     - SQLx repository rules
@@ -166,6 +172,7 @@ Use these quick selection rules when deciding which backend rule file to open fi
 - If you are deciding **where code should live**, start with `rules/architecture.md`.
 - If you are designing or editing **entities, commands, repository traits, or service traits**, start with `rules/domain-infra.md`.
 - If you are editing **request DTOs, response DTOs, handlers, routers, or HTTP state**, start with `rules/api-http.md`.
+- If you are writing or reviewing a **`handlers.rs` file** (signature, comments, tracing, audit log), start with `rules/handlers.md`.
 - If you are editing **SQL queries, row mapping, pagination queries, soft delete behavior, or migrations**, start with `rules/sqlx.md`.
 - If you are wiring **services, pools, migrations, router merges, or server startup**, start with `rules/app.md`.
 - If you are handling **validation errors, conflict/not-found behavior, or bigint `i64` request/response serialization**, start with `rules/error-serde.md`.

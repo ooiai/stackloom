@@ -74,6 +74,15 @@ pub async fn account_signin(
     Ok(Json(AuthTokenResp::from(token)))
 }
 
+/// Switch the tenant authentication for the current authenticated user.
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `auth_user` - The current authenticated user context.
+/// * `req` - The request with the new tenant authentication payload.
+///
+/// # Returns
+/// * `AppResult<Json<AuthTokenResp>>` - The auth token payload for the new tenant authentication.
 pub async fn switch_account_auth(
     State(state): State<SigninState>,
     Extension(auth_user): Extension<AuthModel>,

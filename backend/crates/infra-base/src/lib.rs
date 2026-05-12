@@ -61,3 +61,9 @@ pub use notification::repo::SqlxNotificationRepository;
 pub use notification::service::{
     NotificationRuleFireJob, NotificationRuleJobScheduler, NotificationServiceImpl,
 };
+pub mod tenant_apply;
+pub use tenant_apply::TenantApplyRow;
+pub use tenant_apply::repo::SqlxTenantApplyRepository;
+pub use tenant_apply::service::TenantApplyServiceImpl;
+pub mod stats;
+pub use stats::StatsServiceImpl;

@@ -192,6 +192,7 @@ export interface TenantData {
   owner_user_id: string | null
   status: TenantStatus
   plan_code: string | null
+  logo_url: string | null
   expired_at: string | null
   created_at: string
   updated_at: string
@@ -319,6 +320,7 @@ export interface CreateTenantParam {
   owner_user_id?: string | null
   status: TenantStatus
   plan_code?: string
+  logo_url?: string | null
   expired_at?: string | null
 }
 
@@ -331,6 +333,7 @@ export interface UpdateTenantParam {
   owner_user_id?: string | null
   status?: TenantStatus
   plan_code?: string
+  logo_url?: string | null
   expired_at?: string | null
 }
 
@@ -579,6 +582,7 @@ export interface TenantFormValues {
   owner_user_id: string
   status: TenantStatus
   plan_code: string
+  logo_url: string
   expired_at: string
 }
 
@@ -842,3 +846,45 @@ export type PaginateNotificationDispatch = PaginateResp<NotificationDispatchData
 export type PaginateNotificationTemplate = PaginateResp<NotificationTemplateData>
 export type PaginateNotificationRule = PaginateResp<NotificationRuleData>
 export type PaginateUserNotification = PaginateResp<UserNotificationData>
+
+// TenantApply
+// membership_status: 0=rejected/disabled, 1=active/approved, 2=pending
+export type TenantApplyMembershipStatus = 0 | 1 | 2
+
+export interface TenantApplyData {
+  id: string
+  user_id: string
+  tenant_id: string
+  tenant_name: string
+  tenant_slug: string
+  applicant_username: string
+  applicant_name: string | null
+  applicant_phone: string | null
+  applicant_email: string | null
+  applicant_avatar: string | null
+  user_status: UserStatus
+  membership_status: TenantApplyMembershipStatus
+  created_at: string
+}
+
+export interface PageTenantApplyParam {
+  status?: TenantApplyMembershipStatus
+  keyword?: string
+  limit?: number
+  offset?: number
+}
+
+export interface ApproveTenantApplyParam {
+  id: string
+}
+
+export interface RejectTenantApplyParam {
+  id: string
+}
+
+export interface BanTenantApplyParam {
+  id: string
+}
+
+export type PaginateTenantApply = PaginateResp<TenantApplyData>
+

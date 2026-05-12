@@ -1,0 +1,83 @@
+{
+  "title": "Analytics",
+  "description": "User growth, retention, and behavior data",
+  "tabs": {
+    "overview": "Overview",
+    "growth": "User Growth",
+    "retention": "Retention",
+    "behavior": "Behavior",
+    "funnel": "Funnel",
+    "commercial": "Commercial"
+  },
+  "range": {
+    "label": "Time range",
+    "days7": "Last 7 days",
+    "days14": "Last 14 days",
+    "days30": "Last 30 days",
+    "days90": "Last 90 days"
+  },
+  "overview": {
+    "total_users": "Total Users",
+    "new_users_today": "New Today",
+    "dau": "DAU",
+    "wau": "WAU",
+    "mau": "MAU",
+    "active_tenants": "Active Tenants",
+    "pending_applies": "Pending Applications",
+    "active_trend_title": "Daily Active Users",
+    "active_trend_description": "Daily active user count over the period",
+    "growth_trend_title": "New User Trend",
+    "growth_trend_description": "Daily new registrations over the period",
+    "dau_label": "Daily Active",
+    "new_users_label": "New Users"
+  },
+  "growth": {
+    "title": "User Growth",
+    "description": "User registration growth over time",
+    "cumulative_title": "Cumulative Registrations",
+    "cumulative_description": "Total registered users over time",
+    "daily_title": "Daily New Users",
+    "daily_description": "New registrations per day",
+    "cumulative_label": "Cumulative",
+    "new_users_label": "New Users"
+  },
+  "retention": {
+    "title": "Retention Analysis",
+    "description": "User retention rates by registration cohort",
+    "cohort_date": "Cohort Week",
+    "new_users": "New Users",
+    "d1_rate": "D1 Retention",
+    "d7_rate": "D7 Retention",
+    "d30_rate": "D30 Retention",
+    "no_data": "Not enough data to calculate retention rates"
+  },
+  "behavior": {
+    "title": "Behavior Analysis",
+    "description": "User operation and behavior data",
+    "by_module_title": "Operations by Module",
+    "by_module_description": "Total operation count per feature module",
+    "daily_trend_title": "Daily Operation Trend",
+    "daily_trend_description": "Total operations per day over the period",
+    "top_operators_title": "Top 10 Active Users",
+    "operator": "User",
+    "operations": "Operations",
+    "module_label": "Module",
+    "count_label": "Count"
+  },
+  "funnel": {
+    "title": "Conversion Funnel",
+    "description": "Key conversion steps from registration to activation",
+    "step_registered": "Registered",
+    "step_logged_in": "Logged In",
+    "step_operated": "Performed Action",
+    "step_activated": "Activated as Member",
+    "count_label": "Users",
+    "rate_label": "Rate",
+    "no_data": "No funnel data available"
+  },
+  "commercial": {
+    "title": "Commercial Analytics",
+    "coming_soon": "Coming Soon",
+    "coming_soon_desc": "Paid users, conversion rate, ARPU, and other commercial metrics will be available after payment features launch"
+  }
+}

@@ -1,10 +1,16 @@
+use crate::object_storage::{
+    normalize_optional_nullable_object_ref, normalize_optional_object_ref,
+};
+use ::common::config::env_config::EnvConfig;
 use domain_base::{
     CreateTenantCmd, PageTenantCmd, UpdateTenantCmd,
     tenant::{ChildrenTenantCmd, RemoveCascadeTenantCmd, TreeTenantCmd},
 };
+use domain_system::aws::ObjectStorageService;
 use neocrates::{
     chrono::{DateTime, Utc},
     helper::core::{serde_helpers, snowflake::generate_sonyflake_id},
+    response::error::AppResult,
     serde::Deserialize,
 };
 use validator::Validate;
@@ -20,7 +26,45 @@ pub struct CreateTenantReq {
     pub owner_user_id: Option<i64>,
     pub status: i16,
     pub plan_code: Option<String>,
+    pub logo_url: Option<String>,
     pub expired_at: Option<DateTime<Utc>>,
+}
+
+impl CreateTenantReq {
+    pub fn normalize_logo_url(
+        self,
+        cfg: &EnvConfig,
+        object_storage_service: &dyn ObjectStorageService,
+    ) -> AppResult<Self> {
+        let Self {
+            parent_id,
+            slug,
+            name,
+            description,
+            owner_user_id,
+            status,
+            plan_code,
+            logo_url,
+            expired_at,
+        } = self;
+
+        Ok(Self {
+            parent_id,
+            slug,
+            name,
+            description,
+            owner_user_id,
+            status,
+            plan_code,
+            logo_url: normalize_optional_object_ref(
+                cfg,
+                object_storage_service,
+                logo_url,
+                "logo_url",
+            )?,
+            expired_at,
+        })
+    }
 }
 
 impl From<CreateTenantReq> for CreateTenantCmd {
@@ -34,6 +78,7 @@ impl From<CreateTenantReq> for CreateTenantCmd {
             owner_user_id: req.owner_user_id,
             status: req.status,
             plan_code: req.plan_code,
+            logo_url: req.logo_url,
             expired_at: req.expired_at,
         }
     }
@@ -59,7 +104,48 @@ pub struct UpdateTenantReq {
     pub owner_user_id: Option<i64>,
     pub status: Option<i16>,
     pub plan_code: Option<String>,
+    #[serde(default)]
+    pub logo_url: Option<Option<String>>,
     pub expired_at: Option<DateTime<Utc>>,
+}
+
+impl UpdateTenantReq {
+    pub fn normalize_logo_url(
+        self,
+        cfg: &EnvConfig,
+        object_storage_service: &dyn ObjectStorageService,
+    ) -> AppResult<Self> {
+        let Self {
+            id,
+            parent_id,
+            slug,
+            name,
+            description,
+            owner_user_id,
+            status,
+            plan_code,
+            logo_url,
+            expired_at,
+        } = self;
+
+        Ok(Self {
+            id,
+            parent_id,
+            slug,
+            name,
+            description,
+            owner_user_id,
+            status,
+            plan_code,
+            logo_url: normalize_optional_nullable_object_ref(
+                cfg,
+                object_storage_service,
+                logo_url,
+                "logo_url",
+            )?,
+            expired_at,
+        })
+    }
 }
 
 impl From<UpdateTenantReq> for UpdateTenantCmd {
@@ -72,6 +158,7 @@ impl From<UpdateTenantReq> for UpdateTenantCmd {
             owner_user_id: req.owner_user_id,
             status: req.status,
             plan_code: req.plan_code,
+            logo_url: req.logo_url,
             expired_at: req.expired_at,
         }
     }

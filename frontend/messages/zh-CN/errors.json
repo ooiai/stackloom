@@ -69,6 +69,10 @@
       "codeInvalid": "邀请链接无效或已过期，请联系管理员重新生成",
       "pendingApproval": "您的加入申请已提交，正在等待管理员审核",
       "alreadyMember": "您已经是该团队的成员，无需重复加入"
+    },
+    "tenantApply": {
+      "notFound": "申请记录不存在或已被移除",
+      "alreadyProcessed": "该申请已处理，无法重复操作"
     }
   }
 }

@@ -148,5 +148,17 @@
   "tools-notifications": {
     "name": "Notifications",
     "remark": "Manage manual sends, templates, and event rules"
+  },
+  "biz-group": {
+    "name": "Business",
+    "remark": "Business review and operations management"
+  },
+  "biz-apply": {
+    "name": "Applications",
+    "remark": "Review tenant applications from self-service signup users"
+  },
+  "biz-stats": {
+    "name": "Analytics",
+    "remark": "User growth, retention, and behavior statistics"
   }
 }

@@ -9,6 +9,7 @@ use domain_auth::{
 };
 use neocrates::{
     async_trait::async_trait,
+    helper::core::snowflake::generate_sonyflake_id,
     response::error::{AppError, AppResult},
     sqlx::{self, Error as SqlxError},
     sqlxhelper::pool::SqlxPool,
@@ -614,6 +615,38 @@ impl AuthRepository for SqlxAuthRepository {
             "#,
         )
         .bind(password_hash)
+        .bind(user_id)
+        .execute(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        Ok(())
+    }
+
+    async fn record_login_event(&self, user_id: i64, tenant_id: i64) -> AppResult<()> {
+        let id = generate_sonyflake_id() as i64;
+
+        sqlx::query(
+            r#"
+            INSERT INTO user_login_events (id, user_id, tenant_id)
+            VALUES ($1, $2, $3)
+            "#,
+        )
+        .bind(id)
+        .bind(user_id)
+        .bind(tenant_id)
+        .execute(self.pool.pool())
+        .await
+        .map_err(Self::map_sqlx_error)?;
+
+        sqlx::query(
+            r#"
+            UPDATE users
+            SET last_login_at = NOW()
+            WHERE id = $1
+              AND deleted_at IS NULL
+            "#,
+        )
         .bind(user_id)
         .execute(self.pool.pool())
         .await

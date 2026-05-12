@@ -18,6 +18,7 @@ pub struct Tenant {
     pub owner_user_id: Option<i64>,
     pub status: i16,
     pub plan_code: Option<String>,
+    pub logo_url: Option<String>,
     pub expired_at: Option<DateTime<Utc>>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
@@ -40,6 +41,7 @@ impl Tenant {
             owner_user_id: cmd.owner_user_id,
             status: cmd.status,
             plan_code: cmd.plan_code,
+            logo_url: cmd.logo_url,
             expired_at: cmd.expired_at,
             created_at: now,
             updated_at: now,
@@ -77,6 +79,10 @@ impl Tenant {
 
         if let Some(plan_code) = cmd.plan_code {
             self.plan_code = Some(plan_code);
+        }
+
+        if let Some(logo_url) = cmd.logo_url {
+            self.logo_url = logo_url;
         }
 
         if let Some(expired_at) = cmd.expired_at {
@@ -120,6 +126,7 @@ pub struct CreateTenantCmd {
     pub owner_user_id: Option<i64>,
     pub status: i16,
     pub plan_code: Option<String>,
+    pub logo_url: Option<String>,
     pub expired_at: Option<DateTime<Utc>>,
 }
 
@@ -150,6 +157,8 @@ pub struct UpdateTenantCmd {
     pub owner_user_id: Option<i64>,
     pub status: Option<i16>,
     pub plan_code: Option<String>,
+    /// `None` = not submitted; `Some(None)` = clear; `Some(Some(url))` = set
+    pub logo_url: Option<Option<String>>,
     pub expired_at: Option<DateTime<Utc>>,
 }
 

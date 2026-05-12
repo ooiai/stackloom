@@ -1,14 +1,29 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
+import { type ChangeEvent, useMemo, useRef, useState } from "react"
+import { toast } from "sonner"
 
 import { TenantMutateFormFields } from "@/components/base/tenants/tenant-mutate-form-fields"
 import { useTenantMutateForm } from "@/components/base/tenants/hooks/use-tenant-mutate-form"
 import { TenantMutateSheetHeader } from "@/components/base/tenants/tenant-mutate-sheet-header"
-import { TenantMutateSheetFooter } from "@/components/base/tenants/tenant-mutate-sheet-sections"
+import {
+  TenantMutateLogoSection,
+  TenantMutateSheetFooter,
+} from "@/components/base/tenants/tenant-mutate-sheet-sections"
 import { FieldGroup } from "@/components/ui/field"
 import { Sheet, SheetContent, SheetFooter } from "@/components/ui/sheet"
+import { useAwsS3 } from "@/hooks/use-aws-s3"
+import {
+  SINGLE_REQUEST_UPLOAD_PART_SIZE_BYTES,
+  uploadAwsObject,
+} from "@/lib/aws"
+import { OSS_ENUM } from "@/lib/config/enums"
+import {
+  AVATAR_IMAGE_COMPRESSION_OPTIONS,
+  compressImageFile,
+} from "@/lib/image"
 import { useI18n } from "@/providers/i18n-provider"
+import { awsApi } from "@/stores/system-api"
 import type {
   TenantData,
   TenantFormValues,
@@ -35,6 +50,10 @@ export function TenantMutateSheet({
   onSubmit,
 }: TenantMutateSheetProps) {
   const { t } = useI18n()
+  const { uploadFile } = useAwsS3()
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false)
+
   const header =
     mode === "create"
       ? {
@@ -62,25 +81,79 @@ export function TenantMutateSheet({
     onSubmit,
   })
 
-  useEffect(() => {
-    if (!open) {
-      return
-    }
-
+  const resetFormState = () => {
     form.reset(defaultValues)
-  }, [defaultValues, form, open])
+    setIsUploadingLogo(false)
+  }
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (nextOpen) {
-      form.reset(defaultValues)
+      resetFormState()
+    } else {
+      setIsUploadingLogo(false)
     }
     onOpenChange(nextOpen)
   }
 
   const handleCancel = () => {
-    form.reset(defaultValues)
+    resetFormState()
     onOpenChange(false)
   }
+
+  const handleLogoFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    event.target.value = ""
+
+    if (!file) {
+      return
+    }
+
+    if (!file.type.startsWith("image/")) {
+      toast.error(t("tenants.toast.logoInvalid"))
+      return
+    }
+
+    try {
+      setIsUploadingLogo(true)
+      const compressedFile = await compressImageFile(
+        file,
+        AVATAR_IMAGE_COMPRESSION_OPTIONS
+      )
+      const logoUrl = await uploadAwsObject({
+        file: compressedFile,
+        folder: OSS_ENUM.IMAGES,
+        uploadFile,
+        getSts: () => awsApi.getSts({}),
+        uploadOptions: {
+          partSizeBytes: SINGLE_REQUEST_UPLOAD_PART_SIZE_BYTES,
+        },
+      })
+      form.setFieldValue("logo_url", logoUrl)
+      form.setFieldMeta("logo_url", (prev) => ({
+        ...prev,
+        errors: [],
+        isTouched: true,
+      }))
+      toast.success(t("tenants.toast.logoUploaded"))
+    } catch (error) {
+      console.error("[logo upload]", error)
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : t("tenants.toast.logoUploadFailed")
+      )
+    } finally {
+      setIsUploadingLogo(false)
+    }
+  }
+
+  const values = form.state.values
+  const logoLabel = useMemo(
+    () => values.name.trim() || t("tenants.form.logo_url.defaultName"),
+    [t, values.name]
+  )
+
+  const isBusy = isPending || isUploadingLogo || form.state.isSubmitting
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
@@ -98,6 +171,14 @@ export function TenantMutateSheet({
           }}
         >
           <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
+            <TenantMutateLogoSection
+              logoLabel={logoLabel}
+              values={values}
+              isUploadingLogo={isUploadingLogo}
+              fileInputRef={fileInputRef}
+              onLogoFileChange={handleLogoFileChange}
+            />
+
             <FieldGroup>
               <TenantMutateFormFields form={form} parentLabel={parentLabel} />
             </FieldGroup>
@@ -105,7 +186,7 @@ export function TenantMutateSheet({
 
           <SheetFooter className="border-t border-border/60 px-5 py-4 sm:flex-row sm:justify-end">
             <TenantMutateSheetFooter
-              isBusy={isPending || form.state.isSubmitting}
+              isBusy={isBusy}
               submitLabel={header.submitLabel}
               onCancel={handleCancel}
             />

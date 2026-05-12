@@ -73,4 +73,7 @@ pub trait AuthRepository: Send + Sync {
 
     /// Update the password hash for a specific user.
     async fn update_user_password_hash(&self, user_id: i64, password_hash: &str) -> AppResult<()>;
+
+    /// Record a successful login event and update the user's last-login timestamp.
+    async fn record_login_event(&self, user_id: i64, tenant_id: i64) -> AppResult<()>;
 }

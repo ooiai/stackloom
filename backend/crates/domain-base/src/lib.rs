@@ -64,6 +64,13 @@ pub use log_retention_policy::{LogRetentionPolicy, UpdateLogRetentionPolicyCmd};
 pub mod notification;
 pub use notification::repo::NotificationRepository;
 pub use notification::service::NotificationService;
+pub mod tenant_apply;
+pub use tenant_apply::repo::TenantApplyRepository;
+pub use tenant_apply::service::TenantApplyService;
+pub use tenant_apply::{
+    ApproveTenantApplyCmd, BanTenantApplyCmd, PageTenantApplyCmd, RejectTenantApplyCmd,
+    TenantApplyView,
+};
 pub use notification::{
     CreateNotificationRuleCmd, CreateNotificationTemplateCmd, NotificationDispatch,
     NotificationEvent, NotificationRecipientSelector, NotificationRule, NotificationRuleFire,
@@ -71,4 +78,11 @@ pub use notification::{
     PageNotificationRuleCmd, PageNotificationTemplateCmd, PageUserNotificationCmd,
     PublishNotificationCmd, UpdateNotificationRuleCmd, UpdateNotificationTemplateCmd,
     UserNotification,
+};
+pub mod stats;
+pub use stats::service::StatsService;
+pub use stats::{
+    ActiveUsersPoint, DailyOperationPoint, FunnelStep, OperationByModule, RetentionCohort,
+    StatsBehaviorView, StatsFunnelView, StatsGrowthView, StatsOverviewView, StatsQueryCmd,
+    StatsRetentionView, TopOperator, UserGrowthPoint,
 };

@@ -38,6 +38,7 @@ impl SqlxTenantRepository {
             tenants.owner_user_id,
             tenants.status,
             tenants.plan_code,
+            tenants.logo_url,
             tenants.expired_at,
             tenants.created_at,
             tenants.updated_at,
@@ -62,6 +63,7 @@ impl SqlxTenantRepository {
                 {alias}.owner_user_id,
                 {alias}.status,
                 {alias}.plan_code,
+                {alias}.logo_url,
                 {alias}.expired_at,
                 {alias}.created_at,
                 {alias}.updated_at,
@@ -91,12 +93,13 @@ impl TenantRepository for SqlxTenantRepository {
                 owner_user_id,
                 status,
                 plan_code,
+                logo_url,
                 expired_at,
                 created_at,
                 updated_at,
                 deleted_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
             RETURNING
                 id,
                 parent_id,
@@ -106,6 +109,7 @@ impl TenantRepository for SqlxTenantRepository {
                 owner_user_id,
                 status,
                 plan_code,
+                logo_url,
                 expired_at,
                 created_at,
                 updated_at,
@@ -121,6 +125,7 @@ impl TenantRepository for SqlxTenantRepository {
         .bind(&tenant.owner_user_id)
         .bind(&tenant.status)
         .bind(&tenant.plan_code)
+        .bind(&tenant.logo_url)
         .bind(&tenant.expired_at)
         .bind(&tenant.created_at)
         .bind(&tenant.updated_at)
@@ -387,6 +392,7 @@ impl TenantRepository for SqlxTenantRepository {
                 owner_user_id,
                 status,
                 plan_code,
+                logo_url,
                 expired_at,
                 created_at,
                 updated_at,
@@ -463,8 +469,9 @@ impl TenantRepository for SqlxTenantRepository {
                 owner_user_id = $6,
                 status = $7,
                 plan_code = $8,
-                expired_at = $9,
-                updated_at = $10
+                logo_url = $9,
+                expired_at = $10,
+                updated_at = $11
             WHERE id = $1
             RETURNING
                 id,
@@ -475,6 +482,7 @@ impl TenantRepository for SqlxTenantRepository {
                 owner_user_id,
                 status,
                 plan_code,
+                logo_url,
                 expired_at,
                 created_at,
                 updated_at,
@@ -495,6 +503,7 @@ impl TenantRepository for SqlxTenantRepository {
         .bind(&tenant.owner_user_id)
         .bind(&tenant.status)
         .bind(&tenant.plan_code)
+        .bind(&tenant.logo_url)
         .bind(&tenant.expired_at)
         .bind(&tenant.updated_at)
         .fetch_one(self.pool.pool())
@@ -570,6 +579,7 @@ impl TenantRepository for SqlxTenantRepository {
                 t.owner_user_id,
                 t.status,
                 t.plan_code,
+                t.logo_url,
                 t.expired_at,
                 t.created_at,
                 t.updated_at,

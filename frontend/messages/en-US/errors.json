@@ -69,6 +69,10 @@
       "codeInvalid": "This invite link is invalid or has expired. Please ask your admin for a new link.",
       "pendingApproval": "Your membership request has already been submitted and is waiting for admin approval.",
       "alreadyMember": "You are already a member of this team."
+    },
+    "tenantApply": {
+      "notFound": "Application record not found or has been removed.",
+      "alreadyProcessed": "This application has already been processed."
     }
   }
 }

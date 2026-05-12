@@ -9,7 +9,7 @@ import { AppSidebar } from "@/components/web/shared/app-sidebar"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { Suspense, useSyncExternalStore } from "react"
 
-export default function MainLayout({
+export default function MainRootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   // const { mode, setMode } = useBaseLayoutMode()

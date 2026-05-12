@@ -1,0 +1,54 @@
+{
+  "title": "Applications",
+  "description": "Review tenant creation requests from self-service signup users",
+  "columns": {
+    "tenant_name": "Tenant Name",
+    "applicant": "Applicant",
+    "phone": "Phone",
+    "email": "Email",
+    "status": "Status",
+    "applied_at": "Applied At",
+    "actions": "Actions"
+  },
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "banned": "Banned"
+  },
+  "filters": {
+    "all": "All",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "keyword_placeholder": "Search tenant name, applicant, phone"
+  },
+  "actions": {
+    "approve": "Approve",
+    "reject": "Reject",
+    "ban": "Ban"
+  },
+  "dialogs": {
+    "approve": {
+      "title": "Approve Application",
+      "description": "Approve the tenant application for \"{name}\"? The user will be able to sign in and use the platform."
+    },
+    "reject": {
+      "title": "Reject Application",
+      "description": "Reject the tenant application for \"{name}\"? The user will not be able to sign in to this tenant."
+    },
+    "ban": {
+      "title": "Ban Applicant",
+      "description": "Ban \"{name}\"? Their account will be globally banned and they cannot sign in to any tenant."
+    }
+  },
+  "toasts": {
+    "approved": "Application approved",
+    "rejected": "Application rejected",
+    "banned": "Applicant banned"
+  },
+  "empty": {
+    "title": "No Applications",
+    "description": "Tenant creation applications from self-service signup users will appear here"
+  }
+}

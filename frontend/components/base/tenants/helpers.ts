@@ -54,6 +54,7 @@ export function createTenantFormSchema(t: TranslateFn = defaultT) {
     owner_user_id: z.string().trim(),
     status: z.union([z.literal(0), z.literal(1), z.literal(2)]),
     plan_code: optionalText(100, t("tenants.form.plan_code.validation.max")),
+    logo_url: z.string().trim(),
     expired_at: z.string().trim(),
   })
 }
@@ -161,6 +162,7 @@ export function getDefaultTenantFormValues(
     owner_user_id: tenant?.owner_user_id ?? "",
     status: tenant?.status ?? 1,
     plan_code: tenant?.plan_code ?? "",
+    logo_url: tenant?.logo_url ?? "",
     expired_at: tenant?.expired_at ?? "",
   }
 }
@@ -179,6 +181,7 @@ export function buildCreateTenantParam(
     owner_user_id: parsed.owner_user_id || null,
     status: parsed.status,
     plan_code: parsed.plan_code || undefined,
+    logo_url: parsed.logo_url || undefined,
     expired_at: parsed.expired_at || null,
   }
 }
@@ -199,6 +202,7 @@ export function buildUpdateTenantParam(
     owner_user_id: parsed.owner_user_id || null,
     status: parsed.status,
     plan_code: parsed.plan_code || undefined,
+    logo_url: parsed.logo_url || undefined,
     expired_at: parsed.expired_at || null,
   }
 }

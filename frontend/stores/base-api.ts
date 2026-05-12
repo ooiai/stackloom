@@ -95,6 +95,11 @@ import type {
     UpdateUserProfileParam,
     UserData,
     UserRolesResp,
+    ApproveTenantApplyParam,
+    BanTenantApplyParam,
+    PageTenantApplyParam,
+    PaginateTenantApply,
+    RejectTenantApplyParam,
 } from "@/types/base.types"
 import type { LogRetentionPolicy } from "@/types/logs.types"
 
@@ -106,6 +111,7 @@ const BASE_ROLE_API_PREFIX = "/apiv1/base/roles"
 const BASE_PERM_API_PREFIX = "/apiv1/base/perms"
 const BASE_LOGS_API_PREFIX = "/apiv1/base/logs"
 const BASE_NOTIFICATION_API_PREFIX = "/apiv1/base/notifications"
+const BASE_TENANT_APPLY_API_PREFIX = "/apiv1/base/applies"
 const SHARED_COMMON_API_PREFIX = "/apiv1/shared/common"
 const SHARED_PROFILE_API_PREFIX = "/apiv1/shared/profile"
 const SHARED_NOTIFICATION_API_PREFIX = "/apiv1/shared/notifications"
@@ -391,4 +397,38 @@ export const logRetentionApi = {
       log_type: logType,
       retention_days: retentionDays,
     }),
+}
+
+
+const BASE_STATS_API_PREFIX = "/apiv1/base/stats"
+
+export const statsApi = {
+  overview: (params: import("@/types/stats.types").StatsQueryParam): Promise<import("@/types/stats.types").StatsOverviewData> =>
+    post(`${BASE_STATS_API_PREFIX}/overview`, params),
+
+  growth: (params: import("@/types/stats.types").StatsQueryParam): Promise<import("@/types/stats.types").StatsGrowthData> =>
+    post(`${BASE_STATS_API_PREFIX}/growth`, params),
+
+  retention: (params: import("@/types/stats.types").StatsQueryParam): Promise<import("@/types/stats.types").StatsRetentionData> =>
+    post(`${BASE_STATS_API_PREFIX}/retention`, params),
+
+  behavior: (params: import("@/types/stats.types").StatsQueryParam): Promise<import("@/types/stats.types").StatsBehaviorData> =>
+    post(`${BASE_STATS_API_PREFIX}/behavior`, params),
+
+  funnel: (params: import("@/types/stats.types").StatsQueryParam): Promise<import("@/types/stats.types").StatsFunnelData> =>
+    post(`${BASE_STATS_API_PREFIX}/funnel`, params),
+}
+
+export const tenantApplyApi = {
+  page: (params: PageTenantApplyParam): Promise<PaginateTenantApply> =>
+    post(`${BASE_TENANT_APPLY_API_PREFIX}/page`, params),
+
+  approve: (params: ApproveTenantApplyParam): Promise<void> =>
+    post(`${BASE_TENANT_APPLY_API_PREFIX}/approve`, params),
+
+  reject: (params: RejectTenantApplyParam): Promise<void> =>
+    post(`${BASE_TENANT_APPLY_API_PREFIX}/reject`, params),
+
+  ban: (params: BanTenantApplyParam): Promise<void> =>
+    post(`${BASE_TENANT_APPLY_API_PREFIX}/ban`, params),
 }

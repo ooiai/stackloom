@@ -276,6 +276,14 @@ where
         )
         .await?;
 
+        if let Err(err) = self
+            .repository
+            .record_login_event(user.id, selected.tenant_id)
+            .await
+        {
+            tracing::warn!(user_id = user.id, tenant_id = selected.tenant_id, error = %err, "failed to record login event");
+        }
+
         Ok(token.into())
     }
 
@@ -645,6 +653,7 @@ where
             owner_user_id: Some(user.id),
             status: 1,
             plan_code: None,
+            logo_url: None,
             expired_at: None,
         })
         .map_err(|err| AppError::ValidationError(err.to_string()))?;
@@ -656,7 +665,8 @@ where
             display_name,
             employee_no: None,
             job_title: None,
-            status: 1,
+            // Self-service signups start as pending (status=2) and require admin approval.
+            status: 2,
             is_default: true,
             is_tenant_admin: true,
             joined_at: Utc::now(),

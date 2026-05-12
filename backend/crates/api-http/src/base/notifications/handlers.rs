@@ -270,16 +270,16 @@ pub async fn page_rules(
     }))
 }
 
-/// Create Notification Template
+/// Create Notification Rule
 ///
 /// # Arguments
 /// * `state` - The shared auth HTTP state.
 /// * `auth_user` - The authenticated user information extracted from the request context.
 /// * `trace_context` - The request trace context for logging purposes.
-/// * `req` - The request payload containing the details of the notification template to be created.
+/// * `req` - The request payload containing the details of the notification rule to be created.
 ///
 /// # Returns
-/// * `AppResult<Json<NotificationTemplateResp>>` - The response containing the details of the created notification template wrapped in an `AppResult`.
+/// * `AppResult<Json<NotificationRuleResp>>` - The response containing the details of the created notification rule wrapped in an `AppResult`.
 pub async fn create_rule(
     State(state): State<BaseHttpState>,
     Extension(auth_user): Extension<AuthModel>,

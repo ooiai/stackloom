@@ -9,6 +9,7 @@ CREATE TABLE tenants (
     parent_id BIGINT,
     status SMALLINT NOT NULL DEFAULT 1,
     plan_code VARCHAR(100),
+    logo_url VARCHAR(500),
     expired_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -27,6 +28,7 @@ COMMENT ON COLUMN tenants.owner_user_id IS '租户拥有者用户ID';
 COMMENT ON COLUMN tenants.parent_id IS '父租户ID';
 COMMENT ON COLUMN tenants.status IS '租户状态：0禁用，1正常，2过期/冻结';
 COMMENT ON COLUMN tenants.plan_code IS '租户套餐编码';
+COMMENT ON COLUMN tenants.logo_url IS '租户 Logo URL';
 COMMENT ON COLUMN tenants.expired_at IS '租户到期时间';
 COMMENT ON COLUMN tenants.created_at IS '创建时间';
 COMMENT ON COLUMN tenants.updated_at IS '更新时间';

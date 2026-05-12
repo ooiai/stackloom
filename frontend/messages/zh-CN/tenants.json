@@ -7,7 +7,10 @@
   "toast": {
     "created": "租户已创建",
     "updated": "租户已更新",
-    "deleted": "租户已删除"
+    "deleted": "租户已删除",
+    "logoUploaded": "Logo 上传成功",
+    "logoUploadFailed": "Logo 上传失败",
+    "logoInvalid": "请选择图片文件"
   },
   "dialog": {
     "deleteTitle": "删除租户",
@@ -80,6 +83,11 @@
     },
     "status": {
       "label": "状态"
+    },
+    "logo_url": {
+      "label": "租户 Logo",
+      "change": "更换 Logo",
+      "defaultName": "租户"
     }
   },
   "status": {

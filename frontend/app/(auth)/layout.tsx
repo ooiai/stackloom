@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function AuthLayout({
+export default async function AuthRootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode

@@ -1,0 +1,83 @@
+{
+  "title": "统计分析",
+  "description": "用户增长、留存与行为数据",
+  "tabs": {
+    "overview": "总览",
+    "growth": "用户增长",
+    "retention": "留存分析",
+    "behavior": "行为分析",
+    "funnel": "漏斗分析",
+    "commercial": "商业分析"
+  },
+  "range": {
+    "label": "时间范围",
+    "days7": "近 7 天",
+    "days14": "近 14 天",
+    "days30": "近 30 天",
+    "days90": "近 90 天"
+  },
+  "overview": {
+    "total_users": "总用户数",
+    "new_users_today": "今日新增",
+    "dau": "日活 (DAU)",
+    "wau": "周活 (WAU)",
+    "mau": "月活 (MAU)",
+    "active_tenants": "活跃租户",
+    "pending_applies": "待审核申请",
+    "active_trend_title": "日活趋势",
+    "active_trend_description": "近期每日活跃用户数",
+    "growth_trend_title": "新增用户趋势",
+    "growth_trend_description": "近期每日新注册用户数",
+    "dau_label": "日活用户",
+    "new_users_label": "新增用户"
+  },
+  "growth": {
+    "title": "用户增长",
+    "description": "注册用户数量变化趋势",
+    "cumulative_title": "累计注册用户",
+    "cumulative_description": "历史累计注册用户数量",
+    "daily_title": "每日新增用户",
+    "daily_description": "每日新注册用户数量",
+    "cumulative_label": "累计用户",
+    "new_users_label": "新增用户"
+  },
+  "retention": {
+    "title": "留存分析",
+    "description": "按注册周期计算的用户留存率",
+    "cohort_date": "注册周",
+    "new_users": "新增用户",
+    "d1_rate": "次日留存",
+    "d7_rate": "7 日留存",
+    "d30_rate": "30 日留存",
+    "no_data": "暂无足够数据计算留存率"
+  },
+  "behavior": {
+    "title": "行为分析",
+    "description": "用户操作行为数据",
+    "by_module_title": "按模块操作量",
+    "by_module_description": "各功能模块累计操作次数",
+    "daily_trend_title": "每日操作趋势",
+    "daily_trend_description": "近期每日操作总次数",
+    "top_operators_title": "活跃用户 Top 10",
+    "operator": "用户",
+    "operations": "操作次数",
+    "module_label": "模块",
+    "count_label": "次数"
+  },
+  "funnel": {
+    "title": "转化漏斗",
+    "description": "用户从注册到激活的关键路径转化率",
+    "step_registered": "注册",
+    "step_logged_in": "登录",
+    "step_operated": "发起操作",
+    "step_activated": "激活为成员",
+    "count_label": "用户数",
+    "rate_label": "转化率",
+    "no_data": "暂无漏斗数据"
+  },
+  "commercial": {
+    "title": "商业分析",
+    "coming_soon": "即将上线",
+    "coming_soon_desc": "付费用户数、转化率、ARPU 等商业指标将在支付功能上线后提供"
+  }
+}

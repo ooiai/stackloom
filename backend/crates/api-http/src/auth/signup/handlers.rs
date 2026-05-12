@@ -17,6 +17,14 @@ use validator::Validate;
 /// Shared state used by the signup HTTP handlers.
 pub type SignupState = AuthHttpState;
 
+/// Send a signup verification code to the given account (email or mobile).
+///
+/// # Arguments
+/// * `state` - The shared auth HTTP state.
+/// * `req` - The request body containing the channel and account to send the code to.
+///
+/// # Returns
+/// * `AppResult<Json<SendSignupCodeResp>>` - A success indicator confirming the code was dispatched.
 pub async fn send_signup_code(
     State(state): State<SignupState>,
     DetailedJson(req): DetailedJson<SendSignupCodeReq>,

@@ -31,8 +31,9 @@ use infra_base::{
     AuditLogServiceImpl, DictServiceImpl, LogRetentionService, MenuServiceImpl,
     NotificationRuleFireJob, NotificationRuleJobScheduler, NotificationServiceImpl,
     OperationLogServiceImpl, PermServiceImpl, RoleServiceImpl, SharedContextServiceImpl,
-    SqlxLogRetentionPolicyRepository, SqlxNotificationRepository, SystemLogServiceImpl,
-    TenantServiceImpl, UserServiceImpl, UserTenantRoleServiceImpl, UserTenantServiceImpl,
+    SqlxLogRetentionPolicyRepository, SqlxNotificationRepository, StatsServiceImpl,
+    SystemLogServiceImpl, TenantApplyServiceImpl, TenantServiceImpl, UserServiceImpl,
+    UserTenantRoleServiceImpl, UserTenantServiceImpl,
 };
 use infra_system::{MonitorServiceImpl, StorageBrowseServiceImpl, SysModule};
 
@@ -177,6 +178,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         notification_service: notification_service.clone(),
     };
     let log_retention_repo = Arc::new(SqlxLogRetentionPolicyRepository::new(base_pool.clone()));
+    let tenant_apply_service = Arc::new(TenantApplyServiceImpl::new(base_pool.clone()));
+    let stats_service = Arc::new(StatsServiceImpl::new(base_pool.clone()));
 
     // Initialize LogRetentionService for scheduled cleanup jobs
     tracing::info!("Monolith initializing LogRetentionService...");
@@ -209,6 +212,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         operation_log_service: operation_log_service.clone(),
         log_retention_repo,
         notification_service: notification_service.clone(),
+        tenant_apply_service,
+        stats_service,
     };
     let shared_http_state = SharedHttpState {
         cfg: cfg.clone(),

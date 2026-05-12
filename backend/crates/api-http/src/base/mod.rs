@@ -3,7 +3,8 @@ use std::sync::Arc;
 use common::config::env_config::EnvConfig;
 use domain_base::{
     DictService, MenuService, NotificationService, PermService, RoleService, SharedContextService,
-    TenantService, UserService, UserTenantRoleService, UserTenantService,
+    StatsService, TenantApplyService, TenantService, UserService, UserTenantRoleService,
+    UserTenantService,
 };
 use domain_base::{LogRetentionPolicyRepository, OperationLogService};
 use domain_system::{
@@ -16,6 +17,7 @@ use neocrates::{
     rediscache::RedisPool,
 };
 
+pub mod applies;
 pub mod dicts;
 mod logging;
 pub mod logs;
@@ -23,6 +25,7 @@ pub mod menus;
 pub mod notifications;
 pub mod perms;
 pub mod roles;
+pub mod stats;
 pub mod storage;
 pub mod tenants;
 pub mod users;
@@ -48,6 +51,8 @@ pub struct BaseHttpState {
     pub operation_log_service: Arc<dyn OperationLogService>,
     pub log_retention_repo: Arc<dyn LogRetentionPolicyRepository>,
     pub notification_service: Arc<dyn NotificationService>,
+    pub tenant_apply_service: Arc<dyn TenantApplyService>,
+    pub stats_service: Arc<dyn StatsService>,
 }
 
 /// The users router, which will be nested under the `/users` path.
@@ -69,6 +74,8 @@ pub fn router(state: BaseHttpState, mw: Arc<MiddlewareConfig>) -> Router {
     let logs_router = logs::router(state.clone());
     let storage_router = storage::router(state.clone());
     let notifications_router = notifications::router(state.clone());
+    let applies_router = applies::router(state.clone());
+    let stats_router = stats::router(state.clone());
 
     Router::new()
         .with_state(state.clone())
@@ -81,6 +88,8 @@ pub fn router(state: BaseHttpState, mw: Arc<MiddlewareConfig>) -> Router {
         .nest("/logs", logs_router)
         .nest("/storage", storage_router)
         .nest("/notifications", notifications_router)
+        .nest("/applies", applies_router)
+        .nest("/stats", stats_router)
         .layer(middleware::from_fn_with_state(
             state,
             crate::request_logging::base_request_trace_middleware,

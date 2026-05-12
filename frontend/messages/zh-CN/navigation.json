@@ -148,5 +148,17 @@
   "tools-notifications": {
     "name": "通知中心",
     "remark": "管理手动通知、模板与事件规则"
+  },
+  "biz-group": {
+    "name": "业务管理",
+    "remark": "业务审核与运营管理"
+  },
+  "biz-apply": {
+    "name": "申请审核",
+    "remark": "审核自助注册用户的租户申请"
+  },
+  "biz-stats": {
+    "name": "统计分析",
+    "remark": "用户增长、留存与行为统计"
   }
 }

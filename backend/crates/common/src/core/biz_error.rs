@@ -57,3 +57,9 @@ pub const INVITE_CODE_ALREADY_MEMBER: &str = "errors.biz.invite.alreadyMember";
 pub const NOTIFICATION_TEMPLATE_CODE_EXISTS: &str = "errors.biz.notifications.templateCodeExists";
 pub const NOTIFICATION_RECIPIENT_EMPTY: &str = "errors.biz.notifications.recipientEmpty";
 pub const NOTIFICATION_EVENT_ACTOR_REQUIRED: &str = "errors.biz.notifications.eventActorRequired";
+
+// 419xxx: tenant apply
+/// The tenant application was not found or does not exist.
+pub const TENANT_APPLY_NOT_FOUND: &str = "errors.biz.tenantApply.notFound";
+/// The tenant application has already been processed (approved, rejected, or banned).
+pub const TENANT_APPLY_ALREADY_PROCESSED: &str = "errors.biz.tenantApply.alreadyProcessed";

@@ -26,6 +26,15 @@ use super::{
     },
 };
 
+/// Page the current user's inbox notifications with optional filtering.
+///
+/// # Arguments
+/// * `state` - The shared HTTP state.
+/// * `auth_user` - The authenticated user.
+/// * `req` - The request body containing pagination and filter parameters.
+///
+/// # Returns
+/// * `AppResult<Json<PaginateUserNotificationResp>>` - The paginated user notification list.
 pub async fn page(
     State(state): State<SharedHttpState>,
     Extension(auth_user): Extension<AuthModel>,
@@ -51,6 +60,14 @@ pub async fn page(
     }))
 }
 
+/// Get the unread notification count for the current user.
+///
+/// # Arguments
+/// * `state` - The shared HTTP state.
+/// * `auth_user` - The authenticated user.
+///
+/// # Returns
+/// * `AppResult<Json<NotificationUnreadCountResp>>` - The current unread notification count.
 pub async fn unread_count(
     State(state): State<SharedHttpState>,
     Extension(auth_user): Extension<AuthModel>,
@@ -63,6 +80,15 @@ pub async fn unread_count(
     Ok(Json(NotificationUnreadCountResp { count }))
 }
 
+/// Mark specific notifications as read for the current user.
+///
+/// # Arguments
+/// * `state` - The shared HTTP state.
+/// * `auth_user` - The authenticated user.
+/// * `req` - The request body containing the notification IDs to mark as read.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - An empty response on success.
 pub async fn mark_read(
     State(state): State<SharedHttpState>,
     Extension(auth_user): Extension<AuthModel>,
@@ -79,6 +105,15 @@ pub async fn mark_read(
     Ok(Json(()))
 }
 
+/// Mark all notifications as read for the current user.
+///
+/// # Arguments
+/// * `state` - The shared HTTP state.
+/// * `auth_user` - The authenticated user.
+/// * `req` - The request body (reserved for future filter options).
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - An empty response on success.
 pub async fn mark_all_read(
     State(state): State<SharedHttpState>,
     Extension(auth_user): Extension<AuthModel>,
@@ -95,6 +130,15 @@ pub async fn mark_all_read(
     Ok(Json(()))
 }
 
+/// Archive specific notifications for the current user.
+///
+/// # Arguments
+/// * `state` - The shared HTTP state.
+/// * `auth_user` - The authenticated user.
+/// * `req` - The request body containing the notification IDs to archive.
+///
+/// # Returns
+/// * `AppResult<Json<()>>` - An empty response on success.
 pub async fn archive(
     State(state): State<SharedHttpState>,
     Extension(auth_user): Extension<AuthModel>,
@@ -111,6 +155,14 @@ pub async fn archive(
     Ok(Json(()))
 }
 
+/// SSE stream delivering real-time notification signals for the current user.
+///
+/// # Arguments
+/// * `state` - The shared HTTP state.
+/// * `auth_user` - The authenticated user.
+///
+/// # Returns
+/// * `Sse<impl Stream<Item = Result<Event, Infallible>>>` - A server-sent event stream filtered to the current tenant and user.
 pub async fn stream(
     State(state): State<SharedHttpState>,
     Extension(auth_user): Extension<AuthModel>,

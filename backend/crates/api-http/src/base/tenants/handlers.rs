@@ -44,6 +44,8 @@ pub async fn create(
     req.validate()
         .map_err(|e| AppError::ValidationError(e.to_string()))?;
 
+    let req =
+        req.normalize_logo_url(state.cfg.as_ref(), state.object_storage_service.as_ref())?;
     let cmd: CreateTenantCmd = req.into();
     let tenant = state.tenant_service.create(cmd).await?;
     let tenant_id = tenant.id;
@@ -223,6 +225,8 @@ pub async fn update(
     let id = req.id;
     let before_snapshot =
         logging::serialize_snapshot(TenantResp::from(state.tenant_service.get(id).await?));
+    let req =
+        req.normalize_logo_url(state.cfg.as_ref(), state.object_storage_service.as_ref())?;
     let cmd: UpdateTenantCmd = req.into();
     let tenant = state.tenant_service.update(id, cmd).await?;
     if let Err(err) = state.shared_context_service.invalidate_by_tenant(id).await {

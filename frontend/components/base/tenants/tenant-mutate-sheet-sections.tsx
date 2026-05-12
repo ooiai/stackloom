@@ -1,11 +1,22 @@
 "use client"
 
-import type { ReactNode } from "react"
+import type { ChangeEvent, KeyboardEvent, ReactNode, RefObject } from "react"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { resolveAwsObjectUrl } from "@/lib/aws"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/providers/i18n-provider"
-import { Loader2Icon } from "lucide-react"
+import type { TenantFormValues } from "@/types/base.types"
+import { CameraIcon, Loader2Icon } from "lucide-react"
+
+interface LogoSectionProps {
+  logoLabel: string
+  values: TenantFormValues
+  isUploadingLogo: boolean
+  fileInputRef: RefObject<HTMLInputElement | null>
+  onLogoFileChange: (event: ChangeEvent<HTMLInputElement>) => Promise<void>
+}
 
 function SectionHeader({
   title,
@@ -25,6 +36,76 @@ function SectionHeader({
         {description}
       </p>
     </div>
+  )
+}
+
+export function TenantMutateLogoSection({
+  logoLabel,
+  values,
+  isUploadingLogo,
+  fileInputRef,
+  onLogoFileChange,
+}: LogoSectionProps) {
+  const { t } = useI18n()
+  const triggerFileInput = () => fileInputRef.current?.click()
+  const logoSrc = resolveAwsObjectUrl(values.logo_url)
+
+  const handleLogoKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      triggerFileInput()
+    }
+  }
+
+  return (
+    <section className="overflow-hidden rounded-xl border border-border/60 bg-muted/20 p-4 transition-colors hover:border-border/80">
+      <div className="flex flex-col items-start gap-5">
+        <div className="flex items-center gap-4">
+          <div
+            className="group relative cursor-pointer rounded-full ring-offset-2 ring-offset-background transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            role="button"
+            tabIndex={0}
+            aria-label={t("tenants.form.logo_url.change")}
+            onClick={triggerFileInput}
+            onKeyDown={handleLogoKeyDown}
+          >
+            <Avatar className="size-14 ring-2 ring-border/70 ring-offset-2 ring-offset-background transition-all duration-300 group-hover:ring-primary/60 sm:size-16">
+              <AvatarImage src={logoSrc} alt={logoLabel} />
+              <AvatarFallback className="bg-primary/5 text-base font-semibold text-primary/80">
+                {logoLabel.slice(0, 1).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+
+            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 transition-all duration-300 group-hover:bg-black/35">
+              <CameraIcon className="size-5 translate-y-1 text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" />
+            </div>
+
+            {isUploadingLogo ? (
+              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 backdrop-blur-[1px]">
+                <Loader2Icon className="size-6 animate-spin text-white" />
+              </div>
+            ) : null}
+          </div>
+
+          <div className="min-w-0 space-y-1.5">
+            <h2 className="text-sm leading-tight font-semibold text-foreground sm:text-base">
+              {logoLabel}
+            </h2>
+            <p className="max-w-xs text-[12px] leading-5 text-muted-foreground">
+              {t("tenants.form.logo_url.label")}
+            </p>
+          </div>
+        </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(event) => void onLogoFileChange(event)}
+        />
+      </div>
+    </section>
   )
 }
 

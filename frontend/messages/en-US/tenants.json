@@ -7,7 +7,10 @@
   "toast": {
     "created": "Tenant created",
     "updated": "Tenant updated",
-    "deleted": "Tenant deleted"
+    "deleted": "Tenant deleted",
+    "logoUploaded": "Logo uploaded",
+    "logoUploadFailed": "Logo upload failed",
+    "logoInvalid": "Please select an image file"
   },
   "dialog": {
     "deleteTitle": "Delete tenant",
@@ -80,6 +83,11 @@
     },
     "status": {
       "label": "Status"
+    },
+    "logo_url": {
+      "label": "Tenant Logo",
+      "change": "Change Logo",
+      "defaultName": "Tenant"
     }
   },
   "status": {

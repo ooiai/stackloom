@@ -7,7 +7,7 @@ import { useBaseLayoutMode } from "@/hooks/use-base-layout-mode"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { Suspense, useSyncExternalStore } from "react"
 
-export default function RootLayout({
+export default function UpmsRootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const { mode, setMode } = useBaseLayoutMode()
