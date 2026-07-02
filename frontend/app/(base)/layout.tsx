@@ -11,6 +11,7 @@ import { AlertDialogProvider } from "@/providers/dialog-providers"
 import { I18nProvider } from "@/providers/i18n-provider"
 import { QueryProviders } from "@/providers/query-providers"
 import "../globals.css"
+import { BaseLayoutClient } from "./base-layout-client"
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale()
@@ -55,7 +56,9 @@ export default async function BaseRootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <I18nProvider locale={locale} messages={messages}>
             <AlertDialogProvider>
-              <QueryProviders>{children}</QueryProviders>
+              <QueryProviders>
+                <BaseLayoutClient>{children}</BaseLayoutClient>
+              </QueryProviders>
             </AlertDialogProvider>
             <AxiosErrorHandler />
             <Toaster richColors />

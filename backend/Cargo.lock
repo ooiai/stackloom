@@ -3857,7 +3857,7 @@ dependencies = [
 
 [[package]]
 name = "neocrates"
-version = "0.1.53"
+version = "0.1.55"
 dependencies = [
  "anyhow",
  "argon2",
