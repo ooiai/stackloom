@@ -112,6 +112,7 @@ impl UpdateProfileReq {
             user: UpdateUserCmd {
                 email: self.email,
                 phone: self.phone,
+                password_hash: None,
                 nickname: self.nickname,
                 avatar_url: self.avatar_url,
                 gender: None,

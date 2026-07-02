@@ -1,0 +1,49 @@
+{
+  "title": "Sign & Auth Key Generator",
+  "description": "Generate HMAC-SHA256 signature keys and double-base64 Basic Auth credentials for development and configuration.",
+  "actions": {
+    "copied": "Copied",
+    "copy": "Copy",
+    "generate": "Generate",
+    "generateSignature": "Generate Signature",
+    "generateBasicAuth": "Generate Basic Auth Key",
+    "decode": "Decode"
+  },
+  "toast": {
+    "copied": "Copied to clipboard",
+    "secretKeyRequired": "Secret key is required",
+    "uriRequired": "URI is required",
+    "invalidJsonBody": "Body is not valid JSON",
+    "invalidJsonParams": "Params is not valid JSON",
+    "basicInputRequired": "Credential string is required",
+    "decodeInputRequired": "Encoded string is required",
+    "decodeFailed": "Unable to decode the input string"
+  },
+  "section": {
+    "signature": {
+      "title": "Signature Generator",
+      "secretKey": "Secret Key",
+      "secretKeyHint": "Random 32-character hex string, configured as NEXT_PUBLIC_SIGIN in .env or SIGNATURE_SECRET_KEY in gateway config.",
+      "secretKeyPlaceholder": "75e183ad2bdfbb2b6f1d9eabf2b9e400",
+      "method": "HTTP Method",
+      "uri": "URI Path",
+      "body": "Request Body (JSON)",
+      "params": "Query Params (JSON)",
+      "output": "Signature (HMAC-SHA256 Hex)"
+    },
+    "basicAuth": {
+      "title": "Basic Auth Key Generator",
+      "input": "Credential String",
+      "inputHint": "Format: namespace::purpose, e.g. topedu::auth. Used in config.yml auth_basics.",
+      "singleBase64": "Single Base64 (Standard Basic Auth)",
+      "doubleBase64": "Double Base64 (StackLoom auth_basics)",
+      "usageHint": "Copy the Double Base64 value above into backend config.yml under auth_basics. The Single Base64 is standard HTTP Basic Auth."
+    },
+    "decoder": {
+      "title": "Basic Auth Decoder",
+      "input": "Encoded String",
+      "placeholder": "ZEc5d1pXUjFPanBoZFhSbw==",
+      "output": "Decoded String"
+    }
+  }
+}

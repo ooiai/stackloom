@@ -230,6 +230,7 @@ export interface UpdateUserParam {
   id: string
   email?: string | null
   phone?: string | null
+  password_hash?: string
   nickname?: string | null
   avatar_url?: string | null
   gender?: UserGender
@@ -791,8 +792,7 @@ export interface CreateNotificationTemplateParam {
   status: NotificationTemplateStatus
 }
 
-export interface UpdateNotificationTemplateParam
-  extends CreateNotificationTemplateParam {
+export interface UpdateNotificationTemplateParam extends CreateNotificationTemplateParam {
   id: string
 }
 
@@ -842,8 +842,10 @@ export interface ArchiveNotificationsParam {
   ids: string[]
 }
 
-export type PaginateNotificationDispatch = PaginateResp<NotificationDispatchData>
-export type PaginateNotificationTemplate = PaginateResp<NotificationTemplateData>
+export type PaginateNotificationDispatch =
+  PaginateResp<NotificationDispatchData>
+export type PaginateNotificationTemplate =
+  PaginateResp<NotificationTemplateData>
 export type PaginateNotificationRule = PaginateResp<NotificationRuleData>
 export type PaginateUserNotification = PaginateResp<UserNotificationData>
 
@@ -958,4 +960,3 @@ export interface OAuthClientFormValues {
 }
 
 export type PaginateOAuthClient = PaginateResp<OAuthClientData>
-

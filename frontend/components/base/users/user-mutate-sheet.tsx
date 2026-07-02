@@ -58,7 +58,6 @@ export function UserMutateSheet({
   const { uploadFile } = useAwsS3()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
 
   const header: UserMutateSheetHeader =
     mode === "create"
@@ -76,7 +75,6 @@ export function UserMutateSheet({
 
   const resetFormState = () => {
     form.reset(defaultValues)
-    setShowPassword(false)
     setIsUploadingAvatar(false)
   }
 
@@ -84,7 +82,6 @@ export function UserMutateSheet({
     if (nextOpen) {
       resetFormState()
     } else {
-      setShowPassword(false)
       setIsUploadingAvatar(false)
     }
 
@@ -183,12 +180,7 @@ export function UserMutateSheet({
             />
 
             <FieldGroup>
-              <UserMutateFormFields
-                form={form}
-                mode={mode}
-                showPassword={showPassword}
-                onTogglePassword={() => setShowPassword((prev) => !prev)}
-              />
+              <UserMutateFormFields form={form} mode={mode} />
             </FieldGroup>
           </div>
 

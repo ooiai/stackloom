@@ -87,9 +87,15 @@ where
         self.repository.page(&query).await
     }
 
-    async fn update(&self, id: i64, cmd: UpdateUserCmd) -> AppResult<User> {
+    async fn update(&self, id: i64, mut cmd: UpdateUserCmd) -> AppResult<User> {
         cmd.validate()
             .map_err(|err| AppError::ValidationError(err.to_string()))?;
+
+        if let Some(ref hash) = cmd.password_hash {
+            cmd.password_hash = Some(Crypto::hash_password(hash).map_err(|err| {
+                AppError::data_here(format!("failed to hash user password: {err}"))
+            })?);
+        }
 
         let mut user = self
             .repository

@@ -26,6 +26,7 @@ export const LOCALE_MESSAGE_MODULES = [
   "tenant-apply",
   "stats",
   "oauth-clients",
+  "sign-keys",
 ] as const
 
 export type LocaleMessageModule = (typeof LOCALE_MESSAGE_MODULES)[number]
@@ -88,6 +89,8 @@ const MESSAGE_MODULE_LOADERS: Record<
     stats: async () => (await import("@/messages/en-US/stats.json")).default,
     "oauth-clients": async () =>
       (await import("@/messages/en-US/oauth-clients.json")).default,
+    "sign-keys": async () =>
+      (await import("@/messages/en-US/sign-keys.json")).default,
   },
   "zh-CN": {
     common: async () => (await import("@/messages/zh-CN/common.json")).default,
@@ -118,6 +121,8 @@ const MESSAGE_MODULE_LOADERS: Record<
     stats: async () => (await import("@/messages/zh-CN/stats.json")).default,
     "oauth-clients": async () =>
       (await import("@/messages/zh-CN/oauth-clients.json")).default,
+    "sign-keys": async () =>
+      (await import("@/messages/zh-CN/sign-keys.json")).default,
   },
 }
 

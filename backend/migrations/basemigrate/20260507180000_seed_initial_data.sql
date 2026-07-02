@@ -102,6 +102,8 @@ INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redire
 ON CONFLICT DO NOTHING;
 INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (619200000000000001, NULL, 618732385923576423, 'BIZ::STATS', '统计分析', '/biz/stats', NULL, '/biz/stats/overview', 'BarChart2', 1, 1015, true, false, 1, '2026-05-12 07:29:00.333408+00', '2026-05-12 07:36:08.29164+00', NULL, '用户增长、留存与行为统计')
 ON CONFLICT DO NOTHING;
+INSERT INTO menus (id, tenant_id, parent_id, code, name, path, component, redirect, icon, menu_type, sort, visible, keep_alive, status, created_at, updated_at, deleted_at, description) VALUES (626591988388475495, NULL, 617274543580459623, 'TOOLS::SIGNKEYS', '签名工具', '/dev/sign-keys', NULL, NULL, 'FilePenLine', 2, 30, true, false, 1, '2026-07-02 15:52:08.870226+00', '2026-07-02 15:52:08.870226+00', NULL, '签名工具')
+ON CONFLICT DO NOTHING;
 
 -- ==========================================================
 -- PERMS

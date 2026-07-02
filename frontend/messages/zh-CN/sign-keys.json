@@ -1,0 +1,49 @@
+{
+  "title": "签名密钥生成器",
+  "description": "生成 HMAC-SHA256 签名密钥与双重 Base64 Basic Auth 凭证，用于开发与配置。",
+  "actions": {
+    "copied": "已复制",
+    "copy": "复制",
+    "generate": "生成",
+    "generateSignature": "生成签名",
+    "generateBasicAuth": "生成 Basic Auth 密钥",
+    "decode": "解码"
+  },
+  "toast": {
+    "copied": "已复制到剪贴板",
+    "secretKeyRequired": "请输入密钥",
+    "uriRequired": "请输入 URI",
+    "invalidJsonBody": "Body 不是合法的 JSON",
+    "invalidJsonParams": "Params 不是合法的 JSON",
+    "basicInputRequired": "请输入凭证字符串",
+    "decodeInputRequired": "请输入编码字符串",
+    "decodeFailed": "无法解码输入的字符串"
+  },
+  "section": {
+    "signature": {
+      "title": "签名生成器",
+      "secretKey": "密钥",
+      "secretKeyHint": "随机 32 位十六进制字符串，配置在 .env 的 NEXT_PUBLIC_SIGIN 或网关的 SIGNATURE_SECRET_KEY。",
+      "secretKeyPlaceholder": "75e183ad2bdfbb2b6f1d9eabf2b9e400",
+      "method": "HTTP 方法",
+      "uri": "URI 路径",
+      "body": "请求 Body (JSON)",
+      "params": "查询参数 (JSON)",
+      "output": "签名 (HMAC-SHA256 Hex)"
+    },
+    "basicAuth": {
+      "title": "Basic Auth 密钥生成器",
+      "input": "凭证字符串",
+      "inputHint": "格式: namespace::purpose，如 topedu::auth。用于 config.yml 的 auth_basics。",
+      "singleBase64": "单次 Base64（标准 Basic Auth）",
+      "doubleBase64": "双重 Base64（StackLoom auth_basics）",
+      "usageHint": "将上方的双重 Base64 值复制到 backend config.yml 的 auth_basics。单次 Base64 为标准 HTTP Basic Auth 格式。"
+    },
+    "decoder": {
+      "title": "Basic Auth 解码器",
+      "input": "编码字符串",
+      "placeholder": "ZEc5d1pXUjFPanBoZFhSbw==",
+      "output": "解码结果"
+    }
+  }
+}

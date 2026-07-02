@@ -79,6 +79,10 @@ impl User {
             self.status = status;
         }
 
+        if let Some(password_hash) = cmd.password_hash {
+            self.password_hash = password_hash;
+        }
+
         if let Some(bio) = cmd.bio {
             self.bio = bio;
         }
@@ -150,6 +154,7 @@ impl CreateUserCmd {
 pub struct UpdateUserCmd {
     pub email: Option<Option<String>>,
     pub phone: Option<Option<String>>,
+    pub password_hash: Option<String>,
     pub nickname: Option<Option<String>>,
     pub avatar_url: Option<Option<String>>,
     pub gender: Option<i16>,
@@ -159,6 +164,14 @@ pub struct UpdateUserCmd {
 
 impl UpdateUserCmd {
     pub fn validate(&self) -> AppResult<()> {
+        if let Some(ref hash) = self.password_hash {
+            if hash.trim().is_empty() {
+                return Err(neocrates::response::error::AppError::ValidationError(
+                    "password_hash cannot be empty".to_string(),
+                ));
+            }
+        }
+
         if let Some(gender) = self.gender {
             User::validate_gender(gender)?;
         }

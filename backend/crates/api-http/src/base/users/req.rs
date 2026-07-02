@@ -169,6 +169,9 @@ pub struct UpdateUserReq {
     #[serde(default)]
     #[validate(custom(function = "validate_nullable_bio"))]
     pub bio: Option<Option<String>>,
+
+    #[validate(length(min = 1))]
+    pub password_hash: Option<String>,
 }
 
 impl From<UpdateUserReq> for UpdateUserCmd {
@@ -176,6 +179,7 @@ impl From<UpdateUserReq> for UpdateUserCmd {
         Self {
             email: req.email,
             phone: req.phone,
+            password_hash: req.password_hash,
             nickname: req.nickname,
             avatar_url: req.avatar_url,
             gender: req.gender,
@@ -200,6 +204,7 @@ impl UpdateUserReq {
             gender,
             status,
             bio,
+            password_hash,
         } = self;
 
         Ok(Self {
@@ -216,6 +221,7 @@ impl UpdateUserReq {
             gender,
             status,
             bio,
+            password_hash,
         })
     }
 }

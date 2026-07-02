@@ -274,14 +274,15 @@ impl UserRepository for SqlxUserRepository {
             r#"
             UPDATE users
             SET
-                email = $2,
-                phone = $3,
-                nickname = $4,
-                avatar_url = $5,
-                gender = $6,
-                status = $7,
-                bio = $8,
-                updated_at = $9
+                password_hash = $2,
+                email = $3,
+                phone = $4,
+                nickname = $5,
+                avatar_url = $6,
+                gender = $7,
+                status = $8,
+                bio = $9,
+                updated_at = $10
             WHERE id = $1
               AND deleted_at IS NULL
             RETURNING
@@ -303,6 +304,7 @@ impl UserRepository for SqlxUserRepository {
             "#,
         )
         .bind(user.id)
+        .bind(&user.password_hash)
         .bind(&user.email)
         .bind(&user.phone)
         .bind(&user.nickname)

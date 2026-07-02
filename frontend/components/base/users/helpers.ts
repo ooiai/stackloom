@@ -259,6 +259,9 @@ export function buildUpdateUserParam(
     id,
     email: normalizeOptionalUpdateValue(values.email, parsed.email),
     phone: normalizeOptionalUpdateValue(values.phone, parsed.phone),
+    password_hash: values.password
+      ? CryptUtil.md5Double(values.password)
+      : undefined,
     nickname: normalizeOptionalUpdateValue(values.nickname, parsed.nickname),
     avatar_url: resolveAwsObjectRequestValue(
       normalizeOptionalUpdateValue(values.avatar_url, parsed.avatar_url)

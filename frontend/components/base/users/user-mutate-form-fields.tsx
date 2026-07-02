@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { FieldError } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
@@ -12,6 +11,7 @@ import {
 } from "@/components/reui/select"
 import { Textarea } from "@/components/reui/textarea"
 import { LabelField } from "@/components/topui/label-field"
+import PasswordStrengthInput from "@/components/topui/password-strength-input"
 import {
   UserMutateAccountSection,
   UserMutateProfileSection,
@@ -21,20 +21,15 @@ import { cn } from "@/lib/utils"
 import { getUserGenderOptions, getUserStatusOptions } from "./helpers"
 import { useI18n } from "@/providers/i18n-provider"
 import type { UserMutateMode } from "@/types/base.types"
-import { EyeIcon, EyeOffIcon } from "lucide-react"
 
 interface UserMutateFormFieldsProps {
   form: UserMutateFormApi
   mode: UserMutateMode
-  showPassword: boolean
-  onTogglePassword: () => void
 }
 
 export function UserMutateFormFields({
   form,
   mode,
-  showPassword,
-  onTogglePassword,
 }: UserMutateFormFieldsProps) {
   const { t } = useI18n()
   const genderOptions = getUserGenderOptions(t)
@@ -117,6 +112,40 @@ export function UserMutateFormFields({
           }}
         </form.Field>
 
+        <form.Field name="password">
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid
+
+            return (
+              <LabelField
+                className="md:col-span-2"
+                label={t("users.form.password.label")}
+                htmlFor={field.name}
+                invalid={isInvalid}
+                tooltip={{ content: t("users.form.password.tooltip") }}
+                error={
+                  isInvalid ? (
+                    <FieldError errors={field.state.meta.errors} />
+                  ) : null
+                }
+              >
+                <PasswordStrengthInput
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    field.handleChange(event.target.value)
+                  }
+                  aria-invalid={isInvalid}
+                  placeholder={t("users.form.password.placeholder")}
+                />
+              </LabelField>
+            )
+          }}
+        </form.Field>
+
         <form.Field name="email">
           {(field) => {
             const isInvalid =
@@ -180,64 +209,6 @@ export function UserMutateFormFields({
             )
           }}
         </form.Field>
-
-        {mode === "create" ? (
-          <form.Field name="password">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
-
-              return (
-                <LabelField
-                  className="md:col-span-2"
-                  label={t("users.form.password.label")}
-                  htmlFor={field.name}
-                  invalid={isInvalid}
-                  tooltip={{ content: t("users.form.password.tooltip") }}
-                  error={
-                    isInvalid ? (
-                      <FieldError errors={field.state.meta.errors} />
-                    ) : null
-                  }
-                >
-                  <div className="relative">
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type={showPassword ? "text" : "password"}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      aria-invalid={isInvalid}
-                      placeholder={t("users.form.password.placeholder")}
-                      className="pr-10"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute top-0 right-0 h-full px-3 py-2 text-muted-foreground hover:bg-transparent hover:text-foreground"
-                      onClick={onTogglePassword}
-                    >
-                      {showPassword ? (
-                        <EyeOffIcon className="size-4" />
-                      ) : (
-                        <EyeIcon className="size-4" />
-                      )}
-                      <span className="sr-only">
-                        {showPassword
-                          ? t("users.form.password.hide")
-                          : t("users.form.password.show")}
-                      </span>
-                    </Button>
-                  </div>
-                </LabelField>
-              )
-            }}
-          </form.Field>
-        ) : null}
       </UserMutateAccountSection>
 
       <UserMutateProfileSection>
