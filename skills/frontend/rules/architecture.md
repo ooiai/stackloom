@@ -123,12 +123,116 @@ For permissioned admin features, the controller is the place to:
 
 For auth flows, the equivalent file is usually `*-page-view.tsx` instead of `*-page-container.tsx`.
 
+#### Controller conventions
+
+Every controller hook must follow these patterns.
+
+**Return shape:**
+
+Controllers expose a structured return with named bags, not a flat props object:
+
+- `view` — normalized props for the page container (data, pagination, filters, permissions, callbacks)
+- `sheet` — mutate sheet state and callbacks (mode, open, user, onSubmit, onClose, isSubmitting)
+- `assignRolesDialog` / `assignMenusDialog` etc. — secondary dialog state and callbacks
+
+This keeps `page.tsx` able to destructure `{ view, sheet, assignRolesDialog }` directly.
+
+**React Query key naming:**
+
+Use a namespaced array pattern: `["<group>", "<entity>", pageParams]`
+
+- `["base", "users", pageParams]` for base-crate entities
+- `["web", "notificationRules", pageParams]` for web-crate entities
+- `["auth", "headerContext"]` for auth-related queries
+
+The first segment identifies the backend crate group; the second identifies the entity; the third is the query-dependent params.
+
+**`useMutation` pattern:**
+
+Every mutation must follow this template:
+
+```typescript
+const createMutation = useMutation({
+    mutationFn: async (values: XxxFormValues) => {
+        return xxxApi.create(await buildCreateXxxParam(values, t));
+    },
+    onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ["group", "entity"] });
+        toast.success(t("xxx.toast.created"));
+        setSheet(DEFAULT_SHEET_STATE);
+    },
+});
+```
+
+Key rules:
+
+- `mutationFn` calls the API store function
+- `onSuccess` invalidates the relevant query, shows a toast, and resets UI state
+- Pass the translation function `t` to payload builders so validation messages are localized
+- Use `mutateAsync` in action handlers for explicit error handling
+
+**URL sync:**
+
+Filters and pagination must sync with URL search params via `router.replace()`. The pattern:
+
+1. Initialize `filters` and `pagination` from `searchParams`
+2. On filter/page change, call `router.replace(nextUrl, { scroll: false })` to update the URL
+3. Debounce filter changes via `useDebouncedValue(filters, 300)` before sending to the API
+4. Use `parsePageNumber`/`parsePageSize` helpers to safely read URL params
+5. Reset `pageIndex` to 0 when filters change
+
+This ensures bookmarkable URLs and browser back/forward support.
+
+**Delete confirmation:**
+
+Use the shared `useAlertDialog()` pattern:
+
+```typescript
+const confirmRemove = useCallback(
+    (entity: XxxData) => {
+        if (
+            !guardPerm(XXX_ACTION_PERMS.remove, {
+                source: "xxx.remove.confirm",
+            })
+        )
+            return;
+
+        dialog.show({
+            variant: "destructive",
+            title: t("xxx.dialog.deleteTitle"),
+            description: t("xxx.dialog.deleteDescription", {
+                name: entity.name,
+            }),
+            confirmText: t("common.actions.delete"),
+            cancelText: t("common.actions.cancel"),
+            autoCloseOnConfirm: true,
+            onConfirm: async () => {
+                await removeMutation.mutateAsync([entity.id]);
+            },
+        });
+    },
+    [dialog, guardPerm, removeMutation, t],
+);
+```
+
+Do not build custom confirmation modals per feature — use the shared `useAlertDialog()`.
+
 ### `*-page-columns.tsx`
 
 - table column factories only
 - row actions only
 - accept callbacks, permission props/predicates, and translation function through params
 - do not call shared permission hooks directly from the column factory
+
+### `*-status-badge.tsx`
+
+Every feature with a status field should have a status badge component:
+
+- receives: `status` value, optional `t` translation function
+- delegates to `helpers.ts` → `getXxxStatusMeta(status, t)` for label + badge variant
+- renders a shared `Badge` component from `@/components/reui/badge`
+- `helpers.ts` owns the status → `{ label, description?, badgeVariant }` map
+- Do not inline status-to-label logic in the badge component or columns
 
 ### `use-*-mutate-form.ts`
 
@@ -141,6 +245,17 @@ For auth flows, the equivalent file is usually `*-page-view.tsx` instead of `*-p
 - thin shell around the sheet
 - submit orchestration
 - open/close reset behavior
+
+### `*-detail-panel.tsx` / `*-tree-sidebar.tsx` (tree pages only)
+
+Tree pages (`dicts`, `menus`, `roles`, `tenants`) use a sidebar + detail panel layout:
+
+- `*-tree-sidebar.tsx` renders the tree, handles selection, provides add-child / add-root actions
+- `*-detail-panel.tsx` renders the selected node's metadata, children table, and edit/delete actions
+- `*-page-container.tsx` composes both sidebars + detail panel in a split layout
+- The controller owns `selectedNode`, `expandedIds`, and CRUD orchestration
+- Tree-sidebar receives node data, selection state, expansion state, and callbacks from the controller
+- Detail panel receives the selected node, children data, permissions, and callbacks from the controller
 
 ### `helpers.ts`
 

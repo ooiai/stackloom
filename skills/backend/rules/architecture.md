@@ -267,6 +267,32 @@ Services should not:
 - depend on HTTP request/response DTOs
 - become generic wrappers with no real logic
 
+### Standard service `create` flow
+
+Every service `create` method should follow this template:
+
+1. **Validate the command** — `cmd.validate()` (domain-level validation)
+2. **Check for conflicts** — call repository `find_by_*` for unique fields; if `Some`, return `AppError::DataError(BIZ_ERROR_KEY, "debug detail")`
+3. **Generate ID** — `generate_sonyflake_id() as i64`
+4. **Transform data** — hash passwords, normalize values, etc.
+5. **Create entity** — `Entity::new(cmd)` (domain constructor with validation)
+6. **Persist** — `repository.create(&entity).await`
+
+### Standard service `update` flow
+
+1. **Validate the command** — `cmd.validate()`
+2. **Transform sensitive fields** — hash new password if provided, etc.
+3. **Find existing entity** — `repository.find_by_id(id)` → return not-found error if `None`
+4. **Apply update** — `entity.apply_update(cmd)` (domain method, validates state transitions)
+5. **Persist** — `repository.update(&entity).await`
+
+### Standard service `delete` flow
+
+1. **Find existing entity** — `repository.find_by_id(id)` → return not-found error if `None`
+2. **Soft-delete first** — `repository.soft_delete_batch(&ids).await` (sets `deleted_at`)
+3. **Hard delete is separate** — `repository.hard_delete_batch(&ids).await` (physical row removal)
+4. Services should expose one delete method; the repo implements both soft and hard variants
+
 ---
 
 ## 9. HTTP Layer Rules
@@ -496,7 +522,88 @@ Avoid tightly coupling one module’s implementation to another unless the busin
 
 ---
 
-## 20. Practicality Rule
+## 20. Junction Table Module Conventions
+
+Junction tables (`user_tenant`, `user_tenant_role`, `role_menu`, `role_perm`) represent many-to-many relationships. Each junction table must have its own domain/infra module — never write raw junction inserts in unrelated handlers or services.
+
+### Module structure
+
+Each junction table follows the same three-layer pattern as primary entities:
+
+```text
+backend/crates/domain-base/src/<junction>/
+├── mod.rs        — entity struct, commands
+├── repo.rs       — repository trait (assign, list, remove)
+└── service.rs    — service trait (assign, get, remove)
+
+backend/crates/infra-base/src/<junction>/
+├── mod.rs
+├── repo.rs       — Sqlx<Junction>Repository (SQLx queries)
+└── service.rs    — <Junction>ServiceImpl (orchestration)
+
+backend/crates/api-http/src/base/<junction_plural>/
+├── mod.rs        — router
+├── req.rs        — request DTOs (GetXxxParam, AssignXxxParam)
+├── resp.rs       — response DTOs
+└── handlers.rs   — Axum handlers
+```
+
+### Naming conventions
+
+- Domain entity: `UserTenant`, `UserTenantRole`, `RoleMenu`, `RolePerm`
+- Repository trait: `UserTenantRepository`, `UserTenantRoleRepository`
+- SQLx impl: `SqlxUserTenantRepository`, `SqlxUserTenantRoleRepository`
+- Service trait: `UserTenantService`, `UserTenantRoleService`
+- HTTP route group: `/base/user-tenants`, `/base/user-tenant-roles`
+
+### Operations
+
+Junction modules support these operations:
+
+- **Assign** — `assign(source_id, target_ids: Vec<i64>)` — replace the set of bindings for a source entity
+- **Get** — `get(source_id)` — return the current bindings for a source entity
+- **Remove** — `remove(source_id)` — clear all bindings for a source entity (used before reassign)
+
+### Rules
+
+- Always work through the junction module's service trait — never call junction repository methods directly from another module's service
+- Do not write raw `INSERT INTO user_tenant_role ...` in a `users` or `roles` handler/service
+- Junction HTTP endpoints follow the same POST body-driven route style as primary entities (`/get`, `/assign`, `/remove`)
+- Junction HTTP state is appended to the parent group's state struct (e.g. `BaseHttpState` gains `user_tenant_role_service: Arc<dyn UserTenantRoleService>`)
+
+---
+
+## 21. Redis Cache Key Naming Conventions
+
+Redis cache keys must be consistent across the backend.
+
+### Pattern
+
+Use colon-separated segments: `<scope>:<entity>:<segment>...`
+
+### Examples
+
+| Key pattern                                 | Purpose                     |
+| ------------------------------------------- | --------------------------- |
+| `base:dict:code:{code}`                     | Dict cache by dict_key      |
+| `base:dict:all`                             | All dict entries            |
+| `:signin_code:{uuid}`                       | Sign-in verification code   |
+| `:invite_code:{invite_id}`                  | Invite token lookup         |
+| `:menus:tree_roleid:{role_id}`              | Cached menu tree for a role |
+| `:shared_ctx:tid:{tenant_id}:uid:{user_id}` | Shared header context cache |
+| `:oauth:code:{auth_code}`                   | OAuth2 authorization code   |
+
+### Rules
+
+- Define cache key constants in `common/src/core/constants.rs` as `pub const` with descriptive names (e.g. `CACHE_SIGIN_CODE`, `DICT_CACHE_KEY_PREFIX`)
+- Scope keys by entity and ID to avoid collisions
+- Use a leading colon for system-level transient keys (auth, invite); use a full prefix like `base:` for business entity caches
+- Cache TTL constants should sit alongside the key constants in `constants.rs`
+- Do not scatter raw Redis key string literals across service code
+
+---
+
+## 22. Practicality Rule
 
 This backend architecture is intentionally pragmatic.
 
@@ -516,7 +623,7 @@ When in doubt, choose the approach that:
 
 ---
 
-## 21. Constants Rules
+## 23. Constants Rules
 
 Backend constants must be centralized and never duplicated across modules.
 
@@ -545,7 +652,7 @@ Backend constants must be centralized and never duplicated across modules.
 
 ---
 
-## 22. Helpers and Module Utilities Rules
+## 24. Helpers and Module Utilities Rules
 
 ### What belongs in domain `mod.rs`
 
@@ -597,7 +704,7 @@ Each backend module should be independently understandable. When a module needs 
 
 ---
 
-## 23. Final Checklist
+## 25. Final Checklist
 
 Before considering a backend architecture change complete, verify:
 
