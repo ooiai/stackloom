@@ -179,6 +179,10 @@ Tree-backed admin features such as `dicts`, `menus`, and hierarchical `tenants` 
 - explicit expand/collapse
 - create root / add child / edit / delete routed through the controller hook
 
+## Architecture compliance
+
+**`rules/architecture.md` is mandatory.** Every new feature, controller, helper, page layout, and constants file in `frontend/` must follow the architecture rules defined in `skills/frontend/rules/architecture.md`. Deviations are not allowed unless the repository explicitly evolves.
+
 ## Hard boundaries
 
 These rules are strict:
@@ -405,7 +409,7 @@ When you add or change a frontend feature:
 Read these files when relevant:
 
 - `skills/frontend/UI-SKILL.md`
-- `skills/frontend/rules/feature-architecture.md`
+- `skills/frontend/rules/architecture.md`
 - `skills/frontend/rules/i18n.md`
 - `skills/frontend/rules/reui.md`
 - `skills/frontend/rules/shadcn.md`

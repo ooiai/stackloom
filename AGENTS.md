@@ -10,28 +10,28 @@ StackLoom is a multi-tenant SaaS admin platform. The codebase has a Rust/Axum/SQ
 
 Always read the relevant skill before writing or reviewing code.
 
-| Task area | Skill to read first |
-|---|---|
-| Any backend work | `skills/backend/SKILL.md` |
-| Backend auth flow (signin, signup, JWT) | `skills/backend/rules/auth.md` |
-| Backend domain/infra layers | `skills/backend/rules/domain-infra.md` |
-| Backend HTTP handlers/routes/DTOs | `skills/backend/rules/api-http.md` |
-| Backend handlers.rs (comments, tracing, audit log) | `skills/backend/rules/handlers.md` |
-| Backend SQLx queries, migrations | `skills/backend/rules/sqlx.md` |
-| Backend errors, validation, bigint serde | `skills/backend/rules/error-serde.md` |
-| Backend logging, audit, tracing | `skills/backend/rules/logging.md` |
-| Backend app wiring, startup | `skills/backend/rules/app.md` |
-| Backend module scaffolding | `skills/backend/rules/scaffold.md` |
-| Any frontend work | `skills/frontend/SKILL.md` |
-| Frontend component decisions (shadcn, reui, topui) | `skills/frontend/UI-SKILL.md` |
-| Frontend feature architecture (hooks, views, columns) | `skills/frontend/rules/feature-architecture.md` |
-| Frontend auth pages (signin, signup) | `skills/frontend/rules/signin.md` |
-| Frontend stores and API calls | `skills/frontend/rules/stores.md` |
-| Frontend types | `skills/frontend/rules/types.md` |
-| Frontend i18n | `skills/frontend/rules/i18n.md` |
-| Frontend topui components | `skills/frontend/rules/topui.md` |
-| Frontend lib/ and hooks/ utilities | `skills/frontend/rules/lib-utils.md` |
-| Frontend log pages | `skills/frontend/rules/logging-pages.md` |
+| Task area                                             | Skill to read first                      |
+| ----------------------------------------------------- | ---------------------------------------- |
+| Any backend work                                      | `skills/backend/SKILL.md`                |
+| Backend auth flow (signin, signup, JWT)               | `skills/backend/rules/auth.md`           |
+| Backend domain/infra layers                           | `skills/backend/rules/domain-infra.md`   |
+| Backend HTTP handlers/routes/DTOs                     | `skills/backend/rules/api-http.md`       |
+| Backend handlers.rs (comments, tracing, audit log)    | `skills/backend/rules/handlers.md`       |
+| Backend SQLx queries, migrations                      | `skills/backend/rules/sqlx.md`           |
+| Backend errors, validation, bigint serde              | `skills/backend/rules/error-serde.md`    |
+| Backend logging, audit, tracing                       | `skills/backend/rules/logging.md`        |
+| Backend app wiring, startup                           | `skills/backend/rules/app.md`            |
+| Backend module scaffolding                            | `skills/backend/rules/scaffold.md`       |
+| Any frontend work                                     | `skills/frontend/SKILL.md`               |
+| Frontend component decisions (shadcn, reui, topui)    | `skills/frontend/UI-SKILL.md`            |
+| Frontend feature architecture (hooks, views, columns) | `skills/frontend/rules/architecture.md`  |
+| Frontend auth pages (signin, signup)                  | `skills/frontend/rules/signin.md`        |
+| Frontend stores and API calls                         | `skills/frontend/rules/stores.md`        |
+| Frontend types                                        | `skills/frontend/rules/types.md`         |
+| Frontend i18n                                         | `skills/frontend/rules/i18n.md`          |
+| Frontend topui components                             | `skills/frontend/rules/topui.md`         |
+| Frontend lib/ and hooks/ utilities                    | `skills/frontend/rules/lib-utils.md`     |
+| Frontend log pages                                    | `skills/frontend/rules/logging-pages.md` |
 
 **IMPORTANT:** Do not skip reading the skill. The skill files are the primary source of truth for conventions in this repository.
 
@@ -42,11 +42,13 @@ Always read the relevant skill before writing or reviewing code.
 Skills are Markdown documents that describe conventions, patterns, and constraints.
 
 When you read a skill:
+
 1. Note the **boundaries** (what not to do).
 2. Note the **reference implementations** (which existing files to imitate).
 3. Note the **rule navigation** (which sub-rule file is most relevant for your task).
 
 Read order for a typical task:
+
 1. Top-level SKILL.md for the affected area.
 2. The most relevant `rules/` sub-file for the specific concern.
 3. The reference implementation in the codebase (e.g., `users` module for backend, `users` page for frontend).
@@ -92,7 +94,7 @@ Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
 
 ### Backend
 
-- **Crate boundaries:** domain-* owns traits and entities; infra-* owns SQL and service impls; api-http owns HTTP transport only; app is the composition root.
+- **Crate boundaries:** domain-_ owns traits and entities; infra-_ owns SQL and service impls; api-http owns HTTP transport only; app is the composition root.
 - **Naming:** `XxxService` (trait), `XxxServiceImpl` (impl), `SqlxXxxRepository` (SQLx impl), `XxxRepository` (trait).
 - **Routes:** POST body-driven: `/create`, `/get`, `/page`, `/update`, `/remove`.
 - **IDs:** `i64` internally (sonyflake); use bigint serde helpers at the HTTP boundary.
@@ -123,6 +125,7 @@ Business error keys follow the pattern: `"errors.biz.<module>.<camelCaseName>"`
 They are defined in `backend/crates/common/src/core/biz_error.rs` and map to frontend translation files at `frontend/messages/{locale}/errors.json` under the `biz` key.
 
 When adding a new business error:
+
 1. Add a constant to `biz_error.rs`.
 2. Use `AppError::DataError(CONSTANT, "debug detail")` in the service.
 3. Add translation entries in **both** `zh-CN/errors.json` and `en-US/errors.json`.
@@ -133,17 +136,17 @@ When adding a new business error:
 
 These files are the canonical style references. Match them when implementing similar work.
 
-| Area | Reference |
-|---|---|
-| Backend domain module | `backend/crates/domain-base/src/user/` |
-| Backend infra module | `backend/crates/infra-base/src/user/` |
-| Backend HTTP module | `backend/crates/api-http/src/base/users/` |
-| Backend app wiring | `backend/crates/app/src/lib.rs` |
-| Backend auth flow | `backend/crates/infra-auth/src/service.rs` |
-| Frontend admin page | `frontend/components/base/users/` |
-| Frontend auth page | `frontend/components/auth/signin/` |
-| Frontend stores | `frontend/stores/base-api.ts` |
-| Frontend types | `frontend/types/base.types.ts` |
+| Area                  | Reference                                  |
+| --------------------- | ------------------------------------------ |
+| Backend domain module | `backend/crates/domain-base/src/user/`     |
+| Backend infra module  | `backend/crates/infra-base/src/user/`      |
+| Backend HTTP module   | `backend/crates/api-http/src/base/users/`  |
+| Backend app wiring    | `backend/crates/app/src/lib.rs`            |
+| Backend auth flow     | `backend/crates/infra-auth/src/service.rs` |
+| Frontend admin page   | `frontend/components/base/users/`          |
+| Frontend auth page    | `frontend/components/auth/signin/`         |
+| Frontend stores       | `frontend/stores/base-api.ts`              |
+| Frontend types        | `frontend/types/base.types.ts`             |
 
 ---
 

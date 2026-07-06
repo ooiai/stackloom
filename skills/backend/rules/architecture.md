@@ -1,5 +1,9 @@
 # Backend Architecture Rules
 
+> **Must comply.** This file defines the mandatory architecture rules for all backend code.
+> Every new module, crate, service, repository, handler, constant, and helper must follow these conventions.
+> Do not deviate unless the repository explicitly evolves.
+
 This document defines the backend architecture rules for StackLoom.
 
 The goal is not to chase abstract purity. The goal is to keep backend code:
@@ -26,6 +30,7 @@ Main layers:
 Each layer has a clear responsibility.
 
 ### `domain-*`
+
 Responsible for:
 
 - entities
@@ -35,6 +40,7 @@ Responsible for:
 - domain validation logic
 
 ### `infra-*`
+
 Responsible for:
 
 - repository implementations
@@ -45,6 +51,7 @@ Responsible for:
 - infrastructure-level orchestration
 
 ### `api-http`
+
 Responsible for:
 
 - HTTP request DTOs
@@ -54,6 +61,7 @@ Responsible for:
 - HTTP state access
 
 ### `app`
+
 Responsible for:
 
 - application bootstrapping
@@ -100,22 +108,26 @@ Responsible for:
 A backend module should generally be organized like this:
 
 ### Domain
+
 - `backend/crates/domain-base/src/<entity>/mod.rs`
 - `backend/crates/domain-base/src/<entity>/repo.rs`
 - `backend/crates/domain-base/src/<entity>/service.rs`
 
 ### Infra
+
 - `backend/crates/infra-base/src/<entity>/mod.rs`
 - `backend/crates/infra-base/src/<entity>/repo.rs`
 - `backend/crates/infra-base/src/<entity>/service.rs`
 
 ### HTTP API
+
 - `backend/crates/api-http/src/<group>/<table>/mod.rs`
 - `backend/crates/api-http/src/<group>/<table>/req.rs`
 - `backend/crates/api-http/src/<group>/<table>/resp.rs`
 - `backend/crates/api-http/src/<group>/<table>/handlers.rs`
 
 ### App wiring
+
 Usually requires updates in:
 
 - `backend/crates/domain-base/src/lib.rs`
@@ -150,18 +162,22 @@ Do not invent a second backend style beside it unless the repository explicitly 
 Use consistent naming throughout the backend.
 
 ### Service naming
+
 - trait: `XxxService`
 - implementation: `XxxServiceImpl`
 
 ### Repository naming
+
 - trait: `XxxRepository`
 - SQLx implementation: `SqlxXxxRepository`
 
 ### DTO naming
+
 - request: `CreateXxxReq`, `GetXxxReq`, `PageXxxReq`, `UpdateXxxReq`, `DeleteXxxReq`
 - response: `XxxResp`, `PaginateXxxResp`, `DeleteXxxResp`
 
 ### Command naming
+
 - `CreateXxxCmd`
 - `UpdateXxxCmd`
 - `PageXxxCmd`
@@ -179,6 +195,7 @@ unless the project adopts them consistently later.
 ## 6. Entity and Command Rules
 
 ### Entities
+
 Domain entities should:
 
 - be plain Rust structs
@@ -188,6 +205,7 @@ Domain entities should:
 - expose small validation/state-transition helpers when useful
 
 ### Commands
+
 Commands should:
 
 - represent service-layer input
@@ -261,15 +279,19 @@ HTTP modules should follow this structure:
 - `handlers.rs`
 
 ### `req.rs`
+
 Contains only request DTOs.
 
 ### `resp.rs`
+
 Contains only response DTOs.
 
 ### `handlers.rs`
+
 Contains only handler functions and handler-related aliases/types.
 
 ### `mod.rs`
+
 Contains:
 
 - child module declarations
@@ -326,6 +348,7 @@ Use unified:
 This is the current project-wide backend direction.
 
 ### Preferred behavior
+
 - validation errors become `AppError::ValidationError(...)`
 - missing resources return not-found style app errors
 - conflicts return conflict style app errors
@@ -386,6 +409,7 @@ Choose based on the module’s actual persistence rules, but keep the interface 
 Validation can exist in multiple layers, but responsibilities should stay clear.
 
 ### HTTP layer
+
 Responsible for:
 
 - request DTO validation
@@ -393,6 +417,7 @@ Responsible for:
 - basic field constraints
 
 ### Domain/service layer
+
 Responsible for:
 
 - business validation
@@ -491,7 +516,88 @@ When in doubt, choose the approach that:
 
 ---
 
-## 21. Final Checklist
+## 21. Constants Rules
+
+Backend constants must be centralized and never duplicated across modules.
+
+### Where to define constants
+
+| Constant type                                           | Location                                                 |
+| ------------------------------------------------------- | -------------------------------------------------------- |
+| System-level role codes (`SUPER_ADMIN`, `TENANT_ADMIN`) | `common/src/core/constants.rs`                           |
+| Business metadata (default names, prefixes, limits)     | `common/src/core/constants.rs`                           |
+| Business error keys (`errors.biz.<module>.<name>`)      | `common/src/core/biz_error.rs`                           |
+| Module-local SQL column names or table names            | Module's `infra-*` repository file (as `&str` constants) |
+| Config-driven values (Redis keys, token expiry)         | `common/src/core/constants.rs` or config module          |
+
+### Naming
+
+- Use `SCREAMING_SNAKE_CASE` for all compile-time constants (e.g. `SIGNUP_ADMIN_CODE`, `DEFAULT_PAGE_SIZE`).
+- Business error keys use string constants with `SCREAMING_SNAKE_CASE` names.
+- Table/column name constants may use a short prefix (e.g. `TBL_USERS`, `COL_USERNAME`).
+
+### What not to do
+
+- Do not hardcode business metadata (role codes, role names, status values) as string literals in service or handler code.
+- Do not duplicate the same constant across multiple modules.
+- Do not define business error key strings directly in service code — always use the constant from `biz_error.rs`.
+- Do not scatter SQL table/column name literals across handlers or domain modules.
+
+---
+
+## 22. Helpers and Module Utilities Rules
+
+### What belongs in domain `mod.rs`
+
+Domain module utilities that are part of the business model:
+
+- Entity validation helpers (e.g. `is_valid_email`, `is_active_status`)
+- Small state-transition predicates
+- Domain-level conversion or mapping helpers
+
+Keep these narrow and business-focused. Do not turn domain `mod.rs` into a general utility dump.
+
+### What belongs in infra service/m repository
+
+Infra-level helpers that support service or repository orchestration:
+
+- Payload builders (e.g. building a `CreateUserCmd` from validated input)
+- Query parameter builders (dynamic filter construction)
+- Row-to-entity mapping helpers (if not inline in the repository)
+
+### What belongs in `common/`
+
+Cross-cutting utilities shared by multiple crates:
+
+- `common/src/core/biz_error.rs` — business error key constants
+- `common/src/core/constants.rs` — system-wide constants
+- `common/src/core/error.rs` — `AppError` / `AppResult` definitions
+- `common/src/util/` — shared utilities (hash, id generation, serde helpers)
+
+### Module-level organization
+
+Each backend module should be independently understandable. When a module needs internal helpers:
+
+1. Domain-level helpers → domain `mod.rs` or a dedicated `helpers.rs` inside the domain module.
+2. Infra-level helpers → keep them in the infra service or repository file, close to where they are used.
+3. If a helper is used by multiple modules, extract it into `common/`.
+
+### Naming helpers
+
+- Use descriptive `snake_case` function names: `validate_user_email`, `build_page_query`
+- Name should describe what the function does, not where it's used
+- Avoid generic names like `process`, `handle`, `do_work`
+
+### What not to do
+
+- Do not place helper functions in `api-http` handlers — handlers call services, services contain orchestration.
+- Do not duplicate SQL query-building logic across multiple repository files.
+- Do not keep module-private helpers in `common/`.
+- Do not turn `app/src/lib.rs` into a helper repository.
+
+---
+
+## 23. Final Checklist
 
 Before considering a backend architecture change complete, verify:
 

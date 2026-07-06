@@ -1,4 +1,8 @@
-# feature architecture
+# Frontend Architecture Rules
+
+> **Must comply.** This file defines the mandatory architecture rules for all frontend features.
+> Every new feature, every controller, every helper, and every page layout must follow these conventions.
+> Do not deviate unless the repository explicitly evolves.
 
 Use the existing `users`, `menus`, `dicts`, and `tenants` modules as the reference architecture for new admin features.  
 For auth flows, apply the same route/controller/view/helper split under `components/auth/**`.
@@ -156,6 +160,80 @@ For auth flows, the equivalent file is usually `*-page-view.tsx` instead of `*-p
 - Use `frontend/stores/*-api.ts` for HTTP calls.
 - Use `frontend/types/*.types.ts` for API-facing types.
 
+## Constants conventions
+
+Constants in frontend features must follow these rules:
+
+### Where to define constants
+
+| Constant type                                                   | Location                                                             |
+| --------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Feature-local action permission maps (e.g. `USER_ACTION_PERMS`) | Feature `helpers.ts`                                                 |
+| Feature-local config defaults (e.g. `DEFAULT_PAGE_SIZE`)        | Feature `helpers.ts`                                                 |
+| Cross-feature shared constants                                  | `frontend/lib/constants.ts` or a domain-specific `frontend/lib/*.ts` |
+| API base paths or route fragments                               | `frontend/lib/` or `stores/*-api.ts` (close to usage)                |
+
+### Naming
+
+- Use `UPPER_SNAKE_CASE` for constants (e.g. `USER_ACTION_PERMS`, `TENANT_GROUP_TYPES`).
+- Use `camelCase` only for runtime-computed values that happen to not change (e.g. `defaultPageSize`).
+- Permission code maps should use the pattern `<ENTITY>_ACTION_PERMS` (e.g. `MENU_ACTION_PERMS`, `DICT_ACTION_PERMS`).
+
+### What not to do
+
+- Do not scatter magic strings (permission codes, route paths, config values) across components.
+- Do not define the same constant in multiple feature `helpers.ts` files — extract into `frontend/lib/`.
+- Do not move feature-local constants into a single global file; keep them colocated with the feature.
+- Do not import feature-private constants from another feature's `helpers.ts`.
+
+## Helpers conventions
+
+### What belongs in feature `helpers.ts`
+
+Feature-local `helpers.ts` files are the canonical home for:
+
+- **Validation schemas** — Zod schemas for forms and API payloads
+- **Payload builders** — functions that construct request payloads from form values
+- **Option builders** — building dropdown/select options from API data
+- **Tree helpers** — flatten/unflatten, ancestor lookup, node manipulation
+- **Table helpers** — row key generation, cell formatters, filter predicate builders
+- **Feature-local action permission constants** — e.g. `USER_ACTION_PERMS`
+- **Auth helpers** — captcha payload shaping, redirect URL resolution (for auth features)
+
+### What belongs in `frontend/lib/`
+
+Only cross-feature utilities. Examples:
+
+- `frontend/lib/permissions.ts` — shared permission checking logic
+- `frontend/lib/hashids.ts` — ID encoding/decoding
+- `frontend/lib/date.ts` — date formatting shared across features
+- `frontend/lib/tree-utils.ts` — tree algorithms used by multiple features
+
+### What belongs in `frontend/hooks/`
+
+Only cross-feature hooks. Examples:
+
+- `use-permission-access.ts` — shared permission state/orchestration
+- `use-header-context.ts` — layout-level context
+
+### Helpers file structure
+
+A feature `helpers.ts` should be organized clearly:
+
+1. Constants (permission maps, config defaults)
+2. Option builders (dropdown data transformation)
+3. Payload builders (form → API request)
+4. Validation schemas (Zod)
+5. Utility functions (tree, table, formatting)
+
+Keep the file readable. If it grows beyond ~200 lines, consider splitting into `helpers/` sub-files (e.g. `helpers/schemas.ts`, `helpers/payloads.ts`).
+
+### Naming helpers
+
+- Use descriptive verb-noun names: `buildUserPayload`, `flattenMenuTree`, `getTenantOptions`
+- Export only what the feature needs — avoid exporting internal-only helpers
+- Do not use default exports in `helpers.ts`
+
 ## Do not
 
 - Do not place large page logic directly in `page.tsx`.
@@ -165,3 +243,6 @@ For auth flows, the equivalent file is usually `*-page-view.tsx` instead of `*-p
 - Do not scatter raw permission-string checks across headers, columns, detail panels, and tree nodes.
 - Do not move feature-specific action permission maps into a single global permissions file.
 - Do not keep auth flow orchestration in a single giant `signin-form.tsx` or `signup-form.tsx`.
+- Do not define the same constant in multiple feature helpers.
+- Do not scatter magic strings (permission codes, route paths, config values) across components.
+- Do not import feature-private constants or helpers from another feature.

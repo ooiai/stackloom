@@ -92,6 +92,8 @@ Use the backend rules directory as a focused reference map when working on speci
 
 When a task is primarily about one backend layer or concern, read the matching rule file first before making changes. This keeps backend work aligned with the existing repository style and avoids mixing transport, domain, infra, and app responsibilities.
 
+**CRITICAL — `rules/architecture.md` is mandatory.** Every backend module, crate, service, repository, and handler must follow the architecture rules defined in `skills/backend/rules/architecture.md`. This includes module layout, layer boundaries, naming, constants placement, helpers, and error handling. Deviations are not allowed unless the repository explicitly evolves.
+
 - `rules/architecture.md`
     - overall backend layering
     - crate boundaries
@@ -653,19 +655,19 @@ The purpose of this skill is to help agents produce backend code that is:
 
 The following table maps each crate to its specific domain of responsibility. Use it to determine where new code belongs before writing.
 
-| Crate | Responsibility |
-|---|---|
-| `common` | Cross-cutting: `EnvConfig`, `biz_error.rs` i18n keys, ID utilities, constants, enums |
-| `domain-auth` | Auth service trait + signin/signup command types |
-| `domain-base` | Base domain: entities, commands, repo/service traits for user, tenant, role, menu, perm, dict, and all junction tables |
-| `domain-system` | System log and audit log service/repo traits |
-| `domain-web` | Operation log service/repo traits |
-| `infra-auth` | `AuthServiceImpl`: two-phase signin, signup with auto-tenant creation, JWT issue and revocation via Redis |
-| `infra-base` | SQLx implementations for all base domain traits |
-| `infra-system` | SQLx implementations for system/audit log traits; `SysModule` helper |
-| `infra-web` | SQLx implementation for operation log trait |
-| `api-http` | All HTTP transport: 5 route groups (auth, base, system, shared, web), their state types, and `request_logging` middleware |
-| `app` | Composition root: pool init, migration run, service wiring, state construction, router merge, server start |
+| Crate           | Responsibility                                                                                                            |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `common`        | Cross-cutting: `EnvConfig`, `biz_error.rs` i18n keys, ID utilities, constants, enums                                      |
+| `domain-auth`   | Auth service trait + signin/signup command types                                                                          |
+| `domain-base`   | Base domain: entities, commands, repo/service traits for user, tenant, role, menu, perm, dict, and all junction tables    |
+| `domain-system` | System log and audit log service/repo traits                                                                              |
+| `domain-web`    | Operation log service/repo traits                                                                                         |
+| `infra-auth`    | `AuthServiceImpl`: two-phase signin, signup with auto-tenant creation, JWT issue and revocation via Redis                 |
+| `infra-base`    | SQLx implementations for all base domain traits                                                                           |
+| `infra-system`  | SQLx implementations for system/audit log traits; `SysModule` helper                                                      |
+| `infra-web`     | SQLx implementation for operation log trait                                                                               |
+| `api-http`      | All HTTP transport: 5 route groups (auth, base, system, shared, web), their state types, and `request_logging` middleware |
+| `app`           | Composition root: pool init, migration run, service wiring, state construction, router merge, server start                |
 
 ---
 
@@ -674,13 +676,13 @@ The following table maps each crate to its specific domain of responsibility. Us
 The `api-http` crate organizes routes into five parent groups.
 Every group has its own `XxxHttpState` that holds the `Arc<dyn XxxService>` dependencies for its handlers.
 
-| Group | URL prefix | State type | Submodules |
-|---|---|---|---|
-| `auth` | `/auth` | `AuthHttpState` | `signin`, `signup` |
-| `base` | `/base` | `BaseHttpState` | `users`, `tenants`, `roles`, `menus`, `perms`, `dicts`, `operation_logs`, `logging` |
-| `system` | `/system` | `SysHttpState` | `captcha`, `sms`, `aws`, `logs` |
-| `shared` | `/shared` | `SharedHttpState` | `common` (captcha cache), `profile` (current user info) |
-| `web` | `/web` | *(placeholder — not yet implemented)* | *(placeholder — not yet implemented)* |
+| Group    | URL prefix | State type                            | Submodules                                                                          |
+| -------- | ---------- | ------------------------------------- | ----------------------------------------------------------------------------------- |
+| `auth`   | `/auth`    | `AuthHttpState`                       | `signin`, `signup`                                                                  |
+| `base`   | `/base`    | `BaseHttpState`                       | `users`, `tenants`, `roles`, `menus`, `perms`, `dicts`, `operation_logs`, `logging` |
+| `system` | `/system`  | `SysHttpState`                        | `captcha`, `sms`, `aws`, `logs`                                                     |
+| `shared` | `/shared`  | `SharedHttpState`                     | `common` (captcha cache), `profile` (current user info)                             |
+| `web`    | `/web`     | _(placeholder — not yet implemented)_ | _(placeholder — not yet implemented)_                                               |
 
 **Route registration:** Each group router is assembled in its own `mod.rs`, then merged in `app/src/lib.rs` under the server router.
 
@@ -690,12 +692,12 @@ Every group has its own `XxxHttpState` that holds the `Arc<dyn XxxService>` depe
 
 Domain-base and infra-base contain dedicated modules for each many-to-many relationship. These follow the same entity / repository / service pattern as first-class modules.
 
-| Module | Table | Relationship |
-|---|---|---|
-| `user_tenant` | `user_tenants` | User ↔ Tenant membership (includes `is_default`, `is_tenant_admin`, display metadata) |
-| `user_tenant_role` | `user_tenant_roles` | UserTenant ↔ Role assignment |
-| `role_menu` | `role_menus` | Role ↔ Menu binding |
-| `role_perm` | `role_perms` | Role ↔ Permission binding |
+| Module             | Table               | Relationship                                                                          |
+| ------------------ | ------------------- | ------------------------------------------------------------------------------------- |
+| `user_tenant`      | `user_tenants`      | User ↔ Tenant membership (includes `is_default`, `is_tenant_admin`, display metadata) |
+| `user_tenant_role` | `user_tenant_roles` | UserTenant ↔ Role assignment                                                          |
+| `role_menu`        | `role_menus`        | Role ↔ Menu binding                                                                   |
+| `role_perm`        | `role_perms`        | Role ↔ Permission binding                                                             |
 
 All four live under `domain-base/src/<module>/` (mod.rs / repo.rs / service.rs) and `infra-base/src/<module>/` (mod.rs / repo.rs / service.rs).
 
@@ -712,6 +714,7 @@ The naming convention is: `"errors.biz.<module>.<camelCaseName>"`
 These keys map to frontend translation files at `frontend/messages/{locale}/errors.json → biz.<module>.<name>`.
 
 When adding a new conflict or business error:
+
 1. Add a constant to `biz_error.rs` (not an inline string in the service).
 2. Use `AppError::DataError(BIZ_CONSTANT, "debug detail")` at the call site.
 3. Add the matching translation keys in both `zh-CN/errors.json` and `en-US/errors.json`.

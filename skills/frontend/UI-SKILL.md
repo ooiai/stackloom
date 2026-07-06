@@ -91,9 +91,9 @@ Use the eduweb `dicts` page as the tree/detail baseline.
 - left side is the tree work area
 - right side is the current node work area
 - right side contains:
-  - breadcrumb
-  - current node summary
-  - direct children table
+    - breadcrumb
+    - current node summary
+    - direct children table
 
 ### Visual rules
 
@@ -197,6 +197,6 @@ Do not generalize a visual abstraction before the reference pattern is already p
 Read together with:
 
 - `skills/frontend/SKILL.md`
-- `skills/frontend/rules/feature-architecture.md`
+- `skills/frontend/rules/architecture.md`
 - `skills/frontend/rules/reui.md`
 - `skills/frontend/rules/shadcn.md`
