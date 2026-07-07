@@ -33,7 +33,26 @@ components/base/<feature>/
 │   └── use-<feature>-mutate-form.ts
 ├── <feature>-page-container.tsx
 ├── <feature>-page-header.tsx
+├── <feature>-page-filters.tsx
 ├── <feature>-page-columns.tsx
+├── <feature>-status-badge.tsx
+├── <feature>-mutate-sheet.tsx
+├── <feature>-mutate-sheet-header.tsx
+├── <feature>-mutate-sheet-sections.tsx
+├── <feature>-mutate-form-fields.tsx
+└── helpers.ts
+```
+
+Tree/detail pages (`dicts`, `menus`, `roles`, `tenants`) add sidebar and detail panel components:
+
+```text
+components/base/<feature>/
+├── hooks/
+│   ├── use-<feature>-controller.ts
+│   └── use-<feature>-mutate-form.ts
+├── <feature>-page-container.tsx      ← composes sidebar + detail panel in split layout
+├── <feature>-tree-sidebar.tsx        ← tree render, selection, expand/collapse, add-child/root actions
+├── <feature>-detail-panel.tsx        ← selected node metadata, children table, edit/delete actions
 ├── <feature>-mutate-sheet.tsx
 ├── <feature>-mutate-sheet-header.tsx
 ├── <feature>-mutate-sheet-sections.tsx
@@ -87,7 +106,117 @@ components/auth/
 - field layout, dialogs, and success cards stay in dedicated presentational components
 - `captcha-slider.tsx` can stay shared, but feature-specific dialogs belong under the feature folder
 
-## Responsibility split
+### File browser page: `storage`
+
+- `page.tsx` calls `useStorageController()`
+- `storage-page-container.tsx` assembles file list + filter bar + upload actions
+- `storage-page-filters.tsx` provides prefix search and file type filters
+- `storage-detail-sheet.tsx` shows file metadata (size, type, URL) in a read-only sheet
+- `storage-image-preview-dialog.tsx` handles image zoom/preview for image files
+- `helpers.ts` holds file type detection, byte formatting, prefix normalization
+
+### Dashboard/analytics page: `stats`
+
+- `page.tsx` calls the stats controller(s)
+- multiple `stats-*-container.tsx` files (overview, growth, behavior, funnel, retention, commercial) — each is its own analytics view
+- filters control date ranges and dimensions at the top of each view
+- controllers own date range state, data fetching, and chart data transformation
+- does NOT follow the mutate-sheet pattern — stats pages are read-only
+- use `metric-card.tsx` from `base/shared` for KPI displays
+
+### Notification management page: `notifications`
+
+- `page.tsx` calls `useNotificationsController()` for template/rule list management
+- `notifications-page-container.tsx` shows template list with rule/dialog management
+- `notifications-rule-dialog.tsx` manages notification rule creation/editing
+- `notifications-template-dialog.tsx` manages notification template creation/editing
+- `notifications-send-dialog.tsx` handles manual notification sending
+- `notifications-user-picker.tsx` provides user selection for send targets
+
+Additionally, the notification bell in the header:
+
+- `notification-bell-popover.tsx` + `use-notification-bell.ts` handle the header bell icon + popover
+- `notification-inbox-page-container.tsx` + `use-notification-inbox-controller.ts` handle the full inbox page
+- The bell popover is NOT a feature — it's a shared header component that mounts in the base layout
+
+### Application review page: `tenant-apply`
+
+- `page.tsx` calls `useTenantApplyController()`
+- `tenant-apply-page-container.tsx` shows an application list with approve/reject actions
+- follows CRUD list pattern but actions are approval workflow actions (not create/update/delete)
+- `tenant-apply-status-badge.tsx` shows application status (pending/approved/rejected)
+
+### Log viewer page: `logs`
+
+- `page.tsx` calls the appropriate log controller
+- read-only tables with pagination and filtering
+- detail sheet for inspecting JSON payloads
+- no mutate sheet — log pages are read-only
+- See `skills/frontend/rules/logging-pages.md` for full conventions
+
+### Simple config list page: `sign-keys`, `oauth-clients`
+
+- `page.tsx` calls the feature controller
+- follows the standard CRUD list pattern but may have fewer columns or simplified mutate forms
+- `oauth-clients` includes a `oauth-client-secret-dialog.tsx` that shows a generated secret once (special one-time display pattern)
+
+## Shared interaction patterns
+
+### `useAlertDialog` — confirmation dialogs
+
+Every destructive action and many non-destructive confirmations must go through the shared `useAlertDialog()` hook from `@/providers/dialog-providers`.
+
+```typescript
+import { useAlertDialog } from "@/providers/dialog-providers";
+
+const dialog = useAlertDialog();
+```
+
+**`dialog.show(options)` signature:**
+
+| Option               | Type                         | Required | Description                                                                     |
+| -------------------- | ---------------------------- | -------- | ------------------------------------------------------------------------------- |
+| `variant`            | `"default" \| "destructive"` | Yes      | Visual style — `"destructive"` for delete/remove, `"default"` for confirmations |
+| `title`              | `string`                     | Yes      | Localized dialog title                                                          |
+| `description`        | `string`                     | Yes      | Localized description (may include interpolated values)                         |
+| `confirmText`        | `string`                     | No       | Override confirm button label (defaults to `"Confirm"`)                         |
+| `cancelText`         | `string`                     | No       | Override cancel button label (defaults to `"Cancel"`)                           |
+| `autoCloseOnConfirm` | `boolean`                    | No       | Close dialog after confirm runs (default: `true`)                               |
+| `onConfirm`          | `() => Promise<void>`        | Yes      | Async handler executed when the user clicks confirm                             |
+
+**Rules:**
+
+- Always use `useAlertDialog()` — never build a custom confirm modal per feature
+- Always localize `title`, `description`, `confirmText`, `cancelText`
+- Always pass `variant: "destructive"` for delete/remove actions
+- Wrap in `guardPerm()` check before calling `dialog.show()` for permissioned actions
+- The `onConfirm` handler should call `mutateAsync` (not `mutate`) for explicit error handling
+
+### `toast` — notification toasts
+
+Use `toast` from `sonner` for success/error feedback after mutations.
+
+```typescript
+import { toast } from "sonner";
+```
+
+**Rules:**
+
+- `toast.success(t("xxx.toast.created"))` — after successful create
+- `toast.success(t("xxx.toast.updated"))` — after successful update
+- `toast.success(t("xxx.toast.deleted"))` — after successful delete
+- Error toasts are handled automatically by `AxiosErrorHandler` at the provider level — do not add duplicate error toasts in controllers
+- Always localize toast messages
+
+### AxiosErrorHandler — automatic error display
+
+`AxiosErrorHandler` is mounted in the root layout. It intercepts all Axios error responses and:
+
+1. Resolves backend `error_key` via `t(errorKey)` for business errors
+2. Shows a toast with the resolved error message
+3. Handles 401/403 with appropriate redirects
+
+Do not add per-mutation `catch` blocks that duplicate toast error display. The `AxiosErrorHandler` is the single source of error toasts. Add per-mutation `catch` only when you need to perform additional recovery logic (e.g. reset form state).
 
 ### `page.tsx`
 
@@ -113,15 +242,6 @@ For permissioned admin features, the controller is the place to:
 - translate feature-local permission codes into a `permissions` view model
 - expose both simple booleans like `canCreate` and row/node predicates like `canDelete(row)`
 - keep fallback guards around create/edit/delete/assign handlers so accidental unauthorized triggers still fail closed in the UI
-
-### `*-page-container.tsx`
-
-- page composition only
-- receives normalized view props
-- receives normalized permission props
-- assembles header, filters, grid, empty state
-
-For auth flows, the equivalent file is usually `*-page-view.tsx` instead of `*-page-container.tsx`.
 
 #### Controller conventions
 
@@ -217,6 +337,26 @@ const confirmRemove = useCallback(
 
 Do not build custom confirmation modals per feature — use the shared `useAlertDialog()`.
 
+### `*-page-container.tsx`
+
+- page composition only
+- receives normalized view props
+- receives normalized permission props
+- assembles header, filters, grid, empty state
+
+For auth flows, the equivalent file is usually `*-page-view.tsx` instead of `*-page-container.tsx`.
+
+### `*-page-filters.tsx`
+
+- filter control components only
+- receives current filter values and `onFilterChange` callback from the controller
+- uses `createFilter` from `@/components/reui/filters` for consistent filter controls
+- each filter select/text input calls `onFilterChange` on change without debouncing (debounce lives in the controller)
+- filter labels are localized
+- filter values are plain strings or numbers, normalized by the controller before sending to the API
+
+Do not put filter logic or API calls in this file. Do not duplicate filter components across page-header and page-container.
+
 ### `*-page-columns.tsx`
 
 - table column factories only
@@ -245,17 +385,6 @@ Every feature with a status field should have a status badge component:
 - thin shell around the sheet
 - submit orchestration
 - open/close reset behavior
-
-### `*-detail-panel.tsx` / `*-tree-sidebar.tsx` (tree pages only)
-
-Tree pages (`dicts`, `menus`, `roles`, `tenants`) use a sidebar + detail panel layout:
-
-- `*-tree-sidebar.tsx` renders the tree, handles selection, provides add-child / add-root actions
-- `*-detail-panel.tsx` renders the selected node's metadata, children table, and edit/delete actions
-- `*-page-container.tsx` composes both sidebars + detail panel in a split layout
-- The controller owns `selectedNode`, `expandedIds`, and CRUD orchestration
-- Tree-sidebar receives node data, selection state, expansion state, and callbacks from the controller
-- Detail panel receives the selected node, children data, permissions, and callbacks from the controller
 
 ### `helpers.ts`
 

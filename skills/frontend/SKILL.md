@@ -41,6 +41,7 @@ frontend/app/
 │   └── signup/page.tsx
 ├── (base)/
 │   ├── layout.tsx
+│   ├── base-layout-client.tsx
 │   ├── upms/
 │   │   ├── layout.tsx
 │   │   ├── users/page.tsx
@@ -48,12 +49,25 @@ frontend/app/
 │   │   ├── roles/page.tsx
 │   │   ├── menus/page.tsx
 │   │   └── perms/page.tsx
-│   └── tools/
+│   ├── tools/
+│   │   ├── layout.tsx
+│   │   ├── dicts/page.tsx
+│   │   ├── audit-logs/page.tsx
+│   │   ├── operation-logs/page.tsx
+│   │   ├── system-logs/page.tsx
+│   │   ├── notifications/page.tsx
+│   │   ├── storage/page.tsx
+│   │   └── monitor/page.tsx
+│   ├── biz/
+│   │   ├── layout.tsx
+│   │   ├── apply/page.tsx
+│   │   └── stats/page.tsx
+│   ├── oauth/
+│   │   ├── layout.tsx
+│   │   └── clients/page.tsx
+│   └── dev/
 │       ├── layout.tsx
-│       ├── dicts/page.tsx
-│       ├── audit-logs/page.tsx
-│       ├── operation-logs/page.tsx
-│       └── system-logs/page.tsx
+│       └── sign-keys/page.tsx
 ├── (web)/
 │   ├── layout.tsx
 │   ├── page.tsx
@@ -70,7 +84,7 @@ frontend/app/
 Follow the existing `users`, `menus`, `dicts`, and `tenants` patterns for admin features.  
 For auth flows, use the same responsibility split under `frontend/components/auth/**` instead of collapsing everything into one `*-form.tsx`.
 
-```text
+````text
 frontend/components/base/users/
 ├── hooks/
 │   ├── use-user-mutate-form.ts
@@ -109,6 +123,8 @@ frontend/components/base/tenants/
 └── tenant-status-badge.tsx
 ```
 
+Additional feature patterns beyond the standard CRUD list exist in the codebase. For details on file browser, dashboard, notification management, and review workflow patterns, see `skills/frontend/rules/architecture.md` → "Reference shapes" → "Non-CRUD patterns".
+
 Some features also include **secondary assign dialogs** for many-to-many bindings.
 These follow the same hook-plus-dialog pattern as the mutate flow but operate on junction tables:
 
@@ -124,7 +140,7 @@ frontend/components/base/roles/
 ├── role-assign-perms-dialog.tsx
 ├── roles-page-*.tsx
 └── role-status-badge.tsx
-```
+````
 
 When implementing a secondary assign dialog:
 
@@ -245,6 +261,31 @@ Do not invent parallel provider stacks inside features.
 - Keep request/response naming consistent:
     - entity/result types: `UserData`, `DictData`
     - request params: `CreateUserParam`, `PageUserParam`
+
+Current store files:
+
+| File | Purpose |
+|---|---|
+| `stores/auth-api.ts` | Auth endpoints (signin, signup, refresh, logout) |
+| `stores/base-api.ts` | Base CRUD entities (users, tenants, roles, menus, perms, dicts, oauth-clients, applies, stats, notifications) |
+| `stores/system-api.ts` | System endpoints (captcha, email, sms, monitor, sign-keys, audit-logs, operation-logs) |
+| `stores/log-api.ts` | Log query endpoints (system logs) |
+| `stores/monitor-api.ts` | System monitor/health endpoints |
+| `stores/storage-api.ts` | Object storage endpoints (S3 file browser) |
+| `stores/web-api.ts` | Web-operation endpoints (notification rules, members) |
+
+Current type files:
+
+| File | Purpose |
+|---|---|
+| `types/auth.types.ts` | Auth request/response types |
+| `types/base.types.ts` | Base entity types (users, tenants, roles, menus, perms, dicts, oauth, applies, stats, notifications) |
+| `types/system.types.ts` | System types (captcha, email, sms, sign-keys, audit-logs) |
+| `types/logs.types.ts` | Log entry types |
+| `types/monitor.types.ts` | Monitor/health types |
+| `types/storage.types.ts` | Object storage types |
+| `types/web.types.ts` | Web-operation types |
+| `types/modules.d.ts` | Ambient module declarations |
 
 ### IDs
 

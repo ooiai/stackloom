@@ -13,6 +13,7 @@ Always read the relevant skill before writing or reviewing code.
 | Task area                                             | Skill to read first                      |
 | ----------------------------------------------------- | ---------------------------------------- |
 | Any backend work                                      | `skills/backend/SKILL.md`                |
+| Backend architecture (layers, boundaries, naming)     | `skills/backend/rules/architecture.md`   |
 | Backend auth flow (signin, signup, JWT)               | `skills/backend/rules/auth.md`           |
 | Backend domain/infra layers                           | `skills/backend/rules/domain-infra.md`   |
 | Backend HTTP handlers/routes/DTOs                     | `skills/backend/rules/api-http.md`       |
@@ -62,7 +63,9 @@ Always validate your work before reporting it complete.
 ### Backend
 
 ```bash
+cd backend && cargo fmt --check --all
 cd backend && cargo check --workspace
+cd backend && cargo clippy --workspace -- -D warnings
 cd backend && cargo test --workspace
 ```
 
@@ -168,5 +171,8 @@ These files are the canonical style references. Match them when implementing sim
 - Do not use `AppError::Unauthorized` for distinguishable signin failure cases — use `AppError::DataError` with a `biz_error.rs` constant.
 - Do not hardcode business metadata (role codes, role names) as string literals in service code — use constants from `common/src/core/constants.rs` or `biz_error.rs`.
 - Do not create new Axios instances in frontend features — use the shared instance via `stores/*-api.ts`.
+- Do not create feature-local confirm modals — use the shared `useAlertDialog()` from `providers/dialog-providers`.
+- Do not add per-mutation error toasts that duplicate `AxiosErrorHandler` — it's the single source of error toasts.
+- Do not mix camelCase and snake_case in type definitions — API-facing types use snake_case; form value types may use camelCase.
 - Do not add locale-prefixed routing to the frontend unless explicitly required.
 - Do not auto-commit changes.
