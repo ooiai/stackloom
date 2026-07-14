@@ -224,6 +224,8 @@ pub async fn start_server(cfg: Arc<EnvConfig>) {
         cfg.server.prefix.clone(),
         cfg.auth.expires_at,
         cfg.auth.refresh_expires_at,
+        cfg.captcha_slider.enabled,
+        cfg.captcha_slider.provider.clone(),
         Some(oauth_repo.clone()),
     ));
     let oauth_service = Arc::new(OAuthServiceImpl::new(

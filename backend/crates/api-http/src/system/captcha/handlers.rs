@@ -9,7 +9,7 @@ use validator::Validate;
 
 use crate::system::{
     SysHttpState,
-    captcha::{req::SliderCaptchaReq, resp::SliderCaptchaResp},
+    captcha::{req::SliderCaptchaReq, resp::{SliderCaptchaResp, SliderConfigResp}},
 };
 
 /// Generate a slider captcha for the given account and code. The captcha will be valid for 5 minutes.
@@ -38,4 +38,21 @@ pub async fn captcha_slider(
     .await
     .map_err(|err| AppError::ClientError(err.to_string()))?;
     Ok(Json(SliderCaptchaResp::new()))
+}
+
+/// Return the current slider captcha configuration.
+///
+/// # Arguments
+/// * `state` - The system HTTP state.
+///
+/// # Returns
+/// * `AppResult<Json<SliderConfigResp>>` - The effective captcha switch and provider.
+pub async fn slider_config(State(state): State<SysHttpState>) -> AppResult<Json<SliderConfigResp>> {
+    let enabled = state.cfg.captcha_slider.enabled
+        && state.cfg.captcha_slider.provider == "captcha_slider";
+
+    Ok(Json(SliderConfigResp::new(
+        enabled,
+        state.cfg.captcha_slider.provider.clone(),
+    )))
 }

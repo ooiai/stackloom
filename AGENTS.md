@@ -6,6 +6,27 @@ StackLoom is a multi-tenant SaaS admin platform. The codebase has a Rust/Axum/SQ
 
 ---
 
+## Mandatory Plan Persistence (Critical)
+
+> **This is a hard requirement. Whenever an agent creates a plan, the plan MUST be written to a
+> Markdown file in that agent/tool's repository-local plan directory before implementation begins.**
+
+- Persist every explicit plan, including plans created through a built-in plan mode or plan tool.
+- Use `.<tool-name>/plan/<descriptive-name>_plan.md`, where `<tool-name>` identifies the current
+  agent/tool. For example, Codex must write plans to `.codex/plan/<descriptive-name>_plan.md`.
+- If the current tool has an established repository-local configuration directory, use that
+  directory rather than inventing another one (for example, `.claude/plan/` for Claude).
+- If the agent/tool cannot determine its own name or directory, use `.agent/plan/` as the fallback.
+- Create the plan directory when it does not exist. Use a concise, filesystem-safe, descriptive
+  filename; add a timestamp only when needed to prevent a collision.
+- The persisted file must contain the complete actionable plan, not merely a link, title, or summary.
+- Write the plan file **before** making implementation changes. When the plan changes materially,
+  update the same file so it remains the source of truth for the current task.
+- Do not skip persistence because a plan is short, temporary, already displayed in chat, or produced
+  by a built-in planning interface. Only responses that do not create a plan are exempt.
+
+---
+
 ## Skills
 
 Always read the relevant skill before writing or reviewing code.

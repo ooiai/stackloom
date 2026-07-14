@@ -32,6 +32,10 @@ import {
   type SigninFormErrors,
   type SigninFormValues,
 } from "../helpers"
+import {
+  CAPTCHA_DISABLED_CODE,
+  useCaptchaSliderConfig,
+} from "@/components/auth/hooks/use-captcha-slider-config"
 import CryptUtil from "@/lib/crypt"
 
 export function useSigninController() {
@@ -53,8 +57,18 @@ export function useSigninController() {
   const [forgotErrors, setForgotErrors] = useState<ForgotPasswordFormErrors>({})
   const [showRecoverySlider, setShowRecoverySlider] = useState(false)
   const [resendCooldownSeconds, setResendCooldownSeconds] = useState(0)
+  const { enabled: captchaSliderEnabled } = useCaptchaSliderConfig()
   const formSchema = useMemo(() => createSigninFormSchema(t), [t])
   const forgotSchema = useMemo(() => createForgotPasswordSchema(t), [t])
+
+  const buildSigninPayload = useCallback(
+    (code: string): SliderCaptcha => ({
+      account: values.account,
+      password: CryptUtil.md5Double(values.password || ""),
+      code,
+    }),
+    [values.account, values.password]
+  )
 
   const queryTenantsMutation = useMutation({
     // Signin is intentionally two-step: verify captcha first, then load available memberships.
@@ -139,24 +153,8 @@ export function useSigninController() {
     return false
   }, [formSchema, values])
 
-  const handleSubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault()
-
-      if (!validate()) {
-        return
-      }
-
-      setShowTenantDialog(false)
-      setShowSlider(true)
-    },
-    [validate]
-  )
-
-  const handleVerifySuccess = useCallback(
-    async (verifyData: VerifyParam) => {
-      const payload = buildSigninCaptchaPayload(values, verifyData)
-
+  const submitSigninByCaptchaCode = useCallback(
+    async (payload: SliderCaptcha) => {
       const nextTenants = await queryTenantsMutation.mutateAsync({
         account: payload.account,
         password: payload.password ?? "",
@@ -174,7 +172,37 @@ export function useSigninController() {
       setShowSlider(false)
       setShowTenantDialog(true)
     },
-    [queryTenantsMutation, t, values]
+    [queryTenantsMutation, t]
+  )
+
+  const handleSubmit = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault()
+
+      if (!validate()) {
+        return
+      }
+
+      setShowTenantDialog(false)
+      setShowSlider(false)
+
+      if (!captchaSliderEnabled) {
+        await submitSigninByCaptchaCode(buildSigninPayload(CAPTCHA_DISABLED_CODE))
+        return
+      }
+
+      setShowSlider(true)
+    },
+    [captchaSliderEnabled, buildSigninPayload, submitSigninByCaptchaCode, validate]
+  )
+
+  const handleVerifySuccess = useCallback(
+    async (verifyData: VerifyParam) => {
+      const payload = buildSigninCaptchaPayload(values, verifyData)
+
+      await submitSigninByCaptchaCode(payload)
+    },
+    [buildSigninCaptchaPayload, submitSigninByCaptchaCode, values]
   )
 
   const handleVerifyError = useCallback(() => {
@@ -209,7 +237,7 @@ export function useSigninController() {
     }
   }, [])
 
-  const handleSendRecoveryCode = useCallback(() => {
+  const handleSendRecoveryCode = useCallback(async () => {
     const account = forgotValues.account.trim()
     if (!account) {
       setForgotErrors((current) => ({
@@ -218,8 +246,24 @@ export function useSigninController() {
       }))
       return
     }
+
+    if (!captchaSliderEnabled) {
+      await sendResetCodeMutation.mutateAsync({
+        channel: forgotValues.channel,
+        account,
+        code: CAPTCHA_DISABLED_CODE,
+      })
+      return
+    }
+
     setShowRecoverySlider(true)
-  }, [forgotValues.account, t])
+  }, [
+    captchaSliderEnabled,
+    forgotValues.account,
+    forgotValues.channel,
+    sendResetCodeMutation,
+    t,
+  ])
 
   const handleRecoveryVerifySuccess = useCallback(
     async (verifyData: VerifyParam) => {

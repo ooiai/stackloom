@@ -27,6 +27,10 @@ import {
   type SignupFormErrors,
   type SignupFormValues,
 } from "../helpers"
+import {
+  CAPTCHA_DISABLED_CODE,
+  useCaptchaSliderConfig,
+} from "@/components/auth/hooks/use-captcha-slider-config"
 
 export function useSignupController(signupChannel: SignupChannel) {
   const { t } = useI18n()
@@ -38,6 +42,7 @@ export function useSignupController(signupChannel: SignupChannel) {
   const [signupResult, setSignupResult] = useState<AccountSignupResult | null>(
     null
   )
+  const { enabled: captchaSliderEnabled } = useCaptchaSliderConfig()
   const inviteCode = searchParams.get("inviteCode")?.trim() ?? ""
   const isInviteMode = inviteCode.length > 0
   const returnTo = sanitizeReturnTo(searchParams.get("returnTo"))
@@ -147,7 +152,19 @@ export function useSignupController(signupChannel: SignupChannel) {
     return false
   }, [contactSchema, values.contact])
 
-  const handleSendCode = useCallback(() => {
+  const buildSignupSendCodePayload = useCallback(
+    (code: string) => ({
+      channel: signupChannel,
+      contact:
+        signupChannel === "email"
+          ? values.contact.trim().toLowerCase()
+          : values.contact.trim(),
+      code,
+    }),
+    [signupChannel, values.contact]
+  )
+
+  const handleSendCode = useCallback(async () => {
     if (resendCooldownSeconds > 0) {
       return
     }
@@ -156,8 +173,25 @@ export function useSignupController(signupChannel: SignupChannel) {
       return
     }
 
+    if (!captchaSliderEnabled) {
+      await sendSignupCodeMutation.mutateAsync(
+        buildSignupSendCodePayload(CAPTCHA_DISABLED_CODE)
+      )
+      setShowSlider(false)
+      setResendCooldownSeconds(60)
+      toast.success(t("auth.signup.toast.codeSent"))
+      return
+    }
+
     setShowSlider(true)
-  }, [resendCooldownSeconds, validateContact])
+  }, [
+    buildSignupSendCodePayload,
+    captchaSliderEnabled,
+    resendCooldownSeconds,
+    sendSignupCodeMutation,
+    t,
+    validateContact,
+  ])
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {

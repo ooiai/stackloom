@@ -61,3 +61,8 @@ export interface AwsUploadRemoteObjectReq {
 export interface AwsUploadRemoteObjectResp {
   path: string
 }
+
+export interface CaptchaSliderConfig {
+  enabled: boolean
+  provider: string
+}

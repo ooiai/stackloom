@@ -27,6 +27,8 @@ pub struct EnvConfig {
     pub email: EmailConfig,
     /// Authentication token configuration.
     pub auth: AuthConfig,
+    /// Slider captcha configuration.
+    pub captcha_slider: CaptchaSliderConfig,
     /// Third-party OAuth provider configuration.
     pub oauth_providers: OAuthProvidersConfig,
     /// Basic authentication credentials or identifiers.
@@ -74,6 +76,10 @@ struct EnvConfigRaw {
     /// Authentication configuration section.
     auth: AuthConfig,
 
+    /// Slider captcha configuration section.
+    #[serde(default, rename = "captcha-slider")]
+    captcha_slider: CaptchaSliderConfig,
+
     /// OAuth provider config mapped from `oauth-providers`.
     #[serde(default, rename = "oauth-providers")]
     oauth_providers: OAuthProvidersConfig,
@@ -110,6 +116,7 @@ impl<'de> Deserialize<'de> for EnvConfig {
             sms: raw.sms,
             email: raw.email,
             auth: raw.auth,
+            captcha_slider: raw.captcha_slider,
             oauth_providers: raw.oauth_providers,
             auth_basics: raw.auth_basics,
             ignore_urls: raw.ignore_urls,
@@ -339,4 +346,12 @@ pub struct AuthConfig {
     pub expires_at: u64,
     /// Refresh token expiration time.
     pub refresh_expires_at: u64,
+}
+
+/// Slider captcha configuration.
+#[derive(Debug, Clone, Default, Deserialize)]
+#[serde(default)]
+pub struct CaptchaSliderConfig {
+    pub enabled: bool,
+    pub provider: String,
 }

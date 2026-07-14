@@ -62,6 +62,8 @@ where
     prefix: String,
     expires_at: u64,
     refresh_expires_at: u64,
+    slider_captcha_enabled: bool,
+    slider_captcha_provider: String,
     oauth_repo: Option<Arc<dyn OAuthRepository>>,
 }
 
@@ -75,6 +77,8 @@ impl AuthServiceImpl<SqlxAuthRepository, SqlxRoleRepository> {
         prefix: String,
         expires_at: u64,
         refresh_expires_at: u64,
+        slider_captcha_enabled: bool,
+        slider_captcha_provider: String,
         oauth_repo: Option<Arc<dyn OAuthRepository>>,
     ) -> Self {
         Self {
@@ -86,6 +90,8 @@ impl AuthServiceImpl<SqlxAuthRepository, SqlxRoleRepository> {
             prefix,
             expires_at,
             refresh_expires_at,
+            slider_captcha_enabled,
+            slider_captcha_provider,
             oauth_repo,
         }
     }
@@ -102,11 +108,13 @@ where
         role_repository: Arc<Rr>,
         redis_pool: Arc<RedisPool>,
         sms_config: Arc<SmsConfig>,
-        email_config: Arc<EmailConfig>,
-        prefix: String,
-        expires_at: u64,
-        refresh_expires_at: u64,
-    ) -> Self {
+    email_config: Arc<EmailConfig>,
+    prefix: String,
+    expires_at: u64,
+    refresh_expires_at: u64,
+    slider_captcha_enabled: bool,
+    slider_captcha_provider: String,
+) -> Self {
         Self {
             repository,
             role_repository,
@@ -116,6 +124,8 @@ where
             prefix,
             expires_at,
             refresh_expires_at,
+            slider_captcha_enabled,
+            slider_captcha_provider,
             oauth_repo: None,
         }
     }
@@ -166,6 +176,12 @@ where
         code: &str,
         delete: bool,
     ) -> AppResult<()> {
+        if !self.slider_captcha_enabled
+            || self.slider_captcha_provider != "captcha_slider"
+        {
+            return Ok(());
+        }
+
         CaptchaService::captcha_slider_valid(&self.redis_pool, &self.prefix, code, account, delete)
             .await
     }

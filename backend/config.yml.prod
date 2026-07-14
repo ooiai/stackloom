@@ -91,6 +91,11 @@ auth:
   # 60 * 60 * 24 * 15
   refresh_expires_at: 1296000
 
+# Whether to enable slider captcha
+captcha-slider:
+  enabled: false
+  provider: captcha_slider
+
 auth-basics:
   # stackloom::basic
   - ZEc5d1pXUjFPanBoZFhSbw==

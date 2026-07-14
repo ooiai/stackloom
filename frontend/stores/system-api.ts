@@ -1,6 +1,6 @@
 import { HTTP_REQUEST_ENUM } from "@/lib/config/enums"
 import CryptUtil from "@/lib/crypt"
-import { post } from "@/lib/http/axios"
+import { get, post } from "@/lib/http/axios"
 import {
   AwsSignUrlReq,
   AwsSignUrlResp,
@@ -10,6 +10,7 @@ import {
   AwsUploadRemoteObjectResp,
   AwsSts,
   AwsStsResp,
+  CaptchaSliderConfig,
   SliderCaptcha,
   SmsSignin,
 } from "@/types/system.types"
@@ -19,6 +20,15 @@ export const captchaApi = {
   /// Get slider captcha
   getSlider: async (params: SliderCaptcha) => {
     return post("/apiv1/sys/captcha/slider", params, {
+      headers: {
+        Authorization: `Basic ${CryptUtil.encodeBase64Double(HTTP_REQUEST_ENUM.BASIC_AUTH)}`,
+      },
+    })
+  },
+
+  /// Get slider captcha runtime config
+  getSliderConfig: async (): Promise<CaptchaSliderConfig> => {
+    return get("/apiv1/sys/captcha/slider/config", undefined, {
       headers: {
         Authorization: `Basic ${CryptUtil.encodeBase64Double(HTTP_REQUEST_ENUM.BASIC_AUTH)}`,
       },
