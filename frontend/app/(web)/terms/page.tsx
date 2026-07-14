@@ -13,12 +13,12 @@ export async function generateMetadata(): Promise<Metadata> {
     title: getMessageValue(
       messages,
       "legal.terms.meta.title",
-      "Stackloom Terms of Service"
+      "lanningcloud Terms of Service"
     ),
     description: getMessageValue(
       messages,
       "legal.terms.meta.description",
-      "Read the Terms of Service for using Stackloom."
+      "Read the Terms of Service for using lanningcloud."
     ),
   }
 }

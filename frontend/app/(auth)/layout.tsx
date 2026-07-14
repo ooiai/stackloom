@@ -16,11 +16,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const messages = await getLocaleMessages(locale)
 
   return {
-    title: getMessageValue(messages, "metadata.auth.title", "Stackloom Auth"),
+    title: getMessageValue(messages, "metadata.auth.title", "lanningcloud Auth"),
     description: getMessageValue(
       messages,
       "metadata.auth.description",
-      "Sign in or register to access Stackloom."
+      "Sign in or register to access lanningcloud."
     ),
   }
 }

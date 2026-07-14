@@ -1,6 +1,6 @@
 {
   "brand": {
-    "title": "Stackloom"
+    "title": "lanningcloud"
   },
   "actions": {
     "notifications": "Notifications",
@@ -21,7 +21,7 @@
   },
   "base-root": {
     "name": "Admin",
-    "remark": "Stackloom workspace entry"
+    "remark": "lanningcloud workspace entry"
   },
   "dashboard": {
     "navUser": {

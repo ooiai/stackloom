@@ -80,8 +80,8 @@ email:
   smtp_username: your_smtp_username
   smtp_password: your_smtp_password
   from_email: no-reply@example.com
-  from_name: StackLoom
-  subject_prefix: "[StackLoom]"
+  from_name: lanningcloud
+  subject_prefix: "[lanningcloud]"
 
 auth:
   # Whether to enable authentication

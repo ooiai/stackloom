@@ -1,15 +1,15 @@
 {
   "base": {
-    "title": "Stackloom",
-    "description": "Stackloom console for unified management of users, tenants, roles and permissions.",
-    "keywords": "Stackloom,admin console,user management,tenant management,permission management"
+    "title": "lanningcloud",
+    "description": "lanningcloud console for unified management of users, tenants, roles and permissions.",
+    "keywords": "lanningcloud,admin console,user management,tenant management,permission management"
   },
   "auth": {
-    "title": "Stackloom Auth",
-    "description": "Sign in or register to access Stackloom."
+    "title": "lanningcloud Auth",
+    "description": "Sign in or register to access lanningcloud."
   },
   "web": {
-    "title": "Stackloom Web",
-    "description": "Stackloom website and product entry."
+    "title": "lanningcloud Web",
+    "description": "lanningcloud website and product entry."
   }
 }

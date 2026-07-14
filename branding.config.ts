@@ -1,31 +1,25 @@
 /**
  * Branding configuration — single source of truth for product identity.
  *
- * When this project is used as a StackLoom-based product scaffold:
- *   1. Run `bash scripts/create-project.sh` to create a new product project.
- *      The script copies this repo and rewrites this file with your values.
- *   2. You can then edit this file manually at any time.
- *
- * The values here are also used by scripts/upgrade-project.sh to avoid
- * overwriting your branding when merging upstream StackLoom updates.
+ * Edit this file to update your application branding.
+ * Do NOT change upstreamUrl — it is used by upgrade-project.sh.
  */
 export const branding = {
   /** Human-readable application name shown in UI, emails, and page titles. */
-  appName: "StackLoom",
+  appName: "lanningcloud",
 
   /** URL-safe slug used for database names, cookie prefixes, etc. */
-  appSlug: "stackloom",
+  appSlug: "lanningcloud",
 
   /** Short description used in metadata/SEO. */
-  appDescription: "Multi-tenant SaaS admin scaffold",
+  appDescription: "lanningcloud — powered by StackLoom",
 
   /** Support contact address used in legal pages and email templates. */
-  supportEmail: "support@stackloom.local",
+  supportEmail: "jerry@gmail.com",
 
   /**
    * The upstream StackLoom GitHub URL.
-   * Product projects should NOT change this — it is used by upgrade-project.sh
-   * to fetch foundation updates.
+   * Do NOT change — used by scripts/upgrade-project.sh.
    */
   upstreamUrl: "git@github.com:ooiai/stackloom.git",
 } as const

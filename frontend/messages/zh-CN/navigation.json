@@ -1,6 +1,6 @@
 {
   "brand": {
-    "title": "Stackloom"
+    "title": "lanningcloud"
   },
   "actions": {
     "notifications": "通知",
@@ -21,7 +21,7 @@
   },
   "base-root": {
     "name": "后台管理",
-    "remark": "Stackloom 管理后台入口"
+    "remark": "lanningcloud 管理后台入口"
   },
   "dashboard": {
     "navUser": {

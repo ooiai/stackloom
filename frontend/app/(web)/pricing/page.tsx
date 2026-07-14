@@ -10,11 +10,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const messages = await getLocaleMessages(locale)
 
   return {
-    title: getMessageValue(messages, "pricing.meta.title", "Stackloom Pricing"),
+    title: getMessageValue(messages, "pricing.meta.title", "lanningcloud Pricing"),
     description: getMessageValue(
       messages,
       "pricing.meta.description",
-      "Choose the Stackloom plan that fits your workspace."
+      "Choose the lanningcloud plan that fits your workspace."
     ),
   }
 }
